@@ -13,7 +13,6 @@ public class ArraysIntInt {
 	 * @param size
 	 */
 	public ArraysIntInt(int size){
-//		System.out.println(size);
 		this.first = new int[size];
 		this.second = new int[size];
 	}
@@ -22,11 +21,8 @@ public class ArraysIntInt {
 	 * @param secondVal
 	 */
 	public void add(int firstVal, int secondVal) {
-//		System.out.println(firstVal+","+secondVal);
-//		System.out.println("**"+pos);
 		first[pos] = firstVal;
 		second[pos++] = secondVal;
-//		System.out.println("***"+pos);
 	}
 	
 	/**

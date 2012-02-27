@@ -3,9 +3,10 @@
  */
 package com.datascience.utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -15,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.datascience.utils.auxl.ModelDoubleDouble;
+import com.datascience.utils.auxl.ModelDoubleIntIntDouble;
 import com.datascience.utils.auxl.ModelIntIntDouble;
 import com.datascience.utils.auxl.ModelLongDouble;
 import com.datascience.utils.auxl.RangePairIntInt;
@@ -60,7 +62,7 @@ public class StatTest {
 	 */
 	@Test
 	public final void testHg() {
-		fail("Not yet implemented"); // TODO
+		System.out.println(Stat.hg(10, 10, 20));
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class StatTest {
 	 */
 	@Test
 	public final void testHgapprox() {
-		fail("Not yet implemented"); // TODO
+		System.out.println(Stat.hgapprox(10, 10, 10));
 	}
 
 	/**
@@ -76,19 +78,70 @@ public class StatTest {
 	 */
 	@Test
 	public final void testBeta_CDF() {
-		System.out.println("testBeta_CDF="+Stat.Beta_CDF(0.5, 20, 14));
-		fail("Not yet implemented"); // TODO
+		testIxOrBeta_CDF();
 	}
 
+	/**
+	 * @param aStart
+	 * @param bStart
+	 */
+	private final void testIncompleteBetaWithLimitedParameters(int aStart, int bStart) {
+		double ress[] = { 0.105, 0.693, 2.303, 5.361e-3, 0.193, 1.403,
+				3.605e-4, 0.068, 0.998, 2.718e-5, 0.026, 0.755, 2.182e-6,
+				0.011, 0.591, 0.095, 0.375, 0.495, 4.667e-3, 0.083, 0.162,
+				3.083e-4, 0.026, 0.079, 2.3e-5, 9.375e-3, 0.046, 1.833e-6,
+				3.646e-3, 0.03, 0.086, 0.234, 0.25, 4.073e-3, 0.041, 0.05,
+				2.642e-4, 0.011, 0.017, 1.949e-5, 3.571e-3, 7.123e-3, 1.542e-6,
+				1.297e-3, 3.553e-3, 0.078, 0.164, 0.167, 3.564e-3, 0.022,
+				0.024, 2.267e-4, 5.092e-3, 5.952e-3, 1.653e-5, 1.48e-3,
+				1.984e-3, 1.298e-6, 4.945e-4, 7.935e-4, 0.071, 0.125, 0.125,
+				3.127e-3, 0.014, 0.014, 1.95e-4, 2.626e-3, 2.778e-3, 1.404e-5,
+				6.718e-4, 7.576e-4, 1.093e-6, 2.036e-4, 2.525e-4, 0.065, 0.1,
+				0.1, 2.751e-3, 9.038e-3, 9.091e-3, 1.68e-4, 1.486e-3, 1.515e-3,
+				1.194e-5, 3.335e-4, 3.497e-4, 9.221e-7, 9.093e-5, 9.99e-5 };
+		double argsX[] = {0.1, 0.5, 0.9};
+		RangePairIntInt rp = new RangePairIntInt();
+		rp.setRange1(1, 2, 5);
+		rp.setRange2(0, 2, 10);
+		List<ModelDoubleIntIntDouble> testData = TestDataManager.fillTestCasesDoubleIntIntDouble(argsX, rp, ress);
+		for (ModelDoubleIntIntDouble datum : testData) {
+			double x = datum.getArg1();
+			int a = datum.getArg2();
+			int b = datum.getArg3();
+			if (a>=aStart && b>=bStart) {
+				assertEquals(datum.getRes(), Stat.incompleteBeta(x, a, b), TestDataManager.DELTA_DOUBLE_testIncompleteBeta);
+			}
+		}
+	}
 	/**
 	 * Test method for {@link com.datascience.utils.Stat#incompleteBeta(double, int, int)}.
 	 */
 	@Test
-	public final void testIncompleteBeta() {
-		System.out.println("testIncompleteBeta="+Stat.incompleteBeta(0.5, 20, 14));
-		fail("Not yet implemented"); // TODO
+	public final void testIncompleteBetaPositiveParametersOnly() {
+		testIncompleteBetaWithLimitedParameters(1,1);
 	}
-
+	
+	/**
+	 * Test method for {@link com.datascience.utils.Stat#incompleteBeta(double, int, int)}.
+	 */
+	@Test
+	public final void testIncompleteBetaWithZeroParameters() {
+		testIncompleteBetaWithLimitedParameters(0,0);
+	}
+	/**
+	 * Test method for {@link com.datascience.utils.Stat#incompleteBeta(double, int, int)}.
+	 */
+	@Test
+	public final void testIncompleteBetaWithZeroParameterA() {
+		testIncompleteBetaWithLimitedParameters(0,1);
+	}
+	/**
+	 * Test method for {@link com.datascience.utils.Stat#incompleteBeta(double, int, int)}.
+	 */
+	@Test
+	public final void testIncompleteBetaWithZeroParameterB() {
+		testIncompleteBetaWithLimitedParameters(1,0);
+	}
 	/**
 	 * Test method for {@link com.datascience.utils.Stat#Beta(int, int)}.
 	 */
@@ -108,12 +161,36 @@ public class StatTest {
 	}
 
 	/**
+	 * 
+	 */
+	private void testIxOrBeta_CDF() {
+		double argsX[] = {0.1, 0.5, 0.9};
+		RangePairIntInt rp = new RangePairIntInt();
+		rp.setRange1(1, 2, 5);
+		rp.setRange2(1, 5);
+		double ress[] = { 0.1, 0.5, 0.9, 0.01, 0.25, 0.81, 1e-3, 0.125, 0.729,
+				1e-4, 0.063, 0.656, 1e-5, 0.031, 0.59, 0.19, 0.75, 0.99, 0.028,
+				0.5, 0.972, 3.7e-3, 0.312, 0.948, 4.6e-4, 0.187, 0.919, 5.5e-5,
+				0.109, 0.886, 0.271, 0.875, 0.999, 0.052, 0.688, 0.996,
+				8.56e-3, 0.5, 0.991, 1.27e-3, 0.344, 0.984, 1.765e-4, 0.227,
+				0.974, 0.344, 0.938, 1, 0.081, 0.813, 1, 0.016, 0.656, 0.999,
+				2.728e-3, 0.5, 0.997, 4.317e-4, 0.363, 0.995, 0.41, 0.969, 1,
+				0.114, 0.891, 1, 0.026, 0.773, 1, 5.024e-3, 0.637, 1, 8.909e-4,
+				0.5, 0.999 };
+		List<ModelDoubleIntIntDouble> testData = TestDataManager.fillTestCasesDoubleIntIntDouble(argsX, rp, ress);
+		for (ModelDoubleIntIntDouble datum : testData) {
+			double x = datum.getArg1();
+			int a = datum.getArg2();
+			int b = datum.getArg3();
+				assertEquals(datum.getRes(), Stat.Ix(x, a, b), TestDataManager.DELTA_DOUBLE);
+		}
+	}
+	/**
 	 * Test method for {@link com.datascience.utils.Stat#Ix(double, int, int)}.
 	 */
 	@Test
 	public final void testIx() {
-		System.out.println("testIx"+Stat.Ix(0.5, 20, 14));
-		fail("Not yet implemented"); // TODO
+		testIxOrBeta_CDF();
 	}
 
 	/**

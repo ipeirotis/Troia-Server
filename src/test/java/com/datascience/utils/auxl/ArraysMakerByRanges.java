@@ -43,12 +43,23 @@ public class ArraysMakerByRanges {
 	public ArraysIntInt makeIntIntArraysByRangeFirst() {
 		return null;
 	}
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+	public static ArraysDoubleIntInt makeDoubleIntIntArraysByRangeBothRevert(
+			double[] argsX, RangePairIntInt rp) {
+		if (argsX==null || rp==null || argsX.length<1 || !rp.isValid()) {
+			fail("wrong input parameters("+rp.getStart1()+","+rp.getEnd1()+","+rp.getStart2()+","+rp.getEnd2()
+					+") (ArraysMakerByRanges:makeDoubleIntIntArraysByRangeBothRevert)");
+		}
+		int size  = rp.calculateSize()*argsX.length;
+		ArraysDoubleIntInt ret = new ArraysDoubleIntInt(size);
+		for (int third = rp.getStart2(); third<=rp.getEnd2(); third+=rp.getPitch2()) {
+			for (int second = rp.getStart1(); second<=rp.getEnd1(); second+=rp.getPitch1()) {
+				for (int first=0; first<argsX.length; first++) {
+					ret.add(argsX[first], second, third);
+				}
+			}
+		}
+		return ret;
 	}
 
 }

@@ -14,6 +14,7 @@ public class TestDataManager {
 	 * @see org.junit.Assert#assertEquals(double expected, double actual, double delta)
 	 */
 	public static final double DELTA_DOUBLE = 0.001;
+	public static final double DELTA_DOUBLE_testIncompleteBeta = 0.01;
 	
 	/**
 	 * @param arg1s
@@ -75,6 +76,27 @@ public class TestDataManager {
 		ret = new ArrayList<ModelDoubleDouble>();
 		for (int i=0; i<arg1s.length; i++) {
 			ret.add(new ModelDoubleDouble(arg1s[i], ress[i]));
+		}
+		return ret;
+	}
+
+	/**
+	 * @param argsX
+	 * @param rp
+	 * @param ress
+	 * @return
+	 */
+	public static List<ModelDoubleIntIntDouble> fillTestCasesDoubleIntIntDouble(
+			double[] argsX, RangePairIntInt rp, double[] ress) {
+		List<ModelDoubleIntIntDouble> ret = null;
+		if (argsX==null || rp==null || ress==null || argsX.length<1 || ress.length<1) {
+			fail("wrong input/output parameters (TestCasesManager:fillTestCasesDoubleIntIntDouble)");
+		}
+		ret = new ArrayList<ModelDoubleIntIntDouble>();
+		ArraysDoubleIntInt inputArrays = ArraysMakerByRanges.makeDoubleIntIntArraysByRangeBothRevert(argsX, rp);
+		for (int i = 0; i < ress.length; i++) {
+				ret.add(new ModelDoubleIntIntDouble(inputArrays.getFirstByIndex(i),
+						inputArrays.getSecondByIndex(i), inputArrays.getThirdByIndex(i), ress[i]));
 		}
 		return ret;
 	}
