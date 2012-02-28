@@ -114,7 +114,7 @@ public class UtilsTest {
 	public final void testEntropy() {
 		double assay[] = {-1, 1};
 		double r1 = Utils.entropy(assay);
-		System.out.println(r1);
+		System.out.println(r1); 
 	}
 
 }
