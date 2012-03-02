@@ -10,6 +10,7 @@ The current API works as follows
 
 * getDawidSkene(id): Creates a project with the given id. This is being used to store the data and give the ability to come back later and add/delete entries to an existing project
 * initializeDS(id, categories, incremental): Specifies the set of categories to be used for the given project with the given id.
+* ....
 
 
 TODO:
