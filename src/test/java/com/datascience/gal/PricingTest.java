@@ -92,8 +92,8 @@ public class PricingTest {
 		for (double p=-10; p<-0.05; p+=0.05) {
 			for (int k=-50; k<0; k++) {
 				Double probabilityCorrect = Pricing.probabilityCorrect(new Double(p), new Integer(k));
-				System.out.println("["+p+","+k+"]"+
-						Pricing.probabilityCorrect(new Double(p), new Integer(k)));
+//				System.out.println("["+p+","+k+"]"+
+//						Pricing.probabilityCorrect(new Double(p), new Integer(k)));
 				assertNull(probabilityCorrect);
 //				assertFalse("result should be a number or null",Double.isNaN(probabilityCorrect));
 			}
