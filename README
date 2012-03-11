@@ -1,2 +1,24 @@
 Dawid Skene as a Service
-TODO: make a legit readme
+
+This is a the web service implementation of the code at http://code.google.com/p/get-another-label/ 
+
+The web service code has additional functionality as well:
+* Ability to persist the data
+* Ability to execute the algorithm incrementally, as opposed to the batch execution in the prior code
+
+The current API works as follows
+
+* getDawidSkene(id): Creates a project with the given id. This is being used to store the data and give the ability to come back later and add/delete entries to an existing project
+* initializeDS(id, categories, incremental): Specifies the set of categories to be used for the given project with the given id.
+* ....
+
+
+TODO:
+
+1. Finish the JUnit tests for the individual methods
+2. Create an example run, in which we will load the data used in http://qmturk.appspot.com/ into a DS class, and then run it.
+3. Create JUnit test that will do the "functional" testing of the application, using the data from (2)
+4. Post the code in a public repository, together with documentation of the calls, a small example, and with setup instructions
+5. Create a web-accessible demo like the one on http://qmturk.appspot.com/
+6. Add Jing's code on quality-sensitive payments
+6. Add Jing's code on selecting best action for when a new worker arrives (give gold, give unlabeled, repeat labeling)
