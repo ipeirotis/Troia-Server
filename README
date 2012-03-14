@@ -22,3 +22,6 @@ TODO:
 5. Create a web-accessible demo like the one on http://qmturk.appspot.com/
 6. Add Jing's code on quality-sensitive payments
 6. Add Jing's code on selecting best action for when a new worker arrives (give gold, give unlabeled, repeat labeling)
+
+Michael: guys, I added web-service, now test fails dunno why, probably as I ve said because of iteration count, 
+anyway, ll figure out     http://localhost:8080/GetAnotherLabel/rest/compute/formOne
