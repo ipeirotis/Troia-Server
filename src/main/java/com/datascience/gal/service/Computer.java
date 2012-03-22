@@ -56,7 +56,7 @@ public class Computer {
      * @throws IOException
      */
     @POST
-    @Path("formTwo")
+    @Path("formOne")
 //    @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response  uploadFile(

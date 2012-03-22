@@ -1,0 +1,2 @@
+victory	0.5
+loss	0.5
