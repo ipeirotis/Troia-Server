@@ -1,0 +1,4 @@
+victory	victory	0
+loss	loss	0
+victory	loss	1
+loss	victory	1

@@ -1,0 +1,2 @@
+party1	victory
+party2	loss
