@@ -13,9 +13,9 @@ package com.datascience.utils;
  * @author Jing Wang
  *
  */
-public class ComputingWorkerValue {
-	public static double getAnnotatorCostAdjustedn(double[][] pi, int num)
+public class ComputingWorkerValue {/*atorCostAdjustedn(double[][] pi, int num)
     {
+	public static double getAnnot
 		double c = 0.0D;
    
     //There are N=num labelers and J labels/categories. So the number of possible label assignment is Math.pow(J, num).
@@ -116,5 +116,5 @@ public static double getValue(double[][] pi)
 			
 		}
 		
-	}
+	}*/
 }
