@@ -54,9 +54,9 @@ public class Service {
     private static DawidSkeneCache dscache = null;
 
     /**
-     * a simple method to see if the service is awake
+     * A simple method to see if the service is awake
      * 
-     * @return a string with the current time
+     * @return A string with the current time
      */
     @GET
     @Path("ping")
