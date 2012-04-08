@@ -122,4 +122,11 @@ public class Computer {
     	} else return "";
 		return result;
     }
+
+    @GET
+    @Path("dsas_doc")
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable showDSaSHelp() {
+    	return new Viewable("/dsas_help");
+    }
 }
