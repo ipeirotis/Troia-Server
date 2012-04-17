@@ -190,7 +190,7 @@
 				</div>
 			</div>
 			<div id="col2">
-				<div style="margin-top:300px;"></div>
+				<div style="margin-top:50px;"></div>
 				<div class="label1right">
 					Libraries
 				</div>
@@ -548,6 +548,122 @@
 		&lt;/form&gt;
 				</div>
 				<p/><p/><p/>
+				<div style="margin-top:50px;"></div>
+				<div class="label1right">
+					Summary of Resource URL Patterns (wrapped methods WITHOUT any JSON parameters)
+				</div>
+				<div class="textright">
+					<span class="greyhead0right">POST </span><a id="more_loadCategories_notjson" href="" onclick="return false;">loadCategories?names={category_name1,category_name2...category_nameN}&id={id}&incremental={incremental}</a>
+					<p id="more_loadCategories_notjson" style="display: none;">
+						<span class="greyhead2right">DESCRIPTION</span>
+						<span class="paragraph">load Categories and saves BatchDawidSkene/IncrementalDawidSkene object with specified identefier exists to the database (and cache)</span>
+						<span class="greyhead2right">PARAMETERS</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[number]</span>
+						<span class="greyhead2right">SAMPLE REQUEST</span>
+						<span class="paragraph">http://23.21.128.180:8080/GetAnotherLabel/rest/notjson/loadCategories</span>
+						<span class="paragraph">name1, name2, name3</span>
+						<span class="paragraph">12</span>
+						<span class="paragraph">10</span>
+						<span class="greyhead2right">SAMPLE RESPONSE</span>
+						<span class="paragraph">POST http://23.21.128.180:8080/GetAnotherLabel/rest/loadCategories returned a response status of 200 OK</span>
+					</p>
+				</div>
+				<div class="textright">
+					<span class="greyhead0right">POST </span><a id="more_loadCosts_notjson" href="" onclick="return false;">loadCosts?from={from1,from2...fromN}&to={to1,to2...toN}&cost={cost1,cost2..costN}&id={id}</a>
+					<p id="more_loadCosts_notjson" style="display: none;">
+						<span class="greyhead2right">DESCRIPTION</span>
+						<span class="paragraph">Loads a json set of misclassification cost objects</span>
+						<span class="greyhead2right">PARAMETERS</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="greyhead2right">SAMPLE REQUEST</span>
+						<span class="paragraph">http://23.21.128.180:8080/GetAnotherLabel/rest/notjson/loadCosts</span>
+						<span class="paragraph">name1,name1,name2</span>
+						<span class="paragraph">name2,name2,name1</span>
+						<span class="paragraph">0.9,0.1,0.4</span>
+						<span class="paragraph">2</span>
+						<span class="greyhead2right">SAMPLE RESPONSE</span>
+						<span class="paragraph">POST http://23.21.128.180:8080/GetAnotherLabel/rest/loadCosts returned a response status of 200 OK</span>
+					</p>
+				</div>
+				<div class="textright">
+					<span class="greyhead0right">POST </span><a id="more_loadWorkerAssignedLabel_notjson" href="" onclick="return false;">loadWorkerAssignedLabel?workerName={workerName}&objectName={objectName}&categoryName={categoryName}&id={id}</a>
+					<p id="more_loadWorkerAssignedLabel_notjson" style="display: none;">
+						<span class="greyhead2right">DESCRIPTION</span>
+						<span class="paragraph">add a worker-assigned label to the model</span>
+						<span class="greyhead2right">PARAMETERS</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="greyhead2right">SAMPLE REQUEST</span>
+						<span class="paragraph">http://23.21.128.180:8080/GetAnotherLabel/rest/notjson/loadWorkerAssignedLabels</span>
+						<span class="paragraph">workerName11</span>
+						<span class="paragraph">objectName22</span>
+						<span class="paragraph">name1</span>
+						<span class="paragraph">2</span>
+						<span class="greyhead2right">SAMPLE RESPONSE</span>
+						<span class="paragraph">POST http://23.21.128.180:8080/GetAnotherLabel/rest/loadWorkerAssignedLabel returned a response status of 200 OK</span>					
+					</p>
+				</div>
+				<div class="textright">
+					<span class="greyhead0right">POST </span><a id="more_loadWorkerAssignedLabels_notjson" href="" onclick="return false;">loadWorkerAssignedLabels?workerName={workerName1,workerName2..workerNameN}&objectName={objectName1,objectName2..objectNameN}&categoryName={categoryName1,categoryName2..categoryNameN}&id={id}</a>
+					<p id="more_loadWorkerAssignedLabels_notjson" style="display: none;">
+						<span class="greyhead2right">DESCRIPTION</span>
+						<span class="paragraph">add a worker-assigned labels to the model</span>
+						<span class="greyhead2right">PARAMETERS</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="greyhead2right">SAMPLE REQUEST</span>
+						<span class="paragraph">http://23.21.128.180:8080/GetAnotherLabel/rest/notjson/loadWorkerAssignedLabels</span>
+						<span class="paragraph">workerName11,workerName12</span>
+						<span class="paragraph">objectName22,objectName23</span>
+						<span class="paragraph">name1,name2</span>
+						<span class="paragraph">2</span>
+						<span class="greyhead2right">SAMPLE RESPONSE</span>
+						<span class="paragraph">POST http://23.21.128.180:8080/GetAnotherLabel/rest/loadWorkerAssignedLabels returned a response status of 200 OK</span>
+					</p>
+				</div>
+				<div class="textright">
+					<span class="greyhead0right">POST </span><a id="more_loadGoldLabel_notjson" href="" onclick="return false;">loadGoldLabel?objectName={objectName}&correctCategory={correctCategory}&id={id}</a>
+					<p id="more_loadGoldLabel_notjson" style="display: none;">
+						<span class="greyhead2right">DESCRIPTION</span>
+						<span class="paragraph">add a gold label to the model</span>
+						<span class="greyhead2right">PARAMETERS</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="greyhead2right">SAMPLE REQUEST</span>
+						<span class="paragraph">http://23.21.128.180:8080/GetAnotherLabel/rest/notjson/loadGoldLabel</span>
+						<span class="paragraph">objectName2</span>
+						<span class="paragraph">name1</span>
+						<span class="paragraph">2</span>
+						<span class="greyhead2right">SAMPLE RESPONSE</span>
+						<span class="paragraph">POST http://23.21.128.180:8080/GetAnotherLabel/rest/loadGoldLabel returned a response status of 200 OK</span>
+					</p>
+				</div>
+				<div class="textright">
+					<span class="greyhead0right">POST </span><a id="more_loadGoldLabels_notjson" href="" onclick="return false;">loadGoldLabels?objectName={objectName1,objectName2..objectNameN}&correctCategory={correctCategory1,correctCategory2..correctCategoryN}&id={id}</a>
+					<p id="more_loadGoldLabels_notjson" style="display: none;">
+						<span class="greyhead2right">DESCRIPTION</span>
+						<span class="paragraph">add gold labels to the model</span>
+						<span class="greyhead2right">PARAMETERS</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="paragraph">[any sequence of characters]</span>
+						<span class="greyhead2right">SAMPLE REQUEST</span>
+						<span class="paragraph">http://23.21.128.180:8080/GetAnotherLabel/rest/notjson/loadGoldLabels</span>
+						<span class="paragraph">objectName2, on3</span>
+						<span class="paragraph">name1,name2</span>
+						<span class="paragraph">2</span>
+						<span class="greyhead2right">SAMPLE RESPONSE</span>
+						<span class="paragraph">POST http://23.21.128.180:8080/GetAnotherLabel/rest/loadGoldLabels returned a response status of 200 OK</span>
+					</p>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -615,7 +731,24 @@
 			$("a#more_getDawidSkene").click(function () {
 			  $("p#more_getDawidSkene").fadeToggle("slow", function () {});
 			});
-			
+			$("a#more_loadCategories_notjson").click(function () {
+				  $("p#more_loadCategories_notjson").fadeToggle("slow", function () {});
+			});
+			$("a#more_loadCosts_notjson").click(function () {
+				  $("p#more_loadCosts_notjson").fadeToggle("slow", function () {});
+			});
+			$("a#more_loadGoldLabel_notjson").click(function () {
+				  $("p#more_loadGoldLabel_notjson").fadeToggle("slow", function () {});
+			});
+			$("a#more_loadGoldLabels_notjson").click(function () {
+				  $("p#more_loadGoldLabels_notjson").fadeToggle("slow", function () {});
+			});
+			$("a#more_loadWorkerAssignedLabel_notjson").click(function () {
+				  $("p#more_loadWorkerAssignedLabel_notjson").fadeToggle("slow", function () {});
+			});
+			$("a#more_loadWorkerAssignedLabels_notjson").click(function () {
+				  $("p#more_loadWorkerAssignedLabels_notjson").fadeToggle("slow", function () {});
+			});
 		</script>
 	</body>
 </html>
