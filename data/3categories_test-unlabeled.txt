@@ -1,0 +1,12 @@
+worker1	url1	notporn
+worker1	url2	softporn
+worker1	url3	hardporn
+worker2	url1	notporn
+worker2	url2	softporn
+worker2	url3	notporn
+worker3	url1	notporn
+worker3	url2	hardporn
+worker3	url3	notporn
+worker4	url1	hardporn
+worker4	url2	hardporn
+worker4	url3	notporn

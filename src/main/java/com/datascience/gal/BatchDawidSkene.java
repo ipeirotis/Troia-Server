@@ -167,11 +167,11 @@ public class BatchDawidSkene extends AbstractDawidSkene {
                 w.addError(source, destination, error);
             }
         }
-        System.out.println("before: "
-                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
+//        System.out.println("before: "
+//                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
         w.normalize(ConfusionMatrixNormalizationType.UNIFORM);
-        System.out.println("after: "
-                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
+////        System.out.println("after: "
+//                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
 
     }
 
