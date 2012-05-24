@@ -206,7 +206,7 @@ public class ComputerHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	private static Set<CorrectLabel> getGoldLabels(final String golds) throws Exception {
+	public static Set<CorrectLabel> getGoldLabels(final String golds) throws Exception {
 		final String errorMsg = "wrong correct label (gold) set";
 		Set<CorrectLabel> goldLabels = new HashSet<CorrectLabel>();
 		String[] rawRows = golds.split("\n");
@@ -229,7 +229,7 @@ public class ComputerHelper {
 	 * @return
 	 * @throws Exception 
 	 */
-	private static Set<MisclassificationCost> getCosts(final String costs) throws Exception {
+	public static Set<MisclassificationCost> getCosts(final String costs) throws Exception {
 		final String errorMsg = "wrong cost set";
 		Set<MisclassificationCost> costSet = new HashSet<MisclassificationCost>();
 		String[] rawRows = costs.split("\n");
@@ -253,7 +253,7 @@ public class ComputerHelper {
      * @param verbose
      * @param ds
      */
-	private static StringBuffer saveWorkerQuality(final boolean verbose, final DawidSkene ds) {
+	public static StringBuffer saveWorkerQuality(final boolean verbose, final DawidSkene ds) {
 		StringBuffer ret = new StringBuffer("");
         // Save the estimated quality characteristics for each worker
         ret.append("\nEstimating worker quality");
@@ -276,7 +276,7 @@ public class ComputerHelper {
      * @param verbose
      * @param ds
      */
-    private static StringBuffer saveObjectResults(final boolean verbose, final DawidSkene ds) {
+    public static StringBuffer saveObjectResults(final boolean verbose, final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the probability that an object belongs to each class
         String objectProbs = ds.printObjectClassProbabilities(0.0);
@@ -291,7 +291,7 @@ public class ComputerHelper {
      * @param verbose
      * @param ds
      */
-    private static StringBuffer saveCategoryPriors(final boolean verbose, final DawidSkene ds) {
+    public static StringBuffer saveCategoryPriors(final boolean verbose, final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the probability that an object belongs to each class
         String priors = ds.printPriors();
@@ -307,7 +307,7 @@ public class ComputerHelper {
      * @param ds
      * @return
      */
-    private static StringBuffer saveDawidSkeneVote(final boolean verbose,
+    public static StringBuffer saveDawidSkeneVote(final boolean verbose,
            final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the vote after the D&S estimation
@@ -327,7 +327,7 @@ public class ComputerHelper {
      * @param posterior_voting
      * @return
      */
-    private static StringBuffer saveDifferences(final boolean verbose, final DawidSkene ds,
+    public static StringBuffer saveDifferences(final boolean verbose, final DawidSkene ds,
             final Map<String, String> prior_voting,
             final Map<String, String> posterior_voting) {
     	StringBuffer ret = new StringBuffer("");
@@ -345,7 +345,7 @@ public class ComputerHelper {
      * @param ds
      * @return
      */
-    private static StringBuffer saveMajorityVote(final boolean verbose,
+    public static StringBuffer saveMajorityVote(final boolean verbose,
             final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the majority vote before the D&S estimation

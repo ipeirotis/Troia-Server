@@ -1,8 +1,7 @@
 package com.datascience.gal.generator;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.datascience.gal.AssignedLabel;
@@ -12,128 +11,98 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.Worker;
+import com.datascience.gal.service.ComputerHelper;
 
 /**
  * @author Michael Arshynov
  *
  */
-public class TestDatum {
-	public static final double DELTA_DOUBLE = 0.01;
-	
-	private Set<Category> categorySet = null;
-	private List<Worker> workerList = null;
-	private Set<CorrectLabel> correctLabelSet = null;
-	private Set<AssignedLabel> assignedLabelSet = null;
-	private Set<MisclassificationCost> costSet = null;
+public class TestDatum extends TestDatumSuper {
+
+	public TestDatum() {
+		super();
+	}
+
 	private DawidSkene ds = null;
-	private int iterationsInt = 1;
+	private int iterationsInt = 10;
 	
-	/**
-	 * @param categoryName
-	 * @param probability
-	 */
-	public void addCategory(String categoryName, double probability) {
-		if (categorySet==null) categorySet = new HashSet<Category>();
-		Category category = new Category(categoryName);
-//		category.setCost(to, cost)
-		category.setPrior(probability);
-		categorySet.add(category);
-	}
-	
-	/**
-	 * @return
-	 */
-	public boolean validateCategorySet() {
-		double bit = 1.0;
-		for (Category category: categorySet) {
-			bit-=category.getPrior();
-		}
-		return (DELTA_DOUBLE>bit && bit>=0);
-	}
-	
-	/**
-	 * 
-	 */
-	public void setUsualCosts() {
-		for (Category category: categorySet) {
-			String categoryToCompareWithName = category.getName();
-			for (Category otherCategory: categorySet) {
-				double cost = 1.0;
-				if (categoryToCompareWithName.equals(otherCategory.getName())) cost = 0.0;
-				otherCategory.setCost(categoryToCompareWithName, cost);
-			}
-		}
-	}
-	
-	/**
-	 * @param string
-	 */
-	private void addWorker(String name) {
-		if (workerList == null) workerList = new ArrayList<Worker>();
-		Worker worker = new Worker(name, categorySet);
-		workerList.add(worker);
-	}
-	
-	
-	/**
-	 * @param labelName
-	 * @param categoryName
-	 */
-	public void addCorrectLabel(String labelName, String categoryName) {
-		 if (correctLabelSet==null) correctLabelSet = new HashSet<CorrectLabel>();
-		 CorrectLabel correctLabel = new CorrectLabel(labelName, categoryName);
-		 correctLabelSet.add(correctLabel);
-	}
-	
-	/**
-	 * @param workerName
-	 * @param objectName
-	 * @param categoryName
-	 */
-	public void addAssignedLabel(String workerName, String objectName, String categoryName) {
-		if (assignedLabelSet == null) assignedLabelSet = new HashSet<AssignedLabel>();
-		AssignedLabel assignedLabel = new AssignedLabel(workerName, objectName, categoryName);
-		assignedLabelSet.add(assignedLabel);
-	}
-	
-	/**
-	 * @param from
-	 * @param to
-	 * @param cost
-	 */
-	public void addCost(String from, String to, double value) {
-		if (costSet == null) costSet = new HashSet<MisclassificationCost>();
-		MisclassificationCost cost = new MisclassificationCost(from, to, value);
-		costSet.add(cost);
-	}
-	
-	public void compute() {
+
+	public StringBuffer compute() {
+		final String HEADER = new String("\n\n\n==============================Output=========================<<<<<<<<<<<<");
+		final String FOOTER = new String("\n>>>>>>>>>>>>===================Output====================================");
 		if (ds == null)
 		ds = new BatchDawidSkene("", categorySet);
+		boolean verbose = true;
 		ds.addAssignedLabels(assignedLabelSet);
 		ds.addCorrectLabels(correctLabelSet);
 		ds.addMisclassificationCosts(costSet);
 
-		boolean detailed = false;
-		
-		String majority = ds.printVote();
-		System.out.println(majority);
         for (int i = 0; i < iterationsInt; i++) {
-            // ds.estimate(iterations);
             ds.estimate(1);
         }
-		
-		String summary_report = ds.printAllWorkerScores(detailed);
-		System.err.println(summary_report);
         
-//        for (Worker w:ds.getWorkerCost(w, method)) 
-//        System.out.println(ds.printWorkerScore(w, detailed));
+		Map<String, String> prior_voting = ds.getMajorityVote();
+		outMajorityVote = ComputerHelper.saveMajorityVote(verbose, ds);
+		outWorkerQuality = ComputerHelper.saveWorkerQuality(verbose, ds);
+		outObjectResults = ComputerHelper.saveObjectResults(verbose, ds);
+		outCategoryPriors = ComputerHelper.saveCategoryPriors(verbose, ds);
+		outDawidSkeneVote = ComputerHelper.saveDawidSkeneVote(verbose, ds);
+	  
+		Map<String, String> posterior_voting = ds.getMajorityVote();
+		outDifferences = ComputerHelper.saveDifferences(verbose, ds, prior_voting, posterior_voting);
+		
+		return new StringBuffer(HEADER)
+				.append(outMajorityVote)
+				.append(outWorkerQuality)
+				.append(outObjectResults)
+				.append(outCategoryPriors)
+				.append(outDawidSkeneVote)
+				.append(FOOTER);
 	}
-	/**
-	 * 
-	 */
-	public void construct() {
 
+	/**
+	 * @param input
+	 */
+	public void construct(InputConditionsForTest input) {
+		iterationsInt = input.getIterationsInt();
+		
+		//Categories Setup
+		for (String categoryName: input.getCategoryMap().keySet()) {
+			addCategory(categoryName, input.getCategoryMap().get(categoryName));
+		}
+		
+		validateCategorySet();
+		setUsualCosts();
+		
+		//Workers Setup 
+		for (String workerName:input.getWorkerMap().keySet()) {
+			addWorker(workerName, input.getWorkerMap().get(workerName));
+		}
+		
+		//Correct Answers Setup
+		for (String goldName:input.getGoldMap().keySet()) {
+			addCorrectLabel(goldName, input.getGoldMap().get(goldName));
+		}
+		
+		//Answers Setup
+		for (String workerName: input.getAnswerMap().keySet()) {
+			Map<String, String> answers = input.getAnswerMap().get(workerName);
+			for (String objectName: answers.keySet()) {
+				addAssignedLabel(workerName, objectName, answers.get(objectName));
+			}
+		}
+		//Costs Setup
+		Set<String> categories = input.getCategoryMap().keySet();
+		Set<String> categoriesClone = new HashSet<String>(categories);
+		for (String row:categories) {
+			for (String column:categoriesClone) {
+				double cost = 1.0;
+				if (row.equals(column)) cost = 0.0;
+				addCost(row, column, cost);
+			}
+		}
+		
+/*
 		iterationsInt = 10;
 		
 		addCategory("notporn", 0.1);
@@ -141,12 +110,14 @@ public class TestDatum {
 		addCategory("hardporn", 0.5);
 		
 		validateCategorySet();
-//		setUsualCosts();
+		setUsualCosts();
 		
-		addWorker("worker1");
-		addWorker("worker2");
-		addWorker("worker3");
-		addWorker("worker4");
+		Double[][] confusionMatrix = new Double[][]{{0.7,0.2,0.1},{0.4, 0.5,0.1},{0.3,0.3,0.4}};
+		
+		addWorker("worker1", confusionMatrix);
+		addWorker("worker2", confusionMatrix);
+		addWorker("worker3", confusionMatrix);
+		addWorker("worker4", confusionMatrix);
 		
 		addCorrectLabel("url1", "notporn");
 		addCorrectLabel("url2", "softporn");
@@ -178,7 +149,24 @@ public class TestDatum {
 		
 		addCost("notporn", "hardporn", 1);
 		addCost("softporn", "hardporn", 1);
-		addCost("hardporn", "hardporn", 0.0);
+		addCost("hardporn", "hardporn", 0.0); 
+		
+		*/
+//		
+//		for (Category o:categorySet) {
+//			System.err.println(o);
+//		}
+//		for (Worker o:workerList) {
+//			System.err.println(o);
+//		}
+//		for (CorrectLabel o:correctLabelSet) {
+//			System.err.println(o);
+//		}
+//		for (AssignedLabel o:assignedLabelSet) {
+//			System.err.println(o);
+//		}
+
+
 		
 	}
 	/**
@@ -186,15 +174,8 @@ public class TestDatum {
 	 */
 	public static void main(String[] args) {
 		TestDatum testCase = new TestDatum();
-		testCase.construct();
-		testCase.compute();
-		
-//		ON SCREEN 
-//		Worker	Error Rate	Quality (Expected)	Quality (Optimized)	Number of Annotations	Gold Tests
-//		worker1	0.0%	100%	100%	3	3
-//		worker2	25.0%	---	---	3	3
-//		worker3	45.0%	---	---	3	3
-//		worker4	50.0%	100%	100%	3	3
+		testCase.construct(null);
+		System.out.println(testCase.compute());
 	}
 
 }
