@@ -3,6 +3,8 @@ package com.datascience.gal.generator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * @author Michael Arshynov
@@ -125,7 +127,7 @@ public class InputConditionsForTest {
 		ret.append("\n-----------------------------WORKERS------------------------------------");
 //		ret.append("\n"+workerMap.toString());
 		for (String workerName:workerMap.keySet()) {
-			ret.append("\n"+workerName.toString()+" ConfusionMatrix: \n" + CVGen.print(workerMap.get(workerName)));
+			ret.append("\n"+workerName.toString()+" ConfusionMatrix: \n" + Gen.print(workerMap.get(workerName)));
 		}
 		ret.append("\n");
 		
@@ -148,5 +150,86 @@ public class InputConditionsForTest {
 		
 		ret.append("\n>>>>>>>>>>>>===================Input====================================");
 		return ret.toString();
+	}
+
+	/**
+	 * @param w - array of Workers
+	 * @param o - array of Objects
+	 * @param c - array of Categories
+	 * @param answerMatrix
+	 * @return
+	 */
+	public InputConditionsForTest addAnswers(String[] w, String[] o,
+			String[] c, int[][] answerMatrix) {
+		for (int i=1; i< w.length; i++) {
+			for (int j=0; j<o.length; j++) {
+				addAnswers(w[i], o[j], c[answerMatrix[i][j]]);
+			}
+		}
+		//the first employee gives right answers for all questions
+		for(String obj: goldMap.keySet()) {
+			addAnswers(w[0], obj, goldMap.get(obj));
+		}
+		//the last one employee gives wrong answers for all questions
+		for(String obj: goldMap.keySet()) {
+			addAnswers(w[w.length-1], obj, wrongAnswer(obj));
+		}
+		return this;
+	}
+	
+	/**  
+	 * @param objectName
+	 * @return Wrong Category for the given Object
+	 */
+	private String wrongAnswer(String objectName) {
+		String rightAnswer = goldMap.get(objectName);
+		Set<String> categorySet = categoryMap.keySet();
+		Random rand = new Random();
+		int i=0;
+		int tries = 10;
+		String wrongAnswer = new String(rightAnswer);
+		do {
+			i = rand.nextInt(categorySet.size());
+			wrongAnswer = (String) (categorySet.toArray())[i];
+		} while (wrongAnswer.equals(rightAnswer) && tries-->0);
+		return wrongAnswer;
+	}
+
+	/** Fills Gold List 
+	 * @param o
+	 * @param c
+	 * @return
+	 */
+	public InputConditionsForTest addGolds(String[] o, String[] c) {
+		int countOfReferencesOfTheCategoryArr[] = new int[c.length];
+		int left = o.length;
+		int i = 0;
+		for (String category: categoryMap.keySet()) {
+			int currentCount = Math.max(1, (int)(o.length*categoryMap.get(category)));
+			countOfReferencesOfTheCategoryArr[i++] = currentCount;
+			left-=currentCount;
+		}
+		countOfReferencesOfTheCategoryArr[c.length-1]+=left;
+		int t = 0;
+		for (int j=0; j<countOfReferencesOfTheCategoryArr.length; j++) {
+//			System.out.println("["+j+"]"+countOfReferencesOfTheCategoryArr[j]);
+			for (int k=0; k<countOfReferencesOfTheCategoryArr[j]; k++) {
+				addGold(o[t++], c[j]);	
+			}
+			
+		}
+		return this;
+	}
+
+	/**
+	 * @param w
+	 * @param length
+	 * @return
+	 */
+	public InputConditionsForTest addWorkers(String[] w, int length) {
+		for (String workerName:w) {
+			addWorker(workerName, Gen.generateCM(length));
+		}
+		return this;
 	}
 }

@@ -5,6 +5,6 @@ package com.datascience.gal.generator;
  * @author Michael Arshynov
  *
  */
-public class CVGen extends RawConfusionMatrixGenerator {
+public class Gen extends RawConfusionMatrixGenerator {
 
 }
