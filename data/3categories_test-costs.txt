@@ -1,0 +1,9 @@
+notporn	notporn	0
+softporn	softporn	0
+hardporn	hardporn	0
+notporn	softporn	1
+notporn	hardporn	1
+softporn	notporn	1
+softporn	hardporn	1
+hardporn	notporn	1
+hardporn	softporn	1

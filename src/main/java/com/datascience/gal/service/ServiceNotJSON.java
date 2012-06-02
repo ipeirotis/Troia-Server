@@ -101,7 +101,7 @@ public class ServiceNotJSON {
      * @param names
      * @return
      */
-    private boolean validateNotEmptyArray(String names) {
+    private synchronized boolean validateNotEmptyArray(String names) {
     	boolean isValid = false;
     	if (names!=null && names.length()>0 ) {
     		String[] namesArray = names.split(",");
@@ -116,7 +116,7 @@ public class ServiceNotJSON {
      * @param names
      * @return
      */
-    private Set<Category> loadCategoriesAux(String names) {
+    private synchronized Set<Category> loadCategoriesAux(String names) {
     	String[] namesArray = names.split(",");
     	Set<Category> set = new HashSet<Category>();
 		for (int i=0; i<namesArray.length; i++) {
@@ -126,7 +126,7 @@ public class ServiceNotJSON {
 		return set;
 	}
     
-    private Set<MisclassificationCost> loadCostsAux(final String from, final String to, final String cost) throws Exception {
+    private synchronized Set<MisclassificationCost> loadCostsAux(final String from, final String to, final String cost) throws Exception {
     	String[] fromArray = from.split(",");
     	String[] toArray = to.split(",");
     	String[] costArray = cost.split(",");
@@ -144,7 +144,7 @@ public class ServiceNotJSON {
      * @param methodName
      * @return
      */
-    private String post(Map<String, String> map, String methodName) {
+    private synchronized String post(Map<String, String> map, String methodName) {
     	String ret = new String("ok");
 		ClientConfig config = new DefaultClientConfig();
 		com.sun.jersey.api.client.Client client = com.sun.jersey.api.client.Client.create(config);
@@ -170,7 +170,7 @@ public class ServiceNotJSON {
      * @param methodName
      * @return
      */
-    private String get(Map<String,String> map, String methodName) {
+    private synchronized String get(Map<String,String> map, String methodName) {
     	String ret = new String("ok");
 		ClientConfig config = new DefaultClientConfig();
 		com.sun.jersey.api.client.Client client = com.sun.jersey.api.client.Client.create(config);

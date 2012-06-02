@@ -103,7 +103,7 @@ public class Computer {
      * @param fileDetail
      * @return
      */
-    private String leftTheSameOrimportFromFile(String currentContent, InputStream uploadedInputStream, FormDataContentDisposition fileDetail) {
+    private synchronized String leftTheSameOrimportFromFile(String currentContent, InputStream uploadedInputStream, FormDataContentDisposition fileDetail) {
     	String result = new String("file is too large to upload");
     	if (currentContent!=null && currentContent.trim().length()>0) {
     		return currentContent;

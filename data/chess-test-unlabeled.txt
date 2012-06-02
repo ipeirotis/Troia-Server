@@ -1,6 +1,0 @@
-master	party1	victory
-master	party2	loss
-newbie	party1	loss
-newbie	party2	victory
-candidate	party1	victory
-candidate	party2	victory
