@@ -1,0 +1,3 @@
+url1	notporn
+url2	softporn
+url3	hardporn

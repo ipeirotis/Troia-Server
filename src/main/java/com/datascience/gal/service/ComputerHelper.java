@@ -3,6 +3,7 @@
  */
 package com.datascience.gal.service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,20 @@ public class ComputerHelper {
 	private static boolean isEmpty(String arg) {
 		return (arg==null || arg.isEmpty());
 	}
-	
+
+	/*
+	 * TODO: FIX #18 there is problem with
+	 * java.util.ConcurrentModificationException - it is thrown form time to
+	 * time - some synchronization mechanism is not working correctly or you try
+	 * to modify some collection (hashmap in this case) when iterating over it
+	 * This can be noticed when DSaS is on heavy load.
+	 * 
+	 * 1) make methods 'synchronized ' 
+	 * 2) make collections Wrapped, ie: 
+	 * List syncList = Collections.synchronizedList(new ArrayList()); 
+	 * Set syncSet = Collections.synchronizedSet(new HashSet());
+	 */
+
 	private static Set<Category> categorySet = null;
 	private static Set<AssignedLabel> assignedLabelSet = null;
 	private static Set<CorrectLabel> correctLabelSet = null;
@@ -53,7 +67,7 @@ public class ComputerHelper {
 	/**
 	 * 
 	 */
-	private static StringBuffer calculateAndPrint() {
+	private static synchronized StringBuffer calculateAndPrint() {
 		StringBuffer ret = new StringBuffer("");
 		boolean verbose = true;
 		DawidSkene ds = new BatchDawidSkene(0 + "", categorySet);
@@ -97,7 +111,7 @@ public class ComputerHelper {
 	 * @param iterations
 	 * @return
 	 */
-	public static String validate(String categories, String unlabeled, String gold, String costs, String iterations)  {
+	public static synchronized String validate(String categories, String unlabeled, String gold, String costs, String iterations)  {
 		StringBuilder result = new StringBuilder("");
 		if (isEmpty(categories)) {
 			String name = "categories";
@@ -155,9 +169,9 @@ public class ComputerHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	private static Set<Category> getCategories(final String categories) throws Exception {
+	private static synchronized Set<Category> getCategories(final String categories) throws Exception {
 		final String errorMsg = "wrong category set";
-		Set<Category> categorySet = new HashSet<Category>();
+		Set<Category> categorySet = Collections.synchronizedSet(new HashSet<Category>());
 		String[] rawRows = categories.split("\n");
 		if (rawRows==null || rawRows.length<1) throw new Exception(errorMsg);
 		for (String row: rawRows) {
@@ -182,9 +196,9 @@ public class ComputerHelper {
 	 * @return
 	 * @throws Exception 
 	 */
-	private static Set<AssignedLabel> getUnlabeled(final String unlabeled) throws Exception {
+	private static synchronized Set<AssignedLabel> getUnlabeled(final String unlabeled) throws Exception {
 		final String errorMsg = "wrong assigned label (unlabeled) set";
-		Set<AssignedLabel> assignedLabelSet = new HashSet<AssignedLabel>();
+		Set<AssignedLabel> assignedLabelSet = Collections.synchronizedSet(new HashSet<AssignedLabel>());
 		String[] rawRows = unlabeled.split("\n");
 		if (rawRows==null || rawRows.length<1) throw new Exception(errorMsg);
 		for (String row: rawRows) {
@@ -206,9 +220,9 @@ public class ComputerHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	private static Set<CorrectLabel> getGoldLabels(final String golds) throws Exception {
+	public static synchronized Set<CorrectLabel> getGoldLabels(final String golds) throws Exception {
 		final String errorMsg = "wrong correct label (gold) set";
-		Set<CorrectLabel> goldLabels = new HashSet<CorrectLabel>();
+		Set<CorrectLabel> goldLabels = Collections.synchronizedSet(new HashSet<CorrectLabel>());
 		String[] rawRows = golds.split("\n");
 		if (rawRows==null || rawRows.length<1) throw new Exception(errorMsg);
 		for (String row: rawRows) {
@@ -229,9 +243,9 @@ public class ComputerHelper {
 	 * @return
 	 * @throws Exception 
 	 */
-	private static Set<MisclassificationCost> getCosts(final String costs) throws Exception {
+	public static synchronized Set<MisclassificationCost> getCosts(final String costs) throws Exception {
 		final String errorMsg = "wrong cost set";
-		Set<MisclassificationCost> costSet = new HashSet<MisclassificationCost>();
+		Set<MisclassificationCost> costSet = Collections.synchronizedSet(new HashSet<MisclassificationCost>());
 		String[] rawRows = costs.split("\n");
 		if (rawRows==null || rawRows.length<1) throw new Exception(errorMsg);
 		for (String row: rawRows) {
@@ -253,7 +267,7 @@ public class ComputerHelper {
      * @param verbose
      * @param ds
      */
-	private static StringBuffer saveWorkerQuality(final boolean verbose, final DawidSkene ds) {
+	public static synchronized StringBuffer saveWorkerQuality(final boolean verbose, final DawidSkene ds) {
 		StringBuffer ret = new StringBuffer("");
         // Save the estimated quality characteristics for each worker
         ret.append("\nEstimating worker quality");
@@ -276,7 +290,7 @@ public class ComputerHelper {
      * @param verbose
      * @param ds
      */
-    private static StringBuffer saveObjectResults(final boolean verbose, final DawidSkene ds) {
+    public static synchronized StringBuffer saveObjectResults(final boolean verbose, final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the probability that an object belongs to each class
         String objectProbs = ds.printObjectClassProbabilities(0.0);
@@ -291,7 +305,7 @@ public class ComputerHelper {
      * @param verbose
      * @param ds
      */
-    private static StringBuffer saveCategoryPriors(final boolean verbose, final DawidSkene ds) {
+    public static synchronized StringBuffer saveCategoryPriors(final boolean verbose, final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the probability that an object belongs to each class
         String priors = ds.printPriors();
@@ -307,7 +321,7 @@ public class ComputerHelper {
      * @param ds
      * @return
      */
-    private static StringBuffer saveDawidSkeneVote(final boolean verbose,
+    public static synchronized StringBuffer saveDawidSkeneVote(final boolean verbose,
            final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the vote after the D&S estimation
@@ -327,7 +341,7 @@ public class ComputerHelper {
      * @param posterior_voting
      * @return
      */
-    private static StringBuffer saveDifferences(final boolean verbose, final DawidSkene ds,
+    public static synchronized StringBuffer saveDifferences(final boolean verbose, final DawidSkene ds,
             final Map<String, String> prior_voting,
             final Map<String, String> posterior_voting) {
     	StringBuffer ret = new StringBuffer("");
@@ -345,7 +359,7 @@ public class ComputerHelper {
      * @param ds
      * @return
      */
-    private static StringBuffer saveMajorityVote(final boolean verbose,
+    public static synchronized StringBuffer saveMajorityVote(final boolean verbose,
             final DawidSkene ds) {
     	StringBuffer ret = new StringBuffer("");
         // Save the majority vote before the D&S estimation
@@ -362,7 +376,7 @@ public class ComputerHelper {
      * @param word
      * @return
      */
-    private static String normalizeWord(final String word) {
+    private static synchronized String normalizeWord(final String word) {
     	String normalized = word.replace("\r", "");
     	normalized = normalized.replace("\t", "");
     	normalized = normalized.replace("\\r", "");

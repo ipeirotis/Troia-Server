@@ -140,7 +140,7 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
                 setErrorRate(from, to, error_rate);
             }
             rowDenominator.put(from, 1.);
-            System.out.println(from + " " + rowDenominator.get(from));
+//            System.out.println(from + " " + rowDenominator.get(from));
         }
     }
 

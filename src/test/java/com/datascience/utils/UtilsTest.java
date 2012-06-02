@@ -73,7 +73,7 @@ public class UtilsTest {
 		String data = "test\nrow2\nLast row.";
 		String property = "java.io.tmpdir";
 		String fname = new String("dfgdfsgdfshfr.txt");
-		String fullpath = System.getProperty(property)+"\\"+fname;
+		String fullpath = System.getProperty(property)+File.separatorChar+fname;
 		File toCheck = new File(fullpath);
 		if (toCheck.exists()) toCheck.delete();
         BufferedWriter bw;
@@ -100,7 +100,7 @@ public class UtilsTest {
 	public final void testWriteFile() {
 		String property = "java.io.tmpdir";
 		String fname = new String("dfgdfsgdfshfr.txt");
-		String fullpath = System.getProperty(property)+"\\"+fname;
+		String fullpath = System.getProperty(property)+File.separatorChar+fname;
 		String in = "something1\nsecond line\n\t3rd line\n\nlast line.";
 		System.out.println("In=["+in+"]");
 		Utils.writeFile(in, fullpath);
