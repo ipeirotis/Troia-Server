@@ -76,7 +76,7 @@ public class DawidSkeneCache {
         if (disProps.containsKey("cacheSize"))
             cachesize = Integer.parseInt(disProps.getProperty("cacheSize"));
 
-        logger.info("done loading props: " + disProps.toString());
+//        logger.info("done loading props: " + disProps.toString());
 
         logger.info("attempting to connect to " + URL);
         Properties props = new Properties();
