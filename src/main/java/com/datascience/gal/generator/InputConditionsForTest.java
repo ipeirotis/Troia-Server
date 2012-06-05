@@ -113,13 +113,9 @@ public class InputConditionsForTest {
 
 	@Override
 	public String toString() {
-//		private Map<String, Double> categoryMap = null;
-//		private Map<String, Double[][]> workerMap = null;
-//		private Map<String, String> goldMap = null;
-//		private Map<String, Map<String, String>> answerMap = null;
 		StringBuilder ret = new StringBuilder();
 		ret.append("\n==============================Input=========================<<<<<<<<<<<<");
-		
+		ret.append("\nIterations: "+iterationsInt);
 		ret.append("\n--------------------CATEGORIES WITH PROBABILITIES-----------------------");
 		ret.append("\n"+categoryMap.toString());
 		ret.append("\n");

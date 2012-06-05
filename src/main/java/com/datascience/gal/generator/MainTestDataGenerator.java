@@ -1,7 +1,14 @@
 package com.datascience.gal.generator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.Date;
 
+/**
+ * @author Michael Arshynov
+ *
+ */
 public class MainTestDataGenerator {
 //	private String c[] = {"notporn", "softporn", "hardporn"};
 	private String c[] = null; //{"sport", "business", "private life", "family events", "charity"};
@@ -26,22 +33,32 @@ public class MainTestDataGenerator {
 
 	/**
 	 * @param args
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		final int COUNT_OF_THE_WORKERS = 10;
-		final int COUNT_OF_THE_LABELS = 200;
-		final int COUNT_OF_THE_CATEGORIES  = 5;
+		final int COUNT_OF_THE_LABELS = 20;
+		final int COUNT_OF_THE_CATEGORIES = 5;
 		
-		MainTestDataGenerator testDataGen = new MainTestDataGenerator(COUNT_OF_THE_WORKERS,
-				COUNT_OF_THE_LABELS, COUNT_OF_THE_CATEGORIES);
-//		testDataGen.setCategories( new String[]{"notporn", "softporn", "hardporn"})
-//		.setCategoriesProbs( new double[]{ 0.14, 0.29, 0.57})
-		testDataGen.setCategories(new String[] {"sport", "business", "private life", "family events", "charity"})
-		.setCategoriesProbs( new double[]{ 0.2, 0.2, 0.2, 0.2, 0.2})		
-		;
+		File file  = new File("MainTestDataGenerator.log");
+		PrintStream printStream = new PrintStream(file);
+		System.setOut(printStream);
 		
-		testDataGen
-		.compute();
+		MainTestDataGenerator testDataGen = new MainTestDataGenerator(
+				COUNT_OF_THE_WORKERS, COUNT_OF_THE_LABELS,
+				COUNT_OF_THE_CATEGORIES);
+		// testDataGen.setCategories( new String[]{"notporn", "softporn",
+		// "hardporn"})
+		// .setCategoriesProbs( new double[]{ 0.14, 0.29, 0.57})
+		testDataGen.setCategories(
+				new String[] { "sport", "business", "private life",
+						"family events", "charity" }).setCategoriesProbs(
+				new double[] { 0.2, 0.2, 0.2, 0.2, 0.2 });
+		
+		for (int iteration=0; iteration<40; iteration++) {
+			testDataGen.setIteration(iteration);
+			testDataGen.compute();
+		}
 	}
 
 	/**
@@ -129,11 +146,7 @@ public class MainTestDataGenerator {
 		
 		TestDatum test = new TestDatum();
 		test.construct(input);
-//		System.out.println(input);
-//		System.out.println(
-				String out = test.compute().toString()
-//				)
-				;
+		String out = test.compute().toString();
 				
 		long endDate = new Date().getTime();		
 				System.out.println(input);
