@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.FormParam;
@@ -77,7 +79,61 @@ public class Service {
         logger.info(cargo);
         return Response.ok(JSONUtils.gson.toJson(cargo)).build();
     }
-
+    
+    /**
+     * a simple method to see if the service is awake and access to the DB has been reached 
+     * 
+     * @return a string with the current time
+     */
+    @GET
+    @Path("pingDB")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response testDB() {
+    	final String nl = "<p> </p>";
+    	final String methodSign = "com.datascience.gal.service.Service:testDB ";
+    	DateTime datetime = new DateTime();
+    	String cargo = "processing request at: " + datetime.toString();
+    	StringBuffer cargoSB = new StringBuffer(cargo);
+    	
+    	final String id = "1234512345";
+    	Set<Category> categories = new HashSet<Category>();
+    	categories.add(new Category("mock"));
+    	DawidSkene ds = new BatchDawidSkene(id, categories);
+    	cargoSB.append(nl);
+    	try {
+			setup(context);
+		} catch (IOException e) {
+			Response.ok("I/O Error happened,"+e);
+			logger.error(methodSign, e);
+		} catch (ClassNotFoundException e) {
+			Response.ok("Deploy/Build Error happened,"+e);
+			logger.error(methodSign, e);
+		} catch (SQLException e) {
+			Response.ok("DB Access Error happened,"+e);
+			logger.error(methodSign, e);
+		}
+    	DawidSkene dsInserted = dscache.insertDawidSkene(ds);
+    	DawidSkene dsRetrieved = dscache.getDawidSkene(id);
+    	if (dsInserted != null && dsRetrieved != null) {
+    		String msg = "DawidSkene object with id="+id+" has been inserted to the DB...";
+    		logger.info(methodSign+msg);
+    		cargoSB.append(msg+nl);
+    		dscache.deleteDawidSkene(id);
+    		msg = "DawidSkene object with id="+id+" has been removed from the DB...";
+    		dsRetrieved = dscache.getDawidSkene(id);
+    		if (dsRetrieved == null) 
+    			msg+="successfully";
+    		else msg+="unsuccessfully";
+    		logger.info(methodSign+msg);
+    		cargoSB.append(msg+nl);
+    	} else {
+    		String msg = "DawidSkene object with id="+id+" has NOT been inserted to the DB... Error";
+    		logger.info(methodSign+msg);
+    		cargoSB.append(msg+nl);
+    	}
+    	logger.info(methodSign+methodSign);
+    	return Response.ok(cargoSB.toString(),MediaType.TEXT_HTML).build();
+    }
     /**
      * resets the ds model
      * 
