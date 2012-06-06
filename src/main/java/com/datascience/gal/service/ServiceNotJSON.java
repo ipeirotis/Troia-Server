@@ -32,6 +32,7 @@ import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
+import com.datascience.utils.Utils;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -78,9 +79,21 @@ public class ServiceNotJSON {
     	//{"name":"name2","prior":0.0,"misclassification_cost":{"name1":1.0,"name2":0.0}}]
     	logger.info("ServiceNotJSON: loadCategories("+names+","+idstr+","+incremental+")");
     	Set<Category> categories = null;
+    	
     	boolean isValid = validateNotEmptyArray(names);
     	logger.info("ServiceNotJSON: loadCategories(..) isValid="+isValid);
     	if (isValid) {
+//    		if (incremental!=null && incremental.length()>0) {
+//    			try {
+//    				int inc = Integer.parseInt("");
+//    				if (inc>Utils.MAX_ITERATIONS) 
+//    					return Response.ok("Wrong parameters, incremental should not be greater than "+Utils.MAX_ITERATIONS).build();
+//    			} catch (NumberFormatException nfExc) {
+//    				logger.error("ServiceNotJSON: loadCategories(..), incremental is not a number", nfExc);
+//					return Response.ok("Wrong parameters, incremental should be a number").build();
+//    			}
+//    		}
+    		
     		categories = loadCategoriesAux(names);
     		logger.info("ServiceNotJSON: loadCategories(..) categories="+categories.toString());
     		String input = JSONUtils.gson.toJson(categories,JSONUtils.categorySetType);

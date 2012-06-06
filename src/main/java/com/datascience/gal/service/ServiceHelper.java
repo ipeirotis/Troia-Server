@@ -39,11 +39,13 @@ public class ServiceHelper {
     @Context
     ServletContext context;
     private static Logger logger = Logger.getLogger(ServiceHelper.class);
-
+    private static final String signatureOfTheClass = "ServiceHelper: ";
+    
     @GET
     @Path("composeDSForm")
     @Produces(MediaType.TEXT_HTML)
     public Viewable  composeDSForm() {
+    	logger.info(signatureOfTheClass+"composeDSForm: GET");
 		return new Viewable("/composeDSForm");
     }
     
@@ -57,6 +59,7 @@ public class ServiceHelper {
     		@FormDataParam("categoryJson") String categoryJsonParam,
     		@FormDataParam("categoriesJson") String categoriesJsonParam
     	) {
+    	logger.info(signatureOfTheClass+"composeDSForm: POST<<");
     	String categoryJson = new String("");
     	String categoriesJson = new String("");
     	if (categoryNameParam!=null && categoryNameParam.trim().length()>0) {
@@ -85,6 +88,7 @@ public class ServiceHelper {
     	map.put("categoryNames", categoryNamesParam);
     	map.put("categoriesJson", categoriesJson);
     	map.put("c_no_changes", "disabled='disabled'");
+    	logger.info(signatureOfTheClass+"composeDSForm: POST>>");
     	return Response.ok(new Viewable("/composeDSForm", map)).build();
     }
     		

@@ -8,12 +8,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
+import com.datascience.utils.Utils;
 
 /**
  * @author Michael Arshynov
@@ -21,6 +24,8 @@ import com.datascience.gal.MisclassificationCost;
  */
 public class ComputerHelper {
 
+	private static Logger logger = Logger.getLogger(Computer.class);
+	private static String signatureOfTheClass = "ComputerHelper: ";
 	/**
 	 * @param arg
 	 * @return
@@ -28,19 +33,6 @@ public class ComputerHelper {
 	private static boolean isEmpty(String arg) {
 		return (arg==null || arg.isEmpty());
 	}
-
-	/*
-	 * TODO: FIX #18 there is problem with
-	 * java.util.ConcurrentModificationException - it is thrown form time to
-	 * time - some synchronization mechanism is not working correctly or you try
-	 * to modify some collection (hashmap in this case) when iterating over it
-	 * This can be noticed when DSaS is on heavy load.
-	 * 
-	 * 1) make methods 'synchronized ' 
-	 * 2) make collections Wrapped, ie: 
-	 * List syncList = Collections.synchronizedList(new ArrayList()); 
-	 * Set syncSet = Collections.synchronizedSet(new HashSet());
-	 */
 
 	private static Set<Category> categorySet = null;
 	private static Set<AssignedLabel> assignedLabelSet = null;
@@ -57,10 +49,13 @@ public class ComputerHelper {
 	 * @see {@link com.datascience.gal.scripts.Main#main(String[])}
 	 */
 	public static synchronized String compute(String categories, String unlabeled, String gold, String costs, String iterations) {
+		final String signature = signatureOfTheClass+"compute(.5.): ";
+		logger.info(signature+"<<");
 		String result = validate(categories, unlabeled, gold, costs, iterations);
 		if (result.trim().length()==0) {
 			result = calculateAndPrint().toString();
 		}
+		logger.info(signature+">>");
 		return result;
 	}
 	
@@ -133,6 +128,10 @@ public class ComputerHelper {
 			String name = "iterations";
 			result.append("ERROR("+name+"): Empty field\n");
 		}
+		if (isNumberAndLessThan(iterations, Utils.MAX_ITERATIONS)) {
+			String name = "iterations";
+			result.append("ERROR("+name+"): Empty field\n");
+		}
 		if (result.length()>0) return result.toString();
 		
 		try {
@@ -164,6 +163,23 @@ public class ComputerHelper {
 		return result.toString();
 	}
 	
+
+	/**
+	 * @param numberStr
+	 * @param maxValue
+	 * @return
+	 */
+	private static boolean isNumberAndLessThan(String numberStr,
+			int maxValue) {
+		try {
+			int n = Integer.parseInt(numberStr);
+		} catch(NumberFormatException nfExc) {
+			
+		}
+		
+		return false;
+	}
+
 	/**
 	 * @param categories
 	 * @return
