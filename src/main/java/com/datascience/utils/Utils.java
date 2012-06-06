@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 
 public class Utils {
 
+	public static int MAX_ITERATIONS = 20;
+	
     public static String cleanLine(String line) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < line.length(); i++) {
