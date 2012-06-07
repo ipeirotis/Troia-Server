@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.datascience.gal.generator.testsuite.Main">
+	<target name="compile">
+		<!--javac classpath=""></javac-->
+	</target>
+	
+	<!-- run maven before run thisscript-->
+	
+	<target name="jar_test_suite_generator" depends="compile">
+		<jar destfile="TestSuitGenerator.jar" basedir="target/classes">
+			<manifest>
+				<attribute name="Main-Class" value="com.datascience.gal.generator.testsuite.Main"/>
+			</manifest>
+		</jar>
+	</target>
+</project>
