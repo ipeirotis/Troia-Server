@@ -10,7 +10,7 @@
 		<jar destfile="TestSuitGenerator.jar" basedir="target/classes">
 			<manifest>
 				<attribute name="Main-Class" value="com.datascience.gal.generator.testsuite.Main"/>
-			</manifest>
+			</manifest> 
 		</jar>
 	</target>
 </project>
