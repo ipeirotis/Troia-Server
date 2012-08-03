@@ -10,3 +10,7 @@ target/*
 .settings/*
 # ^^^ we shouldn't keep IDEs settings in repo
 
+# Package Files #
+*.jar
+*.war
+*.ear
