@@ -18,7 +18,7 @@ After setting up environment you must get repositories from
 GitHub. They are stored at 
 ::
 
- git://github.com/10clouds/Troia-Java-Client.git
+ git://github.com/10clouds/Troia-Tester.git
 
 So do download it you must execute *git clone git://github.com/10clouds/Troia-Java-Client.git* command.
 After that you will have sources of bot Troja Java client and test data generator.
@@ -30,7 +30,7 @@ To generate test data you must call executable jar from command line, so
 minimal command will look like this
 ::
 
- java -jar target/TroiaJavaClient-0.3.0-SNAPSHOT.jar 
+ java -jar target/TestDataGenerator-0.5.jar 
 
 This will display help that lists available parameters with
 are :
