@@ -68,7 +68,7 @@ basename_goldLabels.txt
 Contains gold labels in format 
 ::
 
- <object name><tabulation><category name>
+ \<object name\>\<tabulation\>\<category name\>
 
 basename_labels.txt
 -------------------
@@ -76,7 +76,7 @@ Contains labels assigned to objects by artificial workers
 This file is formatted in following 
 ::
 
- <worker name><tabulation><object name><tabulation><category name>
+ \<worker name\>\<tabulation\>\<object name\>\<tabulation\>\<category name\>
 
 basebame_objects.txt
 --------------------
