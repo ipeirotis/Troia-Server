@@ -57,7 +57,7 @@ After setting up all parameters generator will create four files.
 Where basename is string given with parameter -t 
 
 basename_aiworker.json
-~~~~~~~~~~~~~~~~~~~~~~
+----------------------
 This file contains collection of workers with confusion matrices in
 JSON format. Structure of those classes is following :
 Collection<AiWorker> where AiWorker contains two fields String name;
