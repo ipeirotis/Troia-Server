@@ -9,7 +9,7 @@ import java.util.Properties;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import main.com.troiaSupport.CategoryFactory;
+import troiaClient.CategoryFactory;
 
 public class TroiaDataGenerator {
 

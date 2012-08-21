@@ -8,12 +8,12 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import main.com.troiaSupport.Category;
-import main.com.troiaSupport.CategoryFactory;
-import main.com.troiaSupport.GoldLabel;
-import main.com.troiaSupport.Label;
-import main.com.troiaSupport.MisclassificationCost;
-import main.com.troiaSupport.MisclassificationCostFactory;
+import troiaClient.Category;
+import troiaClient.CategoryFactory;
+import troiaClient.GoldLabel;
+import troiaClient.Label;
+import troiaClient.MisclassificationCost;
+import troiaClient.MisclassificationCostFactory;
 
 /**
  * This class is used to create test data for Troia client tests.

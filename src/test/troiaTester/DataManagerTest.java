@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import junit.framework.TestCase;
-import main.com.troiaSupport.Label;
+import troiaClient.Label;
 import main.com.troiaTester.ArtificialWorker;
 import main.com.troiaTester.Data;
 import main.com.troiaTester.DataGenerator;

@@ -14,9 +14,9 @@ import java.util.Scanner;
 
 
 
-import main.com.troiaSupport.CategoryFactory;
-import main.com.troiaSupport.GoldLabel;
-import main.com.troiaSupport.Label;
+import troiaClient.CategoryFactory;
+import troiaClient.GoldLabel;
+import troiaClient.Label;
 
 import com.google.gson.Gson;
 

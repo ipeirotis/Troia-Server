@@ -2,10 +2,10 @@ package main.com.troiaTester;
 
 import java.util.Collection;
 
-import main.com.troiaSupport.Category;
-import main.com.troiaSupport.GoldLabel;
-import main.com.troiaSupport.Label;
-import main.com.troiaSupport.MisclassificationCost;
+import troiaClient.Category;
+import troiaClient.GoldLabel;
+import troiaClient.Label;
+import troiaClient.MisclassificationCost;
 
 public class Data {
 

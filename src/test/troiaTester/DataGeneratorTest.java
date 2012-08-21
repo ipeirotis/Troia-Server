@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import main.com.troiaSupport.GoldLabel;
-import main.com.troiaSupport.Label;
+import troiaClient.GoldLabel;
+import troiaClient.Label;
 import main.com.troiaTester.ArtificialWorker;
 import main.com.troiaTester.RouletteNoisedLabelGenerator;
 import main.com.troiaTester.DataGenerator;
