@@ -35,6 +35,10 @@ public class TroiaDataGenerator {
 	}
 
 	private static void parseArgs(String[] args) {
+	    workersPerObject=1;
+	    minQuality=0;
+	    maxQuality=1;
+	    goldRatio=0;
 		for (int argPointer = 0; argPointer < args.length; argPointer++) {
 			if (args[argPointer].equalsIgnoreCase(CONFIGURATION_FILE_TAG)) {
 				if (argPointer++ < args.length) {
