@@ -44,17 +44,24 @@ public class DawidSkeneCache {
     private ExecutorService executor = Executors
             .newFixedThreadPool(NUM_THREADS);
 
+    private static final int VALIDATION_TIMEOUT = 2;
+
     private static String USER;
     private static String PW;
     private static String DB;
     private static String URL;
 
     private Connection connection;
+    private Properties connectionProporties;
 
     private static final String GET_DS = "SELECT data FROM projects WHERE id IN (?);";
     private static final String INSERT_DS = "INSERT INTO projects (id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = (?);";
     private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
     private static final String CHECK_DS = "SELECT 1 FROM projects WHERE id IN (?);";
+
+    /**
+     * Befoe changing this value you must make sure to synchronise
+     */
     private static final int NUM_THREADS = 1;
 
     private PreparedStatement dsStatement;
@@ -76,19 +83,37 @@ public class DawidSkeneCache {
         if (disProps.containsKey("cacheSize"))
             cachesize = Integer.parseInt(disProps.getProperty("cacheSize"));
 
-//        logger.info("done loading props: " + disProps.toString());
-
-        logger.info("attempting to connect to " + URL);
-        Properties props = new Properties();
-        props.setProperty("user", USER);
+        connectionProporties = new Properties();
+        connectionProporties.setProperty("user", USER);
         if (PW != null)
-            props.setProperty("password", PW);
-        connection = DriverManager.getConnection("jdbc:mysql://" + URL + "/"
-                + DB, props);
-        logger.info("connected to " + URL);
-
+            connectionProporties.setProperty("password", PW);
+        connectDB();
         initializeCache();
+    }
 
+    /**
+     * Connects to DB
+     * 
+     * @throws SQLException
+     */
+    private void connectDB() throws SQLException {
+        logger.info("attempting to connect to " + URL);
+        connection = DriverManager.getConnection("jdbc:mysql://" + URL + "/"
+                + DB, connectionProporties);
+        logger.info("connected to " + URL);
+    }
+
+    /**
+     * Makes sure that connection to DB is valid. We need to ensure that we wont
+     * mess connection when multiple threads try to reconnect
+     * 
+     * @throws SQLException
+     */
+    private synchronized void ensureDBConnection() throws SQLException {
+
+        if (!connection.isValid(VALIDATION_TIMEOUT)) {
+            connectDB();
+        }
     }
 
     /**
@@ -102,7 +127,7 @@ public class DawidSkeneCache {
             if (cache.containsKey(id)) {
                 return cache.get(id);
             }
-
+            ensureDBConnection();
             dsStatement = connection.prepareStatement(GET_DS);
             dsStatement.setString(1, id);
             dsResults = dsStatement.executeQuery();
@@ -146,6 +171,7 @@ public class DawidSkeneCache {
             if (cache.containsKey(id))
                 return true;
 
+            ensureDBConnection();
             dsStatement = connection.prepareStatement(CHECK_DS);
             dsStatement.setString(1, id);
 
@@ -167,7 +193,7 @@ public class DawidSkeneCache {
         try {
             if (cache.containsKey(id))
                 cache.remove(id);
-
+            ensureDBConnection();
             dsStatement = connection.prepareStatement(DELETE_DS);
             dsStatement.setString(1, id);
 
@@ -179,9 +205,21 @@ public class DawidSkeneCache {
         }
     }
 
+    /**
+     * This method is never called - this is bad ...
+     * 
+     * @throws SQLException
+     */
     public void close() throws SQLException {
         logger.info("closing db connections");
         connection.close();
+    }
+
+    /**
+     * Added hoping that this will sometime turn out to be usefull
+     */
+    protected void finalize() throws SQLException {
+        close();
     }
 
     private void initializeCache() {
@@ -211,6 +249,7 @@ public class DawidSkeneCache {
         @Override
         public void run() {
             try {
+                ensureDBConnection();
                 dsStatement = connection.prepareStatement(INSERT_DS);
                 dsStatement.setString(1, ds.getId());
                 String dsString = ds.toString();
