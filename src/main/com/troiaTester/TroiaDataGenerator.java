@@ -39,6 +39,7 @@ public class TroiaDataGenerator {
 	    minQuality=0;
 	    maxQuality=1;
 	    goldRatio=0;
+	    workerCount=0;
 		for (int argPointer = 0; argPointer < args.length; argPointer++) {
 			if (args[argPointer].equalsIgnoreCase(CONFIGURATION_FILE_TAG)) {
 				if (argPointer++ < args.length) {
@@ -102,7 +103,7 @@ public class TroiaDataGenerator {
 		if (objectCount <= 0) {
 			throw new Exception("Object count must be larger then 0.");
 		}
-		if (workerQualitiesFilename != null) {
+		if (workerQualitiesFilename == null&&workerCount!=0) {
 			if (workerCount <= 0) {
 				throw new Exception("Worker count must be larger then 0.");
 			}
@@ -146,12 +147,16 @@ public class TroiaDataGenerator {
 					workerQualitiesFilename, categoryNames));
 
 		} else {
+		    if(workerCount!=0){
 			data.setArtificialWorkers(generator.generateArtificialWorkers(
-					workerCount, categoryNames, minQuality, maxQuality));
+										      workerCount, categoryNames, minQuality, maxQuality));
+		    }
 		}
 		data.setObjectCollection(generator.generateTestObjects(objectCount, categoryNames));
 		data.setGoldLabels(generator.generateGoldLabels(data.getObjectCollection(),goldRatio));
-		data.setLabels(generator.generateLabels(data.getArtificialWorkers(),data.getObjectCollection(), workersPerObject));
+		if(data.getArtificialWorkers()!=null){
+		    data.setLabels(generator.generateLabels(data.getArtificialWorkers(),data.getObjectCollection(), workersPerObject));
+		}
 	}
 
 	private static void saveData() throws IOException {

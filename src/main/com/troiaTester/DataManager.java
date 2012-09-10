@@ -280,14 +280,18 @@ public class DataManager {
 	}
 
 	public void saveTestData(String filename_base, Data data)
-			throws IOException {
+	    throws IOException {
+	    if(data.getArtificialWorkers()!=null){
 		this.saveArtificialWorkers(filename_base + ARTIFICIAL_WORKERS_TAG
-				+ FILE_EXTENSION, data.getArtificialWorkers());
-		this.saveGoldLabelsToFile(filename_base + GOLD_LABELS_TAG
-				+ FILE_EXTENSION, data.getGoldLabels());
+					   + FILE_EXTENSION, data.getArtificialWorkers());
+	    }
+	    this.saveGoldLabelsToFile(filename_base + GOLD_LABELS_TAG
+				      + FILE_EXTENSION, data.getGoldLabels());
+	    if(data.getLabels()!=null){	
 		this.saveLabelsToFile(filename_base + LABELS_TAG + FILE_EXTENSION,
-				data.getLabels());
-		this.saveTestObjectsToFile(
+				      data.getLabels());
+	    }
+	    this.saveTestObjectsToFile(
 				filename_base + OBJECTS_TAG + FILE_EXTENSION,
 				data.getObjectCollection());
 

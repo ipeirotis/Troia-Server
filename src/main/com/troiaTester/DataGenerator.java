@@ -281,18 +281,21 @@ public class DataGenerator {
 		Collection<Category> categories = CategoryFactory.getInstance()
 				.createCategories(categoryNames);
 		TroiaObjectCollection objects = this.generateTestObjects(objectCount,
-				categoryNames);
+									 categoryNames);
 		Collection<MisclassificationCost> misclassificationCost = MisclassificationCostFactory
-				.getInstance().getMisclassificationCosts(categories);
-		Collection<ArtificialWorker> workers = this.generateArtificialWorkers(
-				workerCount, categoryNames, minQuality, maxQuality);
-		Collection<Label> labels = this.generateLabels(workers, objects,
-				workersPerObject);
+		    .getInstance().getMisclassificationCosts(categories);
 		Collection<GoldLabel> goldLabels = this.generateGoldLabels(objects,
-				goldRatio);
-		Collection<String> workerNames = new ArrayList<String>();
-		for (ArtificialWorker worker : workers) {
+									   goldRatio);
+		Collection<ArtificialWorker> workers = null;
+		Collection<Label> labels = null;
+		Collection<String> workerNames = null;
+		if(workerCount>0){
+		    workers = this.generateArtificialWorkers(workerCount, categoryNames, minQuality, maxQuality);
+		    labels = this.generateLabels(workers, objects,workersPerObject);
+		    workerNames = new ArrayList<String>();
+		    for (ArtificialWorker worker : workers) {
 			workerNames.add(worker.getName());
+		    }
 		}
 		data.setCategories(categories);
 		data.setGoldLabels(goldLabels);
