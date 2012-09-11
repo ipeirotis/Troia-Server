@@ -161,7 +161,7 @@ public class DataGenerator {
 		}
 		worker.setName(name);
 		worker.setConfusionMatrix(new ConfusionMatrix(confMatrix));
-		logger.info("Generated artifical worker with quality " + quality);
+		logger.debug("Generated artifical worker with quality " + quality);
 		return worker;
 	}
 

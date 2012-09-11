@@ -56,6 +56,10 @@ public class TroiaDataGenerator {
 		if (argPointer++ < args.length) {
 		    workerQualitiesFilename = args[argPointer];
 		}
+	    } else if (args[argPointer].equalsIgnoreCase(AI_WORKERS_FILE_TAG)) {
+		if (argPointer++ < args.length) {
+		    aiWorkersFilename = args[argPointer];
+		}
 	    } else if (args[argPointer].equalsIgnoreCase(OBJECTS_FILE_TAG)) {
 		if (argPointer++ < args.length) {
 		    objectsFileName = args[argPointer];
@@ -108,7 +112,7 @@ public class TroiaDataGenerator {
 	if (objectCount <= 0 && objectsFileName == null) {
 	    throw new Exception("Object count must be larger then 0.");
 	}
-	if (workerQualitiesFilename == null&&workerCount!=0) {
+	if (workerQualitiesFilename == null&&workerCount!=0&&aiWorkersFilename==null) {
 	    if (workerCount < 0) {
 		throw new Exception("Worker count must be larger then 0.");
 	    }
@@ -151,7 +155,9 @@ public class TroiaDataGenerator {
 	    data.setArtificialWorkers(manager.loadBasicWorkers(
 							       workerQualitiesFilename, categoryNames));
 
-	} else {
+	} else if (aiWorkersFilename != null){
+	    data.setArtificialWorkers(manager.loadArtificialWorkersFromFile(aiWorkersFilename));
+	}else {
 	    if(workerCount!=0){
 		data.setArtificialWorkers(generator.generateArtificialWorkers(
 									      workerCount, categoryNames, minQuality, maxQuality));
@@ -207,6 +213,7 @@ public class TroiaDataGenerator {
 	System.out.println('\t'+BASIC_WORKER_FILE_TAG+SEPARATOR+" name of file containing basic workers definition.");
 	System.out.println('\t'+CATEGORIES_FILE_TAG+SEPARATOR+" name of file containing category priors");
 	System.out.println('\t'+OBJECTS_FILE_TAG+SEPARATOR+" name of file containing test objects");
+	System.out.println('\t'+AI_WORKERS_FILE_TAG+SEPARATOR+" name of file containing jsonified workers");
     }
 
 	
@@ -222,6 +229,7 @@ public class TroiaDataGenerator {
     private static final String TEST_DATA_FILE_TAG = "-t";
     private static final String CONFIGURATION_FILE_TAG = "-f";
     private static final String OBJECTS_FILE_TAG = "-j";
+    private static final String AI_WORKERS_FILE_TAG = "-i";
 
     private static final String CATEGORY_COUNT_PROPERTY = "category_count";
     private static final String OBJECT_COUNT_PROPERTY = "object_count";
@@ -241,6 +249,7 @@ public class TroiaDataGenerator {
     private static int workersPerObject = 0;
     private static double goldRatio = 0;
     private static String workerQualitiesFilename = null;
+    private static String aiWorkersFilename = null;
     private static String categoriesFileName = null;
     private static String objectsFileName = null;
     private static String outputFilename = "testData";

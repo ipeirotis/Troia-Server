@@ -19,6 +19,8 @@ import troiaClient.GoldLabel;
 import troiaClient.Label;
 
 import com.google.gson.Gson;
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.log4j.*;
 
@@ -96,7 +98,7 @@ public class DataManager {
 	FileOutputStream stream = new FileOutputStream(filename);
 	Writer out = new OutputStreamWriter(stream);
 	Gson gson = new Gson();
-	out.write(gson.toJson(workers) + '\n');
+	out.write(gson.toJson(workers));
 	out.close();
     }
 
@@ -121,8 +123,10 @@ public class DataManager {
 	FileInputStream stream = new FileInputStream(filename);
 	Scanner scanner = new Scanner(stream);
 	Gson gson = new Gson();
-	Collection<ArtificialWorker> workers = new ArrayList<ArtificialWorker>();
-	gson.fromJson(scanner.nextLine(),workers.getClass());
+	Type collectionType = new TypeToken<Collection<ArtificialWorker>>(){}.getType();
+	Collection<ArtificialWorker> workers;
+	scanner.useDelimiter("\\Z");
+	workers = gson.fromJson(scanner.next(),collectionType);
 	scanner.close();
 	return workers;
     }
