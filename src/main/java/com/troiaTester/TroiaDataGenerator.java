@@ -11,13 +11,14 @@ import org.apache.log4j.Logger;
 
 import troiaClient.CategoryFactory;
 
+
 public class TroiaDataGenerator {
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-	Logger.getRootLogger().setLevel(Level.ERROR);
+	Logger.getRootLogger().setLevel(Level.INFO);
 	try {
 	    if(args.length<2){
 		printHelp();
