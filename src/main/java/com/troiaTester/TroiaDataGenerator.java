@@ -32,6 +32,7 @@ public class TroiaDataGenerator {
 	} catch (Exception e) {
 	    System.out.println("Unable to generate test data because "
 			       + e.getMessage());
+	    e.printStackTrace();
 	}
     }
 
@@ -106,11 +107,13 @@ public class TroiaDataGenerator {
     }
 
     private static void verifyParameters() throws Exception {
-	if (categoryCount <= 0 && categoriesFileName == null && objectsFileName == null) {
-	    throw new Exception("Category count must be larger then 0.");
-	}
-	if (objectCount <= 0 && objectsFileName == null) {
-	    throw new Exception("Object count must be larger then 0.");
+	if(objectCount != 0 || objectsFileName != null){
+	    if (categoryCount <= 0 && categoriesFileName == null && objectsFileName == null) {
+		throw new Exception("Category count must be larger then 0.");
+	    }
+	    if (objectCount <= 0 && objectsFileName == null) {
+		throw new Exception("Object count must be larger then 0.");
+	    }
 	}
 	if (workerQualitiesFilename == null&&workerCount!=0&&aiWorkersFilename==null) {
 	    if (workerCount < 0) {
@@ -146,7 +149,7 @@ public class TroiaDataGenerator {
 	    data.setCategories(CategoryFactory.getInstance().createCategories(
 									      categories.keySet()));
 	    categoryNames=categories.keySet();
-	} else {
+	} else if(categoryCount!=0){
 	    categoryNames = generator.generateCategoryNames(categoryCount);
 	    data.setCategories(CategoryFactory.getInstance().createCategories(
 									      categoryNames));
@@ -166,11 +169,13 @@ public class TroiaDataGenerator {
        
 	if(objectsFileName!=null){
 	    data.setObjectCollection(manager.loadTestObjectsFromFile(objectsFileName));
-	}else{
+	}else if(objectCount!=0){
 	    data.setObjectCollection(generator.generateTestObjects(objectCount, categoryNames));
 	}
-	data.setGoldLabels(generator.generateGoldLabels(data.getObjectCollection(),goldRatio));
-	if(data.getArtificialWorkers()!=null){
+	if(data.getObjectCollection()!=null){
+	    data.setGoldLabels(generator.generateGoldLabels(data.getObjectCollection(),goldRatio));
+	}
+	if(data.getArtificialWorkers()!=null&&data.getObjectCollection()!=null){
 	    data.setLabels(generator.generateLabels(data.getArtificialWorkers(),data.getObjectCollection(), workersPerObject));
 	}
     }
