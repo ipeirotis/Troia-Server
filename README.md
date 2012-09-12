@@ -18,11 +18,31 @@ After setting up environment you must get repositories from
 GitHub. They are stored at 
 ::
 
- git://github.com/10clouds/Troia-Tester.git
+ https://github.com/ipeirotis/Troia-Tester.git
+
+
+If you don't have Troia Java client installed you will also have to get it 
+from
+::
+
+ https://github.com/ipeirotis/Troia-Java-Client.git
+ 
 
 So do download it you must execute *git clone git://github.com/10clouds/Troia-Java-Client.git* command.
 After that you will have sources of bot Troja Java client and test data generator.
+To be able to use it you will also have to build it with maven, and because this project uses Troia Java Client
+library you have to add it to your maven repositories.
+To add Java client to repositories you must enter it main directory and call following command :
+::
+ 
+ mvn clean install
 
+And then go to Troia-Tester main directory and write :
+::
+
+ mvn clean package
+
+This will generate executable jar in *target* directory.
 
 How to generate data files from command line
 --------------------------------------------
