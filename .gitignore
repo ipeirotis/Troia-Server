@@ -1,0 +1,9 @@
+*~
+*.bak
+
+*.class
+target/*
+
+.settings/*
+# ^^^ we shouldn't keep IDEs settings in repo
+
