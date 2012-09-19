@@ -1,11 +1,18 @@
 * text=auto
 
 *.java text
+*.py text
 *.sh text
 *.txt text
 *.rst text
 *.js text
-*.py text
+*.coffee text
+*.html text
+*.css text
+*.json text
+*.xml text
+*.sql text
+*.conf text
 
 *.png binary
 *.jpg binary
