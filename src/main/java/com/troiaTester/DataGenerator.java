@@ -89,13 +89,7 @@ public class DataGenerator {
             int categoryCount) {
         Collection<String> categoryNames = this
                                            .generateCategoryNames(categoryCount);
-        double p = 1.0 / (double) categoryNames.size();
-        Double percentage = new Double(p);
-        Map<String, Double> categories = new HashMap<String, Double>();
-        for (String category : categoryNames) {
-            categories.put(category, percentage);
-        }
-        return this.generateTestObjects(objectCount, categories);
+        return this.generateTestObjects(objectCount, categoryNames);
     }
 
     public TroiaObjectCollection generateTestObjects(int objectCount,
