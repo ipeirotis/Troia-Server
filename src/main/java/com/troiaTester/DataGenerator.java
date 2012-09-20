@@ -47,7 +47,7 @@ public class DataGenerator {
             int[] borders = new int[percentages.size()];
             int index = 0;
             for (Double percentage : percentages) {
-                borders[index] = (int) (percentage.doubleValue() * objectCount);
+                borders[index] = (int) (percentage * objectCount);
                 index++;
             }
             Map<String, String> objects = new HashMap<String, String>();
