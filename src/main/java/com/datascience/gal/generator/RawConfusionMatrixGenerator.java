@@ -17,17 +17,17 @@ public class RawConfusionMatrixGenerator {
 	 */
 	private static double roundTwoDecimals(double d) {
 		BigDecimal roundfinalPrice = new BigDecimal(d).setScale(2,BigDecimal.ROUND_HALF_UP);
-		Double withPrecision= new Double(roundfinalPrice.doubleValue()); 
+		Double withPrecision= new Double(roundfinalPrice.doubleValue());
 		return withPrecision;
 	}
-	
+
 	/**
 	 * @param matrix
 	 */
 	public static void printOnScreen(Double[][] matrix) {
 		System.out.println(print(matrix));
 	}
-	
+
 	public static String print(Double[][] matrix) {
 		StringBuffer ret = new StringBuffer();
 		String sp = "  ";
@@ -51,7 +51,7 @@ public class RawConfusionMatrixGenerator {
 		Double m[][] = generateCM(size);
 		print(m);
 	}
-	
+
 	/**
 	 * Confusion Matrix Generator
 	 * Generates random matrix n x n, diagonal elements are the highest in row.
@@ -62,7 +62,7 @@ public class RawConfusionMatrixGenerator {
 	public static Double[][] generateCM(int dimension) {
 //		return new Double[][]{{0.7,0.2,0.1},{0.4, 0.5,0.1},{0.3,0.3,0.4}};
 		double mixToNumerator = 0.5;
-		
+
 		Double[][] matrix = null;
 		Random rand = new Random();
 		if (dimension<=MAX_DIMENSION) {
@@ -83,14 +83,14 @@ public class RawConfusionMatrixGenerator {
 						}
 						if (isLastElementinRow) {
 							matrix[i][j] = roundTwoDecimals(left);
-						} 
+						}
 					}
 				}
 			}
- 		}
+		}
 		return matrix;
 	}
-	
+
 	/**
 	 * Generates Answers Matrix
 	 * @param wc - count of workers
@@ -111,7 +111,7 @@ public class RawConfusionMatrixGenerator {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * @param prefix
 	 * @param cOUNT_OF_THE_LABELS
@@ -128,11 +128,11 @@ public class RawConfusionMatrixGenerator {
 		}
 		return ll;
 	}
-	
+
 	/**
 	 * @param prefix
 	 * @param cOUNT_OF_THE_WORKERS
-	 * @return array of worker names 
+	 * @return array of worker names
 	 */
 	public static String[] generateWorkerNameList(String prefix,
 			int cOUNT_OF_THE_WORKERS) {

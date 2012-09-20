@@ -24,14 +24,14 @@ public abstract class TestDatumSuper {
 	protected Set<CorrectLabel> correctLabelSet = null;
 	protected Set<AssignedLabel> assignedLabelSet = null;
 	protected Set<MisclassificationCost> costSet = null;
-	
+
 	protected StringBuffer outMajorityVote = null;
 	protected StringBuffer outWorkerQuality = null;
 	protected StringBuffer outObjectResults = null;
 	protected StringBuffer outCategoryPriors = null;
 	protected StringBuffer outDawidSkeneVote = null;
 	protected StringBuffer outDifferences = null;
-	
+
 	protected StringBuffer outResults = null;
 	protected StringBuffer outInputs = null;
 	/**
@@ -58,12 +58,12 @@ public abstract class TestDatumSuper {
 			t=0;
 			for (Category to:categorySet) {
 				cm.setErrorRate(from.getName(), to.getName(), doubles[t][f]);
-				t++;	
+				t++;
 			}
 			f++;
 		}
 	}
-	
+
 	/**
 	 * @param string
 	 */
@@ -73,17 +73,17 @@ public abstract class TestDatumSuper {
 		fillUpConfusionMatrix(worker.cm, doubles);
 		workerList.add(worker);
 	}
-	
+
 	/**
 	 * @param labelName
 	 * @param categoryName
 	 */
 	protected void addCorrectLabel(String labelName, String categoryName) {
-		 if (correctLabelSet==null) correctLabelSet = new HashSet<CorrectLabel>();
-		 CorrectLabel correctLabel = new CorrectLabel(labelName, categoryName);
-		 correctLabelSet.add(correctLabel);
+		if (correctLabelSet==null) correctLabelSet = new HashSet<CorrectLabel>();
+		CorrectLabel correctLabel = new CorrectLabel(labelName, categoryName);
+		correctLabelSet.add(correctLabel);
 	}
-	
+
 	/**
 	 * @param categoryName
 	 * @param probability
@@ -94,7 +94,7 @@ public abstract class TestDatumSuper {
 		category.setPrior(probability);
 		categorySet.add(category);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -105,7 +105,7 @@ public abstract class TestDatumSuper {
 		}
 		return (DELTA_DOUBLE>bit && bit>=0);
 	}
-	
+
 	/**
 	 * @param workerName
 	 * @param objectName
@@ -116,7 +116,7 @@ public abstract class TestDatumSuper {
 		AssignedLabel assignedLabel = new AssignedLabel(workerName, objectName, categoryName);
 		assignedLabelSet.add(assignedLabel);
 	}
-	
+
 	/**
 	 * @param from
 	 * @param to
@@ -127,5 +127,5 @@ public abstract class TestDatumSuper {
 		MisclassificationCost cost = new MisclassificationCost(from, to, value);
 		costSet.add(cost);
 	}
-	
+
 }

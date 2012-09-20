@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -83,10 +83,10 @@ public class CorrectLabelTest {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public final void doTestGettersAndConstructor() {
-		String[] objectNames = {"on1", "on2", "", "on4"}; 
+		String[] objectNames = {"on1", "on2", "", "on4"};
 		String[] correctCategories = {"cc1", "cc2", "cc3", null};
 		for (int i=0; i<objectNames.length; i++) {
 			CorrectLabel correctLabel = new CorrectLabel(objectNames[i],correctCategories[i]);
@@ -96,7 +96,7 @@ public class CorrectLabelTest {
 			assertEquals(correctCategory, correctCategories[i]);
 		}
 	}
-	
+
 	class P {
 		int first;
 		int second;
@@ -112,7 +112,7 @@ public class CorrectLabelTest {
 	public final void testEqualsObject() {
 		doTestEqualsHashCodeOrBoth(EToTestOnEquals.EQUALS);
 	}
-	
+
 	/**
 	 * @author Michael Arshynov
 	 *
@@ -124,7 +124,7 @@ public class CorrectLabelTest {
 	 * @param eWhich
 	 */
 	public final void doTestEqualsHashCodeOrBoth(EToTestOnEquals eWhich) {
-		String[] objectNames = {"on1", "on1", "", "on4", "on4"}; 
+		String[] objectNames = {"on1", "on1", "", "on4", "on4"};
 		String[] correctCategories = {"cc1", "cc1", "cc3", null, null};
 		int len = objectNames.length;
 		CorrectLabel[] correctLabels = new CorrectLabel[len];
@@ -133,9 +133,10 @@ public class CorrectLabelTest {
 			correctLabels[i] = new CorrectLabel(objectNames[i],correctCategories[i]);
 		}
 		P[] theSames = { new P(0,1), new P(3,4) };
-		P[] differents = { 	new P(0,2), new P(0,3), new P(0,4), 
-								new P(1,2), new P(1,3), new P(1,4),
-								new P(2,3), new P(2,4)	};
+		P[] differents = { 	new P(0,2), new P(0,3), new P(0,4),
+			  new P(1,2), new P(1,3), new P(1,4),
+			  new P(2,3), new P(2,4)
+		};
 		for (int i=0; i<theSames.length; i++) {
 			int first = theSames[i].first;
 			int second = theSames[i].second;

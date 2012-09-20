@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal.superclass.category.pair;
 
@@ -55,13 +55,13 @@ public class CategoryPairSerializerDeserializerTest {
 	@Test
 	public final void testSerializeDeserialize() {
 		CategoryPair categoryPair = new CategoryPair("source1", "dest1");
-		
+
 		CategoryPair.CategoryPairSerializer categoryPairSerializer = new CategoryPair.CategoryPairSerializer();
 		JsonElement categoryPairSerialized = categoryPairSerializer.serialize(categoryPair, null, null);
-		
+
 		CategoryPair.CategoryPairDeserializer categoryPairDeserializer = new CategoryPair.CategoryPairDeserializer();
 		CategoryPair categoryPairDeserialized = categoryPairDeserializer.deserialize(categoryPairSerialized, null, null);
-		
+
 		assertEquals(categoryPair, categoryPairDeserialized);
 	}
 

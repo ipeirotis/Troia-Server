@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
  *
  */
 public class MisclassificationCostDeserializerTest extends
-		MisclassificationCostDeserializer {
+	MisclassificationCostDeserializer {
 
 	/**
 	 * @throws java.lang.Exception

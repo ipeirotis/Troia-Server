@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal.scripts;
 
@@ -76,7 +76,7 @@ public class MainTest {
 				assertTrue("["+label.getCategoryName()+","+c1+"]",label.getCategoryName().equals(c1));
 
 			}
-			
+
 		}
 	}
 	/**
@@ -134,7 +134,8 @@ public class MainTest {
 		String CATEGORY_NAME_WITH_PRIOR = "line1";
 		double CATEGORY_PRIORITY = 2.0;
 		String[] lines = {CATEGORY_NAME_WITH_PRIOR+"\t"+CATEGORY_PRIORITY,
-				"line2","category3 ff\t"};
+						  "line2","category3 ff\t"
+						 };
 		Set<Category> categories = Main.getCategories(lines);
 		assertTrue(categories.size() == lines.length);
 		for (Category c: categories) {
@@ -149,29 +150,29 @@ public class MainTest {
 	 */
 	@Test
 	public final void testGetClassificationCost() {
-        String froms[] = {"f1", "f2", " ", "4"};
-        String tos[] = {"t1", " ", "   ", "4"};
-        Double costs[] = {-1e0, 0e0, -100e-1, 4e0};
-        doTestGetClassificationCost(froms, tos, costs);
-       	}
+		String froms[] = {"f1", "f2", " ", "4"};
+		String tos[] = {"t1", " ", "   ", "4"};
+		Double costs[] = {-1e0, 0e0, -100e-1, 4e0};
+		doTestGetClassificationCost(froms, tos, costs);
+	}
 	/**
 	 * Test method for {@link com.datascience.gal.scripts.Main#getClassificationCost(java.lang.String[])}.
 	 */
 	@Test
 	public final void testGetClassificationCostWithDuplications() {
-        String froms[] = {"f1", "f2", " ", "4", "f1"};
-        String tos[] = {"t1", " ", "   ", "4", "t1"};
-        Double costs[] = {-1e0, 0e0, -100e-1, 4e0, 0e0};
-        doTestGetClassificationCost(froms, tos, costs);
+		String froms[] = {"f1", "f2", " ", "4", "f1"};
+		String tos[] = {"t1", " ", "   ", "4", "t1"};
+		Double costs[] = {-1e0, 0e0, -100e-1, 4e0, 0e0};
+		doTestGetClassificationCost(froms, tos, costs);
 	}
-	
+
 	/**
 	 * @param froms
 	 * @param tos
 	 * @param costs
 	 */
 	public final void doTestGetClassificationCost(String froms[], String tos[], Double costs[]) {
-        int len = froms.length;
+		int len = froms.length;
 		String[] lines = new String[len];
 		for (int i=0; i<len; i++) {
 			lines[i] = froms[i]+"\t"+tos[i]+"\t"+costs[i];
@@ -179,7 +180,7 @@ public class MainTest {
 		Set<MisclassificationCost> ret = Main.getClassificationCost(lines);
 		for (int i=0; i<len; i++) {
 			MisclassificationCost mcc = new MisclassificationCost(
-					froms[i], tos[i], costs[i]);
+				froms[i], tos[i], costs[i]);
 			assertTrue(ret.contains(mcc));
 		}
 		assertEquals("lines count="+len+", returned objects count="+ret.size(), len, ret.size());
@@ -201,7 +202,7 @@ public class MainTest {
 			assertTrue("contains", correctLabels.contains(cl));
 		}
 		assertTrue("lines count="+objectNames.length+", labels count="+correctLabels.size(),
-				lines.length == correctLabels.size());
+				   lines.length == correctLabels.size());
 	}
 	/**
 	 * Test method for {@link com.datascience.gal.scripts.Main#getCorrectLabels(java.lang.String[])}.
@@ -220,6 +221,6 @@ public class MainTest {
 			assertTrue("contains", correctLabels.contains(cl));
 		}
 		assertTrue("lines count="+objectNames.length+", labels count="+correctLabels.size(),
-				lines.length == correctLabels.size());
+				   lines.length == correctLabels.size());
 	}
 }

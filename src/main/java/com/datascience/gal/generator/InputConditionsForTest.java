@@ -17,19 +17,19 @@ public class InputConditionsForTest {
 	private Map<String, Double[][]> workerMap = null;
 	private Map<String, String> goldMap = null;
 	private Map<String, Map<String, String>> answerMap = null;
-	
+
 	/**
 	 * @param categoryName
 	 * @param probability
 	 * @return
 	 */
 	public InputConditionsForTest addCategory(String categoryName, double probability) {
-		if (categoryMap == null) 
+		if (categoryMap == null)
 			categoryMap = new LinkedHashMap<String, Double>();
 		categoryMap.put(categoryName, probability);
 		return this;
 	}
-	
+
 	public int getIterationsInt() {
 		return iterationsInt;
 	}
@@ -58,7 +58,7 @@ public class InputConditionsForTest {
 		this.iterationsInt = iterationsInt;
 		return this;
 	}
-	
+
 	/**
 	 * @param workerName
 	 * @param confusionMatrix
@@ -66,23 +66,23 @@ public class InputConditionsForTest {
 	 */
 	public InputConditionsForTest addWorker(String workerName, Double[][] confusionMatrix) {
 		if (workerMap == null)
-			workerMap = new LinkedHashMap<String, Double[][]>();  
+			workerMap = new LinkedHashMap<String, Double[][]>();
 		workerMap.put(workerName, confusionMatrix);
 		return this;
 	}
-	
+
 	/**
 	 * @param labelName
 	 * @param categoryName
 	 * @return
 	 */
 	public InputConditionsForTest addGold(String labelName, String categoryName) {
-		if (goldMap == null) 
+		if (goldMap == null)
 			goldMap = new LinkedHashMap<String, String>();
 		goldMap.put(labelName, categoryName);
 		return this;
 	}
-	
+
 
 	/**
 	 * addAssignedLabel, shorter form of name
@@ -92,10 +92,10 @@ public class InputConditionsForTest {
 	 * @return
 	 */
 	public InputConditionsForTest addAnswers(String workerName, String objectName, String categoryName) {
-		if (answerMap == null) 
+		if (answerMap == null)
 			answerMap = new HashMap<String, Map<String,String>>();
 		if (answerMap.containsKey(workerName)) {
-			 answerMap.get(workerName).put(objectName, categoryName);
+			answerMap.get(workerName).put(objectName, categoryName);
 		} else {
 			Map<String,String> val = new HashMap<String,String>();
 			val.put(objectName, categoryName);
@@ -103,7 +103,7 @@ public class InputConditionsForTest {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * @param args
 	 */
@@ -119,18 +119,18 @@ public class InputConditionsForTest {
 		ret.append("\n--------------------CATEGORIES WITH PROBABILITIES-----------------------");
 		ret.append("\n"+categoryMap.toString());
 		ret.append("\n");
-		
+
 		ret.append("\n-----------------------------WORKERS------------------------------------");
 //		ret.append("\n"+workerMap.toString());
 		for (String workerName:workerMap.keySet()) {
 			ret.append("\n"+workerName.toString()+" ConfusionMatrix: \n" + Gen.print(workerMap.get(workerName)));
 		}
 		ret.append("\n");
-		
+
 		ret.append("\n---------------------------GOLD LABELS----------------------------------");
 		ret.append("\n"+goldMap.toString());
 		ret.append("\n");
-		
+
 		ret.append("\n------------------------------ANSWERS-----------------------------------");
 		ret.append("\n");
 //		ret.append("\n"+answerMap.toString());
@@ -142,8 +142,8 @@ public class InputConditionsForTest {
 			}
 			ret.append("\n");
 		}
-		
-		
+
+
 		ret.append("\n>>>>>>>>>>>>===================Input====================================");
 		return ret.toString();
 	}
@@ -172,8 +172,8 @@ public class InputConditionsForTest {
 		}
 		return this;
 	}
-	
-	/**  
+
+	/**
 	 * @param objectName
 	 * @return Wrong Category for the given Object
 	 */
@@ -191,7 +191,7 @@ public class InputConditionsForTest {
 		return wrongAnswer;
 	}
 
-	/** Fills Gold List 
+	/** Fills Gold List
 	 * @param o
 	 * @param c
 	 * @return
@@ -210,9 +210,9 @@ public class InputConditionsForTest {
 		for (int j=0; j<countOfReferencesOfTheCategoryArr.length; j++) {
 //			System.out.println("["+j+"]"+countOfReferencesOfTheCategoryArr[j]);
 			for (int k=0; k<countOfReferencesOfTheCategoryArr[j]; k++) {
-				addGold(o[t++], c[j]);	
+				addGold(o[t++], c[j]);
 			}
-			
+
 		}
 		return this;
 	}

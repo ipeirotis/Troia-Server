@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -99,7 +99,7 @@ public class CategoryTest {
 			assertTrue(first+"="+third,hashCode1==hashCode3);
 		else
 			assertFalse(first+"="+third,hashCode1==hashCode3);
-		
+
 		assertFalse(first+"="+second,hashCode1==hashCode2);
 		assertFalse(third+"="+second,hashCode3==hashCode2);
 	}
@@ -202,7 +202,7 @@ public class CategoryTest {
 		Category category1 = new Category("category name 1");
 		Category category2 = new Category("category name 2");
 		Category category3 = new Category("category name 1");
-		
+
 		category1.setCost("to1", 100e0);
 		category2.setCost("to2", 200e0);
 		category3.setCost("to3", 300e0);
@@ -216,7 +216,7 @@ public class CategoryTest {
 		Category category1 = new Category("category name 1");
 		Category category2 = new Category("category name 2");
 		Category category3 = new Category("category name 1");
-		
+
 		category1.setPrior(1e+1);
 		category2.setPrior(1e+2);
 		category3.setPrior(1e+3);
@@ -231,9 +231,9 @@ public class CategoryTest {
 	private final void doTestEqualsObject(Category first, Category second, Category third, boolean is1and3TheSame) {
 		boolean isDifferent = !(first.equals(second) || second.equals(first));
 		assertTrue(first+"!="+second,isDifferent);
-		
+
 		boolean isTheSame = first.equals(third) && third.equals(first);
-		
+
 		if (is1and3TheSame)
 			assertTrue(first+"="+third,isTheSame);
 		else
@@ -241,7 +241,7 @@ public class CategoryTest {
 		boolean isEqualNull = first.equals(null) || second.equals(null) || third.equals(null);
 		assertFalse(isEqualNull);
 	}
-	
+
 	/**
 	 * Test method for {@link com.datascience.gal.Category#equals(java.lang.Object)}.
 	 * Test method for {@link com.datascience.gal.Category#hashCode()}.
@@ -254,7 +254,7 @@ public class CategoryTest {
 		doTestEqualsObjectWithHashCode(category1, category2);
 		doTestEqualsObjectWithHashCode(category1, null);
 		doTestEqualsObjectWithHashCode(category3, category2);
-		
+
 		Category category1WithCost = new Category("name1");
 		Category category2WithCost = new Category("name1");
 		Category category3WithCost = new Category("name3");
@@ -264,10 +264,10 @@ public class CategoryTest {
 		doTestEqualsObjectWithHashCode(category1WithCost, category2WithCost);
 		doTestEqualsObjectWithHashCode(category1WithCost, category3WithCost);
 		doTestEqualsObjectWithHashCode(category2WithCost, null);
-		
+
 		doTestEqualsObjectWithHashCode(category1WithCost, category1);
-		
-		
+
+
 		Category category1WithPrior = new Category("name1");
 		Category category2WithPrior = new Category("name1");
 		Category category3WithPrior = new Category("name3");
@@ -280,7 +280,7 @@ public class CategoryTest {
 		doTestEqualsObjectWithHashCode(category1WithPrior, category1);
 		doTestEqualsObjectWithHashCode(category1WithPrior, category1WithCost);
 	}
-	
+
 	/**
 	 * @param first
 	 * @param secondCouldBeNull
@@ -288,7 +288,7 @@ public class CategoryTest {
 	public final void doTestEqualsObjectWithHashCode(Category first, Category secondCouldBeNull) {
 		boolean isEqual = first.equals(secondCouldBeNull);
 		boolean isTheSameHashCode;
-		if (secondCouldBeNull==null) 
+		if (secondCouldBeNull==null)
 			isTheSameHashCode = false;
 		else
 			isTheSameHashCode = first.hashCode() == secondCouldBeNull.hashCode();

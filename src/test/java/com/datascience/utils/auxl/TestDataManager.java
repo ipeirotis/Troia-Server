@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2012 Panagiotis G. Ipeirotis & Josh M. Attenberg
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 package com.datascience.utils.auxl;
@@ -24,7 +24,7 @@ public class TestDataManager {
 	 */
 	public static final double DELTA_DOUBLE = 0.001;
 	public static final double DELTA_DOUBLE_testIncompleteBeta = 0.01;
-	
+
 	/**
 	 * @param arg1s
 	 * @param ress
@@ -41,7 +41,7 @@ public class TestDataManager {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * @param args
 	 */
@@ -55,7 +55,7 @@ public class TestDataManager {
 	 * @return TestData Collection
 	 */
 	public static List<ModelIntIntDouble> fillTestCasesIntIntDouble(
-			RangePairIntInt rp, double[] ress) {
+		RangePairIntInt rp, double[] ress) {
 		List<ModelIntIntDouble> ret = null;
 		if (!rp.isValid() || ress == null || ress.length<1) {
 			fail("wrong input/output parameters (TestCasesManager:fillTestCasesIntIntDouble)");
@@ -77,7 +77,7 @@ public class TestDataManager {
 	 * @return
 	 */
 	public static List<ModelDoubleDouble> fillTestCasesDoubleDouble(
-			double[] arg1s, double[] ress) {
+		double[] arg1s, double[] ress) {
 		List<ModelDoubleDouble> ret = null;
 		if (arg1s==null || ress==null || arg1s.length<1 || arg1s.length!=ress.length) {
 			fail("wrong input/output parameters (TestCasesManager:fillTestCasesDoubleDouble)");
@@ -96,7 +96,7 @@ public class TestDataManager {
 	 * @return
 	 */
 	public static List<ModelDoubleIntIntDouble> fillTestCasesDoubleIntIntDouble(
-			double[] argsX, RangePairIntInt rp, double[] ress) {
+		double[] argsX, RangePairIntInt rp, double[] ress) {
 		List<ModelDoubleIntIntDouble> ret = null;
 		if (argsX==null || rp==null || ress==null || argsX.length<1 || ress.length<1) {
 			fail("wrong input/output parameters (TestCasesManager:fillTestCasesDoubleIntIntDouble)");
@@ -104,8 +104,8 @@ public class TestDataManager {
 		ret = new ArrayList<ModelDoubleIntIntDouble>();
 		ArraysDoubleIntInt inputArrays = ArraysMakerByRanges.makeDoubleIntIntArraysByRangeBothRevert(argsX, rp);
 		for (int i = 0; i < ress.length; i++) {
-				ret.add(new ModelDoubleIntIntDouble(inputArrays.getFirstByIndex(i),
-						inputArrays.getSecondByIndex(i), inputArrays.getThirdByIndex(i), ress[i]));
+			ret.add(new ModelDoubleIntIntDouble(inputArrays.getFirstByIndex(i),
+												inputArrays.getSecondByIndex(i), inputArrays.getThirdByIndex(i), ress[i]));
 		}
 		return ret;
 	}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -79,7 +79,7 @@ public class PricingTest {
 //				System.out.println("["+p+","+k+"]"+
 //						Pricing.probabilityCorrect(new Double(p), new Integer(k)));
 				if (probabilityCorrect!=null)
-				assertFalse("result "+probabilityCorrect+" should be a number or null",Double.isNaN(probabilityCorrect));
+					assertFalse("result "+probabilityCorrect+" should be a number or null",Double.isNaN(probabilityCorrect));
 			}
 		}
 	}
@@ -99,7 +99,7 @@ public class PricingTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Test method for {@link com.datascience.gal.Pricing#probabilityCorrect(java.lang.Double, java.lang.Integer)}.
 	 */
@@ -114,7 +114,7 @@ public class PricingTest {
 			}
 		}
 	}
-	
+
 	/**
 	 * Test method for {@link com.datascience.gal.Pricing#pricingFactor(double, double)}.
 	 */

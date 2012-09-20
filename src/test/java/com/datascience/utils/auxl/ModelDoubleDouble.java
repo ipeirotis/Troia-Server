@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.utils.auxl;
 
@@ -34,7 +34,7 @@ public class ModelDoubleDouble {
 	public void setRes(double res) {
 		this.res = res;
 	}
-	
+
 	/**
 	 * @param arg1
 	 * @param res

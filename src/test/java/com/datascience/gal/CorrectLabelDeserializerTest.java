@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -57,7 +57,7 @@ public class CorrectLabelDeserializerTest extends CorrectLabelDeserializer {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("objectName", "on1");
 		jsonObject.addProperty("correctCategory", "cc1");
-		
+
 		correctLabel = this.deserialize(jsonObject, null, null);
 		assertTrue(correctLabel instanceof CorrectLabel);
 	}

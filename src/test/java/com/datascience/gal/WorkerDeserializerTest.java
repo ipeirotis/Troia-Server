@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -74,7 +74,7 @@ public class WorkerDeserializerTest extends WorkerDeserializer {
 		labels.add(assignedLabel1);
 		labels.add(assignedLabel2);
 		labels.add(assignedLabel3);
-		
+
 		JsonObject jsonElement = new JsonObject();
 		jsonElement.addProperty("name", "name1");
 		jsonElement.add("cm", JSONUtils.gson.toJsonTree(conf, JSONUtils.confusionMatrixType));

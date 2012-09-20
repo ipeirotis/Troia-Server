@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.utils.auxl;
 
@@ -12,7 +12,7 @@ public class ArraysDoubleIntInt {
 	private int[] second;
 	private int[] third;
 	private int pos = 0;
-	
+
 	/**
 	 * @param size
 	 */

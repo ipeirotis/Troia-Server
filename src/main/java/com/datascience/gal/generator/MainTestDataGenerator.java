@@ -22,10 +22,10 @@ public class MainTestDataGenerator {
 	/**
 	 * @param cOUNT_OF_THE_WORKERS
 	 * @param cOUNT_OF_THE_LABELS
-	 * @param cOUNT_OF_THE_CATEGORIES 
+	 * @param cOUNT_OF_THE_CATEGORIES
 	 */
 	public MainTestDataGenerator(int cOUNT_OF_THE_WORKERS,
-			int cOUNT_OF_THE_LABELS, int cOUNT_OF_THE_CATEGORIES) {
+								 int cOUNT_OF_THE_LABELS, int cOUNT_OF_THE_CATEGORIES) {
 		this.cOUNT_OF_THE_WORKERS = cOUNT_OF_THE_WORKERS;
 		this.cOUNT_OF_THE_LABELS = cOUNT_OF_THE_LABELS;
 		answerMatrix = Gen.generateAM(cOUNT_OF_THE_WORKERS,cOUNT_OF_THE_LABELS,cOUNT_OF_THE_CATEGORIES);
@@ -33,28 +33,29 @@ public class MainTestDataGenerator {
 
 	/**
 	 * @param args
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public static void main(String[] args) throws FileNotFoundException {
 		final int COUNT_OF_THE_WORKERS = 10;
 		final int COUNT_OF_THE_LABELS = 20;
 		final int COUNT_OF_THE_CATEGORIES = 5;
-		
+
 		File file  = new File("MainTestDataGenerator.log");
 		PrintStream printStream = new PrintStream(file);
 		System.setOut(printStream);
-		
+
 		MainTestDataGenerator testDataGen = new MainTestDataGenerator(
-				COUNT_OF_THE_WORKERS, COUNT_OF_THE_LABELS,
-				COUNT_OF_THE_CATEGORIES);
+			COUNT_OF_THE_WORKERS, COUNT_OF_THE_LABELS,
+			COUNT_OF_THE_CATEGORIES);
 		// testDataGen.setCategories( new String[]{"notporn", "softporn",
 		// "hardporn"})
 		// .setCategoriesProbs( new double[]{ 0.14, 0.29, 0.57})
 		testDataGen.setCategories(
-				new String[] { "sport", "business", "private life",
-						"family events", "charity" }).setCategoriesProbs(
-				new double[] { 0.2, 0.2, 0.2, 0.2, 0.2 });
-		
+			new String[] { "sport", "business", "private life",
+						   "family events", "charity"
+						 }).setCategoriesProbs(
+							 new double[] { 0.2, 0.2, 0.2, 0.2, 0.2 });
+
 		for (int iteration=0; iteration<40; iteration++) {
 			testDataGen.setIteration(iteration);
 			testDataGen.compute();
@@ -66,7 +67,7 @@ public class MainTestDataGenerator {
 	 */
 	public MainTestDataGenerator addAnswers() {
 		if (w.length >1 && o.length >1 && c.length >1 && answerMatrix.length >1 )
-		input.addAnswers(w, o, c, answerMatrix);
+			input.addAnswers(w, o, c, answerMatrix);
 		return this;
 	}
 
@@ -106,7 +107,7 @@ public class MainTestDataGenerator {
 	public MainTestDataGenerator setCategoriesProbs(double[] cp) {
 		if (input == null) input = new InputConditionsForTest();
 		if (cp.length == c.length && c.length>1) {
-			for (int i=0; i<c.length; i++) 
+			for (int i=0; i<c.length; i++)
 				input.addCategory(c[i], cp[i]);
 		} else return null;
 		return this;
@@ -122,7 +123,7 @@ public class MainTestDataGenerator {
 		input.setIteration(iteration);
 		return this;
 	}
-	
+
 	/**
 	 * @param categories
 	 * @return
@@ -134,7 +135,7 @@ public class MainTestDataGenerator {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void compute() {
 		long startDate = new Date().getTime();
@@ -143,14 +144,14 @@ public class MainTestDataGenerator {
 		.addWorkers()
 		.addGolds()
 		.addAnswers();
-		
+
 		TestDatum test = new TestDatum();
 		test.construct(input);
 		String out = test.compute().toString();
-				
-		long endDate = new Date().getTime();		
-				System.out.println(input);
-				System.out.println(out);
+
+		long endDate = new Date().getTime();
+		System.out.println(input);
+		System.out.println(out);
 		long endDateAfterPrint = new Date().getTime();
 		System.out.println("Execution time: "+(endDateAfterPrint-startDate)+" msec, without results printing "+(endDate-startDate)+" msec");
 	}

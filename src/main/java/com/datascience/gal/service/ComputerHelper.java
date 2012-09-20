@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal.service;
 
@@ -35,10 +35,10 @@ public class ComputerHelper {
 	 * time - some synchronization mechanism is not working correctly or you try
 	 * to modify some collection (hashmap in this case) when iterating over it
 	 * This can be noticed when DSaS is on heavy load.
-	 * 
-	 * 1) make methods 'synchronized ' 
-	 * 2) make collections Wrapped, ie: 
-	 * List syncList = Collections.synchronizedList(new ArrayList()); 
+	 *
+	 * 1) make methods 'synchronized '
+	 * 2) make collections Wrapped, ie:
+	 * List syncList = Collections.synchronizedList(new ArrayList());
 	 * Set syncSet = Collections.synchronizedSet(new HashSet());
 	 */
 
@@ -63,46 +63,46 @@ public class ComputerHelper {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static synchronized StringBuffer calculateAndPrint() {
 		StringBuffer ret = new StringBuffer("");
 		boolean verbose = true;
 		DawidSkene ds = new BatchDawidSkene(0 + "", categorySet);
-        for (MisclassificationCost mcc : costSet) {
-            ds.addMisclassificationCost(mcc);
-        }
-        for (AssignedLabel l : assignedLabelSet) {
-            ds.addAssignedLabel(l);
-        }
-        for (CorrectLabel l : correctLabelSet) {
-            ds.addCorrectLabel(l);
-        }
-        Map<String, String> prior_voting = ds.getMajorityVote();
-        
-        ret.append(saveMajorityVote(verbose, ds));
-        for (int i = 0; i < iterationsInt; i++) {
-            // ds.estimate(iterations);
-            ds.estimate(1);
-        }
-        
-        ret.append(saveWorkerQuality(verbose, ds));
+		for (MisclassificationCost mcc : costSet) {
+			ds.addMisclassificationCost(mcc);
+		}
+		for (AssignedLabel l : assignedLabelSet) {
+			ds.addAssignedLabel(l);
+		}
+		for (CorrectLabel l : correctLabelSet) {
+			ds.addCorrectLabel(l);
+		}
+		Map<String, String> prior_voting = ds.getMajorityVote();
 
-        ret.append(saveObjectResults(verbose, ds));
+		ret.append(saveMajorityVote(verbose, ds));
+		for (int i = 0; i < iterationsInt; i++) {
+			// ds.estimate(iterations);
+			ds.estimate(1);
+		}
 
-        ret.append(saveCategoryPriors(verbose, ds));
+		ret.append(saveWorkerQuality(verbose, ds));
 
-        ret.append(saveDawidSkeneVote(verbose, ds));
-        
-        Map<String, String> posterior_voting = ds.getMajorityVote();
+		ret.append(saveObjectResults(verbose, ds));
 
-        ret.append(saveDifferences(verbose, ds, prior_voting, posterior_voting));
-        return ret;
+		ret.append(saveCategoryPriors(verbose, ds));
+
+		ret.append(saveDawidSkeneVote(verbose, ds));
+
+		Map<String, String> posterior_voting = ds.getMajorityVote();
+
+		ret.append(saveDifferences(verbose, ds, prior_voting, posterior_voting));
+		return ret;
 
 	}
-	
+
 	/**
 	 * @param categories
 	 * @param unlabeled
@@ -134,7 +134,7 @@ public class ComputerHelper {
 			result.append("ERROR("+name+"): Empty field\n");
 		}
 		if (result.length()>0) return result.toString();
-		
+
 		try {
 			categorySet = getCategories(categories);
 		} catch (Exception e) {
@@ -163,7 +163,7 @@ public class ComputerHelper {
 		}
 		return result.toString();
 	}
-	
+
 	/**
 	 * @param categories
 	 * @return
@@ -176,25 +176,25 @@ public class ComputerHelper {
 		if (rawRows==null || rawRows.length<1) throw new Exception(errorMsg);
 		for (String row: rawRows) {
 			String[] words = row.split("\t");
-            if (words.length == 1) {
-                Category category = new Category(row);
-                categorySet.add(category);
-            } else if (words.length == 2) {
-                String name = words[0];
-                Double prior = new Double(words[1]);
-                Category category = new Category(name);
-                category.setPrior(prior);
-                categorySet.add(category);
-            } else 
-            	throw new Exception(errorMsg);
+			if (words.length == 1) {
+				Category category = new Category(row);
+				categorySet.add(category);
+			} else if (words.length == 2) {
+				String name = words[0];
+				Double prior = new Double(words[1]);
+				Category category = new Category(name);
+				category.setPrior(prior);
+				categorySet.add(category);
+			} else
+				throw new Exception(errorMsg);
 		}
 		return categorySet;
 	}
-	
+
 	/**
 	 * @param unlabeled
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private static synchronized Set<AssignedLabel> getUnlabeled(final String unlabeled) throws Exception {
 		final String errorMsg = "wrong assigned label (unlabeled) set";
@@ -210,7 +210,7 @@ public class ComputerHelper {
 			String objectname = words[1];
 			String categoryname = normalizeWord(words[2]);
 			AssignedLabel al = new AssignedLabel(workername, objectname,
-					categoryname);
+												 categoryname);
 			assignedLabelSet.add(al);
 		}
 		return assignedLabelSet;
@@ -230,18 +230,18 @@ public class ComputerHelper {
 			if (words.length != 2) {
 				throw new Exception(errorMsg);
 			}
-            String objectname = words[0];
-            String categoryname = normalizeWord(words[1]);
+			String objectname = words[0];
+			String categoryname = normalizeWord(words[1]);
 
-            CorrectLabel cl = new CorrectLabel(objectname, categoryname);
-            goldLabels.add(cl);
+			CorrectLabel cl = new CorrectLabel(objectname, categoryname);
+			goldLabels.add(cl);
 		}
 		return goldLabels;
 	}
 	/**
 	 * @param costs
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static synchronized Set<MisclassificationCost> getCosts(final String costs) throws Exception {
 		final String errorMsg = "wrong cost set";
@@ -253,134 +253,134 @@ public class ComputerHelper {
 			if (words.length != 3) {
 				throw new Exception(errorMsg);
 			}
-            String from = words[0];
-            String to = words[1];
-            Double cost = Double.parseDouble(words[2]);
+			String from = words[0];
+			String to = words[1];
+			Double cost = Double.parseDouble(words[2]);
 
-            MisclassificationCost mcc = new MisclassificationCost(from, to, cost);
-            costSet.add(mcc);
+			MisclassificationCost mcc = new MisclassificationCost(from, to, cost);
+			costSet.add(mcc);
 		}
 		return costSet;
 	}
-	
-    /**
-     * @param verbose
-     * @param ds
-     */
+
+	/**
+	 * @param verbose
+	 * @param ds
+	 */
 	public static synchronized StringBuffer saveWorkerQuality(final boolean verbose, final DawidSkene ds) {
 		StringBuffer ret = new StringBuffer("");
-        // Save the estimated quality characteristics for each worker
-        ret.append("\nEstimating worker quality");
-        boolean detailed = false;
-        String summary_report = ds.printAllWorkerScores(detailed);
-        detailed = true;
-        String detailed_report = ds.printAllWorkerScores(detailed);
-        if (verbose) {
-            ret.append("\n=======WORKER QUALITY STATISTICS(SUMMARY)=======");
-            ret.append("\n"+summary_report);
-            ret.append("\n=======================================");
-        }
-        ret.append("\n=======WORKER QUALITY STATISTICS(DETAILED)=======");
-        ret.append("\n"+detailed_report);
-        ret.append("\n=======================================");
-        return ret;
-    }
-    
-    /**
-     * @param verbose
-     * @param ds
-     */
-    public static synchronized StringBuffer saveObjectResults(final boolean verbose, final DawidSkene ds) {
-    	StringBuffer ret = new StringBuffer("");
-        // Save the probability that an object belongs to each class
-        String objectProbs = ds.printObjectClassProbabilities(0.0);
-        if (verbose) {
-        	ret.append("\n=======CATEGORY PROBABILITIES========");
-        	ret.append("\n"+objectProbs);
-        	ret.append("\n=====================================");
-        }
-        return ret;
-    }
-    /**
-     * @param verbose
-     * @param ds
-     */
-    public static synchronized StringBuffer saveCategoryPriors(final boolean verbose, final DawidSkene ds) {
-    	StringBuffer ret = new StringBuffer("");
-        // Save the probability that an object belongs to each class
-        String priors = ds.printPriors();
-        if (verbose) {
-        	ret.append("\n=======PRIOR PROBABILITIES========");
-        	ret.append("\n"+priors);
-        	ret.append("\n==================================");
-        }
-        return ret;
-    }
-    /**
-     * @param verbose
-     * @param ds
-     * @return
-     */
-    public static synchronized StringBuffer saveDawidSkeneVote(final boolean verbose,
-           final DawidSkene ds) {
-    	StringBuffer ret = new StringBuffer("");
-        // Save the vote after the D&S estimation
-        String dawidskene = ds.printVote();
-        if (verbose) {
-        	ret.append("\n=======DAWID&SKENE RESULTS========");
-        	ret.append("\n"+dawidskene);
-        	ret.append("\n==================================");
-        }
-        return ret;
-    }
+		// Save the estimated quality characteristics for each worker
+		ret.append("\nEstimating worker quality");
+		boolean detailed = false;
+		String summary_report = ds.printAllWorkerScores(detailed);
+		detailed = true;
+		String detailed_report = ds.printAllWorkerScores(detailed);
+		if (verbose) {
+			ret.append("\n=======WORKER QUALITY STATISTICS(SUMMARY)=======");
+			ret.append("\n"+summary_report);
+			ret.append("\n=======================================");
+		}
+		ret.append("\n=======WORKER QUALITY STATISTICS(DETAILED)=======");
+		ret.append("\n"+detailed_report);
+		ret.append("\n=======================================");
+		return ret;
+	}
 
-    /**
-     * @param verbose
-     * @param ds
-     * @param prior_voting
-     * @param posterior_voting
-     * @return
-     */
-    public static synchronized StringBuffer saveDifferences(final boolean verbose, final DawidSkene ds,
-            final Map<String, String> prior_voting,
-            final Map<String, String> posterior_voting) {
-    	StringBuffer ret = new StringBuffer("");
-        String differences = ds.printDiffVote(prior_voting, posterior_voting);
-        if (verbose) {
-        	ret.append("\n=======DIFFERENCES WITH MAJORITY VOTE========");
-        	ret.append("\n"+differences);
-        	ret.append("\n=============================================");
-        }
-        return ret;
-    }
-    
-    /**
-     * @param verbose
-     * @param ds
-     * @return
-     */
-    public static synchronized StringBuffer saveMajorityVote(final boolean verbose,
-            final DawidSkene ds) {
-    	StringBuffer ret = new StringBuffer("");
-        // Save the majority vote before the D&S estimation
-        String majority = ds.printVote();
-        if (verbose) {
-        	ret.append("\n=======NAIVE MAJORITY VOTE========");
-        	ret.append("\n"+majority);
-        	ret.append("\n==================================");
-        }
-        return ret;
-    }
- 
-    /**
-     * @param word
-     * @return
-     */
-    private static synchronized String normalizeWord(final String word) {
-    	String normalized = word.replace("\r", "");
-    	normalized = normalized.replace("\t", "");
-    	normalized = normalized.replace("\\r", "");
+	/**
+	 * @param verbose
+	 * @param ds
+	 */
+	public static synchronized StringBuffer saveObjectResults(final boolean verbose, final DawidSkene ds) {
+		StringBuffer ret = new StringBuffer("");
+		// Save the probability that an object belongs to each class
+		String objectProbs = ds.printObjectClassProbabilities(0.0);
+		if (verbose) {
+			ret.append("\n=======CATEGORY PROBABILITIES========");
+			ret.append("\n"+objectProbs);
+			ret.append("\n=====================================");
+		}
+		return ret;
+	}
+	/**
+	 * @param verbose
+	 * @param ds
+	 */
+	public static synchronized StringBuffer saveCategoryPriors(final boolean verbose, final DawidSkene ds) {
+		StringBuffer ret = new StringBuffer("");
+		// Save the probability that an object belongs to each class
+		String priors = ds.printPriors();
+		if (verbose) {
+			ret.append("\n=======PRIOR PROBABILITIES========");
+			ret.append("\n"+priors);
+			ret.append("\n==================================");
+		}
+		return ret;
+	}
+	/**
+	 * @param verbose
+	 * @param ds
+	 * @return
+	 */
+	public static synchronized StringBuffer saveDawidSkeneVote(final boolean verbose,
+			final DawidSkene ds) {
+		StringBuffer ret = new StringBuffer("");
+		// Save the vote after the D&S estimation
+		String dawidskene = ds.printVote();
+		if (verbose) {
+			ret.append("\n=======DAWID&SKENE RESULTS========");
+			ret.append("\n"+dawidskene);
+			ret.append("\n==================================");
+		}
+		return ret;
+	}
+
+	/**
+	 * @param verbose
+	 * @param ds
+	 * @param prior_voting
+	 * @param posterior_voting
+	 * @return
+	 */
+	public static synchronized StringBuffer saveDifferences(final boolean verbose, final DawidSkene ds,
+			final Map<String, String> prior_voting,
+			final Map<String, String> posterior_voting) {
+		StringBuffer ret = new StringBuffer("");
+		String differences = ds.printDiffVote(prior_voting, posterior_voting);
+		if (verbose) {
+			ret.append("\n=======DIFFERENCES WITH MAJORITY VOTE========");
+			ret.append("\n"+differences);
+			ret.append("\n=============================================");
+		}
+		return ret;
+	}
+
+	/**
+	 * @param verbose
+	 * @param ds
+	 * @return
+	 */
+	public static synchronized StringBuffer saveMajorityVote(final boolean verbose,
+			final DawidSkene ds) {
+		StringBuffer ret = new StringBuffer("");
+		// Save the majority vote before the D&S estimation
+		String majority = ds.printVote();
+		if (verbose) {
+			ret.append("\n=======NAIVE MAJORITY VOTE========");
+			ret.append("\n"+majority);
+			ret.append("\n==================================");
+		}
+		return ret;
+	}
+
+	/**
+	 * @param word
+	 * @return
+	 */
+	private static synchronized String normalizeWord(final String word) {
+		String normalized = word.replace("\r", "");
+		normalized = normalized.replace("\t", "");
+		normalized = normalized.replace("\\r", "");
 //    	normalized = normalized.trim();
-    	return normalized;
-    }
+		return normalized;
+	}
 }

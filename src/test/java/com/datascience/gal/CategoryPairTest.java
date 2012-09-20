@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -20,10 +20,11 @@ public class CategoryPairTest {
 	String tos[] = {"dest1","dest1","dest3", "dest4", null, "dest3"};
 	P[] theSames = {	new P(0,1),new P(2,5) };
 	P[] differents = {	new P(0,2), new P(0,3), new P(0,4), new P(0,5),
-						new P(1,2), new P(1,3), new P(1,4),new P(1,5),
-						new P(2,3), new P(2,4), 
-						new P(3,4), new P(3,5),
-						new P(4,5) }; 
+		   new P(1,2), new P(1,3), new P(1,4),new P(1,5),
+		   new P(2,3), new P(2,4),
+		   new P(3,4), new P(3,5),
+		   new P(4,5)
+	};
 	CategoryPair categoryPairs[] = new  CategoryPair[froms.length];
 	/**
 	 * @throws java.lang.Exception

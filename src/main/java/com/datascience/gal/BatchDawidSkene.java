@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2012 Panagiotis G. Ipeirotis & Josh M. Attenberg
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 package com.datascience.gal;
@@ -23,179 +23,179 @@ import com.google.gson.JsonParseException;
 
 public class BatchDawidSkene extends AbstractDawidSkene {
 
-    public static final BatchDawidSkeneDeserializer deserializer = new BatchDawidSkeneDeserializer();
+	public static final BatchDawidSkeneDeserializer deserializer = new BatchDawidSkeneDeserializer();
 
-    private BatchDawidSkene(String id, Map<String, Datum> objects,
-            Map<String, Worker> workers, Map<String, Category> categories,
-            boolean fixedPriors) {
-        super(id);
-        this.objects = objects;
-        this.workers = workers;
-        this.categories = categories;
-        this.fixedPriors = fixedPriors;
-    }
+	private BatchDawidSkene(String id, Map<String, Datum> objects,
+							Map<String, Worker> workers, Map<String, Category> categories,
+							boolean fixedPriors) {
+		super(id);
+		this.objects = objects;
+		this.workers = workers;
+		this.categories = categories;
+		this.fixedPriors = fixedPriors;
+	}
 
-    public BatchDawidSkene(String id, Collection<Category> categories) {
-        super(id);
-        this.objects = new HashMap<String, Datum>();
-        this.workers = new HashMap<String, Worker>();
+	public BatchDawidSkene(String id, Collection<Category> categories) {
+		super(id);
+		this.objects = new HashMap<String, Datum>();
+		this.workers = new HashMap<String, Worker>();
 
-        this.fixedPriors = false;
-        this.categories = new HashMap<String, Category>();
+		this.fixedPriors = false;
+		this.categories = new HashMap<String, Category>();
 
-        for (Category c : categories) {
-            this.categories.put(c.getName(), c);
-            if (c.hasPrior()) {
-                this.fixedPriors = true;
-            }
-        }
+		for (Category c : categories) {
+			this.categories.put(c.getName(), c);
+			if (c.hasPrior()) {
+				this.fixedPriors = true;
+			}
+		}
 
-        // We initialize the priors to be uniform across classes
-        // if the user did not pass any information about the prior values
+		// We initialize the priors to be uniform across classes
+		// if the user did not pass any information about the prior values
 
-        if (!fixedPriors)
-            initializePriors();
+		if (!fixedPriors)
+			initializePriors();
 
-        // By default, we initialize the misclassification costs
-        // assuming a 0/1 loss function. The costs can be customized
-        // using the corresponding file
-        initializeCosts();
-    }
+		// By default, we initialize the misclassification costs
+		// assuming a 0/1 loss function. The costs can be customized
+		// using the corresponding file
+		initializeCosts();
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ipeirotis.gal.DawidSkene#estimate(int)
-     */
-    public void estimate(int iterations) {
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.ipeirotis.gal.DawidSkene#estimate(int)
+	 */
+	public void estimate(int iterations) {
 
-        for (int i = 0; i < iterations; i++) {
-            updateObjectClassProbabilities();
-            updatePriors();
-            rebuildWorkerConfusionMatrices();
-        }
-    }
+		for (int i = 0; i < iterations; i++) {
+			updateObjectClassProbabilities();
+			updatePriors();
+			rebuildWorkerConfusionMatrices();
+		}
+	}
 
-    private Map<String, Double> getCategoryPriors() {
-        Map<String, Double> out = new HashMap<String, Double>(categories.size());
-        for (Category cat : categories.values())
-            out.put(cat.getName(), cat.getPrior());
-        return out;
-    }
+	private Map<String, Double> getCategoryPriors() {
+		Map<String, Double> out = new HashMap<String, Double>(categories.size());
+		for (Category cat : categories.values())
+			out.put(cat.getName(), cat.getPrior());
+		return out;
+	}
 
-    @Override
-    public Map<String, Double> getWorkerPriors(Worker worker) {
-        return worker.getPrior(getCategoryPriors());
-    }
+	@Override
+	public Map<String, Double> getWorkerPriors(Worker worker) {
+		return worker.getPrior(getCategoryPriors());
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.ipeirotis.gal.DawidSkene#objectClassProbabilities(java.lang.String,
-     * double)
-     */
-    public Map<String, Double> objectClassProbabilities(String objectName,
-            double entropyThreshold) {
-        Map<String, Double> out = new HashMap<String, Double>();
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.ipeirotis.gal.DawidSkene#objectClassProbabilities(java.lang.String,
+	 * double)
+	 */
+	public Map<String, Double> objectClassProbabilities(String objectName,
+			double entropyThreshold) {
+		Map<String, Double> out = new HashMap<String, Double>();
 
-        if (!objects.containsKey(objectName)) {
-            logger.warn("attempting to get class probabilities for non-existent object");
-        } else {
-            Datum datum = objects.get(objectName);
-            if (datum.getEntropy() >= entropyThreshold) {
-                for (String cat : categories.keySet())
-                    out.put(cat, datum.getCategoryProbability(cat));
-            }
-        }
-        return out;
-    }
+		if (!objects.containsKey(objectName)) {
+			logger.warn("attempting to get class probabilities for non-existent object");
+		} else {
+			Datum datum = objects.get(objectName);
+			if (datum.getEntropy() >= entropyThreshold) {
+				for (String cat : categories.keySet())
+					out.put(cat, datum.getCategoryProbability(cat));
+			}
+		}
+		return out;
+	}
 
-    private void updateObjectClassProbabilities() {
+	private void updateObjectClassProbabilities() {
 
-        for (String objectName : this.objects.keySet()) {
-            this.updateObjectClassProbabilities(objectName);
-        }
-    }
+		for (String objectName : this.objects.keySet()) {
+			this.updateObjectClassProbabilities(objectName);
+		}
+	}
 
-    private void updateObjectClassProbabilities(String objectName) {
+	private void updateObjectClassProbabilities(String objectName) {
 
-        Datum d = objects.get(objectName);
-        Map<String, Double> probabilities = getObjectClassProbabilities(
-                objectName, null);
-        if (probabilities == null)
-            return;
-        for (String category : probabilities.keySet()) {
-            double probability = probabilities.get(category);
-            d.setCategoryProbability(category, probability);
-        }
-    }
+		Datum d = objects.get(objectName);
+		Map<String, Double> probabilities = getObjectClassProbabilities(
+												objectName, null);
+		if (probabilities == null)
+			return;
+		for (String category : probabilities.keySet()) {
+			double probability = probabilities.get(category);
+			d.setCategoryProbability(category, probability);
+		}
+	}
 
-    private void rebuildWorkerConfusionMatrices() {
+	private void rebuildWorkerConfusionMatrices() {
 
-        for (String workerName : this.workers.keySet()) {
-            rebuildWorkerConfusionMatrix(workerName);
-        }
-    }
+		for (String workerName : this.workers.keySet()) {
+			rebuildWorkerConfusionMatrix(workerName);
+		}
+	}
 
-    /**
-     * @param lid
-     */
-    private void rebuildWorkerConfusionMatrix(String workerName) {
+	/**
+	 * @param lid
+	 */
+	private void rebuildWorkerConfusionMatrix(String workerName) {
 
-        Worker w = this.workers.get(workerName);
-        w.empty();
+		Worker w = this.workers.get(workerName);
+		w.empty();
 
-        // Scan all objects and change the confusion matrix for each worker
-        // using the class probability for each object
-        for (AssignedLabel al : w.getAssignedLabels()) {
+		// Scan all objects and change the confusion matrix for each worker
+		// using the class probability for each object
+		for (AssignedLabel al : w.getAssignedLabels()) {
 
-            // Get the name of the object and the category it
-            // is classified from this worker.
-            String objectName = al.getObjectName();
-            String destination = al.getCategoryName();
-            // We get the classification of the object
-            // based on the votes of all the other workers
-            // We treat this classification as the "correct" one
-            Map<String, Double> probabilities = this
-                    .getObjectClassProbabilities(objectName, workerName);
-            if (probabilities == null)
-                continue; // No other worker labeled the object
+			// Get the name of the object and the category it
+			// is classified from this worker.
+			String objectName = al.getObjectName();
+			String destination = al.getCategoryName();
+			// We get the classification of the object
+			// based on the votes of all the other workers
+			// We treat this classification as the "correct" one
+			Map<String, Double> probabilities = this
+												.getObjectClassProbabilities(objectName, workerName);
+			if (probabilities == null)
+				continue; // No other worker labeled the object
 
-            for (String source : probabilities.keySet()) {
-                double error = probabilities.get(source);
-                w.addError(source, destination, error);
-            }
-        }
+			for (String source : probabilities.keySet()) {
+				double error = probabilities.get(source);
+				w.addError(source, destination, error);
+			}
+		}
 //        System.out.println("before: "
 //                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
-        w.normalize(ConfusionMatrixNormalizationType.UNIFORM);
+		w.normalize(ConfusionMatrixNormalizationType.UNIFORM);
 ////        System.out.println("after: "
 //                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
 
-    }
+	}
 
-    public static class BatchDawidSkeneDeserializer implements
-            JsonDeserializer<BatchDawidSkene> {
+	public static class BatchDawidSkeneDeserializer implements
+		JsonDeserializer<BatchDawidSkene> {
 
-        @Override
-        public BatchDawidSkene deserialize(JsonElement json, Type type,
-                JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jobject = (JsonObject) json;
+		@Override
+		public BatchDawidSkene deserialize(JsonElement json, Type type,
+										   JsonDeserializationContext context) throws JsonParseException {
+			JsonObject jobject = (JsonObject) json;
 
-            String id = jobject.get("id").getAsString();
-            Map<String, Category> categories = JSONUtils.gson.fromJson(
-                    jobject.get("categories"), JSONUtils.stringCategoryMapType);
-            boolean fixedPriors = jobject.get("fixedPriors").getAsBoolean();
-            Map<String, Datum> objects = JSONUtils.gson.fromJson(
-                    jobject.get("objects"), JSONUtils.stringDatumMapType);
-            Map<String, Worker> workers = JSONUtils.gson.fromJson(
-                    jobject.get("workers"), JSONUtils.strinWorkerMapType);
+			String id = jobject.get("id").getAsString();
+			Map<String, Category> categories = JSONUtils.gson.fromJson(
+												   jobject.get("categories"), JSONUtils.stringCategoryMapType);
+			boolean fixedPriors = jobject.get("fixedPriors").getAsBoolean();
+			Map<String, Datum> objects = JSONUtils.gson.fromJson(
+											 jobject.get("objects"), JSONUtils.stringDatumMapType);
+			Map<String, Worker> workers = JSONUtils.gson.fromJson(
+											  jobject.get("workers"), JSONUtils.strinWorkerMapType);
 
-            return new BatchDawidSkene(id, objects, workers, categories,
-                    fixedPriors);
-        }
+			return new BatchDawidSkene(id, objects, workers, categories,
+									   fixedPriors);
+		}
 
-    }
+	}
 
 }

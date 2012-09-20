@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -23,7 +23,7 @@ import com.google.gson.reflect.TypeToken;
  *
  */
 public class IncrementalDawidSkeneDeserializerTest extends
-		IncrementalDawidSkeneDeserializer {
+	IncrementalDawidSkeneDeserializer {
 
 	/**
 	 * @throws java.lang.Exception
@@ -74,7 +74,7 @@ public class IncrementalDawidSkeneDeserializerTest extends
 		jsonObject.addProperty("fixedPriors", fixedPriors);
 		jsonObject.addProperty("dsmethod", IncrementalDSMethod.ITERATELOCAL.toString());
 		jsonObject.addProperty("priorDenominator", priorDenominator);
-		
+
 		Object o = this.deserialize(jsonObject, null, null);
 		assertTrue(o instanceof IncrementalDawidSkene);
 	}

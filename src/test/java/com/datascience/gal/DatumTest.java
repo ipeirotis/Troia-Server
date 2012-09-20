@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -53,25 +53,25 @@ public class DatumTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings( { "unchecked", "rawtypes" })
 	@Before
 	public void setUp() throws Exception {
 		nameList.add("name1");
 		nameList.add("name2");
 		nameList.add("name3");
 		nameList.add("name4");
-		
+
 		categorySet1.add(new Category(categoryNames[0]));
 		categorySet1.add(new Category(categoryNames[1]));
 		categorySet1.add(new Category(categoryNames[2]));
 		categorySet2.add(new Category(categoryNames[3]));
 		categorySet4 = ((Set) ((HashSet) categorySet1).clone());
-		
+
 		categoryList.add(categorySet1);
 		categoryList.add(categorySet2);
 		categoryList.add(categorySet3);
 		categoryList.add(categorySet4);
-		
+
 	}
 
 	/**
@@ -108,34 +108,34 @@ public class DatumTest {
 			datum2.setGold(i%2==0);
 			if (bHC) assertEquals(datum1.hashCode(), datum2.hashCode());
 			else assertTrue(datum1+msgt+datum2, datum1.equals(datum2));
-			
+
 			datum1.setCorrectCategory(categoryNames[i]);
 			datum2.setCorrectCategory(categoryNames[j]);
 			if (bHC) assertNotSame(datum1.hashCode(), datum2.hashCode());
 			else assertFalse(datum1+msgns+datum2, datum1.equals(datum2));
-			
+
 			datum2.setCorrectCategory(categoryNames[i]);
 			if (bHC) assertEquals(datum1.hashCode(), datum2.hashCode());
 			else assertTrue(datum1+msgt+datum2, datum1.equals(datum2));
-			
+
 			datum2.setGold(i%2==1);
 			if (bHC) assertNotSame(datum1.hashCode(), datum2.hashCode());
 			else assertFalse(datum1+msgns+datum2, datum1.equals(datum2));
-			
+
 			datum2.setGold(i%2==0);
 			datum1.setCategoryProbability(categoryNames[i], 0.3);
 			datum2.setCategoryProbability(categoryNames[i], 0.3);
 			if (bHC) assertEquals(datum1.hashCode(), datum2.hashCode());
 			else assertTrue(datum1+msgt+datum2, datum1.equals(datum2));
-			
+
 			datum2.setCategoryProbability(categoryNames[j], 0.2);
 			if (bHC) assertNotSame(datum1.hashCode(), datum2.hashCode());
 			else assertFalse(datum1+msgns+datum2, datum1.equals(datum2));
-			
+
 			datum2.setCategoryProbability(categoryNames[i], 0.3);
 			if (bHC) assertEquals(datum1.hashCode(), datum2.hashCode());
 			else assertTrue(datum1+msgt+datum2, datum1.equals(datum2));
-			
+
 			datum2.setName(nameList.get(j));
 			if (bHC) assertNotSame(datum1.hashCode(), datum2.hashCode());
 			else assertFalse(datum1+msgns+datum2, datum1.equals(datum2));
@@ -151,11 +151,11 @@ public class DatumTest {
 		for (int i=0; i<testCount; i++) {
 			Datum datum1 = new Datum(nameList.get(i), categoryList.get(i));
 			Datum datum2 = new Datum(nameList.get(i), categoryList.get(i));
-			
+
 			datum1.setGold(i%2==0);
 			datum2.setGold(i%2==0);
 			assertEquals(datum1.isGold, datum2.isGold);
-			
+
 			datum2.setGold(i%2==1);
 			assertNotSame(datum1.isGold, datum2.isGold);
 		}
@@ -171,11 +171,11 @@ public class DatumTest {
 			int j = (i+1) % testCount;
 			Datum datum1 = new Datum(nameList.get(i), categoryList.get(i));
 			Datum datum2 = new Datum(nameList.get(i), categoryList.get(i));
-			
+
 			datum1.setCorrectCategory(categoryNames[i]);
 			datum2.setCorrectCategory(categoryNames[i]);
 			assertEquals(datum1.getCorrectCategory(), datum2.getCorrectCategory());
-			
+
 			datum2.setCorrectCategory(categoryNames[j]);
 			assertNotSame(datum1.getCorrectCategory(), datum2.getCorrectCategory());
 		}
@@ -191,20 +191,20 @@ public class DatumTest {
 			int j = (i+1) % testCount;
 			Datum datum = new Datum(nameList.get(i), categoryList.get(i));
 			datum.setCorrectCategory(categoryNames[i]);
-			
+
 			datum.setGold(true);
 			assertEquals(1.0, datum.getCategoryProbability(categoryNames[i]), TestDataManager.DELTA_DOUBLE);
-			
+
 			datum.setCorrectCategory(categoryNames[j]);
 			assertEquals(0.0, datum.getCategoryProbability(categoryNames[i]), TestDataManager.DELTA_DOUBLE);
-			
+
 			datum.setGold(false);
 			assertEquals(
-			//to avoid double checking on Null, coz assertEquals does not support Double
-					(Object)datum.getCategoryProbability().get(categoryNames[i]), 
-					(Object)datum.getCategoryProbability(categoryNames[i]));
-			
-		}	
+				//to avoid double checking on Null, coz assertEquals does not support Double
+				(Object)datum.getCategoryProbability().get(categoryNames[i]),
+				(Object)datum.getCategoryProbability(categoryNames[i]));
+
+		}
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class DatumTest {
 		for (int i=0; i<testCount; i++) {
 			Datum datum = new Datum(nameList.get(i), categoryList.get(i));
 			Set<AssignedLabel> assignedLabels = (Set<AssignedLabel>) datum.getAssignedLabels();
-			
+
 			assertEquals(0, assignedLabels.size());
 			datum.addAssignedLabel(new AssignedLabel("w", "d", "c"));
 			assertEquals(0, assignedLabels.size());
@@ -243,7 +243,7 @@ public class DatumTest {
 //			System.err.println(datum.getMajorityCategory());
 		}
 		assertTrue("testless because return result is unpredictable," +
-				"probably method computing based on some random inputs", true);
+				   "probably method computing based on some random inputs", true);
 		/* 	category1.1
 			category2.1
 			null
@@ -279,7 +279,7 @@ public class DatumTest {
 			Set<Category> categorySet = categoryList.get(i);
 			Datum datum = new Datum(nameList.get(i), categorySet);
 			HashMap<String, Double> categoryProbability = (HashMap<String, Double>) datum.getCategoryProbability();
-			
+
 			int size = categoryProbability.keySet().size();
 
 			assertEquals(size,categoryProbability.keySet().size());
@@ -298,12 +298,12 @@ public class DatumTest {
 				}
 				assertEquals(1, oneHundredPercents, TestDataManager.DELTA_DOUBLE);
 				if (isNewCategoryCounted) {
-					// this section covers setCategoryProbability method as well 
+					// this section covers setCategoryProbability method as well
 					datum.setCategoryProbability("unique category", 0.7);
 					categoryProbability = (HashMap<String, Double>) datum.getCategoryProbability();
 					int newSize = categoryProbability.size();
 					assertEquals(size, newSize-1);
-					
+
 					iteratorOuts = categoryProbability.keySet().iterator();
 					oneHundredPercents = 0;
 					while (iteratorOuts.hasNext()) {
@@ -315,7 +315,7 @@ public class DatumTest {
 				}
 			}
 		}
-		
+
 	}
 	/**
 	 * Test method for {@link com.datascience.gal.Datum#getName()}.

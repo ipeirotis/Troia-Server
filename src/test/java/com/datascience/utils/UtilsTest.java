@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.utils;
 
@@ -76,11 +76,11 @@ public class UtilsTest {
 		String fullpath = System.getProperty(property)+File.separatorChar+fname;
 		File toCheck = new File(fullpath);
 		if (toCheck.exists()) toCheck.delete();
-        BufferedWriter bw;
+		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter(toCheck));
-	        bw.write(data);
-	        bw.close();
+			bw.write(data);
+			bw.close();
 		} catch (IOException e) {
 			fail(e.getMessage());
 		};
@@ -90,7 +90,7 @@ public class UtilsTest {
 		System.out.println("Out=["+fgetFileReturned+"]");
 		toCheck.delete();
 		assertTrue("getFile adds new line at the end. Len in="+
-				data.length()+", Len out="+fgetFileReturned.length(),isTheSameContent==0);
+				   data.length()+", Len out="+fgetFileReturned.length(),isTheSameContent==0);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class UtilsTest {
 		if (fToReadFromAndDeleteAfterwards.exists()) {
 			try {
 				BufferedReader dataInput = new BufferedReader(new FileReader(
-						fToReadFromAndDeleteAfterwards));
+							fToReadFromAndDeleteAfterwards));
 				try {
 					char[] outCharBuf = new char[1000];
 					int len = dataInput.read(outCharBuf);
@@ -131,25 +131,26 @@ public class UtilsTest {
 	 */
 	@Test
 	public final void testRound() {
-		double ress[] =
-			{ -10.0, 10.0, -110.0, 110.0, 0.0, -110.0, 0.0, 0.0, 1000.0, -1000.0,
-				1000.0, -1000.0, -11.0, 11.0, -105.0, 105.0, 1.0, -105.0, 0.0,
-				0.0, 1001.0, -1001.0, 1000.0, -1000.0, -10.5, 10.5, -105.1,
-				105.1, 1.1, -105.1, 0.0, 0.0, 1000.5, -1000.5, 1000.5, -1000.5,
-				-10.51, 10.51, -105.1, 105.1, 1.05, -105.1, 0.0, 0.0, 1000.5,
-				-1000.5, 1000.49, -1000.49, -10.51, 10.51, -105.1, 105.1,
-				1.051, -105.1, 0.0, 0.0, 1000.5, -1000.5, 1000.49, -1000.49,
-				-10.51, 10.51, -105.1, 105.1, 1.051, -105.1, 0.0001, -0.0001,
-				1000.5, -1000.5, 1000.49, -1000.49, -10.51, 10.51, -105.1,
-				105.1, 1.051, -105.1, 0.0001, -0.0001, 1000.5, -1000.5,
-				1000.49, -1000.49 };
-		double arg1s[] = {	-10.51, +10.51, 
+		double ress[] = {
+			-10.0, 10.0, -110.0, 110.0, 0.0, -110.0, 0.0, 0.0, 1000.0, -1000.0,
+			1000.0, -1000.0, -11.0, 11.0, -105.0, 105.0, 1.0, -105.0, 0.0,
+			0.0, 1001.0, -1001.0, 1000.0, -1000.0, -10.5, 10.5, -105.1,
+			105.1, 1.1, -105.1, 0.0, 0.0, 1000.5, -1000.5, 1000.5, -1000.5,
+			-10.51, 10.51, -105.1, 105.1, 1.05, -105.1, 0.0, 0.0, 1000.5,
+			-1000.5, 1000.49, -1000.49, -10.51, 10.51, -105.1, 105.1,
+			1.051, -105.1, 0.0, 0.0, 1000.5, -1000.5, 1000.49, -1000.49,
+			-10.51, 10.51, -105.1, 105.1, 1.051, -105.1, 0.0001, -0.0001,
+			1000.5, -1000.5, 1000.49, -1000.49, -10.51, 10.51, -105.1,
+			105.1, 1.051, -105.1, 0.0001, -0.0001, 1000.5, -1000.5,
+			1000.49, -1000.49
+		};
+		double arg1s[] = {	-10.51, +10.51,
 							-10.51e+1, +10.51e+1,
 							+10.51e-1, -10.51e+1,
 							+0.0001, -0.0001,
 							+1000.5, -1000.5,
 							+1000.49, -1000.49
-							};
+						 };
 		int arg2s[] = {-1, 0,1,2,3,4,5};
 		for (int i=0; i<arg2s.length; i++) {
 			for (int j=0; j<arg1s.length; j++) {
@@ -169,22 +170,22 @@ public class UtilsTest {
 	public final void testEntropy() {
 		double p1[] = {1,0.1,0.99,0.2,0.4,0.5};
 		double h1 = 1.275185807;
-		
+
 		double p2[] = {0.4, 0.5, 0.1};
 		double h2 = 0.943348392;
 
 		double p3[] = {-1, -1};
 		double h3 = 0;
-		
+
 		double p4[] = {10,10};
 		double h4 = -46.05170186;
-		
+
 		double p5[] = {0.4, 0.5};
 		double h5 = 0.713089883;
-		
+
 		double p6[] = {0.1,0.2,0.4,0.5,0.1,0.2,0.4,0.5};
 		double h6 = 2.53047195;
-		
+
 		assertTrue(isEntropyTheSame(p1,h1));
 		assertTrue(isEntropyTheSame(p2,h2));
 		assertTrue(isEntropyTheSame(p3,h3));
@@ -192,7 +193,7 @@ public class UtilsTest {
 		assertTrue(isEntropyTheSame(p5,h5));
 		assertTrue(isEntropyTheSame(p6,h6));
 	}
-	
+
 	/**
 	 * @param p
 	 * @param res

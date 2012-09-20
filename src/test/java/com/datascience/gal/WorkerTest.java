@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.datascience.gal;
 
@@ -31,35 +31,35 @@ public class WorkerTest {
 	Category category3 = new Category("category3");
 	Category category4 = new Category("category4");
 	Category category5 = new Category("category5");
-	
+
 	List<Category> categoryList1 = new ArrayList<Category>();
 	List<Category> categoryList2 = new ArrayList<Category>();
 	List<Category> categoryList3 = new ArrayList<Category>();
-	
+
 	HashSet<Category> categorySet1;
 	HashSet<Category> categorySet2;
 	HashSet<Category> categorySet3;
-	
+
 	List<HashSet<Category>> categoriesList = new ArrayList<HashSet<Category>>();
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public WorkerTest() {
 		categoryList1.add(category1);
 		categoryList1.add(category2);
-		
+
 		categoryList2.add(category3);
 		categoryList2.add(category4);
 		categoryList2.add(category5);
-		
+
 		categoryList3.add(category1);
 		categoryList3.add(category2);
-		
+
 		categorySet1 = new HashSet<Category>(categoryList1);
 		categorySet2 = new HashSet<Category>(categoryList2);
 		categorySet3 = new HashSet<Category>(categoryList3);
-		
+
 		categoriesList = new ArrayList<HashSet<Category>>();
 		categoriesList.add(categorySet1);
 		categoriesList.add(categorySet2);
@@ -130,18 +130,18 @@ public class WorkerTest {
 		for (int i=0; i<names.length; i++) {
 			Worker worker = new Worker(names[i], categoriesList.get(i));
 			Set<AssignedLabel>  assignedLabels = worker.getAssignedLabels();
-			
+
 			assertEquals(0, assignedLabels.size());
-			
+
 			Category category = (Category) categoriesList.get(i).toArray()[0];
-			AssignedLabel assignedLabel1 = 
-					new AssignedLabel(names[i], "datum1",category.getName());
-			AssignedLabel assignedLabel2 = 
-					new AssignedLabel(names[i], "datum2",category.getName());
-			
+			AssignedLabel assignedLabel1 =
+				new AssignedLabel(names[i], "datum1",category.getName());
+			AssignedLabel assignedLabel2 =
+				new AssignedLabel(names[i], "datum2",category.getName());
+
 			worker.addAssignedLabel(assignedLabel1);
 			worker.addAssignedLabel(assignedLabel2);
-			
+
 			assignedLabels = worker.getAssignedLabels();
 			assertEquals(2, assignedLabels.size());
 		}
@@ -200,11 +200,11 @@ public class WorkerTest {
 			Category categoryTo = (Category) categoriesList.get(i).toArray()[1];
 			String from = categoryFrom.getName();
 			String to = categoryTo.getName();
-			
+
 			double 	testedValueBefore = worker.getErrorRateBatch(from, to);
 //			System.err.println("Before{"+i+"},"+testedValueBefore);
 			worker.addError(from, to, errorAdditionValue);
-			
+
 			double testedValueAfter = worker.getErrorRateBatch(from, to);
 //			System.err.println("After{"+i+"},"+testedValueAfter);
 			assertEquals(errorAdditionValue+testedValueBefore, testedValueAfter, TestDataManager.DELTA_DOUBLE);
@@ -221,44 +221,44 @@ public class WorkerTest {
 			Worker workerForLaplace = new Worker(names[i], categoriesList.get(i));
 			Worker workerForUniform = new Worker(names[i], categoriesList.get(i));
 			Set<Category> categorySet = categoriesList.get(i);
-			
+
 			Category categoryFrom = new Category(((Category)categorySet.toArray()[0]).getName());
 			Category categoryTo = new Category(((Category)categorySet.toArray()[1]).getName());
 			String from = categoryFrom.getName();
 			String to = categoryTo.getName();
-			
+
 			int categoriesCount = categoriesList.get(i).size();
 			double[] toCompareTheoreticallyComputed = new double[8];
-			toCompareTheoreticallyComputed[0] = 
-					laplaceNormalization(workerForLaplace.getErrorRateBatch(from, from), categoriesCount);
-			toCompareTheoreticallyComputed[1] = 
-					laplaceNormalization(workerForLaplace.getErrorRateBatch(from, to), categoriesCount);
-			toCompareTheoreticallyComputed[2] = 
-					laplaceNormalization(workerForLaplace.getErrorRateBatch(to, from), categoriesCount);
-			toCompareTheoreticallyComputed[3] = 
-					laplaceNormalization(workerForLaplace.getErrorRateBatch(to, to), categoriesCount);
-			
+			toCompareTheoreticallyComputed[0] =
+				laplaceNormalization(workerForLaplace.getErrorRateBatch(from, from), categoriesCount);
+			toCompareTheoreticallyComputed[1] =
+				laplaceNormalization(workerForLaplace.getErrorRateBatch(from, to), categoriesCount);
+			toCompareTheoreticallyComputed[2] =
+				laplaceNormalization(workerForLaplace.getErrorRateBatch(to, from), categoriesCount);
+			toCompareTheoreticallyComputed[3] =
+				laplaceNormalization(workerForLaplace.getErrorRateBatch(to, to), categoriesCount);
+
 			toCompareTheoreticallyComputed[4] = workerForUniform.getErrorRateBatch(from, from);
 			toCompareTheoreticallyComputed[5] = workerForUniform.getErrorRateBatch(from, to);
 			toCompareTheoreticallyComputed[6] = workerForUniform.getErrorRateBatch(to, from);
 			toCompareTheoreticallyComputed[7] = workerForUniform.getErrorRateBatch(to, to);
-			
-			
-			
+
+
+
 			workerForLaplace.normalize(ConfusionMatrixNormalizationType.LAPLACE);
 			workerForUniform.normalize(ConfusionMatrixNormalizationType.UNIFORM);
-			
+
 			double[] toCompareNormilized = new double[8];
 			toCompareNormilized[0] = workerForLaplace.getErrorRateBatch(from, from);
 			toCompareNormilized[1] = workerForLaplace.getErrorRateBatch(from, to);
 			toCompareNormilized[2] = workerForLaplace.getErrorRateBatch(to, from);
 			toCompareNormilized[3] = workerForLaplace.getErrorRateBatch(to, to);
-			
+
 			toCompareNormilized[4] = workerForUniform.getErrorRateBatch(from, from);
 			toCompareNormilized[5] = workerForUniform.getErrorRateBatch(from, to);
 			toCompareNormilized[6] = workerForUniform.getErrorRateBatch(to, from);
 			toCompareNormilized[7] = workerForUniform.getErrorRateBatch(to, to);
-			
+
 			assertArrayEquals(toCompareTheoreticallyComputed, toCompareNormilized, TestDataManager.DELTA_DOUBLE);
 		}
 	}
@@ -290,7 +290,7 @@ public class WorkerTest {
 			double expectedProbability = laplaceNormalization(plainProbability, categoriesCount);
 			double actualProbability = workerLaplace.getErrorRateIncremental(from, to, ConfusionMatrixNormalizationType.LAPLACE);
 			assertEquals(expectedProbability, actualProbability, TestDataManager.DELTA_DOUBLE);
-			
+
 			plainProbability = workerUniform.getErrorRateBatch(from, to);
 			actualProbability = workerUniform.getErrorRateIncremental(from, to, ConfusionMatrixNormalizationType.UNIFORM);
 			assertEquals(plainProbability, actualProbability, TestDataManager.DELTA_DOUBLE);
@@ -309,10 +309,10 @@ public class WorkerTest {
 			Worker worker = new Worker(names[i], categoriesList.get(i));
 			String categoryFrom = categoriesList.get(i).toArray()[0].toString();
 			String categoryTo = categoriesList.get(i).toArray()[1].toString();
-			
+
 			double errorRateBatch = worker.getErrorRateBatch(categoryFrom, categoryTo);
 			assertEquals(0.0, errorRateBatch, TestDataManager.DELTA_DOUBLE);
-			
+
 			worker.addError(categoryFrom, categoryTo, errors[i]);
 			errorRateBatch = worker.getErrorRateBatch(categoryFrom, categoryTo);
 			assertEquals(errors[i], errorRateBatch, TestDataManager.DELTA_DOUBLE);
@@ -407,10 +407,9 @@ public class WorkerTest {
 			worker1.addAssignedLabel(assignedLabel);
 			if (isHashCodeChecking) {
 				assertNotSame(worker1+"\n should not be the same as \n"+worker2, worker1.hashCode(), worker2.hashCode());
-			}
-			else {
+			} else {
 				assertFalse(worker1+"\n should not be the same as \n"+worker2, worker1.equals(worker2));
-			} 
+			}
 		}
 		if (eFieldsEquals == EFieldsEquals.ERRORS) {
 			Worker worker1 = new Worker("worker1", categorySet1);
@@ -421,14 +420,14 @@ public class WorkerTest {
 				assertTrue(worker1+"\n should not be the same as \n"+worker2, worker1.equals(worker2));
 			}
 			worker1.addError("source", "destination", 0.4);
-			if (isHashCodeChecking) { 
+			if (isHashCodeChecking) {
 				assertNotSame(worker1+"\n should not be the same as \n"+worker2, worker1.hashCode(), worker2.hashCode());
 			} else {
 				assertFalse(worker1+"\n should not be the same as \n"+worker2, worker1.equals(worker2));
 			}
 		}
 	}
-	
+
 	/**
 	 * @author Michael Arshynov
 	 *
