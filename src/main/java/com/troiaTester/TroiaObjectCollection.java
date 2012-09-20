@@ -14,230 +14,230 @@ import java.util.Map;
  * also provides functionality that allows you to 'cheat' and ask for correct
  * label for each object. This is useful if you want to test how close to
  * reality are result of DSaS algorithm.
- * 
+ *
  * @author piotr.gnys@10clouds.com
  */
 public class TroiaObjectCollection implements Collection<String> {
 
-	/**
-	 * Constructor that creates empty test objects collection
-	 */
-	public TroiaObjectCollection() {
-		this(new HashMap<String, String>());
-	}
+    /**
+     * Constructor that creates empty test objects collection
+     */
+    public TroiaObjectCollection() {
+        this(new HashMap<String, String>());
+    }
 
-	/**
-	 * @param testObject
-	 *            Map that holds pairs of {name,category} where name is key and
-	 *            category value.
-	 */
-	public TroiaObjectCollection(Map<String, String> testObject) {
-		super();
-		this.testObject = testObject;
-	}
+    /**
+     * @param testObject
+     *            Map that holds pairs of {name,category} where name is key and
+     *            category value.
+     */
+    public TroiaObjectCollection(Map<String, String> testObject) {
+        super();
+        this.testObject = testObject;
+    }
 
-	/**
-	 * @see java.util.Collection#add(java.lang.Object)
-	 */
-	 
-	public boolean add(String objectName) {
-		if (this.testObject.containsKey(objectName)) {
-			return false;
-		} else {
-			this.testObject.put(objectName, null);
-			return true;
-		}
-	}
+    /**
+     * @see java.util.Collection#add(java.lang.Object)
+     */
 
-	public boolean add(String objectName, String category) {
-		if (this.testObject.containsKey(objectName)) {
-			return false;
-		} else {
-			this.testObject.put(objectName, category);
-			return true;
-		}
-	}
+    public boolean add(String objectName) {
+        if (this.testObject.containsKey(objectName)) {
+            return false;
+        } else {
+            this.testObject.put(objectName, null);
+            return true;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#addAll(java.util.Collection)
-	 */
-	 
-	public boolean addAll(Collection<? extends String> objects) {
-		boolean retVal = false;
-		for (String string : objects) {
-			if (this.add(string)) {
-				retVal = true;
-			}
-		}
-		return retVal;
-	}
+    public boolean add(String objectName, String category) {
+        if (this.testObject.containsKey(objectName)) {
+            return false;
+        } else {
+            this.testObject.put(objectName, category);
+            return true;
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#clear()
-	 */
-	 
-	public void clear() {
-		this.testObject.clear();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#addAll(java.util.Collection)
+     */
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#contains(java.lang.Object)
-	 */
-	 
-	public boolean contains(Object o) {
-		return this.testObject.containsKey(o);
-	}
+    public boolean addAll(Collection<? extends String> objects) {
+        boolean retVal = false;
+        for (String string : objects) {
+            if (this.add(string)) {
+                retVal = true;
+            }
+        }
+        return retVal;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#containsAll(java.util.Collection)
-	 */
-	 
-	public boolean containsAll(Collection<?> c) {
-		for (Object object : c) {
-			if (!this.testObject.containsKey(object))
-				return false;
-		}
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#clear()
+     */
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#isEmpty()
-	 */
-	 
-	public boolean isEmpty() {
-		return this.testObject.isEmpty();
-	}
+    public void clear() {
+        this.testObject.clear();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#iterator()
-	 */
-	 
-	public Iterator<String> iterator() {
-		return this.testObject.keySet().iterator();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#contains(java.lang.Object)
+     */
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#remove(java.lang.Object)
-	 */
-	 
-	public boolean remove(Object o) {
-		return this.testObject.remove(o) != null;
-	}
+    public boolean contains(Object o) {
+        return this.testObject.containsKey(o);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#removeAll(java.util.Collection)
-	 */
-	 
-	public boolean removeAll(Collection<?> c) {
-		boolean retVal = false;
-		for (Object object : c) {
-			if (this.remove(object)) {
-				retVal = true;
-			}
-		}
-		return retVal;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#containsAll(java.util.Collection)
+     */
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#retainAll(java.util.Collection) THIS DO NOT
-	 *      WORK
-	 */
-	 
-	public boolean retainAll(Collection<?> c) {
-		return false;
-	}
+    public boolean containsAll(Collection<?> c) {
+        for (Object object : c) {
+            if (!this.testObject.containsKey(object))
+                return false;
+        }
+        return true;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#size()
-	 */
-	 
-	public int size() {
-		return this.testObject.size();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#isEmpty()
+     */
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#toArray()
-	 */
-	 
-	public Object[] toArray() {
-		return this.testObject.keySet().toArray();
-	}
+    public boolean isEmpty() {
+        return this.testObject.isEmpty();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.Collection#toArray(T[])
-	 */
-	 
-	public <T> T[] toArray(T[] a) {
-		return this.testObject.keySet().toArray(a);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#iterator()
+     */
 
-	/**
-	 * @param objectName
-	 *            Name of object for with category is returned
-	 * @return Category of given object
-	 */
-	public String getCategory(String objectName) {
-		return this.testObject.get(objectName);
-	}
+    public Iterator<String> iterator() {
+        return this.testObject.keySet().iterator();
+    }
 
-	/**
-	 * Adds object with given name and category, or changes object category if
-	 * it already exists.
-	 * 
-	 * @param objectName
-	 *            Name of object for with category is set
-	 * @param category
-	 *            Name of category
-	 */
-	public void setCategory(String objectName, String category) {
-		this.testObject.put(objectName, category);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#remove(java.lang.Object)
+     */
 
-	/**
-	 * Generates multiple lines string, each line format is as follow <object
-	 * name><tab><category>
-	 * 
-	 * @return List of object, category pairs in easy to read format
-	 * @see java.lang.Object#toString()
-	 */
-	 
-	public String toString() {
-		String retStr = "";
-		Collection<String> objects = this.testObject.keySet();
-		for (String object : objects) {
-			retStr += object + '\t' + this.getCategory(object) + '\n';
-		}
-		return retStr;
-	}
+    public boolean remove(Object o) {
+        return this.testObject.remove(o) != null;
+    }
 
-	/**
-	 * Map that holds pairs of {name,category} where name is key and category
-	 * value.
-	 */
-	Map<String, String> testObject;
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#removeAll(java.util.Collection)
+     */
+
+    public boolean removeAll(Collection<?> c) {
+        boolean retVal = false;
+        for (Object object : c) {
+            if (this.remove(object)) {
+                retVal = true;
+            }
+        }
+        return retVal;
+    }
+
+    /**
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#retainAll(java.util.Collection) THIS DO NOT
+     *      WORK
+     */
+
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#size()
+     */
+
+    public int size() {
+        return this.testObject.size();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#toArray()
+     */
+
+    public Object[] toArray() {
+        return this.testObject.keySet().toArray();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Collection#toArray(T[])
+     */
+
+    public <T> T[] toArray(T[] a) {
+        return this.testObject.keySet().toArray(a);
+    }
+
+    /**
+     * @param objectName
+     *            Name of object for with category is returned
+     * @return Category of given object
+     */
+    public String getCategory(String objectName) {
+        return this.testObject.get(objectName);
+    }
+
+    /**
+     * Adds object with given name and category, or changes object category if
+     * it already exists.
+     *
+     * @param objectName
+     *            Name of object for with category is set
+     * @param category
+     *            Name of category
+     */
+    public void setCategory(String objectName, String category) {
+        this.testObject.put(objectName, category);
+    }
+
+    /**
+     * Generates multiple lines string, each line format is as follow <object
+     * name><tab><category>
+     *
+     * @return List of object, category pairs in easy to read format
+     * @see java.lang.Object#toString()
+     */
+
+    public String toString() {
+        String retStr = "";
+        Collection<String> objects = this.testObject.keySet();
+        for (String object : objects) {
+            retStr += object + '\t' + this.getCategory(object) + '\n';
+        }
+        return retStr;
+    }
+
+    /**
+     * Map that holds pairs of {name,category} where name is key and category
+     * value.
+     */
+    Map<String, String> testObject;
 
 }
