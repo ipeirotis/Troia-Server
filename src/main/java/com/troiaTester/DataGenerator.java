@@ -40,7 +40,7 @@ public class DataGenerator {
         for (Double percentage : percentages) {
             totalPercentage += percentage.doubleValue();
         }
-        if (1 - totalPercentage > 0.0001) {
+        if (Math.abs(1 - totalPercentage) > 0.0001) {
             throw new ArithmeticException("Percentage values sum up to "
                                           + totalPercentage + " instead of 1.");
         } else {
