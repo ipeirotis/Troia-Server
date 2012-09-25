@@ -47,7 +47,7 @@ public class DawidSkeneCache {
 
 	private Connection connection;
 	private Properties connectionProporties;
-        private String databaseUrl;
+	private String databaseUrl;
 
 	private static final String GET_DS = "SELECT data FROM projects WHERE id IN (?);";
 	private static final String INSERT_DS = "INSERT INTO projects (id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = (?);";
@@ -60,7 +60,7 @@ public class DawidSkeneCache {
 	private static final int NUM_THREADS = 1;
 
 	private PreparedStatement dsStatement;
-	
+
 
 	private int cachesize = 5;
 	private Map<String, DawidSkene> cache;
@@ -70,7 +70,7 @@ public class DawidSkeneCache {
 
 		Class.forName("com.mysql.jdbc.Driver");
 
-                String user = disProps.getProperty("USER");
+		String user = disProps.getProperty("USER");
 		String password = disProps.getProperty("PASSWORD");
 		String db = disProps.getProperty("DB");
 		String url = disProps.getProperty("URL");
@@ -83,8 +83,8 @@ public class DawidSkeneCache {
 		if (password != null)
 			connectionProporties.setProperty("password", password);
 		this.databaseUrl = "jdbc:mysql://" + url + "/" + db;
-		connectDB();
-		initializeCache();
+		this.connectDB();
+		this.initializeCache();
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class DawidSkeneCache {
 	 *
 	 * @throws SQLException
 	 */
-    private void connectDB() throws SQLException {
+	private void connectDB() throws SQLException {
 		logger.info("attempting to connect to " + this.databaseUrl);
 		connection = DriverManager.getConnection(this.databaseUrl, this.connectionProporties);
 		logger.info("connected to " + this.databaseUrl);
@@ -107,7 +107,7 @@ public class DawidSkeneCache {
 	private synchronized void ensureDBConnection() throws SQLException {
 
 		if (!connection.isValid(VALIDATION_TIMEOUT)) {
-			connectDB();
+			this.connectDB();
 		}
 	}
 
@@ -119,24 +119,27 @@ public class DawidSkeneCache {
 	 */
 	public DawidSkene getDawidSkene(String id) {
 		try {
-			if (cache.containsKey(id)) {
-				return cache.get(id);
+			synchronized(this.cache) {
+				if (this.cache.containsKey(id)) {
+					return this.cache.get(id);
+				}
 			}
 			ResultSet dsResults;
-			synchronized(this.dsStatement){
-			ensureDBConnection();
-			dsStatement = connection.prepareStatement(GET_DS);
-			dsStatement.setString(1, id);
-			dsResults = dsStatement.executeQuery();
+			synchronized(this.dsStatement) {
+				this.ensureDBConnection();
+				this.dsStatement = connection.prepareStatement(GET_DS);
+				this.dsStatement.setString(1, id);
+				dsResults = this.dsStatement.executeQuery();
 			}
 			if (dsResults.next()) {
 				try {
 					String dsJson = dsResults.getString("data");
 					DawidSkene ds = JSONUtils.gson.fromJson(dsJson,
 															JSONUtils.dawidSkeneType);
-					logger.info("returning ds object with id " + id);
-					cache.put(id, ds);
-
+					synchronized(this.cache) {
+						logger.info("returning ds object with id " + id);
+						this.cache.put(id, ds);
+					}
 					return ds;
 				} catch (Exception e) {
 					logger.error(e.getLocalizedMessage());
@@ -157,23 +160,25 @@ public class DawidSkeneCache {
 
 	public DawidSkene insertDawidSkene(final DawidSkene ds) {
 		DSDBInserter inserter = new DSDBInserter(ds);
-		executor.execute(inserter);
-		cache.put(ds.getId(), ds);
+		this.executor.execute(inserter);
+		this.cache.put(ds.getId(), ds);
 		return ds;
 	}
 
 	public boolean hasDawidSkene(String id) {
 
 		try {
-			if (cache.containsKey(id))
-				return true;
+			synchronized(this.cache) {
+				if (this.cache.containsKey(id))
+					return true;
+			}
 			ResultSet dsResults;
-			synchronized(this.dsStatement){
-			ensureDBConnection();
-			dsStatement = connection.prepareStatement(CHECK_DS);
-			dsStatement.setString(1, id);
+			synchronized(this.dsStatement) {
+				ensureDBConnection();
+				this.dsStatement = connection.prepareStatement(CHECK_DS);
+				this.dsStatement.setString(1, id);
 
-			dsResults = dsStatement.executeQuery();
+				dsResults = this.dsStatement.executeQuery();
 			}
 			if (dsResults.next())
 				return true;
@@ -189,15 +194,17 @@ public class DawidSkeneCache {
 	public void deleteDawidSkene(String id) {
 
 		try {
-			if (cache.containsKey(id))
-				cache.remove(id);
-			synchronized(this.dsStatement){
-			ensureDBConnection();
-			dsStatement = connection.prepareStatement(DELETE_DS);
-			dsStatement.setString(1, id);
+			synchronized(this.cache) {
+				if (this.cache.containsKey(id))
+					this.cache.remove(id);
+			}
+			synchronized(this.dsStatement) {
+				ensureDBConnection();
+				this.dsStatement = connection.prepareStatement(DELETE_DS);
+				this.dsStatement.setString(1, id);
 
-			dsStatement.executeUpdate();
-			dsStatement.close();
+				this.dsStatement.executeUpdate();
+				this.dsStatement.close();
 			}
 			logger.info("deleted ds with id " + id);
 		} catch (SQLException e) {
@@ -223,7 +230,7 @@ public class DawidSkeneCache {
 	}
 
 	private void initializeCache() {
-		cache = new LinkedHashMap<String, DawidSkene>() {
+		this.cache = new LinkedHashMap<String, DawidSkene>() {
 
 			private static final long serialVersionUID = -3654983366018448082L;
 
@@ -249,17 +256,17 @@ public class DawidSkeneCache {
 		@Override
 		public void run() {
 			try {
-			    synchronized(DawidSkeneCache.this.dsStatement){
-				ensureDBConnection();
-				dsStatement = connection.prepareStatement(INSERT_DS);
-				dsStatement.setString(1, ds.getId());
-				String dsString = ds.toString();
-				dsStatement.setString(2, dsString);
-				dsStatement.setString(3, dsString);
+				synchronized(DawidSkeneCache.this.dsStatement) {
+					ensureDBConnection();
+					DawidSkeneCache.this.dsStatement = connection.prepareStatement(INSERT_DS);
+					DawidSkeneCache.this.dsStatement.setString(1, ds.getId());
+					String dsString = ds.toString();
+					DawidSkeneCache.this.dsStatement.setString(2, dsString);
+					DawidSkeneCache.this.dsStatement.setString(3, dsString);
 
-				dsStatement.executeUpdate();
-				dsStatement.close();
-			    }
+					DawidSkeneCache.this.dsStatement.executeUpdate();
+					DawidSkeneCache.this.dsStatement.close();
+				}
 				logger.info("upserting ds with id " + ds.getId());
 			} catch (SQLException e) {
 				logger.error(e.getMessage());
