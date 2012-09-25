@@ -41,18 +41,13 @@ import com.datascience.gal.DawidSkene;
  */
 public class DawidSkeneCache {
 	private static Logger logger = Logger.getLogger(DawidSkeneCache.class);
-	private ExecutorService executor = Executors
-									   .newFixedThreadPool(NUM_THREADS);
+	private ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
 
 	private static final int VALIDATION_TIMEOUT = 2;
 
-	private static String USER;
-	private static String PW;
-	private static String DB;
-	private static String URL;
-
 	private Connection connection;
 	private Properties connectionProporties;
+        private String databaseUrl;
 
 	private static final String GET_DS = "SELECT data FROM projects WHERE id IN (?);";
 	private static final String INSERT_DS = "INSERT INTO projects (id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = (?);";
@@ -65,7 +60,7 @@ public class DawidSkeneCache {
 	private static final int NUM_THREADS = 1;
 
 	private PreparedStatement dsStatement;
-	private ResultSet dsResults;
+	
 
 	private int cachesize = 5;
 	private Map<String, DawidSkene> cache;
@@ -75,18 +70,19 @@ public class DawidSkeneCache {
 
 		Class.forName("com.mysql.jdbc.Driver");
 
-		USER = disProps.getProperty("USER");
-		PW = disProps.getProperty("PASSWORD");
-		DB = disProps.getProperty("DB");
-		URL = disProps.getProperty("URL");
+                String user = disProps.getProperty("USER");
+		String password = disProps.getProperty("PASSWORD");
+		String db = disProps.getProperty("DB");
+		String url = disProps.getProperty("URL");
 
 		if (disProps.containsKey("cacheSize"))
 			cachesize = Integer.parseInt(disProps.getProperty("cacheSize"));
 
 		connectionProporties = new Properties();
-		connectionProporties.setProperty("user", USER);
-		if (PW != null)
-			connectionProporties.setProperty("password", PW);
+		connectionProporties.setProperty("user", user);
+		if (password != null)
+			connectionProporties.setProperty("password", password);
+		this.databaseUrl = "jdbc:mysql://" + url + "/" + db;
 		connectDB();
 		initializeCache();
 	}
@@ -96,11 +92,10 @@ public class DawidSkeneCache {
 	 *
 	 * @throws SQLException
 	 */
-	private void connectDB() throws SQLException {
-		logger.info("attempting to connect to " + URL);
-		connection = DriverManager.getConnection("jdbc:mysql://" + URL + "/"
-					 + DB, connectionProporties);
-		logger.info("connected to " + URL);
+    private void connectDB() throws SQLException {
+		logger.info("attempting to connect to " + this.databaseUrl);
+		connection = DriverManager.getConnection(this.databaseUrl, this.connectionProporties);
+		logger.info("connected to " + this.databaseUrl);
 	}
 
 	/**
@@ -127,11 +122,13 @@ public class DawidSkeneCache {
 			if (cache.containsKey(id)) {
 				return cache.get(id);
 			}
+			ResultSet dsResults;
+			synchronized(this.dsStatement){
 			ensureDBConnection();
 			dsStatement = connection.prepareStatement(GET_DS);
 			dsStatement.setString(1, id);
 			dsResults = dsStatement.executeQuery();
-
+			}
 			if (dsResults.next()) {
 				try {
 					String dsJson = dsResults.getString("data");
@@ -170,13 +167,14 @@ public class DawidSkeneCache {
 		try {
 			if (cache.containsKey(id))
 				return true;
-
+			ResultSet dsResults;
+			synchronized(this.dsStatement){
 			ensureDBConnection();
 			dsStatement = connection.prepareStatement(CHECK_DS);
 			dsStatement.setString(1, id);
 
 			dsResults = dsStatement.executeQuery();
-
+			}
 			if (dsResults.next())
 				return true;
 
@@ -193,12 +191,14 @@ public class DawidSkeneCache {
 		try {
 			if (cache.containsKey(id))
 				cache.remove(id);
+			synchronized(this.dsStatement){
 			ensureDBConnection();
 			dsStatement = connection.prepareStatement(DELETE_DS);
 			dsStatement.setString(1, id);
 
 			dsStatement.executeUpdate();
 			dsStatement.close();
+			}
 			logger.info("deleted ds with id " + id);
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -249,6 +249,7 @@ public class DawidSkeneCache {
 		@Override
 		public void run() {
 			try {
+			    synchronized(DawidSkeneCache.this.dsStatement){
 				ensureDBConnection();
 				dsStatement = connection.prepareStatement(INSERT_DS);
 				dsStatement.setString(1, ds.getId());
@@ -258,6 +259,7 @@ public class DawidSkeneCache {
 
 				dsStatement.executeUpdate();
 				dsStatement.close();
+			    }
 				logger.info("upserting ds with id " + ds.getId());
 			} catch (SQLException e) {
 				logger.error(e.getMessage());
