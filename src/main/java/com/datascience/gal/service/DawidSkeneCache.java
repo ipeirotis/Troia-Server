@@ -59,8 +59,6 @@ public class DawidSkeneCache {
 	 */
 	private static final int NUM_THREADS = 1;
 
-	private PreparedStatement dsStatement;
-
 
 	private int cachesize = 5;
 	private Map<String, DawidSkene> cache;
@@ -125,11 +123,11 @@ public class DawidSkeneCache {
 				}
 			}
 			ResultSet dsResults;
-			synchronized(this.dsStatement) {
+			synchronized(databaseUrl) {
 				this.ensureDBConnection();
-				this.dsStatement = connection.prepareStatement(GET_DS);
-				this.dsStatement.setString(1, id);
-				dsResults = this.dsStatement.executeQuery();
+				PreparedStatement dsStatement = connection.prepareStatement(GET_DS);
+				dsStatement.setString(1, id);
+				dsResults = dsStatement.executeQuery();
 			}
 			if (dsResults.next()) {
 				try {
@@ -173,12 +171,12 @@ public class DawidSkeneCache {
 					return true;
 			}
 			ResultSet dsResults;
-			synchronized(this.dsStatement) {
+			synchronized(databaseUrl) {
 				ensureDBConnection();
-				this.dsStatement = connection.prepareStatement(CHECK_DS);
-				this.dsStatement.setString(1, id);
+				PreparedStatement dsStatement = connection.prepareStatement(CHECK_DS);
+				dsStatement.setString(1, id);
 
-				dsResults = this.dsStatement.executeQuery();
+				dsResults = dsStatement.executeQuery();
 			}
 			if (dsResults.next())
 				return true;
@@ -198,13 +196,13 @@ public class DawidSkeneCache {
 				if (this.cache.containsKey(id))
 					this.cache.remove(id);
 			}
-			synchronized(this.dsStatement) {
+			synchronized(databaseUrl) {
 				ensureDBConnection();
-				this.dsStatement = connection.prepareStatement(DELETE_DS);
-				this.dsStatement.setString(1, id);
+				PreparedStatement dsStatement = connection.prepareStatement(DELETE_DS);
+				dsStatement.setString(1, id);
 
-				this.dsStatement.executeUpdate();
-				this.dsStatement.close();
+				dsStatement.executeUpdate();
+				dsStatement.close();
 			}
 			logger.info("deleted ds with id " + id);
 		} catch (SQLException e) {
@@ -256,16 +254,16 @@ public class DawidSkeneCache {
 		@Override
 		public void run() {
 			try {
-				synchronized(DawidSkeneCache.this.dsStatement) {
+				synchronized(databaseUrl) {
 					ensureDBConnection();
-					DawidSkeneCache.this.dsStatement = connection.prepareStatement(INSERT_DS);
-					DawidSkeneCache.this.dsStatement.setString(1, ds.getId());
+					PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
+					dsStatement.setString(1, ds.getId());
 					String dsString = ds.toString();
-					DawidSkeneCache.this.dsStatement.setString(2, dsString);
-					DawidSkeneCache.this.dsStatement.setString(3, dsString);
+					dsStatement.setString(2, dsString);
+					dsStatement.setString(3, dsString);
 
-					DawidSkeneCache.this.dsStatement.executeUpdate();
-					DawidSkeneCache.this.dsStatement.close();
+					dsStatement.executeUpdate();
+					dsStatement.close();
 				}
 				logger.info("upserting ds with id " + ds.getId());
 			} catch (SQLException e) {
