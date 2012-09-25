@@ -41,7 +41,7 @@ import com.datascience.gal.DawidSkene;
  */
 public class DawidSkeneCache {
 	private static Logger logger = Logger.getLogger(DawidSkeneCache.class);
-	private ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
+	private ExecutorService executor;
 
 	private static final int VALIDATION_TIMEOUT = 2;
 
@@ -57,14 +57,22 @@ public class DawidSkeneCache {
 	/**
 	 * Befoe changing this value you must make sure to synchronise
 	 */
-	private static final int NUM_THREADS = 1;
+	private static final int DEFAULT_THREAD_POOL_SIZE = 3;
 
 
 	private int cachesize = 5;
 	private Map<String, DawidSkene> cache;
 
+
 	public DawidSkeneCache(Properties disProps) throws ClassNotFoundException,
 		SQLException, IOException {
+		this(disProps,DEFAULT_THREAD_POOL_SIZE);
+	}
+
+	public DawidSkeneCache(Properties disProps,int threadPoolSize) throws ClassNotFoundException,
+		SQLException, IOException {
+
+		this.executor = Executors.newFixedThreadPool(threadPoolSize);
 
 		Class.forName("com.mysql.jdbc.Driver");
 
