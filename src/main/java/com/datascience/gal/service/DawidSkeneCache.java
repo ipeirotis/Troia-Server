@@ -165,10 +165,25 @@ public class DawidSkeneCache {
 	}
 
 	public DawidSkene insertDawidSkene(final DawidSkene ds) {
-		DSDBInserter inserter = new DSDBInserter(ds);
-		this.executor.execute(inserter);
-		this.cache.put(ds.getId(), ds);
-		return ds;
+	    try {
+		synchronized(databaseUrl) {
+		    ensureDBConnection();
+		    PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
+		    dsStatement.setString(1, ds.getId());
+		    String dsString = ds.toString();
+		    dsStatement.setString(2, dsString);
+		    dsStatement.setString(3, dsString);
+
+		    dsStatement.executeUpdate();
+		    dsStatement.close();
+		}
+		logger.info("upserting ds with id " + ds.getId());
+	    this.cache.put(ds.getId(), ds);
+	    } catch (SQLException e) {
+		logger.error(e.getMessage());
+
+	    }
+	    return ds;
 	}
 
 	public boolean hasDawidSkene(String id) {
@@ -261,23 +276,6 @@ public class DawidSkeneCache {
 
 		@Override
 		public void run() {
-			try {
-				synchronized(databaseUrl) {
-					ensureDBConnection();
-					PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
-					dsStatement.setString(1, ds.getId());
-					String dsString = ds.toString();
-					dsStatement.setString(2, dsString);
-					dsStatement.setString(3, dsString);
-
-					dsStatement.executeUpdate();
-					dsStatement.close();
-				}
-				logger.info("upserting ds with id " + ds.getId());
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-
-			}
 		}
 
 	}
