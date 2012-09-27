@@ -12,7 +12,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-
+package com.datascience.gal.dawidSkeneProcessors;
 
 
 /**
@@ -60,5 +60,25 @@ public abstract class DawidSkeneProcessor implements Runnable {
     public void setCache(DawidSkeneCache cache) {
 	this.cache = cache;
     }
+
+    /**
+     * True if this processor already finished doing ts task
+     */
+    private boolean processed;
+    
+    /**
+     * @return True if this processor already finished doing ts task
+     */
+    public boolean isProcessed() {
+	return processed;
+    }
+    
+    /**
+     * @param processed True if this processor already finished doing ts task
+     */
+    protected void setProcessed(boolean processed) {
+	this.processed = processed;
+    }
+
 
 }
