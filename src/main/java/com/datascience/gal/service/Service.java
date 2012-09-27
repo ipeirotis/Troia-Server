@@ -77,9 +77,12 @@ public class Service {
 		} catch (SQLException e) {
 			logger.error("sql exception: " + e.getLocalizedMessage());
 		}
-		DateTime datetime = new DateTime();
-		String cargo = "processing request at: " + datetime.toString();
-		logger.info(cargo);
+        String message = "Request successfully processed";
+        logger.info(message);
+        Map<String, String> cargo = new HashMap<String, String>();
+        cargo.put("message", message);
+        cargo.put("timastamp", new DateTime().toString());
+        cargo.put("status", "Success");
 		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 	}
 
@@ -92,17 +95,14 @@ public class Service {
 	@Path("pingDB")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response testDB() {
-		final String nl = "<p> </p>";
-		final String methodSign = "com.datascience.gal.service.Service:testDB ";
-		DateTime datetime = new DateTime();
-		String cargo = "processing request at: " + datetime.toString();
-		StringBuffer cargoSB = new StringBuffer(cargo);
-
 		final String id = "1234512345";
+		final String methodSign = "com.datascience.gal.service.Service:testDB ";
 		Set<Category> categories = new HashSet<Category>();
 		categories.add(new Category("mock"));
 		DawidSkene ds = new BatchDawidSkene(id, categories);
-		cargoSB.append(nl);
+        String message = ""; 
+        String status = "";
+        String timestamp = new DateTime().toString();
 		try {
 			setup(context);
 		} catch (IOException e) {
@@ -118,57 +118,69 @@ public class Service {
 		DawidSkene dsInserted = dscache.insertDawidSkene(ds);
 		DawidSkene dsRetrieved = dscache.getDawidSkene(id);
 		if (dsInserted != null && dsRetrieved != null) {
-			String msg = "DawidSkene object with id="+id+" has been inserted to the DB...";
-			logger.info(methodSign+msg);
-			cargoSB.append(msg+nl);
 			dscache.deleteDawidSkene(id);
-			msg = "DawidSkene object with id="+id+" has been removed from the DB...";
+            message += " Object has been inserted to the DB and removed from the DB ";
 			dsRetrieved = dscache.getDawidSkene(id);
-			if (dsRetrieved == null)
-				msg+="successfully";
-			else msg+="unsuccessfully";
-			logger.info(methodSign+msg);
-			cargoSB.append(msg+nl);
+			if (dsRetrieved != null) {
+				message += "successfully";
+                status = "Success";
+            } else {
+                message += "unsuccessfully";
+                status = "Failure";
+            }
+			logger.info(methodSign + message);
+			
 		} else {
-			String msg = "DawidSkene object with id="+id+" has NOT been inserted to the DB... Error";
-			logger.info(methodSign+msg);
-			cargoSB.append(msg+nl);
+		    message += " Object has NOT been inserted to the DB";
+            status = "Failure";
+			logger.info(methodSign + message);
 		}
-		logger.info(methodSign+methodSign);
-		return Response.ok(cargoSB.toString(),MediaType.TEXT_HTML).build();
+         
+        Map<String, String> cargo = new HashMap<String, String>();
+        cargo.put("message", message);
+        cargo.put("status", status);
+        cargo.put("object", id);
+        cargo.put("timestamp", timestamp);
+		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 	}
 	/**
-	 * resets the ds model
+	 * Resets the ds model.
 	 *
-	 * @return a simple success message
+	 * @return a simple JSON status message.
 	 */
 	@GET
 	@Path("reset")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response reset(@QueryParam("id") String idString) {
+        String message = "";
+        Map<String, String> cargo = new HashMap<String, String>();
 		try {
 			setup(context);
-
 			if (idString != null) {
 				String id = idString;
 				dscache.deleteDawidSkene(id);
 			}
-
-			String message = "nullified the ds object"
-							 + (idString == null ? ", and deleted ds with id "
-								+ idString : "");
+            // XXX a have inverted condition.
+			message = "Reset the ds object";
+            if (idString != null) {
+                message += " with id=" + idString;
+            }
 			logger.info(message);
-			return Response.ok(message).build();
+            cargo.put("message", message);
+            cargo.put("status", "Success");
+			return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
+            message = e.getLocalizedMessage();
 		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
+            message = e.getLocalizedMessage();
 		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            message = e.getLocalizedMessage();
 		}
-		logger.error("problem resetting dscache");
-		return Response.status(500).build();
+        message = "Problem resseting the ds model: " + message;
+		logger.error(message);
+        cargo.put("message", message);
+        cargo.put("status", "Failure");
+		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 	}
 
 	@GET
