@@ -42,7 +42,7 @@ import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.gal.MisclassificationCost;
 
 /**
- * a simple web service wrapper for the get another label project
+ * A simple web service wrapper for the get another label project
  *
  * @author josh
  */
@@ -55,43 +55,57 @@ public class Service {
 
 	private static DawidSkeneCache dscache = null;
 
+    private String getIdFromInputDefault(String input, String def) {
+        String id = def;
+        if (null == input)  {
+			logger.info("No id input, using default id=" + def);
+        } else {
+            id = input;
+        }
+        return id;
+    }
+
+    private String getIdFromInput(String input) {
+        return getIdFromInputDefault(input, "0");
+    }
+
 	/**
-	 * A simple method to see if the service is awake
+	 * a simple method to see if the service is awake
 	 *
-	 * @return A string with the current time
+	 * @return a JSON containing a message and a timestamp
 	 */
 	@GET
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response test() {
+	public Response ping() {
 		try {
 			setup(context);
+            String message = "Request successfully processed";
+            logger.info(message);
+            Map<String, String> cargo = new HashMap<String, String>();
+            cargo.put("message", message);
+            cargo.put("timestamp", new DateTime().toString());
+		    return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
+			logger.error("IOException: " + e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
+			logger.error("ClassNotFoundException: " + e.getLocalizedMessage());
 		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			logger.error("SQLException: " + e.getLocalizedMessage());
 		}
-        String message = "Request successfully processed";
-        logger.info(message);
-        Map<String, String> cargo = new HashMap<String, String>();
-        cargo.put("message", message);
-        cargo.put("timastamp", new DateTime().toString());
-        cargo.put("status", "Success");
-		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
+		return Response.status(500).build();
 	}
 
 	/**
-	 * a simple method to see if the service is awake and access to the DB has been reached
+	 * a simple method to see if the service is awake and access to the DB has 
+     * been reached
 	 *
-	 * @return a string with the current time
+	 * @return a JSON contaning a message and a timestamp
 	 */
 	@GET
 	@Path("pingDB")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response testDB() {
+	public Response pingDB() {
 		final String id = "1234512345";
 		final String methodSign = "com.datascience.gal.service.Service:testDB ";
 		Set<Category> categories = new HashSet<Category>();
@@ -157,7 +171,6 @@ public class Service {
 				String id = idString;
 				dscache.deleteDawidSkene(id);
 			}
-            // XXX a have inverted condition.
 			message = "Reset the ds object";
             if (idString != null) {
                 message += " with id=" + idString;
@@ -166,12 +179,8 @@ public class Service {
             cargo.put("message", message);
             cargo.put("status", "Success");
 			return Response.ok(JSONUtils.gson.toJson(cargo)).build();
-		} catch (IOException e) {
-            message = e.getLocalizedMessage();
-		} catch (ClassNotFoundException e) {
-            message = e.getLocalizedMessage();
-		} catch (SQLException e) {
-            message = e.getLocalizedMessage();
+        } catch (Exception e) {
+            message = e.getClass() + ": " + e.getLocalizedMessage();
 		}
         message = "Problem resseting the ds model: " + message;
 		logger.error(message);
@@ -183,38 +192,22 @@ public class Service {
 	@GET
 	@Path("exists")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response exists(@QueryParam("id") String idstr) {
-
-		String id = "" + 0;
-		if (null == idstr) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idstr;
-		}
-
+	public Response exists(@QueryParam("id") String idString) {
+		String id = getIdFromInput(idString);
 		try {
 			setup(context);
 			boolean contains = dscache.hasDawidSkene(id);
-			String message = (contains ? "found ds object: "
-							  : "didnt find ds object: ") + id;
-			logger.info(message);
-
-			return Response.ok(JSONUtils.toJson(contains)).build();
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			logger.info("Model with id=" + id + " " + (contains ? "exists" : "does not exist"));
+            return Response.ok(JSONUtils.gson.toJson(contains)).build();
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+		    logger.error("A problem with processing the request: " 
+                         + e.getClass() + ": " + e.getLocalizedMessage());
 		}
-		return Response.status(500).build();
+        return Response.status(500).build();
 	}
 
 	/**
-	 * Loads a json set of category objects
+	 * Loads a json set of category objects.
 	 *
 	 * @return a simple success message
 	 */
@@ -222,33 +215,26 @@ public class Service {
 	@Path("loadCategories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadCategories(@FormParam("categories") String input,
-								   @FormParam("id") String idstr,
+								   @FormParam("id") String idString,
 								   @FormParam("incremental") String incremental) {
-		Collection<Category> categories;
+		Collection<Category> categories = null;
 		if (null == input || input.length() < 3) {
-			String message = "invalid input. requires json-ified collection of category objects";
+			String message = "Invalid input: requires JSON-ified collection of category objects";
 			logger.error(message);
 			return Response.status(500).build();
 		}
-		String id = "" + 0;
-		if (null == idstr) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idstr;
-		}
-
+		String id = getIdFromInput(idString);
 		try {
 			setup(context);
 			categories = JSONUtils.gson.fromJson(input,
 												 JSONUtils.categorySetType);
-			DawidSkene ds;
-
-			if (null == incremental)
+			DawidSkene ds = null;
+			if (null == incremental) {
 				ds = new BatchDawidSkene(id, categories);
-			else
+			} else {
 				ds = new IncrementalDawidSkene(id, categories);
+            }
 			dscache.insertDawidSkene(ds);
-
 			String message = "built a ds with " + categories.size()
 							 + " categories" + JSONUtils.gson.toJson(categories);
 			logger.info(message);
