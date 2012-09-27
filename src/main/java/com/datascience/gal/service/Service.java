@@ -69,6 +69,20 @@ public class Service {
 	private static DawidSkeneCache dscache = null;
 
 	private static DawidSkeneProcessorManager manager = null;
+       
+    private String getIdFromInputDefault(String input, String def) {
+        String id = def;
+        if (null == input)  {
+			logger.info("No id input, using default id=" + def);
+        } else {
+            id = input;
+        }
+        return id;
+    }
+
+    private String getIdFromInput(String input) {
+        return getIdFromInputDefault(input, "0");
+    }
 
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext scontext = config.getServletContext();
