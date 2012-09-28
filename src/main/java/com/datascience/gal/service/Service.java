@@ -755,6 +755,48 @@ public class Service {
 		return Response.status(500).build();
 	}
 
+
+
+	@GET
+	@Path("compute")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response computeDS(
+		@QueryParam("iterations") String iterations,
+		@QueryParam("id") String idstr) {
+		int its = 1;
+		long time = 0;
+
+		String id = 0 + "";
+		if (null == idstr) {
+			logger.info("no id input, using id 0");
+		} else {
+			id = idstr;
+		}
+
+		its = Math.max(1,
+					   null == iterations ? 1 : Integer.parseInt(iterations));
+
+
+		try {
+			setup(context);
+			DSalgorithmComputer computer = new DSalgorithmComputer(id,this.dscache,its);
+			String message = "Registered DScomputer with  " + its + " iterations/";
+			return Response.ok(message).build();
+
+		} catch (IOException e) {
+			logger.error("ioexception: " + e.getLocalizedMessage());
+		} catch (ClassNotFoundException e) {
+			logger.error("class not found exception: "
+						 + e.getLocalizedMessage());
+		} catch (SQLException e) {
+			logger.error("sql exception: " + e.getLocalizedMessage());
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+		}
+		return Response.status(500).build();
+	}
+
+
 	@GET
 	@Path("printWorkerSummary")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -969,22 +1011,28 @@ public class Service {
 
 	private void setup(ServletContext scontext) throws IOException,
 		ClassNotFoundException, SQLException {
-		if (dscache == null) {
+		if(dscache==null||manager==null) {
 			logger.info("loading props file with context:"
 						+ scontext.getContextPath());
 			Properties props = new Properties();
 			props.load(scontext
 					   .getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-
-			String user = props.getProperty("USER");
-			String password = props.getProperty("PASSWORD");
-			String db = props.getProperty("DB");
-			String url = props.getProperty("URL");
-			if (props.containsKey("cacheSize")) {
-				int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
-				dscache = new DawidSkeneCache(user,password,db,url,cachesize);
-			} else {
-				dscache = new DawidSkeneCache(user,password,db,url);
+			if (dscache == null) {
+				String user = props.getProperty("USER");
+				String password = props.getProperty("PASSWORD");
+				String db = props.getProperty("DB");
+				String url = props.getProperty("URL");
+				if (props.containsKey("cacheSize")) {
+					int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
+					dscache = new DawidSkeneCache(user,password,db,url,cachesize);
+				} else {
+					dscache = new DawidSkeneCache(user,password,db,url);
+				}
+			}
+			if(manager == null) {
+				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
+				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
+				this.manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
 			}
 		}
 	}

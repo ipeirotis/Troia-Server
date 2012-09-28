@@ -23,7 +23,10 @@ import com.datascience.gal.service.DawidSkeneCache;
 public abstract class DawidSkeneProcessor implements Runnable {
 
 
-
+	protected DawidSkeneProcessor(String id,DawidSkeneCache cache) {
+		this.setDawidSkeneId(id);
+		this.setCache(cache);
+	}
 
 	/**
 	 * Identifier of DawidSkene model that will be modified

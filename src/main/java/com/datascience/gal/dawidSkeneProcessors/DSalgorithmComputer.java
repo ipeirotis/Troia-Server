@@ -16,13 +16,18 @@
 package com.datascience.gal.dawidSkeneProcessors;
 
 import com.datascience.gal.DawidSkene;
-
+import com.datascience.gal.service.DawidSkeneCache;
 
 /**
  * Objects of this class execute Dawid-Skene algorithm on DS model with
  * given id.
  */
 public class DSalgorithmComputer extends DawidSkeneProcessor {
+
+	public DSalgorithmComputer(String id,DawidSkeneCache cache,int iterations) {
+		super(id,cache);
+		this.setIterations(iterations);
+	}
 
 	@Override
 	public void run() {
