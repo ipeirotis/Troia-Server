@@ -40,6 +40,7 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.gal.MisclassificationCost;
+import com.datascience.gal.dawidSkeneProcessors.*;
 
 /**
  * a simple web service wrapper for the get another label project
@@ -54,6 +55,8 @@ public class Service {
 	private static Logger logger = Logger.getLogger(Service.class);
 
 	private static DawidSkeneCache dscache = null;
+
+	private static DawidSkeneProcessorManager manager = null;
 
 	/**
 	 * A simple method to see if the service is awake
@@ -972,7 +975,17 @@ public class Service {
 			Properties props = new Properties();
 			props.load(scontext
 					   .getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-			dscache = new DawidSkeneCache(props);
+
+			String user = props.getProperty("USER");
+			String password = props.getProperty("PASSWORD");
+			String db = props.getProperty("DB");
+			String url = props.getProperty("URL");
+			if (props.containsKey("cacheSize")) {
+				int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
+				dscache = new DawidSkeneCache(user,password,db,url,cachesize);
+			} else {
+				dscache = new DawidSkeneCache(user,password,db,url);
+			}
 		}
 	}
 

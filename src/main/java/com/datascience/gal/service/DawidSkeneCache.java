@@ -41,7 +41,6 @@ import com.datascience.gal.DawidSkene;
  */
 public class DawidSkeneCache {
 	private static Logger logger = Logger.getLogger(DawidSkeneCache.class);
-	private ExecutorService executor;
 
 	private static final int VALIDATION_TIMEOUT = 2;
 
@@ -54,35 +53,23 @@ public class DawidSkeneCache {
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 	private static final String CHECK_DS = "SELECT 1 FROM projects WHERE id IN (?);";
 
-	/**
-	 * Befoe changing this value you must make sure to synchronise
-	 */
-	private static final int DEFAULT_THREAD_POOL_SIZE = 3;
+	private final static int DEFAULT_CACHE_SIZE = 5;
 
-
-	private int cachesize = 5;
+	private int cachesize;
 	private Map<String, DawidSkene> cache;
 
 
-	public DawidSkeneCache(Properties disProps) throws ClassNotFoundException,
+
+	public DawidSkeneCache(String user,String password,String db,String url) throws ClassNotFoundException,
 		SQLException, IOException {
-		this(disProps,DEFAULT_THREAD_POOL_SIZE);
+		this(user,password,db,url,DEFAULT_CACHE_SIZE);
 	}
 
-	public DawidSkeneCache(Properties disProps,int threadPoolSize) throws ClassNotFoundException,
+	public DawidSkeneCache(String user,String password,String db,String url,int cachesize) throws ClassNotFoundException,
 		SQLException, IOException {
-
-		this.executor = Executors.newFixedThreadPool(threadPoolSize);
 
 		Class.forName("com.mysql.jdbc.Driver");
 
-		String user = disProps.getProperty("USER");
-		String password = disProps.getProperty("PASSWORD");
-		String db = disProps.getProperty("DB");
-		String url = disProps.getProperty("URL");
-
-		if (disProps.containsKey("cacheSize"))
-			cachesize = Integer.parseInt(disProps.getProperty("cacheSize"));
 
 		connectionProporties = new Properties();
 		connectionProporties.setProperty("user", user);
@@ -165,25 +152,25 @@ public class DawidSkeneCache {
 	}
 
 	public DawidSkene insertDawidSkene(final DawidSkene ds) {
-	    try {
-		synchronized(databaseUrl) {
-		    ensureDBConnection();
-		    PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
-		    dsStatement.setString(1, ds.getId());
-		    String dsString = ds.toString();
-		    dsStatement.setString(2, dsString);
-		    dsStatement.setString(3, dsString);
+		try {
+			synchronized(databaseUrl) {
+				ensureDBConnection();
+				PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
+				dsStatement.setString(1, ds.getId());
+				String dsString = ds.toString();
+				dsStatement.setString(2, dsString);
+				dsStatement.setString(3, dsString);
 
-		    dsStatement.executeUpdate();
-		    dsStatement.close();
+				dsStatement.executeUpdate();
+				dsStatement.close();
+			}
+			logger.info("upserting ds with id " + ds.getId());
+			this.cache.put(ds.getId(), ds);
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+
 		}
-		logger.info("upserting ds with id " + ds.getId());
-	    this.cache.put(ds.getId(), ds);
-	    } catch (SQLException e) {
-		logger.error(e.getMessage());
-
-	    }
-	    return ds;
+		return ds;
 	}
 
 	public boolean hasDawidSkene(String id) {
