@@ -39,6 +39,7 @@ public class DawidSkeneProcessorManager extends Thread  {
 
 	@Override
 	public void run() {
+		logger.info("Starting DawidSkene processor manager.");
 		while(!this.stopped) {
 			this.executeProcessors();
 			try {
@@ -47,6 +48,7 @@ public class DawidSkeneProcessorManager extends Thread  {
 				//THIS CAN BE EMPTY
 			}
 		}
+		logger.info("DawidSkene processor manager stopped.");
 	}
 
 
@@ -60,6 +62,8 @@ public class DawidSkeneProcessorManager extends Thread  {
 				this.processorQueue.put(processor.getDawidSkeneId(),new ConcurrentLinkedQueue<DawidSkeneProcessor>());
 			}
 			this.processorQueue.get(processor.getDawidSkeneId()).add(processor);
+			logger.info("Added new processor to queue");
+			this.interrupt();
 		}
 	}
 

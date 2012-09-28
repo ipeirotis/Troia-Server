@@ -1033,6 +1033,7 @@ public class Service {
 				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
 				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
 				this.manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
+				this.manager.run();
 			}
 		}
 	}
