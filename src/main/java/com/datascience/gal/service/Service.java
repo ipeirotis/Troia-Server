@@ -10,6 +10,7 @@
 package com.datascience.gal.service;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +55,7 @@ import com.datascience.gal.dawidSkeneProcessors.MisclassificationCostsWriter;
 
 
 /**
- * A simple web service wrapper for the get another label project
+ * a simple web service wrapper for the get another label project
  *
  * @author josh
  */
@@ -76,7 +77,7 @@ public class Service {
     private String getIdFromInputDefault(String input, String def) {
         String id = def;
         if (null == input)  {
-			logger.info("No id input, using default id=" + def);
+			logger.info("No id input: using default id=" + def);
         } else {
             id = input;
         }
@@ -85,6 +86,23 @@ public class Service {
 
     private String getIdFromInput(String input) {
         return getIdFromInputDefault(input, "0");
+    }
+
+    private <T> T parseJsonInput(String input, Type type) throws Exception {
+		if (null == input || input.length() < 3) {
+            throw new Exception("Invalid input: required JSON-ified " + 
+                    "collection of objects of type " + type);
+		}
+        T result = JSONUtils.gson.fromJson(input, type);
+        if (result == null) {
+            throw new Exception("I could not parse JSON");
+        }
+        return result;
+    }
+
+    private void logErrorFromException(Exception e) {
+        logger.error("Error processing the request: " + 
+                e.getClass().getName() + ": " + e.getLocalizedMessage());
     }
 
     private static Response buildResponse(String message, String status, 
@@ -146,21 +164,14 @@ public class Service {
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
-		String message = "";
 		try {
 			setup(context);
-            message = "Request successfully processed";
+            String message = "Request successfully processed";
             logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null); 
-		} catch (IOException e) {
-			message = e.getClass() + "(IOException): " + e.getLocalizedMessage();
-		} catch (ClassNotFoundException e) {
-			message = e.getClass() + "(ClassNotFoundException): " + e.getLocalizedMessage();
-		} catch (SQLException e) {
-			message = e.getClass() + "(SQLException): " + e.getLocalizedMessage();
+		} catch (Exception e) {
+            logErrorFromException(e);
 		}
-		message = "Problem with processing the request: " + message;
-		logger.error(message);
 		return Response.status(500).build();
 	}
 
@@ -168,7 +179,7 @@ public class Service {
 	 * a simple method to see if the service is awake and access to the DB has 
      * been reached
 	 *
-	 * @return a JSON contaning a message and a timestamp
+	 * @return a simple JSON status message 
 	 */
 	@GET
 	@Path("pingDB")
@@ -178,49 +189,40 @@ public class Service {
 		Set<Category> categories = new HashSet<Category>();
 		categories.add(new Category("mock"));
 		DawidSkene ds = new BatchDawidSkene(id, categories);
-        String message = ""; 
 		try {
 			setup(context);
+            String message = "";
             DawidSkene dsInserted = dscache.insertDawidSkene(ds);
             DawidSkene dsRetrieved = dscache.getDawidSkene(id);
             if (null != dsInserted && null != dsRetrieved) {
                 dscache.deleteDawidSkene(id);
-                message += " Object has been inserted to the DB and removed " +
+                message = " Object has been inserted to the DB and removed " +
                     "from the DB ";
                 dsRetrieved = dscache.getDawidSkene(id);
                 message += (null != dsRetrieved) ? "successfully" : 
                     "unsuccessfully";
-                logger.info(message);
-                
             } else {
-                message += " Object has NOT been inserted to the DB";
-                logger.info(message);
+                message = "Object has NOT been inserted to the DB";
             }
-             
+            logger.info(message);
             Map<String, Object> others = new HashMap<String, Object>();
             others.put("id", id);
             return buildResponse(message, SUCCESS, null, new DateTime(), 
                     others); 
-		} catch (IOException e) {
-			message = e.getClass() + "(IOException): " + e.getLocalizedMessage();
-		} catch (ClassNotFoundException e) {
-			message = e.getClass() + "(ClassNotFoundException): " + e.getLocalizedMessage();
-		} catch (SQLException e) {
-			message = e.getClass() + "(SQLException): " + e.getLocalizedMessage();
-		}
-        logger.error("Error processing the request: " + message);
+		} catch (Exception e) {
+            logErrorFromException(e);
+        }
         return Response.status(500).build();
 	}
 	/**
 	 * resets the ds model
 	 *
-	 * @return a simple JSON status message.
+	 * @return a simple JSON status message 
 	 */
 	@GET
 	@Path("reset")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response reset(@QueryParam("id") String idString) {
-        String message = "";
 		try {
 			setup(context);
 			if (idString != null) {
@@ -228,7 +230,7 @@ public class Service {
 				DawidSkeneRemover remover = new DawidSkeneRemover(idString,dscache);
 				manager.addProcessor(remover);
 			}
-			message = "Reset the ds model";
+			String message = "Reset the ds model";
             if (idString != null) {
                 message += " with id=" + idString;
             }
@@ -236,12 +238,16 @@ public class Service {
             return buildResponse(message, SUCCESS, null, new DateTime(), 
                     null);
         } catch (Exception e) {
-            message = e.getClass() + ": " + e.getLocalizedMessage();
+            logErrorFromException(e);
 		}
-		logger.error("Problem resseting the ds model: " + message);
 		return Response.status(500).build();
 	}
 
+	/**
+	 * simply checks wheter the ds model with specyfied id exists in the DB 
+	 *
+	 * @return a simple JSON status message 
+	 */
 	@GET
 	@Path("exists")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -251,7 +257,7 @@ public class Service {
 			setup(context);
 			Boolean exists = dscache.hasDawidSkene(id);
 			logger.info("Model with id=" + id + " " + 
-                    (exists? "exists" : "does not exist"));
+                    (exists ? "exists" : "does not exist"));
             return buildResponse(null, null, exists, null, null);
 		} catch (Exception e) {
 		    logger.error("A problem with processing the request: " 
@@ -261,93 +267,61 @@ public class Service {
 	}
 
 	/**
-	 * Loads a json set of category objects.
+	 * loads a JSON set of category objects
 	 *
 	 * @return a simple success message
 	 */
 	@POST
 	@Path("loadCategories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadCategories(@FormParam("categories") String input,
-								   @FormParam("id") String idString,
-								   @FormParam("incremental") String incremental) {
-		Collection<Category> categories = null;
-		if (null == input || input.length() < 3) {
-			logger.error("Invalid input: requires JSON-ified collection of " +
-                    "category objects");
-			return Response.status(500).build();
-		}
+	public Response loadCategories(@FormParam("data") String data,
+		    @FormParam("id") String idString,
+			@FormParam("incremental") String incremental) {
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			categories = JSONUtils.gson.fromJson(input,
-			    JSONUtils.categorySetType);
-			DawidSkene ds = null;
-			if (null == incremental) {
-				ds = new BatchDawidSkene(id, categories);
-			} else {
-				ds = new IncrementalDawidSkene(id, categories);
-            }
+			Collection<Category> categories = parseJsonInput(data, 
+                    JSONUtils.categorySetType);
+			DawidSkene ds = (null == incremental) ? 
+                new BatchDawidSkene(id, categories) :
+                new IncrementalDawidSkene(id, categories);
 			CategoryWriter writer = new CategoryWriter(id,dscache,categories,incrementalDs);
 			manager.addProcessor(writer);
-			String message = "built a ds with " + categories.size()
-							 + " categories" + JSONUtils.gson.toJson(categories);
+			String message = "Built a ds model with " + categories.size()
+			    + " categories";
 			logger.info(message);
-			return Response.ok(message).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-			logger.error("some other exception: " + e.getMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
 
 	/**
-	 * Loads a json set of misclassification cost objects
+	 * loads a JSON set of misclassification cost objects
 	 *
 	 * @return a simple success message
 	 */
 	@POST
 	@Path("loadCosts")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadMisclassificationCosts(@FormParam("costs") String data,
-			@FormParam("id") String idstr) {
-		Collection<MisclassificationCost> costs;
-		if (null == data || data.length() < 3) {
-			String message = "invalid input. requires json-ified collection of misclassification cost objects";
-			logger.error(message);
-			return Response.status(500).build();
-		}
-		String id = "" + 0;
-		if (null == idstr) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idstr;
-		}
-
+	public Response loadMisclassificationCosts(
+            @FormParam("data") String data, 
+            @FormParam("id") String idString) {
+		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			costs = JSONUtils.gson.fromJson(data,JSONUtils.misclassificationCostSetType);
-			String message = "adding " + costs.size() + " new misclassification costs";
-			MisclassificationCostsWriter writer = new MisclassificationCostsWriter(id,dscache,costs);
+            Collection<MisclassificationCost> costs = parseJsonInput(data, 
+                    JSONUtils.misclassificationCostSetType);
+			String message = "Loaded " + costs.size()
+			    + " misclassification costs";
+			MisclassificationCostsWriter writer = 
+                new MisclassificationCostsWriter(id, dscache, costs);
+            // TODO manager.add(writer)?
 			logger.info(message);
-			return Response.ok(message).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			return buildResponse(message, SUCCESS, null, new DateTime(), null); 
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+			logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -361,38 +335,23 @@ public class Service {
 	@Path("loadWorkerAssignedLabel")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabel(@FormParam("data") String data,
-											@FormParam("id") String idstr) {
-		AssignedLabel label;
-
-		String id = "" + 0;
-		if (null == idstr) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idstr;
-		}
-
+		    @FormParam("id") String idString) {
+		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			label = JSONUtils.gson.fromJson(data, JSONUtils.assignedLabelType);
+            AssignedLabel label = parseJsonInput(data, 
+                    JSONUtils.assignedLabelType);
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
 			labels.add(label);
-			LabelWriter writer = new LabelWriter(id,dscache,labels);
+			LabelWriter writer = new LabelWriter(id, dscache, labels);
 			manager.addProcessor(writer);
-			String message = "adding " + label.toString();
+			String message = "Added 1 label: " + label;
 			logger.info(message);
-			return Response.ok(message).build();
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
-
 	}
 
 	/**
@@ -404,40 +363,25 @@ public class Service {
 	@Path("loadWorkerAssignedLabels")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabels(@FormParam("data") String data,
-			@FormParam("id") String idstr) {
-		Collection<AssignedLabel> labels;
-
-		String id = "" + 0;
-		if (null == idstr) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idstr;
-		}
-
+			@FormParam("id") String idString) {
+		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			labels = JSONUtils.gson.fromJson(data,
-											 JSONUtils.assignedLabelSetType);
+		    Collection<AssignedLabel> labels = parseJsonInput(data,
+			    JSONUtils.assignedLabelSetType);
 			LabelWriter writer = new LabelWriter(id,dscache,labels);
 			manager.addProcessor(writer);
-			String message = "adding " + labels.size() + " labels";
+			String message = "Added " + labels.size() + " labels";
 			logger.info(message);
-			return Response.ok(message).build();
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
 
 	/**
-	 * add a gold label to the model
+	 * loads a gold label for given model
 	 *
 	 * @return a simple success message
 	 */
@@ -445,37 +389,21 @@ public class Service {
 	@Path("loadGoldLabel")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadGoldLabel(@FormParam("data") String data,
-								  @FormParam("id") String idstr) {
-		CorrectLabel label;
-
-		String id = "" + 0;
-		if (null == idstr) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idstr;
-		}
-
+            @FormParam("id") String idString) {
+		String id = getIdFromInput(idString);
 		try {
-
-			label = JSONUtils.gson.fromJson(data, JSONUtils.correctLabelType);
 			setup(context);
-			Collection<CorrectLabel> input = new ArrayList<CorrectLabel>();
-			input.add(label);
+            CorrectLabel label = parseJsonInput(data, 
+                    JSONUtils.correctLabelType);
+			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
+			labels.add(label);
 			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
 			manager.addProcessor(writer);
-			String message = "adding gold label: " + label.toString();
+			String message = "Added 1 gold label: " + label;
 			logger.info(message);
-			return Response.ok(message).build();
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -489,14 +417,14 @@ public class Service {
 	@Path("loadGoldLabels")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadGoldLabels(@FormParam("data") String data,
-								   @FormParam("id") String idstr) {
+								   @FormParam("id") String idString) {
 		Collection<CorrectLabel> input;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -530,14 +458,14 @@ public class Service {
 	@GET
 	@Path("majorityVote")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response majorityVote(@QueryParam("id") String idstr,
+	public Response majorityVote(@QueryParam("id") String idString,
 								 @QueryParam("objectName") String objectName) {
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -577,15 +505,15 @@ public class Service {
 	@POST
 	@Path("majorityVotes")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response majorityVotes(@FormParam("id") String idstr,
+	public Response majorityVotes(@FormParam("id") String idString,
 								  @FormParam("objects") String objects) {
 		Map<String, String> votes;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -625,14 +553,14 @@ public class Service {
 	@GET
 	@Path("majorityVotes")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response majorityVotes(@QueryParam("id") String idstr) {
+	public Response majorityVotes(@QueryParam("id") String idString) {
 		Map<String, String> votes;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -666,15 +594,15 @@ public class Service {
 	@POST
 	@Path("objectProbs")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response objectProbs(@FormParam("id") String idstr,
+	public Response objectProbs(@FormParam("id") String idString,
 								@FormParam("objects") String objects) {
 		Map<String, Map<String, Double>> votes;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -714,15 +642,15 @@ public class Service {
 	@GET
 	@Path("objectProb")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response objectProb(@QueryParam("id") String idstr,
+	public Response objectProb(@QueryParam("id") String idString,
 							   @QueryParam("object") String objectName) {
 		Map<String, Double> votes;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -757,15 +685,15 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response computeDsBlocking(
 		@QueryParam("iterations") String iterations,
-		@QueryParam("id") String idstr) {
+		@QueryParam("id") String idString) {
 		int its = 1;
 		long time = 0;
 
 		String id = 0 + "";
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -807,14 +735,14 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response computeDS(
 		@QueryParam("iterations") String iterations,
-		@QueryParam("id") String idstr) {
+		@QueryParam("id") String idString) {
 		int its = 1;
 
 		String id = 0 + "";
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		its = Math.max(1,
@@ -846,14 +774,14 @@ public class Service {
 	@Path("printWorkerSummary")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response printWorkerSummary(@QueryParam("verbose") String verbose,
-									   @QueryParam("id") String idstr) {
+									   @QueryParam("id") String idString) {
 		String output;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -885,14 +813,14 @@ public class Service {
 	@Path("printObjectsProbs")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response printObjectsProbs(@QueryParam("entropy") String ent,
-									  @QueryParam("id") String idstr) {
+									  @QueryParam("id") String idString) {
 		String output;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -923,14 +851,14 @@ public class Service {
 	@Path("objectProbs")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response objectProbs(@QueryParam("object") String object,
-								@QueryParam("entropy") String ent, @QueryParam("id") String idstr) {
+								@QueryParam("entropy") String ent, @QueryParam("id") String idString) {
 		Map<String, Double> out;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -960,14 +888,14 @@ public class Service {
 	@GET
 	@Path("printPriors")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response printPriors(@QueryParam("id") String idstr) {
+	public Response printPriors(@QueryParam("id") String idString) {
 		String output;
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -994,14 +922,14 @@ public class Service {
 	@GET
 	@Path("classPriors")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response computePriors(@QueryParam("id") String idstr) {
+	public Response computePriors(@QueryParam("id") String idString) {
 		Map<String, Double> out = new HashMap<String, Double>();
 
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
 
 		try {
@@ -1029,14 +957,13 @@ public class Service {
 	@GET
 	@Path("getDawidSkene")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getDawidSkene(@QueryParam("id") String idstr) {
+	public Response getDawidSkene(@QueryParam("id") String idString) {
 		String id = "" + 0;
-		if (null == idstr) {
+		if (null == idString) {
 			logger.info("no id input, using id 0");
 		} else {
-			id = idstr;
+			id = idString;
 		}
-
 		try {
 			setup(context);
 			DawidSkene ds = dscache.getDawidSkene(id);
