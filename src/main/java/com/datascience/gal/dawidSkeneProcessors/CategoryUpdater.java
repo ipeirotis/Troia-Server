@@ -12,35 +12,41 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
+package com.datascience.gal.dawidSkeneProcessors;
+
+import java.util.Collection;
+
+import com.datascience.gal.Category;
+import com.datascience.gal.DawidSkene;
 
 
 /**
  * Objects of this class update categories in DawidSkene model.
  */
-public class CategoryUpdater extends DawidSkeneProcessor{
-    
-    @Override
-    public void run(){
-	DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
-    }
+public class CategoryUpdater extends DawidSkeneProcessor {
 
-    /**
-     * New collection of categories
-     */
-    private Collection<Category> categories;
-    
-    /**
-     *  @return New collection of categories
-     */
-    public Collection<Category> getCategories() {
-	return categories;
-    }
-    
-    /**
-     * @param categories New collection of categories
-     */
-    public void setCategories(Collection<Category> categories) {
-	this.categories = categories;
-    }
+	@Override
+	public void run() {
+		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+	}
+
+	/**
+	 * New collection of categories
+	 */
+	private Collection<Category> categories;
+
+	/**
+	 *  @return New collection of categories
+	 */
+	public Collection<Category> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * @param categories New collection of categories
+	 */
+	public void setCategories(Collection<Category> categories) {
+		this.categories = categories;
+	}
 
 }

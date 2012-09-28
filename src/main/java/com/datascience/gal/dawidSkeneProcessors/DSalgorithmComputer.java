@@ -13,38 +13,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
+package com.datascience.gal.dawidSkeneProcessors;
+
+import com.datascience.gal.DawidSkene;
+
+
 /**
- * Objects of this class execute Dawid-Skene algorithm on DS model with 
+ * Objects of this class execute Dawid-Skene algorithm on DS model with
  * given id.
  */
 public class DSalgorithmComputer extends DawidSkeneProcessor {
-    
-    @Override
-    public void run() {
-	DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
-	ds.estimate(this.iterations);
-	this.getCache().insertDawidSkene(ds);
-    }
 
-    /**
-     * How many iterations of Dawid-Skene algorithm will be run
-     */
-    private int iterations;
+	@Override
+	public void run() {
+		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		ds.estimate(this.iterations);
+		this.getCache().insertDawidSkene(ds);
+		this.setState(DawidSkeneProcessorState.FINISHED);
+	}
+
+	/**
+	 * How many iterations of Dawid-Skene algorithm will be run
+	 */
+	private int iterations;
 
 
-    /**
-     * @return How many iterations of Dawid-Skene algorithm will be run
-     */    
-    public int  getIterations() {
-	return iterations;
-    }
-    
+	/**
+	 * @return How many iterations of Dawid-Skene algorithm will be run
+	 */
+	public int  getIterations() {
+		return iterations;
+	}
 
-    /**
-     * @param iterations How many iterations of Dawid-Skene algorithm will be run
-     */
-    public void setIterations(int  iterations) {
-	this.iterations = iterations;
-    }
+
+	/**
+	 * @param iterations How many iterations of Dawid-Skene algorithm will be run
+	 */
+	public void setIterations(int  iterations) {
+		this.iterations = iterations;
+	}
 
 }

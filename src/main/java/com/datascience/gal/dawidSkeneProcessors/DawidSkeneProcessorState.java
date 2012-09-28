@@ -14,74 +14,15 @@
  ******************************************************************************/
 package com.datascience.gal.dawidSkeneProcessors;
 
-import com.datascience.gal.service.DawidSkeneCache;
-
 
 /**
- * This class is root of all classes used for modyfing DS model.
+ * This enumeration holds possible states of DawidSkeneProcessor object.
+ * Meaning of those states is as follow
+ *  CREATED - processor was just created and not yet added to manager
+ *  IN_QUEUE - processor was added to manager and is now held in queue related to project it will modify
+ *  RUNNING - processor is either actually running or is held in thread poll queue
+ *  FINISHED - processor already finished modification of project data
  */
-public abstract class DawidSkeneProcessor implements Runnable {
-
-
-
-
-	/**
-	 * Identifier of DawidSkene model that will be modified
-	 */
-	private String dawidSkeneId;
-
-	/**
-	 * @return Identifier of DawidSkene model that will be modified
-	 */
-	public String getDawidSkeneId() {
-		return dawidSkeneId;
-	}
-
-	/**
-	 * @param dawidSkeneId Identifier of DawidSkene model that will be modified
-	 */
-	public void setDawidSkeneId(String dawidSkeneId) {
-		this.dawidSkeneId = dawidSkeneId;
-	}
-
-	/**
-	 * Cache used by this processor
-	 */
-	private DawidSkeneCache cache;
-
-	/**
-	 * Cache used by this processor
-	 */
-	public DawidSkeneCache getCache() {
-		return cache;
-	}
-
-	/**
-	 * Cache used by this processor
-	 */
-	public void setCache(DawidSkeneCache cache) {
-		this.cache = cache;
-	}
-
-
-	/**
-	 * Current state of this processor
-	 */
-	private DawidSkeneProcessorState state;
-
-	/**
-	 * @return Current state of this processor
-	 */
-	public DawidSkeneProcessorState getState() {
-		return state;
-	}
-
-	/**
-	 * @param state Current state of this processor
-	 */
-	public void setState(DawidSkeneProcessorState state) {
-		this.state = state;
-	}
-
-
+public enum DawidSkeneProcessorState {
+	CREATED,IN_QUEUE,RUNNING,FINISHED;
 }

@@ -14,6 +14,11 @@
  ******************************************************************************/
 package com.datascience.gal.dawidSkeneProcessors;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,128 +28,131 @@ import org.apache.log4j.Logger;
 
 
 public class DawidSkeneProcessorManager extends Thread  {
-    
 
-    public DawidSkeneProcessorExecutor(int threadPoolSize,int sleepPeriod){
-	this.processorQueue = new HashMap<String,Queue<DawidSkeneProcessor>>();
-	this.executor =  Executors.newFixedThreadPool(threadPoolSize);
-	this.stopped = false;
-	this.sleepPeriod = sleepPeriod;
-    }
 
-    @Override
-	public void run(){
-	while(!this.stopped){
-	    this.executeProcessors();
-	    try{
-		this.sleep(this.sleepPeriod);
-	    }catch(InterruptedException e){
-		//THIS CAN BE EMPTY
-	    }
+	public DawidSkeneProcessorManager(int threadPoolSize,int sleepPeriod) {
+		this.processorQueue = new HashMap<String,Queue<DawidSkeneProcessor>>();
+		this.executor =  Executors.newFixedThreadPool(threadPoolSize);
+		this.stopped = false;
+		this.sleepPeriod = sleepPeriod;
 	}
-    }
 
-
-    /**
-     * This function adds a new processor to manager
-     * @param processor Processor that's going to be added to manager
-     */
-    public void addProcessor(DawidSkeneProcessor processor){
-	if(!this.processorQueue.containsKey(processor.getDawidSkeneId()){
-		this.processorQueue.put(processor.getDawidSkeneId(),new ConcurentLinkedQueue<DawidSkeneProcessor>());	
-	    }
-	    this.processorQueue.get(processor.getDawidSkeneId()).put(processor.getDawidSkeneId(),processor);
-	    }
-    }
-
-    private void executeProcessors(){
-	Collection<Queue<DawidSkeneProcessor> queues = this.processorQueue.entrySet();
-	for (Queue<DawidSkeneProcessor> queue : queues) {
-	    if(queue.peek()!=null&&queue.peek().isProcessed()){
-		queue.pool();
-		if(queue.peek()!=null){
-		    this.executor.execute(queue.peek());
+	@Override
+	public void run() {
+		while(!this.stopped) {
+			this.executeProcessors();
+			try {
+				this.sleep(this.sleepPeriod);
+			} catch(InterruptedException e) {
+				//THIS CAN BE EMPTY
+			}
 		}
-	    }
 	}
-    }
-
-    /**
-     * Map that holds queues of processors for each project
-     */
-    private Map<String,Queue<DawidSkeneProcessor>> processorQueue;
-    
-    /**
-     * @return Map that holds queues of processors for each project
-     */
-    public Map<String,Queue<DawidSkeneProcessor>> getProcessorQueue() {
-	return processorQueue;
-    }
-    
-    /**
-     * @param processorQueue Map that holds queues of processors for each project
-     */
-    public void setProcessorQueue(Map<String,Queue<DawidSkeneProcessor>> processorQueue) {
-	this.processorQueue = processorQueue;
-    }
-
-    /**
-     * Executor that executes processor threads
-     */
-    private ExecutorService executor;
-    
-    /**
-     * @return Executor that executes processor threads
-     */
-    public ExecutorService getExecutor() {
-	return executor;
-    }
-    
-    /**
-     * @param executor Executor that executes processor threads
-     */
-    public void setExecutor(ExecutorService executor) {
-	this.executor = executor;
-    }
-
-/**
- * Set to true if manager is stopped
- */
-    private boolean stopped;
-    
-    /**
-     * @return Set to true if manager is stopped
-     */
-    public boolean isStopped() {
-	return stopped;
-    }
-    
-    /**
-     * @param stopped Set to true if manager is stopped
-     */
-    public void stop() {
-	this.stopped = true;
-    }
-
-/**
- * Time for wtih manager thread will be put to sleep between executions
- */
-    private int sleepPeriod;
-    
-    /**
-     * @return Time for wtih manager thread will be put to sleep between executions
-     */
-    public int getSleepPeriod() {
-	return sleepPeriod;
-    }
-    
-    /**
-     * @param sleepPeriod Time for wtih manager thread will be put to sleep between executions
-     */
-    public void setSleepPeriod(int sleepPeriod) {
-	this.sleepPeriod = sleepPeriod;
-    }
 
 
-    private static Logger logger = Logger.getLogger(DawidSkeneProcessorManager.class);
+	/**
+	 * This function adds a new processor to manager
+	 * @param processor Processor that's going to be added to manager
+	 */
+	public void addProcessor(DawidSkeneProcessor processor) {
+		if(processor.getState().equals(DawidSkeneProcessorState.CREATED)) {
+			if(!this.processorQueue.containsKey(processor.getDawidSkeneId())) {
+				this.processorQueue.put(processor.getDawidSkeneId(),new ConcurrentLinkedQueue<DawidSkeneProcessor>());
+			}
+			this.processorQueue.get(processor.getDawidSkeneId()).add(processor);
+		}
+	}
+
+	private void executeProcessors() {
+		Collection<String> projects = this.processorQueue.keySet();
+		for (String project : projects) {
+			Queue<DawidSkeneProcessor> queue = this.processorQueue.get(project);
+			if(queue.peek()!=null&&queue.peek().getState().equals(DawidSkeneProcessorState.FINISHED)) {
+				queue.poll();
+				if(queue.peek()!=null) {
+					this.executor.execute(queue.peek());
+					queue.peek().setState(DawidSkeneProcessorState.RUNNING);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Map that holds queues of processors for each project
+	 */
+	private Map<String,Queue<DawidSkeneProcessor>> processorQueue;
+
+	/**
+	 * @return Map that holds queues of processors for each project
+	 */
+	public Map<String,Queue<DawidSkeneProcessor>> getProcessorQueue() {
+		return processorQueue;
+	}
+
+	/**
+	 * @param processorQueue Map that holds queues of processors for each project
+	 */
+	public void setProcessorQueue(Map<String,Queue<DawidSkeneProcessor>> processorQueue) {
+		this.processorQueue = processorQueue;
+	}
+
+	/**
+	 * Executor that executes processor threads
+	 */
+	private ExecutorService executor;
+
+	/**
+	 * @return Executor that executes processor threads
+	 */
+	public ExecutorService getExecutor() {
+		return executor;
+	}
+
+	/**
+	 * @param executor Executor that executes processor threads
+	 */
+	public void setExecutor(ExecutorService executor) {
+		this.executor = executor;
+	}
+
+	/**
+	 * Set to true if manager is stopped
+	 */
+	private boolean stopped;
+
+	/**
+	 * @return Set to true if manager is stopped
+	 */
+	public boolean isStopped() {
+		return stopped;
+	}
+
+	/**
+	 * @param stopped Set to true if manager is stopped
+	 */
+	public void setStopped() {
+		this.stopped = true;
+	}
+
+	/**
+	 * Time for wtih manager thread will be put to sleep between executions
+	 */
+	private int sleepPeriod;
+
+	/**
+	 * @return Time for wtih manager thread will be put to sleep between executions
+	 */
+	public int getSleepPeriod() {
+		return sleepPeriod;
+	}
+
+	/**
+	 * @param sleepPeriod Time for wtih manager thread will be put to sleep between executions
+	 */
+	public void setSleepPeriod(int sleepPeriod) {
+		this.sleepPeriod = sleepPeriod;
+	}
+
+
+	private static Logger logger = Logger.getLogger(DawidSkeneProcessorManager.class);
 }
