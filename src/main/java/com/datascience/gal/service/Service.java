@@ -69,12 +69,15 @@ public class Service {
 
 	private static String DEFAULT_JOB_ID = "0";
 	private static Logger logger = Logger.getLogger(Service.class);
+    {
+        logger.info("Static code execution");
+    }
 
 	private static DawidSkeneCache dscache = null;
 
 	private static DawidSkeneProcessorManager manager = null;
        
-    private String getIdFromInputDefault(String input, String def) {
+    private static String getIdFromInput(String input, String def) {
         String id = def;
         if (null == input)  {
 			logger.info("No id input: using default id=" + def);
@@ -84,11 +87,16 @@ public class Service {
         return id;
     }
 
-    private String getIdFromInput(String input) {
-        return getIdFromInputDefault(input, "0");
+    private static String getIdFromInput(String input) {
+        return getIdFromInput(input, "0");
     }
 
-    private <T> T parseJsonInput(String input, Type type) throws Exception {
+    private static DawidSkene getDawidSkeneFromInput(String input) {
+        return dscache.getDawidSkene(getIdFromInput(input));
+    }
+
+    private static <T> T parseJsonInput(String input, Type type) throws 
+            Exception {
 		if (null == input || input.length() < 3) {
             throw new Exception("Invalid input: required JSON-ified " + 
                     "collection of objects of type " + type);
@@ -100,15 +108,15 @@ public class Service {
         return result;
     }
 
-    private void logErrorFromException(Exception e) {
+    private static void logErrorFromException(Exception e) {
         logger.error("Error processing the request: " + 
-                e.getClass().getName() + ": " + e.getLocalizedMessage());
+            e.getClass().getName() + ": " + e.getLocalizedMessage());
     }
 
     private static Response buildResponse(String message, String status, 
             Object result, DateTime timestamp,
-            Map<String, Object> others) {
-            Map<String, Object> cargo = new HashMap<String, Object>();
+            Map<String, ?> others) {
+        Map<String, Object> cargo = new HashMap<String, Object>();
         if (null != message) {
             cargo.put("message", message);
         }
@@ -123,6 +131,13 @@ public class Service {
         }
         if (null != others) {
             cargo.putAll(others);
+        }
+        if (null != message && null != status) {
+            if (!status.equals(FAILURE)) {
+                logger.info(message);
+            } else {
+                logger.warn(message);
+            }
         }
         return Response.ok(JSONUtils.gson.toJson(cargo)).build();
     }
@@ -231,12 +246,10 @@ public class Service {
 				manager.addProcessor(remover);
 			}
 			String message = "Reset the ds model";
-            if (idString != null) {
-                message += " with id=" + idString;
+            if (null != idString) {
+                message += " with id: " + idString;
             }
-			logger.info(message);
-            return buildResponse(message, SUCCESS, null, new DateTime(), 
-                    null);
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
         } catch (Exception e) {
             logErrorFromException(e);
 		}
@@ -256,12 +269,11 @@ public class Service {
 		try {
 			setup(context);
 			Boolean exists = dscache.hasDawidSkene(id);
-			logger.info("Model with id=" + id + " " + 
-                    (exists ? "exists" : "does not exist"));
-            return buildResponse(null, null, exists, null, null);
+            String message = "Model with id: " + id + " " +  
+                    (exists ? "exists" : "does not exist");
+            return buildResponse(message, null, exists, null, null);
 		} catch (Exception e) {
-		    logger.error("A problem with processing the request: " 
-                         + e.getClass() + ": " + e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
         return Response.status(500).build();
 	}
@@ -274,13 +286,13 @@ public class Service {
 	@POST
 	@Path("loadCategories")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadCategories(@FormParam("data") String data,
-		    @FormParam("id") String idString,
+	public Response loadCategories(@FormParam("id") String idString,
+            @FormParam("categories") String categoriesString,
 			@FormParam("incremental") String incremental) {
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			Collection<Category> categories = parseJsonInput(data, 
+			Collection<Category> categories = parseJsonInput(categoriesString, 
                     JSONUtils.categorySetType);
 			DawidSkene ds = (null == incremental) ? 
                 new BatchDawidSkene(id, categories) :
@@ -306,12 +318,12 @@ public class Service {
 	@Path("loadCosts")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadMisclassificationCosts(
-            @FormParam("data") String data, 
-            @FormParam("id") String idString) {
-		String id = getIdFromInput(idString);
+            @FormParam("id") String idString,
+            @FormParam("costs") String costsString) {
 		try {
 			setup(context);
-            Collection<MisclassificationCost> costs = parseJsonInput(data, 
+            Collection<MisclassificationCost> costs = parseJsonInput(
+                    costsString, 
                     JSONUtils.misclassificationCostSetType);
 			String message = "Loaded " + costs.size()
 			    + " misclassification costs";
@@ -334,12 +346,11 @@ public class Service {
 	@POST
 	@Path("loadWorkerAssignedLabel")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadWorkerAssignedLabel(@FormParam("data") String data,
-		    @FormParam("id") String idString) {
-		String id = getIdFromInput(idString);
+	public Response loadWorkerAssignedLabel(@FormParam("id") String idString,
+		    @FormParam("label") String labelString) {
 		try {
 			setup(context);
-            AssignedLabel label = parseJsonInput(data, 
+            AssignedLabel label = parseJsonInput(labelString, 
                     JSONUtils.assignedLabelType);
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
 			labels.add(label);
@@ -362,14 +373,13 @@ public class Service {
 	@POST
 	@Path("loadWorkerAssignedLabels")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadWorkerAssignedLabels(@FormParam("data") String data,
-			@FormParam("id") String idString) {
-		String id = getIdFromInput(idString);
+	public Response loadWorkerAssignedLabels(@FormParam("id") String idString,
+			@FormParam("labels") String labelsString) {
 		try {
 			setup(context);
-		    Collection<AssignedLabel> labels = parseJsonInput(data,
+		    Collection<AssignedLabel> labels = parseJsonInput(labelsString,
 			    JSONUtils.assignedLabelSetType);
-			LabelWriter writer = new LabelWriter(id,dscache,labels);
+			LabelWriter writer = new LabelWriter(id, dscache, labels);
 			manager.addProcessor(writer);
 			String message = "Added " + labels.size() + " labels";
 			logger.info(message);
@@ -381,19 +391,19 @@ public class Service {
 	}
 
 	/**
-	 * loads a gold label for given model
+	 * loads a gold label for the model
 	 *
 	 * @return a simple success message
 	 */
 	@POST
 	@Path("loadGoldLabel")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadGoldLabel(@FormParam("data") String data,
-            @FormParam("id") String idString) {
+	public Response loadGoldLabel(@FormParam("id") String idString,
+            @FormParam("label") String labelString) {
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-            CorrectLabel label = parseJsonInput(data, 
+            CorrectLabel label = parseJsonInput(labelString, 
                     JSONUtils.correctLabelType);
 			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
 			labels.add(label);
@@ -409,90 +419,55 @@ public class Service {
 	}
 
 	/**
-	 * add gold labels to the model
+	 * loads gold labels for the model
 	 *
 	 * @return a simple success message
 	 */
 	@POST
 	@Path("loadGoldLabels")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response loadGoldLabels(@FormParam("data") String data,
-								   @FormParam("id") String idString) {
-		Collection<CorrectLabel> input;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	public Response loadGoldLabels(@FormParam("id") String idString,
+			@FormParam("labels") String labelsString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			input = JSONUtils.gson
-					.fromJson(data, JSONUtils.correctLabelSetType);
+		    Collection<CorrectLabel> labels = parseJsonInput(labelsString, 
+                    JSONUtils.correctLabelSetType);
 			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
 			manager.addProcessor(writer);
-			String message = "adding " + input.size() + " gold labels";
-			logger.info(message);
-			return Response.ok(message).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			String message = "Adding " + labels.size() + " gold labels";
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
 
 	/**
-	 * computes majority votes for object
+	 * computes majority votes for the model 
 	 *
-	 * @return map of majority votes
+	 * @return a JSON containing a map of majority votes
 	 */
 	@GET
 	@Path("majorityVote")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVote(@QueryParam("id") String idString,
-								 @QueryParam("objectName") String objectName) {
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	        @QueryParam("objectName") String objectName) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+			ds.addCorrectLabels(labels);
 			String votes = ds.getMajorityVote(objectName);
-
 			if (votes == null) {
-				logger.warn("got a null majority vote for object: "
-							+ objectName);
-				Response.status(500).build();
+                throw new Exception("Got a null majority vote for the object: " 
+                        + objectName);
 			}
-
-			String message = "computing majority votes for " + objectName;
-			logger.info(message);
-			return Response.ok(JSONUtils.gson.toJson(votes)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			String message = "Computing majority votes for the object: " + 
+                    objectName;
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -500,47 +475,32 @@ public class Service {
 	/**
 	 * computes majority votes for objects
 	 *
-	 * @return map of majority votes
+	 * @return a JSON containing a map of majority votes
 	 */
 	@POST
 	@Path("majorityVotes")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVotes(@FormParam("id") String idString,
-								  @FormParam("objects") String objects) {
-		Map<String, String> votes;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+			@FormParam("objectsNames") String objectsNamesJson) {
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			if (null == objects)
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+		    Map<String, String> votes = null;
+			if (null == objectsNamesJson)
 				votes = ds.getMajorityVote();
 			else {
-				Collection<String> objectNames = JSONUtils.gson.fromJson(
-													 objects, JSONUtils.stringSetType);
-				votes = ds.getMajorityVote(objectNames);
+				Collection<String> objectsNames = parseJsonInput(
+                        objectsNamesJson, 
+                        JSONUtils.stringSetType);
+				votes = ds.getMajorityVote(objectsNames);
 			}
-			String message = "computing majority votes for "
-							 + (null == votes ? 0 : votes.size()) + " objects ";
-			logger.info(message);
-			return Response.ok(JSONUtils.gson.toJson(votes)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            String message = "Computing majority votes for " + 
+                    (null == votes ? 0 : votes.size()) + " objects";
+            String result = JSONUtils.gson.toJson(votes); 
+            return buildResponse(message, SUCCESS, result, new DateTime(), 
+                    null);
 		} catch (Exception e) {
-
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -548,40 +508,23 @@ public class Service {
 	/**
 	 * computes majority votes for objects
 	 *
-	 * @return map of majority votes
+	 * @return a JSON containing a map of majority votes
 	 */
 	@GET
 	@Path("majorityVotes")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVotes(@QueryParam("id") String idString) {
-		Map<String, String> votes;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			votes = ds.getMajorityVote();
-			String message = "computing majority votes for "
-							 + (null == votes ? 0 : votes.size()) + " objects ";
-			logger.info(message);
-			return Response.ok(JSONUtils.gson.toJson(votes)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+		    Map<String, String> votes = ds.getMajorityVote();
+            String message = "Computing majority votes for " + 
+                    (null == votes ? 0 : votes.size()) + " objects";
+            String result = JSONUtils.gson.toJson(votes);
+            return buildResponse(message, SUCCESS, result, 
+                    new DateTime(), null);
 		} catch (Exception e) {
-
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -589,88 +532,56 @@ public class Service {
 	/**
 	 * computes class probs objects
 	 *
-	 * @return map of majority votes
-	 */
-	@POST
-	@Path("objectProbs")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response objectProbs(@FormParam("id") String idString,
-								@FormParam("objects") String objects) {
-		Map<String, Map<String, Double>> votes;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
-		try {
-			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			if (null == objects)
-				votes = ds.getObjectProbs();
-			else {
-				Collection<String> objectNames = JSONUtils.gson.fromJson(
-													 objects, JSONUtils.stringSetType);
-				votes = ds.getObjectProbs(objectNames);
-			}
-			String message = "computing object probs for "
-							 + (null == votes ? 0 : votes.size()) + " objects ";
-			logger.info(message);
-			return Response.ok(JSONUtils.gson.toJson(votes)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
-		} catch (Exception e) {
-
-			logger.error(e.getLocalizedMessage());
-		}
-		return Response.status(500).build();
-	}
-
-	/**
-	 * computes class probs objects
-	 *
-	 * @return map of majority votes
+	 * @return map of majority votes // TODO for sure?
 	 */
 	@GET
 	@Path("objectProb")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response objectProb(@QueryParam("id") String idString,
-							   @QueryParam("object") String objectName) {
-		Map<String, Double> votes;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	        @QueryParam("objectName") String objectName) {
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			votes = ds.getObjectProbs(objectName);
-			String message = "computing object probs for " + objectName;
-			logger.info(message);
-			return Response.ok(JSONUtils.gson.toJson(votes)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+		    Map<String, Double> probs = ds.getObjectProbs(objectName);
+			String message = "Computing probs for the object: " + objectName;
+            String result = JSONUtils.gson.toJson(probs);
+            return buildResponse(message, SUCCESS, result, new DateTime(),
+                    null);
 		} catch (Exception e) {
+            logErrorFromException(e);
+		}
+		return Response.status(500).build();
+	}
+	/**
+	 * computes class probs objects
+	 *
+	 * @return map of majority votes // TODO for sure?
+	 */
+	@POST
+	@Path("objectProbs")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response objectProbs(@FormParam("id") String idString,
+		    @FormParam("objectsNames") String objectsNamesJson) {
+		try {
+			setup(context);
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+		    Map<String, Map<String, Double>> probs = null;
+			if (null == objectsNamesJson)
+				probs = ds.getObjectProbs();
+			else {
+				Collection<String> objectNames = parseJsonInput(
+                        objectsNamesJson, 
+                        JSONUtils.stringSetType);
+				probs = ds.getObjectProbs(objectNames);
+			}
+			String message = "Computing probs for " +
+			        (null == probs ? 0 : probs.size()) + " objects";
+            String result = JSONUtils.gson.toJson(probs);
+            return buildResponse(message, SUCCESS, result, new DateTime(), 
+                    null);
 
-			logger.error(e.getLocalizedMessage());
+		} catch (Exception e) {
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -678,133 +589,71 @@ public class Service {
 	/**
 	 * TODO: make async w/ a callback call to run the iterative ds algorithm
 	 *
-	 * @return success message
+	 * @return a JSON containing a success message
 	 */
 	@GET
 	@Path("computeBlocking")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response computeDsBlocking(
-		@QueryParam("iterations") String iterations,
-		@QueryParam("id") String idString) {
-		int its = 1;
-		long time = 0;
-
-		String id = 0 + "";
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	public Response computeDsBlocking(@QueryParam("id") String idString,
+            @QueryParam("iterations") String iterations) {
+        int its = Math.max(1,
+                null == iterations ? 1 : Integer.parseInt(iterations));
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-
+			DawidSkene ds = getDawidSkeneFromInput(idString);
 			StopWatch sw = new StopWatch();
 			sw.start();
-			its = Math.max(1,
-						   null == iterations ? 1 : Integer.parseInt(iterations));
 			ds.estimate(its);
 			sw.stop();
-			time = sw.getTime();
-			String message = "performed ds iteration " + its + " times, took: "
-							 + time + "ms.";
+			long time = sw.getTime();
+			String message = "Performed ds iteration " + its + " times, took: "
+		            + time + "ms.";
 			logger.info(message);
 			CacheUpdater updater = new CacheUpdater(id,dscache,ds);
 			manager.addProcessor(updater);
-
-			return Response.ok(message).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
-
-
 
 	@GET
 	@Path("compute")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response computeDS(
-		@QueryParam("iterations") String iterations,
-		@QueryParam("id") String idString) {
-		int its = 1;
-
-		String id = 0 + "";
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
-		its = Math.max(1,
-					   null == iterations ? 1 : Integer.parseInt(iterations));
-
-
+	public Response computeDS(@QueryParam("id") String idString,
+                @QueryParam("iterations") String iterations) {
+		int its = Math.max(1,
+		        null == iterations ? 1 : Integer.parseInt(iterations));
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DSalgorithmComputer computer = new DSalgorithmComputer(id,dscache,its);
+			DSalgorithmComputer computer = new DSalgorithmComputer(id, dscache, its);
 			manager.addProcessor(computer);
-			String message = "Registered DScomputer with  " + its + " iterations/";
-			return Response.ok(message).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			String message = "Registered DScomputer with  " + 
+                    its + " iterations";
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 		}
 		return Response.status(500).build();
 	}
 
-
 	@GET
 	@Path("printWorkerSummary")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response printWorkerSummary(@QueryParam("verbose") String verbose,
-									   @QueryParam("id") String idString) {
-		String output;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	public Response printWorkerSummary(@QueryParam("id") String idString,
+            @QueryParam("verbose") String verbose) {
+		boolean verb = null != verbose;
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-
-			boolean verb = null == verbose ? false : true;
-			output = ds.printAllWorkerScores(verb);
-
-			String message = "returning request for worker summary";
-			logger.info(message);
-
-			return Response.ok(output).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+			String message = "Worker summary";
+			String result = ds.printAllWorkerScores(verb);
+            return buildResponse(message, SUCCESS, result, new DateTime(), 
+                    null); 
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -812,37 +661,18 @@ public class Service {
 	@GET
 	@Path("printObjectsProbs")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response printObjectsProbs(@QueryParam("entropy") String ent,
-									  @QueryParam("id") String idString) {
-		String output;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	public Response printObjectsProbs(@QueryParam("id") String idString,
+	        @QueryParam("entropy") String ent) {
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-
+			DawidSkene ds = getDawidSkeneFromInput(idString);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
-			output = ds.printObjectClassProbabilities(entropy);
-
-			String message = "returning request for object class probs";
-			logger.info(message);
-			return Response.ok(output).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            String message = "Object class probabilities";
+			String result = ds.printObjectClassProbabilities(entropy);
+            return buildResponse(message, SUCCESS, result, new DateTime(), 
+                    null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -850,37 +680,20 @@ public class Service {
 	@GET
 	@Path("objectProbs")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response objectProbs(@QueryParam("object") String object,
-								@QueryParam("entropy") String ent, @QueryParam("id") String idString) {
-		Map<String, Double> out;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
+	public Response objectProbs(@QueryParam("id") String idString,
+            @QueryParam("object") String object,
+            @QueryParam("entropy") String ent) {
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-
+			DawidSkene ds = getDawidSkeneFromInput(idString);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
-			out = ds.objectClassProbabilities(object, entropy);
-
-			String message = "returning request for object class probs";
-			logger.info(message);
-			return Response.ok(JSONUtils.gson.toJson(out)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+            logger.info("Processing request for object class probabilities");
+			Map<String, Double> probs = ds.objectClassProbabilities(object, 
+                    entropy);
+            String result = JSONUtils.gson.toJson(probs);
+            return buildResponse(null, null, result, null, null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -889,32 +702,14 @@ public class Service {
 	@Path("printPriors")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response printPriors(@QueryParam("id") String idString) {
-		String output;
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			output = ds.printPriors();
-			String message = "returning request for object class probs";
-			logger.info(message);
-
-			return Response.ok(output).build();
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+			logger.info("Returning request for object class probabilities");
+			String result = ds.printPriors();
+            return buildResponse(null, null, result, null, null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -923,33 +718,15 @@ public class Service {
 	@Path("classPriors")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response computePriors(@QueryParam("id") String idString) {
-		Map<String, Double> out = new HashMap<String, Double>();
-
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
-
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			out = ds.computePriors();
-			String message = "returning request for object class probs";
-			logger.info(message);
-
-			return Response.ok(JSONUtils.gson.toJson(out)).build();
-
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+			logger.info("Returning request for object class probabilities");
+            Map<String, Double> priors = ds.computePriors();
+			String result = JSONUtils.gson.toJson(priors); 
+            return buildResponse(null, null, result, null, null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
@@ -958,25 +735,13 @@ public class Service {
 	@Path("getDawidSkene")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDawidSkene(@QueryParam("id") String idString) {
-		String id = "" + 0;
-		if (null == idString) {
-			logger.info("no id input, using id 0");
-		} else {
-			id = idString;
-		}
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			return Response.ok(JSONUtils.gson.toJson(ds)).build();
-		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			logger.error("class not found exception: "
-						 + e.getLocalizedMessage());
-		} catch (SQLException e) {
-			logger.error("sql exception: " + e.getLocalizedMessage());
+			DawidSkene ds = getDawidSkeneFromInput(idString);
+            String result = JSONUtils.gson.toJson(ds);
+            return buildResponse(null, null, result, null, null);
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+            logErrorFromException(e);
 		}
 		return Response.status(500).build();
 	}
