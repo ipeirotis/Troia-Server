@@ -17,6 +17,8 @@ package com.datascience.gal.dawidSkeneProcessors;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.Category;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.CorrectLabel;
@@ -36,10 +38,12 @@ public class GoldLabelWriter extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
+		logger.info("Executing gold label writer for "+this.getDawidSkeneId()+".");
 		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
 		ds.addCorrectLabels(this.goldLabels);
 		this.getCache().insertDawidSkene(ds);
 		this.setState(DawidSkeneProcessorState.FINISHED);
+		logger.info("Gold label writer for "+this.getDawidSkeneId()+" finished.");
 	}
 
 
@@ -61,5 +65,7 @@ public class GoldLabelWriter extends DawidSkeneProcessor {
 	public void setGoldLabels(Collection<CorrectLabel> goldLabels) {
 		this.goldLabels = goldLabels;
 	}
+
+	private static Logger logger = Logger.getLogger(GoldLabelWriter.class);
 
 }

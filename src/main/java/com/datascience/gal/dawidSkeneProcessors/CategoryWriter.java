@@ -17,6 +17,8 @@ package com.datascience.gal.dawidSkeneProcessors;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.Category;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
@@ -39,6 +41,7 @@ public class CategoryWriter extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
+		logger.info("Executing category writer for "+this.getDawidSkeneId()+".");
 		DawidSkene ds;
 		if (this.incremental) {
 			ds = new IncrementalDawidSkene(this.getDawidSkeneId(), this.categories);
@@ -47,6 +50,7 @@ public class CategoryWriter extends DawidSkeneProcessor {
 		}
 		this.getCache().insertDawidSkene(ds);
 		this.setState(DawidSkeneProcessorState.FINISHED);
+		logger.info("Category writer for "+this.getDawidSkeneId()+" finished.");
 	}
 
 
@@ -89,4 +93,5 @@ public class CategoryWriter extends DawidSkeneProcessor {
 	}
 
 
+	private static Logger logger = Logger.getLogger(CategoryWriter.class);
 }

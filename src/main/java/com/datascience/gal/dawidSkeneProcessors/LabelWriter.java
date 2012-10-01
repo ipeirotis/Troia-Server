@@ -17,6 +17,8 @@ package com.datascience.gal.dawidSkeneProcessors;
 
 import java.util.Collection;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.service.DawidSkeneCache;
@@ -30,12 +32,12 @@ public class LabelWriter extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-
+		logger.info("Executing label writer for "+this.getDawidSkeneId()+".");
 		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
 		ds.addAssignedLabels(labels);
 		this.getCache().insertDawidSkene(ds);
 		this.setState(DawidSkeneProcessorState.FINISHED);
-
+		logger.info("Label writer for "+this.getDawidSkeneId()+" finished.");
 	}
 
 	/**
@@ -56,5 +58,7 @@ public class LabelWriter extends DawidSkeneProcessor {
 	public void setLabels(Collection<AssignedLabel> labels) {
 		this.labels = labels;
 	}
+
+	private static Logger logger = Logger.getLogger(LabelWriter.class);
 
 }
