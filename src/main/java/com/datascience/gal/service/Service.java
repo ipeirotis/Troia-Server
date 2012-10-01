@@ -234,13 +234,13 @@ public class Service {
 			setup(context);
 			categories = JSONUtils.gson.fromJson(input,JSONUtils.categorySetType);
 
-			if (null == incremental){
-			    incrementalDs=false;
-			}else{
-			    incrementalDs=true;
+			if (null == incremental) {
+				incrementalDs=false;
+			} else {
+				incrementalDs=true;
 			}
 			CategoryWriter writer = new CategoryWriter(id,dscache,categories,incrementalDs);
- 			manager.addProcessor(writer);
+			manager.addProcessor(writer);
 
 			String message = "built a ds with " + categories.size()
 							 + " categories" + JSONUtils.gson.toJson(categories);
@@ -367,16 +367,16 @@ public class Service {
 		}
 
 		try {
-		    setup(context);
-		    labels = JSONUtils.gson.fromJson(data,
-						    JSONUtils.assignedLabelSetType);
-		    LabelWriter writer = new LabelWriter(id,dscache,labels);
-		    manager.addProcessor(writer);
-		    String message = "adding " + labels.size() + " labels";
-		    logger.info(message);
-		    return Response.ok(message).build();
+			setup(context);
+			labels = JSONUtils.gson.fromJson(data,
+											 JSONUtils.assignedLabelSetType);
+			LabelWriter writer = new LabelWriter(id,dscache,labels);
+			manager.addProcessor(writer);
+			String message = "adding " + labels.size() + " labels";
+			logger.info(message);
+			return Response.ok(message).build();
 		} catch (IOException e) {
-		    logger.error("ioexception: " + e.getLocalizedMessage());
+			logger.error("ioexception: " + e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
 			logger.error("class not found exception: "
 						 + e.getLocalizedMessage());
@@ -414,7 +414,7 @@ public class Service {
 			Collection<CorrectLabel> input = new ArrayList<CorrectLabel>();
 			input.add(label);
 			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
-			manager.addProcessor(writer);		
+			manager.addProcessor(writer);
 			String message = "adding gold label: " + label.toString();
 			logger.info(message);
 			return Response.ok(message).build();

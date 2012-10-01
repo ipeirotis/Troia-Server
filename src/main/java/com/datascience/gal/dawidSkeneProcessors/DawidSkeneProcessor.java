@@ -30,6 +30,7 @@ public abstract class DawidSkeneProcessor implements Runnable {
 	protected DawidSkeneProcessor(String id,DawidSkeneCache cache) {
 		this.setDawidSkeneId(id);
 		this.setCache(cache);
+		this.setState(DawidSkeneProcessorState.CREATED);
 	}
 
 	/**

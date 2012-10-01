@@ -23,43 +23,43 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.service.DawidSkeneCache;
 
 
-public class GoldLabelWriter extends DawidSkeneProcessor{
-    
-    /**
-     * @param id Dawid-Skene project identifier
-     * @param cache Dawid-Skene cache that will be used by this writer
-     */
-    public GoldLabelWriter(String id,DawidSkeneCache cache,Collection<CorrectLabel> goldLabels){
-	super(id,cache);
-	this.setGoldLabels(goldLabels);
-    }
+public class GoldLabelWriter extends DawidSkeneProcessor {
 
-    @Override
-	public void run(){
-	DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
-	ds.addCorrectLabels(this.goldLabels);
-	this.getCache().insertDawidSkene(ds);
+	/**
+	 * @param id Dawid-Skene project identifier
+	 * @param cache Dawid-Skene cache that will be used by this writer
+	 */
+	public GoldLabelWriter(String id,DawidSkeneCache cache,Collection<CorrectLabel> goldLabels) {
+		super(id,cache);
+		this.setGoldLabels(goldLabels);
+	}
 
-    }
+	@Override
+	public void run() {
+		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		ds.addCorrectLabels(this.goldLabels);
+		this.getCache().insertDawidSkene(ds);
+		this.setState(DawidSkeneProcessorState.FINISHED);
+	}
 
 
-/**
- * Gold labels that will be added to Dawid-Skene model
- */
-    private Collection<CorrectLabel> goldLabels;
-    
-    /**
-     * @return Gold labels that will be added to Dawid-Skene model
-     */
-    public Collection<CorrectLabel> getGoldLabels() {
-	return goldLabels;
-    }
-    
-    /**
-     * @param goldLabels Gold labels that will be added to Dawid-Skene model
-     */
-    public void setGoldLabels(Collection<CorrectLabel> goldLabels) {
-	this.goldLabels = goldLabels;
-    }
+	/**
+	 * Gold labels that will be added to Dawid-Skene model
+	 */
+	private Collection<CorrectLabel> goldLabels;
+
+	/**
+	 * @return Gold labels that will be added to Dawid-Skene model
+	 */
+	public Collection<CorrectLabel> getGoldLabels() {
+		return goldLabels;
+	}
+
+	/**
+	 * @param goldLabels Gold labels that will be added to Dawid-Skene model
+	 */
+	public void setGoldLabels(Collection<CorrectLabel> goldLabels) {
+		this.goldLabels = goldLabels;
+	}
 
 }

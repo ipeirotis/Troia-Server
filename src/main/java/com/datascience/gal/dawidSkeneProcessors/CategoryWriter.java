@@ -46,6 +46,7 @@ public class CategoryWriter extends DawidSkeneProcessor {
 			ds = new BatchDawidSkene(this.getDawidSkeneId(), this.categories);
 		}
 		this.getCache().insertDawidSkene(ds);
+		this.setState(DawidSkeneProcessorState.FINISHED);
 	}
 
 

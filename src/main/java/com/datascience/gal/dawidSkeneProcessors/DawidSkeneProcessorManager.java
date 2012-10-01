@@ -57,25 +57,30 @@ public class DawidSkeneProcessorManager extends Thread  {
 	 * @param processor Processor that's going to be added to manager
 	 */
 	public void addProcessor(DawidSkeneProcessor processor) {
-		if(processor.getState().equals(DawidSkeneProcessorState.CREATED)) {
-			if(!this.processorQueue.containsKey(processor.getDawidSkeneId())) {
-				this.processorQueue.put(processor.getDawidSkeneId(),new ConcurrentLinkedQueue<DawidSkeneProcessor>());
+		synchronized(this.processorQueue) {
+			if(processor.getState().equals(DawidSkeneProcessorState.CREATED)) {
+				if(!this.processorQueue.containsKey(processor.getDawidSkeneId())) {
+					this.processorQueue.put(processor.getDawidSkeneId(),new ConcurrentLinkedQueue<DawidSkeneProcessor>());
+				}
+				this.processorQueue.get(processor.getDawidSkeneId()).add(processor);
+				processor.setState(DawidSkeneProcessorState.IN_QUEUE);
+				logger.info("Added new processor to queue");
+				this.interrupt();
 			}
-			this.processorQueue.get(processor.getDawidSkeneId()).add(processor);
-			logger.info("Added new processor to queue");
-			this.interrupt();
 		}
 	}
 
 	private void executeProcessors() {
-		Collection<String> projects = this.processorQueue.keySet();
-		for (String project : projects) {
-			Queue<DawidSkeneProcessor> queue = this.processorQueue.get(project);
-			if(queue.peek()!=null&&queue.peek().getState().equals(DawidSkeneProcessorState.FINISHED)) {
-				queue.poll();
-				if(queue.peek()!=null) {
-					this.executor.execute(queue.peek());
-					queue.peek().setState(DawidSkeneProcessorState.RUNNING);
+		synchronized(this.processorQueue) {
+			Collection<String> projects = this.processorQueue.keySet();
+			for (String project : projects) {
+				Queue<DawidSkeneProcessor> queue = this.processorQueue.get(project);
+				if(queue.peek()!=null&&queue.peek().getState().equals(DawidSkeneProcessorState.FINISHED)) {
+					queue.poll();
+					if(queue.peek()!=null) {
+						this.executor.execute(queue.peek());
+						queue.peek().setState(DawidSkeneProcessorState.RUNNING);
+					}
 				}
 			}
 		}

@@ -22,38 +22,39 @@ import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.service.DawidSkeneCache;
 
 public class LabelWriter extends DawidSkeneProcessor {
-    
-    public LabelWriter(String id,DawidSkeneCache cache,Collection<AssignedLabel> labels){
-	super(id,cache);
-	this.setLabels(labels);
-    }
 
-@Override
-    public void run(){
+	public LabelWriter(String id,DawidSkeneCache cache,Collection<AssignedLabel> labels) {
+		super(id,cache);
+		this.setLabels(labels);
+	}
 
-    DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
-    ds.addAssignedLabels(labels);
-    this.getCache().insertDawidSkene(ds);
+	@Override
+	public void run() {
 
-}
+		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		ds.addAssignedLabels(labels);
+		this.getCache().insertDawidSkene(ds);
+		this.setState(DawidSkeneProcessorState.FINISHED);
 
-    /**
-     * Worker assigned labels that will be added to Dawid-Skene model1
-     */
-    private Collection<AssignedLabel> labels;
-    
-    /**
-     * @return Worker assigned labels that will be added to Dawid-Skene model1
-     */
-    public Collection<AssignedLabel> getLabels() {
-	return labels;
-    }
-    
-    /**
-     * @param labels Worker assigned labels that will be added to Dawid-Skene model1
-     */
-    public void setLabels(Collection<AssignedLabel> labels) {
-	this.labels = labels;
-    }
+	}
+
+	/**
+	 * Worker assigned labels that will be added to Dawid-Skene model1
+	 */
+	private Collection<AssignedLabel> labels;
+
+	/**
+	 * @return Worker assigned labels that will be added to Dawid-Skene model1
+	 */
+	public Collection<AssignedLabel> getLabels() {
+		return labels;
+	}
+
+	/**
+	 * @param labels Worker assigned labels that will be added to Dawid-Skene model1
+	 */
+	public void setLabels(Collection<AssignedLabel> labels) {
+		this.labels = labels;
+	}
 
 }
