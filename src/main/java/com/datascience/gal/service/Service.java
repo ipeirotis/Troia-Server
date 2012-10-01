@@ -216,6 +216,7 @@ public class Service {
 								   @FormParam("id") String idstr,
 								   @FormParam("incremental") String incremental) {
 		Collection<Category> categories;
+		boolean incrementalDs;
 		if (null == input || input.length() < 3) {
 			String message = "invalid input. requires json-ified collection of category objects";
 			logger.error(message);
@@ -230,15 +231,15 @@ public class Service {
 
 		try {
 			setup(context);
-			categories = JSONUtils.gson.fromJson(input,
-												 JSONUtils.categorySetType);
-			DawidSkene ds;
+			categories = JSONUtils.gson.fromJson(input,JSONUtils.categorySetType);
 
-			if (null == incremental)
-				ds = new BatchDawidSkene(id, categories);
-			else
-				ds = new IncrementalDawidSkene(id, categories);
-			dscache.insertDawidSkene(ds);
+			if (null == incremental){
+			    incrementalDs=false;
+			}else{
+			    incrementalDs=true;
+			}
+			CategoryWriter writer = new CategoryWriter(id,dscache,categories,incrementalDs);
+ 			manager.addProcessor(writer);
 
 			String message = "built a ds with " + categories.size()
 							 + " categories" + JSONUtils.gson.toJson(categories);
@@ -283,13 +284,9 @@ public class Service {
 
 		try {
 			setup(context);
-			costs = JSONUtils.gson.fromJson(data,
-											JSONUtils.misclassificationCostSetType);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			ds.addMisclassificationCosts(costs);
-			dscache.insertDawidSkene(ds);
-			String message = "adding " + costs.size()
-							 + " new misclassification costs";
+			costs = JSONUtils.gson.fromJson(data,JSONUtils.misclassificationCostSetType);
+			String message = "adding " + costs.size() + " new misclassification costs";
+			MisclassificationCostsWriter writer = new MisclassificationCostsWriter(id,dscache,costs);
 			logger.info(message);
 			return Response.ok(message).build();
 
@@ -779,7 +776,8 @@ public class Service {
 
 		try {
 			setup(context);
-			DSalgorithmComputer computer = new DSalgorithmComputer(id,this.dscache,its);
+			DSalgorithmComputer computer = new DSalgorithmComputer(id,dscache,its);
+			manager.addProcessor(computer);
 			String message = "Registered DScomputer with  " + its + " iterations/";
 			return Response.ok(message).build();
 

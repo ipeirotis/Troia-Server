@@ -12,83 +12,55 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
+
 package com.datascience.gal.dawidSkeneProcessors;
 
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+
+import com.datascience.gal.MisclassificationCost;
+import com.datascience.gal.DawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
-
-/**
- * This class is root of all classes used for modyfing DS model.
- */
-public abstract class DawidSkeneProcessor implements Runnable {
-
+public class MisclassificationCostsWriter extends DawidSkeneProcessor {
 
 	/**
 	 * @param id Dawid-Skene project identifier
 	 * @param cache Dawid-Skene cache that will be used by this writer
+	 * @param costs Collection of misclassification costs that will be added to model
 	 */
-	protected DawidSkeneProcessor(String id,DawidSkeneCache cache) {
-		this.setDawidSkeneId(id);
-		this.setCache(cache);
+	public MisclassificationCostsWriter(String id,DawidSkeneCache cache,Collection<MisclassificationCost> costs) {
+		super(id,cache);
+		this.setCosts(costs);
+		logger.info("Created misclassification cost writer for " + id + ".");
+	}
+
+	@Override
+	public void run() {
+		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		ds.addMisclassificationCosts(costs);
+		this.getCache().insertDawidSkene(ds);
 	}
 
 	/**
-	 * Identifier of DawidSkene model that will be modified
+	 * Collection of misclassification costs that will be added
 	 */
-	private String dawidSkeneId;
+	private Collection<MisclassificationCost> costs;
 
 	/**
-	 * @return Identifier of DawidSkene model that will be modified
+	 * @return Collection of misclassification costs that will be added
 	 */
-	public String getDawidSkeneId() {
-		return dawidSkeneId;
+	public Collection<MisclassificationCost> getCosts() {
+		return costs;
 	}
 
 	/**
-	 * @param dawidSkeneId Identifier of DawidSkene model that will be modified
+	 * @param costs Collection of misclassification costs that will be added
 	 */
-	public void setDawidSkeneId(String dawidSkeneId) {
-		this.dawidSkeneId = dawidSkeneId;
+	public void setCosts(Collection<MisclassificationCost> costs) {
+		this.costs = costs;
 	}
 
-	/**
-	 * Cache used by this processor
-	 */
-	private DawidSkeneCache cache;
-
-	/**
-	 * Cache used by this processor
-	 */
-	public DawidSkeneCache getCache() {
-		return cache;
-	}
-
-	/**
-	 * Cache used by this processor
-	 */
-	public void setCache(DawidSkeneCache cache) {
-		this.cache = cache;
-	}
-
-
-	/**
-	 * Current state of this processor
-	 */
-	private DawidSkeneProcessorState state;
-
-	/**
-	 * @return Current state of this processor
-	 */
-	public DawidSkeneProcessorState getState() {
-		return state;
-	}
-
-	/**
-	 * @param state Current state of this processor
-	 */
-	public void setState(DawidSkeneProcessorState state) {
-		this.state = state;
-	}
-
-
+	private static Logger logger = Logger.getLogger(MisclassificationCostsWriter.class);
 }
