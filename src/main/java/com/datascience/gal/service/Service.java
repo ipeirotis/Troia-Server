@@ -12,6 +12,7 @@ package com.datascience.gal.service;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -325,11 +326,10 @@ public class Service {
 		try {
 			setup(context);
 			label = JSONUtils.gson.fromJson(data, JSONUtils.assignedLabelType);
-
-			DawidSkene ds = dscache.getDawidSkene(id);
-			ds.addAssignedLabel(label);
-			dscache.insertDawidSkene(ds);
-
+			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
+			labels.add(label);
+			LabelWriter writer = new LabelWriter(id,dscache,labels);
+			manager.addProcessor(writer);
 			String message = "adding " + label.toString();
 			logger.info(message);
 			return Response.ok(message).build();
@@ -357,7 +357,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabels(@FormParam("data") String data,
 			@FormParam("id") String idstr) {
-		Collection<AssignedLabel> input;
+		Collection<AssignedLabel> labels;
 
 		String id = "" + 0;
 		if (null == idstr) {
@@ -367,17 +367,16 @@ public class Service {
 		}
 
 		try {
-			setup(context);
-			input = JSONUtils.gson.fromJson(data,
-											JSONUtils.assignedLabelSetType);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			ds.addAssignedLabels(input);
-			dscache.insertDawidSkene(ds);
-			String message = "adding " + input.size() + " labels";
-			logger.info(message);
-			return Response.ok(message).build();
+		    setup(context);
+		    labels = JSONUtils.gson.fromJson(data,
+						    JSONUtils.assignedLabelSetType);
+		    LabelWriter writer = new LabelWriter(id,dscache,labels);
+		    manager.addProcessor(writer);
+		    String message = "adding " + labels.size() + " labels";
+		    logger.info(message);
+		    return Response.ok(message).build();
 		} catch (IOException e) {
-			logger.error("ioexception: " + e.getLocalizedMessage());
+		    logger.error("ioexception: " + e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
 			logger.error("class not found exception: "
 						 + e.getLocalizedMessage());
@@ -412,9 +411,10 @@ public class Service {
 
 			label = JSONUtils.gson.fromJson(data, JSONUtils.correctLabelType);
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			ds.addCorrectLabel(label);
-			dscache.insertDawidSkene(ds);
+			Collection<CorrectLabel> input = new ArrayList<CorrectLabel>();
+			input.add(label);
+			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
+			manager.addProcessor(writer);		
 			String message = "adding gold label: " + label.toString();
 			logger.info(message);
 			return Response.ok(message).build();
@@ -453,11 +453,10 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
 			input = JSONUtils.gson
 					.fromJson(data, JSONUtils.correctLabelSetType);
-			ds.addCorrectLabels(input);
-			dscache.insertDawidSkene(ds);
+			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
+			manager.addProcessor(writer);
 			String message = "adding " + input.size() + " gold labels";
 			logger.info(message);
 			return Response.ok(message).build();
