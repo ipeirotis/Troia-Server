@@ -75,8 +75,10 @@ public class DawidSkeneProcessorManager extends Thread  {
 			Collection<String> projects = this.processorQueue.keySet();
 			for (String project : projects) {
 				Queue<DawidSkeneProcessor> queue = this.processorQueue.get(project);
-				if(queue.peek()!=null&&queue.peek().getState().equals(DawidSkeneProcessorState.FINISHED)) {
-					queue.poll();
+				if(queue.peek()!=null&&!queue.peek().getState().equals(DawidSkeneProcessorState.RUNNING)) {
+					if(queue.peek().getState().equals(DawidSkeneProcessorState.FINISHED)) {
+						queue.poll();
+					}
 					if(queue.peek()!=null) {
 						this.executor.execute(queue.peek());
 						queue.peek().setState(DawidSkeneProcessorState.RUNNING);
