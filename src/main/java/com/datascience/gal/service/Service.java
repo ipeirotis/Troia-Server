@@ -190,7 +190,8 @@ public class Service {
 
 			if (idString != null) {
 				String id = idString;
-				dscache.deleteDawidSkene(id);
+				DawidSkeneRemover remover = new DawidSkeneRemover(idString,dscache);
+				manager.addProcessor(remover);
 			}
 
 			String message = "nullified the ds object"
@@ -1095,8 +1096,8 @@ public class Service {
 			if(manager == null) {
 				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
 				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
-				this.manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
-				this.manager.start();
+				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
+				manager.start();
 			}
 		}
 	}
