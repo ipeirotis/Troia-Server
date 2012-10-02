@@ -29,6 +29,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -63,6 +65,37 @@ public class Service {
 	private static DawidSkeneCache dscache = null;
 
 	private static DawidSkeneProcessorManager manager = null;
+
+
+	public void init(ServletConfig config) throws ServletException {
+		ServletContext scontext = config.getServletContext();
+		Properties props = new Properties();
+		try {
+			props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
+			if (dscache == null) {
+				String user = props.getProperty("USER");
+				String password = props.getProperty("PASSWORD");
+				String db = props.getProperty("DB");
+				String url = props.getProperty("URL");
+				if (props.containsKey("cacheSize")) {
+					int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
+					dscache = new DawidSkeneCache(user,password,db,url,cachesize);
+				} else {
+					dscache = new DawidSkeneCache(user,password,db,url);
+				}
+			}
+			if(manager == null) {
+				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
+				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
+				this.manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
+				this.manager.start();
+			}
+		} catch(Exception e) {
+			logger.error(e.getMessage());
+		}
+
+	}
+
 
 	/**
 	 * A simple method to see if the service is awake
