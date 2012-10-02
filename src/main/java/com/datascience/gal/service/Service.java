@@ -11,8 +11,8 @@ package com.datascience.gal.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,12 +41,15 @@ import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
-import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.gal.MisclassificationCost;
-
-import com.datascience.gal.dawidSkeneProcessors.*;
-
 import com.datascience.gal.core.DataQualityEstimator;
+import com.datascience.gal.dawidSkeneProcessors.CacheUpdater;
+import com.datascience.gal.dawidSkeneProcessors.CategoryWriter;
+import com.datascience.gal.dawidSkeneProcessors.DSalgorithmComputer;
+import com.datascience.gal.dawidSkeneProcessors.DawidSkeneProcessorManager;
+import com.datascience.gal.dawidSkeneProcessors.GoldLabelWriter;
+import com.datascience.gal.dawidSkeneProcessors.LabelWriter;
+import com.datascience.gal.dawidSkeneProcessors.MisclassificationCostsWriter;
 
 
 /**
@@ -1053,6 +1056,19 @@ public class Service {
 		}
 		return jid;
 	}
+	
+	private void handleException(String apiEntry, String message, Exception e){
+		message = apiEntry + " with " + message;
+		handleException(message, e);
+	}
+	
+	private void handleException(String message, Exception e){
+		logger.error(message);
+		logger.error("EXCEPTION: " + e.getClass().getName());
+		for (StackTraceElement ste : e.getStackTrace()){
+			logger.error(ste);
+		}
+	}
 
 	@GET
 	@Path("getEstimatedCost")
@@ -1068,7 +1084,7 @@ public class Service {
 			logger.info(message + " OK");
 			return Response.ok(ec.toString()).build();
 		} catch (Exception e) {
-			logger.error(message + " " + e.getLocalizedMessage());
+			handleException(message, e);
 		}
 		return Response.status(500).build();
 	}
