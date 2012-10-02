@@ -41,11 +41,11 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.gal.MisclassificationCost;
-<<<<<<< HEAD
+
 import com.datascience.gal.dawidSkeneProcessors.*;
-=======
+
 import com.datascience.gal.core.DataQualityEstimator;
->>>>>>> master
+
 
 /**
  * a simple web service wrapper for the get another label project
@@ -739,7 +739,8 @@ public class Service {
 			String message = "performed ds iteration " + its + " times, took: "
 							 + time + "ms.";
 			logger.info(message);
-			dscache.insertDawidSkene(ds);
+			CacheUpdater updater = new CacheUpdater(id,dscache,ds);
+			manager.addProcessor(updater);
 
 			return Response.ok(message).build();
 
@@ -1062,7 +1063,7 @@ public class Service {
 				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
 				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
 				this.manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
-				this.manager.run();
+				this.manager.start();
 			}
 		}
 	}
