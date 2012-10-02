@@ -26,10 +26,16 @@ import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 
 
-
+/**
+ * This class manages Dawid-Skene processors and executes them in thread poll.
+ */
 public class DawidSkeneProcessorManager extends Thread  {
 
 
+	/**
+	 * @param threadPoolSize How many threads will be dedicated to DS processors execution
+	 * @param sleepPeriod How much time, in milliseconds, will pass between manager will check if there is porcessor ready for execution
+	 */
 	public DawidSkeneProcessorManager(int threadPoolSize,int sleepPeriod) {
 		this.processorQueue = new HashMap<String,Queue<DawidSkeneProcessor>>();
 		this.executor =  Executors.newFixedThreadPool(threadPoolSize);

@@ -23,6 +23,15 @@ import com.datascience.gal.service.DawidSkeneCache;
 
 
 
+/**
+ * This is processor that updates cache with given Dawid-Skene model
+ * Use of this class is highly depreciated as it was written only to
+ * provide backwards compatibility of Troia by supporting "computeBlocking"
+ * service. If you are writing code that modifies Dawid-Skene model and writes
+ * it to cache you should create class that extends DawidSkeneProcessor and
+ * put yours code there. If you do so you can simply call this.getCahce().insertDawidSkene(myDs)
+ * in it.
+ */
 public class CacheUpdater extends DawidSkeneProcessor {
 
 

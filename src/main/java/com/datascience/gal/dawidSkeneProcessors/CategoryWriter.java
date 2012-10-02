@@ -25,6 +25,9 @@ import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
+/**
+ * This processor creates new Dawid-Skene model and uploads categories to it.
+ */
 public class CategoryWriter extends DawidSkeneProcessor {
 
 	/**
