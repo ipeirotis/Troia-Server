@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,8 +31,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -47,6 +47,7 @@ import com.datascience.gal.dawidSkeneProcessors.CacheUpdater;
 import com.datascience.gal.dawidSkeneProcessors.CategoryWriter;
 import com.datascience.gal.dawidSkeneProcessors.DSalgorithmComputer;
 import com.datascience.gal.dawidSkeneProcessors.DawidSkeneProcessorManager;
+import com.datascience.gal.dawidSkeneProcessors.DawidSkeneRemover;
 import com.datascience.gal.dawidSkeneProcessors.GoldLabelWriter;
 import com.datascience.gal.dawidSkeneProcessors.LabelWriter;
 import com.datascience.gal.dawidSkeneProcessors.MisclassificationCostsWriter;
