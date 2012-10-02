@@ -809,4 +809,20 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 		return getSoftLabelCost(prior);
 	}
+
+	public Datum getObject(String object_id) {
+		return objects.get(object_id);
+	}
+
+	public Collection<Datum> getObjects() {
+		return objects.values();
+	}
+
+	public Collection<Category> getCategories() {
+		return categories.values();
+	}
+
+	public Category getCategory(String category) {
+		return categories.get(category);
+	}
 }
