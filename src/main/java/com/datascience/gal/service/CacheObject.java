@@ -15,6 +15,8 @@
 
 package com.datascience.gal.service;
 
+import org.apache.log4j.Logger;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Queue;
@@ -37,15 +39,15 @@ public class CacheObject<PayloadType> {
     
     
     boolean isWriteLockedBy(Object source){
-	return this.writeLockOwner.equals(source);
+	return source==this.writerLockOwner;
     }
 
     boolean isReadLockedBy(Object source){
-	return this.readLockOwners.contains(source);
+	return this.readerLockOwners.contains(source);
     }
 
 
-    private static final int READER_WRITER_SLEEP_PERIOD = 100;
+    private static final int READER_WRITER_SLEEP_PERIOD = 10;
 
     /**
      * Readers that are reading payload
@@ -89,12 +91,13 @@ public class CacheObject<PayloadType> {
 		wait = false;
 	    }else{
 		try{
-		    Thread.currentThread().sleep(READER_WRITER_SLEEP_PERIOD);
+			Thread.sleep(READER_WRITER_SLEEP_PERIOD);
 		}catch(InterruptedException e){
 		    //FIXME THIS MUST DO SOMETHING
 		}
 	    }
 	}
+	logger.debug("Returning payload for read-write mode.");
 	return payload;
     }
     
@@ -105,11 +108,12 @@ public class CacheObject<PayloadType> {
 	boolean wait = false;
 	synchronized(this.payload){
 	    if(this.writerLockOwner==null&&this.readerLockOwners.size()==0){
+	    	this.writerLockOwner=writer;
 	    }else{
 		if(this.writersQueue.size()==0){
-		    this.writerLockOwner=this;
+		    this.writerLockOwner=writer;
 		}else{
-		    this.writersQueue.add(this);
+		    this.writersQueue.add(writer);
 		}
 	    }
 	}
@@ -118,17 +122,18 @@ public class CacheObject<PayloadType> {
 		wait=true;
 	    }else{
 		try{
-		    Thread.currentThread().sleep(READER_WRITER_SLEEP_PERIOD);
+			Thread.sleep(READER_WRITER_SLEEP_PERIOD);
 		}catch(InterruptedException e){
 		    //FIXME THIS MUST DO SOMETHING
 		}
 	    }
 	}
+	logger.debug("Returning payload for read-write mode.");
 	return payload;
     }
 
     public void setPayload(PayloadType payload,Object source){
-	if(source=this.writerLockOwner){
+	if(source==this.writerLockOwner){
 	    this.payload=payload;
 	}
     }
@@ -141,13 +146,16 @@ public class CacheObject<PayloadType> {
 		    this.readerLockOwners.add(this.readersQueue.poll());
 		}
 	    }
+	    logger.debug("Relasing read-write lock.");
 	}else if(this.readerLockOwners.contains(owner)){
 	    this.readerLockOwners.remove(owner);
 	    if(this.readerLockOwners.size()==0){
 		this.writerLockOwner = this.writersQueue.poll();
 	    }
+	    logger.debug("Relasing read-only lock.");
 	}
     }
 
+	private static Logger logger = Logger.getLogger(CacheObject.class);
 
 }

@@ -19,10 +19,10 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
+import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
-import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
 /**
@@ -51,7 +51,7 @@ public class CategoryWriter extends DawidSkeneProcessor {
 		} else {
 			ds = new BatchDawidSkene(this.getDawidSkeneId(), this.categories);
 		}
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().createDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 		logger.info("Category writer for "+this.getDawidSkeneId()+" finished.");
 	}

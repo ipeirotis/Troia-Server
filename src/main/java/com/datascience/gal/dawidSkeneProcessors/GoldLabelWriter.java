@@ -39,9 +39,9 @@ public class GoldLabelWriter extends DawidSkeneProcessor {
 	@Override
 	public void run() {
 		logger.info("Executing gold label writer for "+this.getDawidSkeneId()+".");
-		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
 		ds.addCorrectLabels(this.goldLabels);
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().insertDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 		logger.info("Gold label writer for "+this.getDawidSkeneId()+" finished.");
 	}

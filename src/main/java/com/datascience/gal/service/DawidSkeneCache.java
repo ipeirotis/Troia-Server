@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -26,14 +27,14 @@ import com.datascience.gal.DawidSkene;
 /**
  * a class for persisting DawidSkene Objects persists dawidskene objects to
  * mysql
- *
- *
+ * 
+ * 
  * TODO: cache using memcached TODO: make not shitty TODO: make read a
  * configuration
- *
+ * 
  * @author josh
- *
- *
+ * 
+ * 
  *         create table projects ( id varchar(1000) NOT NULL PRIMARY KEY, data
  *         TEXT NOT NULL); create index idIndex on projects (id);
  */
@@ -51,23 +52,21 @@ public class DawidSkeneCache {
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 	private static final String CHECK_DS = "SELECT 1 FROM projects WHERE id IN (?);";
 
-	private final static int DEFAULT_CACHE_SIZE = 5;
+	private final static int DEFAULT_CACHE_SIZE = 10;
 
 	private int cachesize;
 	private Map<String, CacheObject<DawidSkene>> cache;
 
-
-
-	public DawidSkeneCache(String user,String password,String db,String url) throws ClassNotFoundException,
-		SQLException, IOException {
-		this(user,password,db,url,DEFAULT_CACHE_SIZE);
+	public DawidSkeneCache(String user, String password, String db, String url)
+			throws ClassNotFoundException, SQLException, IOException {
+		this(user, password, db, url, DEFAULT_CACHE_SIZE);
 	}
 
-	public DawidSkeneCache(String user,String password,String db,String url,int cachesize) throws ClassNotFoundException,
-		SQLException, IOException {
+	public DawidSkeneCache(String user, String password, String db, String url,
+			int cachesize) throws ClassNotFoundException, SQLException,
+			IOException {
 
 		Class.forName("com.mysql.jdbc.Driver");
-
 
 		connectionProporties = new Properties();
 		connectionProporties.setProperty("user", user);
@@ -76,23 +75,25 @@ public class DawidSkeneCache {
 		this.databaseUrl = "jdbc:mysql://" + url + "/" + db;
 		this.connectDB();
 		this.initializeCache();
+		logger.info("Created Dawid-Skene cache.");
 	}
 
 	/**
 	 * Connects to DB
-	 *
+	 * 
 	 * @throws SQLException
 	 */
 	private void connectDB() throws SQLException {
 		logger.info("attempting to connect to " + this.databaseUrl);
-		connection = DriverManager.getConnection(this.databaseUrl, this.connectionProporties);
+		connection = DriverManager.getConnection(this.databaseUrl,
+				this.connectionProporties);
 		logger.info("connected to " + this.databaseUrl);
 	}
 
 	/**
 	 * Makes sure that connection to DB is valid. We need to ensure that we wont
 	 * mess connection when multiple threads try to reconnect
-	 *
+	 * 
 	 * @throws SQLException
 	 */
 	private synchronized void ensureDBConnection() throws SQLException {
@@ -102,114 +103,90 @@ public class DawidSkeneCache {
 		}
 	}
 
-
-    private DawidSkene getDawidSkeneFromDb(String id){
-	ResultSet dsResults;
-	DawidSkene ds ;
-	try{
-	    synchronized(databaseUrl) {
-		this.ensureDBConnection();
-		PreparedStatement dsStatement = connection.prepareStatement(GET_DS);
-		dsStatement.setString(1, id);
-		dsResults = dsStatement.executeQuery();
-	    }
-	    if (dsResults.next()) {
+	private DawidSkene getDawidSkeneFromDb(String id) {
+		ResultSet dsResults;
+		DawidSkene ds;
 		try {
-		    String dsJson = dsResults.getString("data");
-		    ds = JSONUtils.gson.fromJson(dsJson,
-							    JSONUtils.dawidSkeneType);
-		    synchronized(this.cache) {
-			logger.info("returning ds object with id " + id);
-			this.cache.put(id, new CacheObject<DawidSkene>(ds));
-		    }
-		    return ds;
-		} catch (Exception e) {
-		    logger.error(e.getLocalizedMessage());
-		    return null;
-		}
-
-	    } else {
-		logger.info("no ds object with id " + id
-			    + " found. returning null");
-		return null;
-	    }
-
-	} catch (SQLException e) {
-	    logger.error(e.getLocalizedMessage());
-	    return null;
-	}
-	return ds;
-    }
-
-    public DawidSkene getDawidSkeneForReadOnly(String id,Object source) {
-	if (this.cache.containsKey(id)) {
-	    CacheObject cacheObject = this.cache.get(id);
-	    return cacheObject.getPayloadForReadOnly(source);
-	}
-	return this.getDawidSkeneFromDb(id);		
-    }
-
-    public DawidSkene getDawidSkeneForEditing(String id,Object source) {
-	if (this.cache.containsKey(id)) {
-	    CacheObject cacheObject = this.cache.get(id);
-	    return cacheObject.getPayloadForEditing(source);
-	}
-	return this.getDawidSkeneFromDb(id);		
-    }
-
-    public void finalizeReading(String id,Object source){
-	this.cache.get(id).relasePayloadLock(source);
-    }
-
-    public DawidSkene createDawidSkene(final DawidSkene ds,Object source){
-	CacheObject cacheObject = new CacheObject(ds);
-	cacheObject.getPayloadForEditing(source);
-	try {
-	    if(cacheObject.isWriteLockedBy(source)){
-		synchronized(databaseUrl) {
-		    ensureDBConnection();
-		    PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
-		    dsStatement.setString(1, ds.getId());
-		    String dsString = ds.toString();
-		    dsStatement.setString(2, dsString);
-		    dsStatement.setString(3, dsString);
-
-		    dsStatement.executeUpdate();
-		    dsStatement.close();
-		}
-		logger.info("upserting ds with id " + ds.getId());
-		cacheObject.setPayload(ds);
-		cacheObject.relasePayloadLock(source);
-	    }else{
-		//FIXME ADD ERROR HANDLNG
-	    }
-	} catch (SQLException e) {
-	    logger.error(e.getMessage());
-
-	}
-	return ds;
-    }
-
-    public DawidSkene insertDawidSkene(final DawidSkene ds,Object source) {
-		try {
-		    CacheObject cacheObject = this.cache.get(ds.getId);
-		    if(cacheObject.isWriteLockedBy(source)){
-			synchronized(databaseUrl) {
-				ensureDBConnection();
-				PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
-				dsStatement.setString(1, ds.getId());
-				String dsString = ds.toString();
-				dsStatement.setString(2, dsString);
-				dsStatement.setString(3, dsString);
-
-				dsStatement.executeUpdate();
-				dsStatement.close();
+			synchronized (databaseUrl) {
+				this.ensureDBConnection();
+				PreparedStatement dsStatement = connection
+						.prepareStatement(GET_DS);
+				dsStatement.setString(1, id);
+				dsResults = dsStatement.executeQuery();
 			}
-			logger.info("upserting ds with id " + ds.getId());
-			cacheObject.setPayload(ds);
-			cacheObject.relasePayloadLock(source);
-			}else{
-			    //FIXME ADD ERROR HANDLNG
+			if (dsResults.next()) {
+				try {
+					String dsJson = dsResults.getString("data");
+					ds = JSONUtils.gson.fromJson(dsJson,
+							JSONUtils.dawidSkeneType);
+					synchronized (this.cache) {
+						logger.info("Retrieving ds object with id " + id + " from database.");
+						this.cache.put(id, new CacheObject<DawidSkene>(ds));
+					}
+					return ds;
+				} catch (Exception e) {
+					logger.error(e.getLocalizedMessage());
+					return null;
+				}
+
+			} else {
+				logger.info("no ds object with id " + id
+						+ " found. returning null");
+				return null;
+			}
+
+		} catch (SQLException e) {
+			logger.error(e.getLocalizedMessage());
+			return null;
+		}
+	}
+
+	public DawidSkene getDawidSkeneForReadOnly(String id, Object source) {
+		logger.debug("Gettirng DS with id " + id + " for read only");
+		if (this.cache.containsKey(id)) {
+			CacheObject<DawidSkene> cacheObject = this.cache.get(id);
+			return cacheObject.getPayloadForReadOnly(source);
+		}
+		return this.getDawidSkeneFromDb(id);
+	}
+
+	public DawidSkene getDawidSkeneForEditing(String id, Object source) {
+		logger.debug("Gettirng DS with id " + id + " for editing");
+		if (this.cache.containsKey(id)) {
+			CacheObject<DawidSkene> cacheObject = this.cache.get(id);
+			return cacheObject.getPayloadForEditing(source);
+		}
+		return this.getDawidSkeneFromDb(id);
+	}
+
+	public void finalizeReading(String id, Object source) {
+		this.cache.get(id).relasePaloyadLock(source);
+	}
+
+	public DawidSkene createDawidSkene(final DawidSkene ds, Object source) {
+		CacheObject<DawidSkene> cacheObject = new CacheObject<DawidSkene>(ds);
+		cacheObject.getPayloadForEditing(source);
+		try {
+			if (cacheObject.isWriteLockedBy(source)) {
+				synchronized (databaseUrl) {
+					ensureDBConnection();
+					PreparedStatement dsStatement = connection
+							.prepareStatement(INSERT_DS);
+					dsStatement.setString(1, ds.getId());
+					String dsString = ds.toString();
+					dsStatement.setString(2, dsString);
+					dsStatement.setString(3, dsString);
+
+					dsStatement.executeUpdate();
+					dsStatement.close();
+				}
+				logger.info("upserting ds with id " + ds.getId());
+				cacheObject.setPayload(ds, this);
+				cacheObject.relasePaloyadLock(source);
+				this.cache.put(ds.getId(), cacheObject);
+				logger.info("Added new object, with "+ds.getId()+" id, to cache.");
+			} else {
+				logger.error("Attempting to write cache object locked by another source");
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -218,19 +195,54 @@ public class DawidSkeneCache {
 		return ds;
 	}
 
+	public DawidSkene insertDawidSkene(final DawidSkene ds, Object source) {
+		if(!this.cache.containsKey(ds.getId())){
+			this.getDawidSkeneFromDb(ds.getId());
+		}
+		CacheObject<DawidSkene> cacheObject = this.cache.get(ds.getId());
+		if (cacheObject != null) {
+			try {
+				if (cacheObject.isWriteLockedBy(source)) {
+					synchronized (databaseUrl) {
+						ensureDBConnection();
+						PreparedStatement dsStatement = connection
+								.prepareStatement(INSERT_DS);
+						dsStatement.setString(1, ds.getId());
+						String dsString = ds.toString();
+						dsStatement.setString(2, dsString);
+						dsStatement.setString(3, dsString);
 
+						dsStatement.executeUpdate();
+						dsStatement.close();
+					}
+					logger.info("upserting ds with id " + ds.getId());
+					cacheObject.setPayload(ds, this);
+					cacheObject.relasePaloyadLock(source);
+				} else {
+					logger.error("Attempting to write cache object locked by another source or without write lock enabled");
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage());
+
+			}
+		}else{
+			logger.error("Unable to get cache object with id "+ds.getId());
+		}
+		return ds;
+	}
 
 	public boolean hasDawidSkene(String id) {
 
 		try {
-			synchronized(this.cache) {
+			synchronized (this.cache) {
 				if (this.cache.containsKey(id))
 					return true;
 			}
 			ResultSet dsResults;
-			synchronized(databaseUrl) {
+			synchronized (databaseUrl) {
 				ensureDBConnection();
-				PreparedStatement dsStatement = connection.prepareStatement(CHECK_DS);
+				PreparedStatement dsStatement = connection
+						.prepareStatement(CHECK_DS);
 				dsStatement.setString(1, id);
 
 				dsResults = dsStatement.executeQuery();
@@ -249,13 +261,14 @@ public class DawidSkeneCache {
 	public void deleteDawidSkene(String id) {
 
 		try {
-			synchronized(this.cache) {
+			synchronized (this.cache) {
 				if (this.cache.containsKey(id))
 					this.cache.remove(id);
 			}
-			synchronized(databaseUrl) {
+			synchronized (databaseUrl) {
 				ensureDBConnection();
-				PreparedStatement dsStatement = connection.prepareStatement(DELETE_DS);
+				PreparedStatement dsStatement = connection
+						.prepareStatement(DELETE_DS);
 				dsStatement.setString(1, id);
 
 				dsStatement.executeUpdate();
@@ -269,7 +282,7 @@ public class DawidSkeneCache {
 
 	/**
 	 * This method is never called - this is bad ...
-	 *
+	 * 
 	 * @throws SQLException
 	 */
 	public void close() throws SQLException {
@@ -285,16 +298,7 @@ public class DawidSkeneCache {
 	}
 
 	private void initializeCache() {
-		this.cache = new LinkedHashMap<String, DawidSkene>() {
-
-			private static final long serialVersionUID = -3654983366018448082L;
-
-			@Override
-			protected boolean removeEldestEntry(
-			java.util.Map.Entry<String, DawidSkene> arg0) {
-				return size() > cachesize;
-			}
-		};
+		this.cache = new HashMap<String, CacheObject<DawidSkene>>();
 	}
 
 	public void setCacheSize(int cachesize) {

@@ -15,6 +15,7 @@
 
 package com.datascience.gal.dawidSkeneProcessors;
 
+import org.apache.log4j.Logger;
 
 import com.datascience.gal.service.DawidSkeneCache;
 
@@ -32,7 +33,10 @@ public class DawidSkeneRemover extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
+	    logger.info("Executing David-Skene remover for "+this.getDawidSkeneId()+" .");
 		this.getCache().deleteDawidSkene(this.getDawidSkeneId());
 		this.setState(DawidSkeneProcessorState.FINISHED);
 	}
+
+	private static Logger logger = Logger.getLogger(DawidSkeneRemover.class);
 }

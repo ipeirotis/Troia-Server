@@ -84,8 +84,8 @@ public class Service {
 			if(manager == null) {
 				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
 				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
-				this.manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
-				this.manager.start();
+				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
+				manager.start();
 			}
 		} catch(Exception e) {
 			logger.error(e.getMessage());
@@ -1038,8 +1038,9 @@ public class Service {
 		try {
 			setup(context);
 			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
+			String response = JSONUtils.gson.toJson(ds);
 			dscache.finalizeReading(id,this);
-			return Response.ok(JSONUtils.gson.toJson(ds)).build();
+			return Response.ok(response).build();
 		} catch (IOException e) {
 			logger.error("ioexception: " + e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
@@ -1048,7 +1049,7 @@ public class Service {
 		} catch (SQLException e) {
 			logger.error("sql exception: " + e.getLocalizedMessage());
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+			logger.error("unkcnown exception: "+e.getLocalizedMessage());
 		}
 		return Response.status(500).build();
 	}
