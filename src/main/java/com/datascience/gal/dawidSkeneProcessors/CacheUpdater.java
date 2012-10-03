@@ -50,7 +50,8 @@ public class CacheUpdater extends DawidSkeneProcessor {
 	@Override
 	public void run() {
 		logger.info("Executing cahce updater (depreciated) for "+this.getDawidSkeneId()+".");
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
+		this.getCache().insertDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 	}
 

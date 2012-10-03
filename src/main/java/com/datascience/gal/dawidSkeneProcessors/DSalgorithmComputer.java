@@ -31,9 +31,9 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+	    DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
 		ds.estimate(this.iterations);
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().insertDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 	}
 

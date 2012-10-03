@@ -161,6 +161,35 @@ public class DawidSkeneCache {
 	this.cache.get(id).relasePayloadLock(source);
     }
 
+    public DawidSkene createDawidSkene(final DawidSkene ds,Object source){
+	CacheObject cacheObject = new CacheObject(ds);
+	cacheObject.getPayloadForEditing(source);
+	try {
+	    if(cacheObject.isWriteLockedBy(source)){
+		synchronized(databaseUrl) {
+		    ensureDBConnection();
+		    PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
+		    dsStatement.setString(1, ds.getId());
+		    String dsString = ds.toString();
+		    dsStatement.setString(2, dsString);
+		    dsStatement.setString(3, dsString);
+
+		    dsStatement.executeUpdate();
+		    dsStatement.close();
+		}
+		logger.info("upserting ds with id " + ds.getId());
+		cacheObject.setPayload(ds);
+		cacheObject.relasePayloadLock(source);
+	    }else{
+		//FIXME ADD ERROR HANDLNG
+	    }
+	} catch (SQLException e) {
+	    logger.error(e.getMessage());
+
+	}
+	return ds;
+    }
+
     public DawidSkene insertDawidSkene(final DawidSkene ds,Object source) {
 		try {
 		    CacheObject cacheObject = this.cache.get(ds.getId);
@@ -188,6 +217,8 @@ public class DawidSkeneCache {
 		}
 		return ds;
 	}
+
+
 
 	public boolean hasDawidSkene(String id) {
 

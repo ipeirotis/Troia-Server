@@ -151,18 +151,20 @@ public class Service {
 			Response.ok("DB Access Error happened,"+e);
 			logger.error(methodSign, e);
 		}
-		DawidSkene dsInserted = dscache.insertDawidSkene(ds);
-		DawidSkene dsRetrieved = dscache.getDawidSkene(id);
+		DawidSkene dsInserted = dscache.createDawidSkene(ds,this);
+		DawidSkene dsRetrieved = dscache.getDawidSkeneForReadOnly(id,this);
 		if (dsInserted != null && dsRetrieved != null) {
 			String msg = "DawidSkene object with id="+id+" has been inserted to the DB...";
 			logger.info(methodSign+msg);
 			cargoSB.append(msg+nl);
 			dscache.deleteDawidSkene(id);
 			msg = "DawidSkene object with id="+id+" has been removed from the DB...";
-			dsRetrieved = dscache.getDawidSkene(id);
+			dsRetrieved = dscache.getDawidSkeneForReadOnly(id,this);
 			if (dsRetrieved == null)
 				msg+="successfully";
-			else msg+="unsuccessfully";
+			else {
+			    msg+="unsuccessfully";
+			}
 			logger.info(methodSign+msg);
 			cargoSB.append(msg+nl);
 		} else {
@@ -530,7 +532,7 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			String votes = ds.getMajorityVote(objectName);
 
 			if (votes == null) {
@@ -541,6 +543,7 @@ public class Service {
 
 			String message = "computing majority votes for " + objectName;
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(votes)).build();
 
 		} catch (IOException e) {
@@ -578,7 +581,7 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			if (null == objects)
 				votes = ds.getMajorityVote();
 			else {
@@ -589,6 +592,7 @@ public class Service {
 			String message = "computing majority votes for "
 							 + (null == votes ? 0 : votes.size()) + " objects ";
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(votes)).build();
 
 		} catch (IOException e) {
@@ -625,11 +629,12 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			votes = ds.getMajorityVote();
 			String message = "computing majority votes for "
 							 + (null == votes ? 0 : votes.size()) + " objects ";
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(votes)).build();
 
 		} catch (IOException e) {
@@ -667,7 +672,7 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			if (null == objects)
 				votes = ds.getObjectProbs();
 			else {
@@ -715,10 +720,11 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			votes = ds.getObjectProbs(objectName);
 			String message = "computing object probs for " + objectName;
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(votes)).build();
 
 		} catch (IOException e) {
@@ -758,7 +764,7 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 
 			StopWatch sw = new StopWatch();
 			sw.start();
@@ -770,6 +776,7 @@ public class Service {
 			String message = "performed ds iteration " + its + " times, took: "
 							 + time + "ms.";
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			CacheUpdater updater = new CacheUpdater(id,dscache,ds);
 			manager.addProcessor(updater);
 
@@ -847,14 +854,14 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 
 			boolean verb = null == verbose ? false : true;
 			output = ds.printAllWorkerScores(verb);
 
 			String message = "returning request for worker summary";
 			logger.info(message);
-
+			dscache.finalizeReading(id,this);
 			return Response.ok(output).build();
 
 		} catch (IOException e) {
@@ -886,13 +893,14 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
 			output = ds.printObjectClassProbabilities(entropy);
 
 			String message = "returning request for object class probs";
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			return Response.ok(output).build();
 
 		} catch (IOException e) {
@@ -924,13 +932,14 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
 			out = ds.objectClassProbabilities(object, entropy);
 
 			String message = "returning request for object class probs";
 			logger.info(message);
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(out)).build();
 
 		} catch (IOException e) {
@@ -961,11 +970,11 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			output = ds.printPriors();
 			String message = "returning request for object class probs";
 			logger.info(message);
-
+			dscache.finalizeReading(id,this);
 			return Response.ok(output).build();
 		} catch (IOException e) {
 			logger.error("ioexception: " + e.getLocalizedMessage());
@@ -995,11 +1004,11 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			out = ds.computePriors();
 			String message = "returning request for object class probs";
 			logger.info(message);
-
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(out)).build();
 
 		} catch (IOException e) {
@@ -1028,7 +1037,8 @@ public class Service {
 
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
+			dscache.finalizeReading(id,this);
 			return Response.ok(JSONUtils.gson.toJson(ds)).build();
 		} catch (IOException e) {
 			logger.error("ioexception: " + e.getLocalizedMessage());
@@ -1072,10 +1082,11 @@ public class Service {
 		String message = "getEstimatedCost(" + method + ") for " + object + " in job " + id;
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			DataQualityEstimator dqe = new DataQualityEstimator();
 			Double ec = dqe.estimateMissclassificationCost(ds, method, object);
 			logger.info(message + " OK");
+			dscache.finalizeReading(id,this);
 			return Response.ok(ec.toString()).build();
 		} catch (Exception e) {
 			handleException(message, e);
