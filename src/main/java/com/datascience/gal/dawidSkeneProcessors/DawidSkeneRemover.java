@@ -16,7 +16,6 @@
 package com.datascience.gal.dawidSkeneProcessors;
 
 
-import com.datascience.gal.DawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
 public class DawidSkeneRemover extends DawidSkeneProcessor {

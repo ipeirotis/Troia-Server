@@ -18,8 +18,6 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -56,7 +54,7 @@ public class DawidSkeneCache {
 	private final static int DEFAULT_CACHE_SIZE = 5;
 
 	private int cachesize;
-	private Map<String, DawidSkene> cache;
+	private Map<String, CacheObject<DawidSkene>> cache;
 
 
 
@@ -104,55 +102,69 @@ public class DawidSkeneCache {
 		}
 	}
 
-	/**
-	 *
-	 * @param id
-	 *            identifier of ds task
-	 * @return dawid skene object with appropriate id or null.
-	 */
-	public DawidSkene getDawidSkene(String id) {
+
+    private DawidSkene getDawidSkeneFromDb(String id){
+	ResultSet dsResults;
+	DawidSkene ds ;
+	try{
+	    synchronized(databaseUrl) {
+		this.ensureDBConnection();
+		PreparedStatement dsStatement = connection.prepareStatement(GET_DS);
+		dsStatement.setString(1, id);
+		dsResults = dsStatement.executeQuery();
+	    }
+	    if (dsResults.next()) {
 		try {
-			synchronized(this.cache) {
-				if (this.cache.containsKey(id)) {
-					return this.cache.get(id);
-				}
-			}
-			ResultSet dsResults;
-			synchronized(databaseUrl) {
-				this.ensureDBConnection();
-				PreparedStatement dsStatement = connection.prepareStatement(GET_DS);
-				dsStatement.setString(1, id);
-				dsResults = dsStatement.executeQuery();
-			}
-			if (dsResults.next()) {
-				try {
-					String dsJson = dsResults.getString("data");
-					DawidSkene ds = JSONUtils.gson.fromJson(dsJson,
-															JSONUtils.dawidSkeneType);
-					synchronized(this.cache) {
-						logger.info("returning ds object with id " + id);
-						this.cache.put(id, ds);
-					}
-					return ds;
-				} catch (Exception e) {
-					logger.error(e.getLocalizedMessage());
-					return null;
-				}
-
-			} else {
-				logger.info("no ds object with id " + id
-							+ " found. returning null");
-				return null;
-			}
-
-		} catch (SQLException e) {
-			logger.error(e.getLocalizedMessage());
-			return null;
+		    String dsJson = dsResults.getString("data");
+		    ds = JSONUtils.gson.fromJson(dsJson,
+							    JSONUtils.dawidSkeneType);
+		    synchronized(this.cache) {
+			logger.info("returning ds object with id " + id);
+			this.cache.put(id, new CacheObject<DawidSkene>(ds));
+		    }
+		    return ds;
+		} catch (Exception e) {
+		    logger.error(e.getLocalizedMessage());
+		    return null;
 		}
-	}
 
-	public DawidSkene insertDawidSkene(final DawidSkene ds) {
+	    } else {
+		logger.info("no ds object with id " + id
+			    + " found. returning null");
+		return null;
+	    }
+
+	} catch (SQLException e) {
+	    logger.error(e.getLocalizedMessage());
+	    return null;
+	}
+	return ds;
+    }
+
+    public DawidSkene getDawidSkeneForReadOnly(String id,Object source) {
+	if (this.cache.containsKey(id)) {
+	    CacheObject cacheObject = this.cache.get(id);
+	    return cacheObject.getPayloadForReadOnly(source);
+	}
+	return this.getDawidSkeneFromDb(id);		
+    }
+
+    public DawidSkene getDawidSkeneForEditing(String id,Object source) {
+	if (this.cache.containsKey(id)) {
+	    CacheObject cacheObject = this.cache.get(id);
+	    return cacheObject.getPayloadForEditing(source);
+	}
+	return this.getDawidSkeneFromDb(id);		
+    }
+
+    public void finalizeReading(String id,Object source){
+	this.cache.get(id).relasePayloadLock(source);
+    }
+
+    public DawidSkene insertDawidSkene(final DawidSkene ds,Object source) {
 		try {
+		    CacheObject cacheObject = this.cache.get(ds.getId);
+		    if(cacheObject.isWriteLockedBy(source)){
 			synchronized(databaseUrl) {
 				ensureDBConnection();
 				PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
@@ -165,7 +177,11 @@ public class DawidSkeneCache {
 				dsStatement.close();
 			}
 			logger.info("upserting ds with id " + ds.getId());
-			this.cache.put(ds.getId(), ds);
+			cacheObject.setPayload(ds);
+			cacheObject.relasePayloadLock(source);
+			}else{
+			    //FIXME ADD ERROR HANDLNG
+			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
 
