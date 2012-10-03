@@ -43,13 +43,7 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.core.DataQualityEstimator;
-import com.datascience.gal.dawidSkeneProcessors.CacheUpdater;
-import com.datascience.gal.dawidSkeneProcessors.CategoryWriter;
-import com.datascience.gal.dawidSkeneProcessors.DSalgorithmComputer;
-import com.datascience.gal.dawidSkeneProcessors.DawidSkeneProcessorManager;
-import com.datascience.gal.dawidSkeneProcessors.GoldLabelWriter;
-import com.datascience.gal.dawidSkeneProcessors.LabelWriter;
-import com.datascience.gal.dawidSkeneProcessors.MisclassificationCostsWriter;
+import com.datascience.gal.dawidSkeneProcessors.*;
 
 
 /**
