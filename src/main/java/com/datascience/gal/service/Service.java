@@ -410,7 +410,6 @@ public class Service {
 		try {
 			setup(context);
 			DawidSkene ds = getDawidSkeneFromInput(idString);
-			ds.addCorrectLabels(labels);
 			String votes = ds.getMajorityVote(objectName);
 			if (votes == null) {
                 throw new Exception("Got a null majority vote for the object: " 
