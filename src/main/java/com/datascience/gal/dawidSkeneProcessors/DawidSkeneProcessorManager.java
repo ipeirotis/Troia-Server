@@ -51,7 +51,7 @@ public class DawidSkeneProcessorManager extends Thread  {
 			try {
 				this.sleep(this.sleepPeriod);
 			} catch(InterruptedException e) {
-				//THIS CAN BE EMPTY
+			    logger.debug("DS processor manager sleep interrupted by new processor addition.");
 			}
 		}
 		logger.info("DawidSkene processor manager stopped.");
@@ -75,6 +75,17 @@ public class DawidSkeneProcessorManager extends Thread  {
 			}
 		}
 	}
+
+    public int getProcessorCountForProject(String projectId){
+	int processorCount = 0;
+	synchronized(this.processorQueue){
+	    Queue<DawidSkeneProcessor> queue = this.processorQueue.get(projectId);
+	    if(queue!=null){
+		processorCount=queue.size();
+	    }
+	}
+	return processorCount;
+    }
 
 	private void executeProcessors() {
 		synchronized(this.processorQueue) {

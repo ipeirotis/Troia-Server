@@ -1037,6 +1037,9 @@ public class Service {
 
 		try {
 			setup(context);
+			while(manager.getProcessorCountForProject(id)>0){
+			    Thread.sleep(1);
+			}
 			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			logger.debug("Service retrives DS with id "+ id);
 			String response = JSONUtils.gson.toJson(ds);
