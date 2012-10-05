@@ -141,6 +141,7 @@ public class Service {
         }
         return Response.ok(JSONUtils.gson.toJson(cargo)).build();
     }
+<<<<<<< HEAD
 
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext scontext = config.getServletContext();
@@ -169,6 +170,8 @@ public class Service {
 			logger.error(e.getMessage());
 		}
 	}
+=======
+>>>>>>> cdb8725a2822b9bc722f3b3a08aa153929a49656
 
 	/**
 	 * a simple method to see if the service is awake
@@ -381,7 +384,7 @@ public class Service {
 			    JSONUtils.assignedLabelSetType);
 			LabelWriter writer = new LabelWriter(id, dscache, labels);
 			manager.addProcessor(writer);
-			String message = "Added " + labels.size() + " labels";
+			String message = "Adding " + labels.size() + " labels";
 			logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -399,7 +402,7 @@ public class Service {
 	@Path("loadGoldLabel")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadGoldLabel(@FormParam("id") String idString,
-            @FormParam("label") String labelString) {
+	        @FormParam("label") String labelString) {
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -410,7 +413,6 @@ public class Service {
 			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
 			manager.addProcessor(writer);
 			String message = "Added 1 gold label: " + label;
-			logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
@@ -745,6 +747,27 @@ public class Service {
 		return Response.status(500).build();
 	}
 
+	@GET
+	@Path("getEstimatedCost")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getEstimatedCost(@QueryParam("id") String jid, 
+            @QueryParam("method") String method, 
+            @QueryParam("object") String object) {
+		String id = getJobId(jid);
+		String message = "getEstimatedCost(" + method + ") for " + object + " in job " + id;
+		try {
+			setup(context);
+			DawidSkene ds = dscache.getDawidSkene(id);
+			DataQualityEstimator dqe = new DataQualityEstimator();
+			Double ec = dqe.estimateMissclassificationCost(ds, method, object);
+			logger.info(message + " OK");
+            return buildResponse(null, null, ec, null, null);
+		} catch (Exception e) {
+			handleException(message, e);
+		}
+		return Response.status(500).build();
+	}
+
 	private String getJobId(String jid) {
 		if (jid == null || jid == "") {
 			logger.info("No job ID or empty - using default");
@@ -764,25 +787,6 @@ public class Service {
 		for (StackTraceElement ste : e.getStackTrace()){
 			logger.error(ste);
 		}
-	}
-
-	@GET
-	@Path("getEstimatedCost")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEstimatedCost(@QueryParam("id") String jid, @QueryParam("method") String method, @QueryParam("object") String object) {
-		String id = getJobId(jid);
-		String message = "getEstimatedCost(" + method + ") for " + object + " in job " + id;
-		try {
-			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			DataQualityEstimator dqe = new DataQualityEstimator();
-			Double ec = dqe.estimateMissclassificationCost(ds, method, object);
-			logger.info(message + " OK");
-			return Response.ok(ec.toString()).build();
-		} catch (Exception e) {
-			handleException(message, e);
-		}
-		return Response.status(500).build();
 	}
 
 	private void setup(ServletContext scontext) throws IOException,
@@ -809,7 +813,8 @@ public class Service {
 				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
 				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
 				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
-				manager.start();
+				manager.run();
+                // XXX manager.start?
 			}
 		}
 	}
