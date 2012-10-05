@@ -137,7 +137,6 @@ public class Service {
 		final String id = "1234512345";
 		Set<Category> categories = new HashSet<Category>();
 		categories.add(new Category("mock"));
-		DawidSkene ds = new BatchDawidSkene(id, categories);
 		cargoSB.append(nl);
 		try {
 			setup(context);
@@ -151,7 +150,7 @@ public class Service {
 			Response.ok("DB Access Error happened,"+e);
 			logger.error(methodSign, e);
 		}
-		DawidSkene dsInserted = dscache.createDawidSkene(ds,this);
+		DawidSkene dsInserted = dscache.createDawidSkene(id,this,categories,false);
 		DawidSkene dsRetrieved = dscache.getDawidSkeneForReadOnly(id,this);
 		if (dsInserted != null && dsRetrieved != null) {
 			String msg = "DawidSkene object with id="+id+" has been inserted to the DB...";
@@ -277,9 +276,7 @@ public class Service {
 			} else {
 				incrementalDs=true;
 			}
-			CategoryWriter writer = new CategoryWriter(id,dscache,categories,incrementalDs);
-			manager.addProcessor(writer);
-
+			dscache.createDawidSkene(id,this,categories,incrementalDs);
 			String message = "built a ds with " + categories.size()
 							 + " categories" + JSONUtils.gson.toJson(categories);
 			logger.info(message);
@@ -1087,6 +1084,10 @@ public class Service {
 		String message = "getEstimatedCost(" + method + ") for " + object + " in job " + id;
 		try {
 			setup(context);
+	while(manager.getProcessorCountForProject(id)>0){
+			    Thread.sleep(1);
+			}
+		
 			DawidSkene ds = dscache.getDawidSkeneForReadOnly(id,this);
 			DataQualityEstimator dqe = new DataQualityEstimator();
 			Double ec = dqe.estimateMissclassificationCost(ds, method, object);

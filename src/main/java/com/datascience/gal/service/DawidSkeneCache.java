@@ -19,9 +19,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
+import com.datascience.gal.Category;
+import com.datascience.gal.IncrementalDawidSkene;
+import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.DawidSkene;
 
 /**
@@ -163,37 +167,26 @@ public class DawidSkeneCache {
 		this.cache.get(id).relasePaloyadLock(source);
 	}
 
-	public DawidSkene createDawidSkene(final DawidSkene ds, Object source) {
-		CacheObject<DawidSkene> cacheObject = new CacheObject<DawidSkene>(ds);
-		cacheObject.getPayloadForEditing(source);
-		try {
-			if (cacheObject.isWriteLockedBy(source)) {
-				synchronized (databaseUrl) {
-					ensureDBConnection();
-					PreparedStatement dsStatement = connection
-							.prepareStatement(INSERT_DS);
-					dsStatement.setString(1, ds.getId());
-					String dsString = ds.toString();
-					dsStatement.setString(2, dsString);
-					dsStatement.setString(3, dsString);
-
-					dsStatement.executeUpdate();
-					dsStatement.close();
-				}
-				logger.info("upserting ds with id " + ds.getId());
-				cacheObject.setPayload(ds, this);
-				cacheObject.relasePaloyadLock(source);
-				this.cache.put(ds.getId(), cacheObject);
-				logger.info("Added new object, with "+ds.getId()+" id, to cache.");
-			} else {
-				logger.error("Attempting to write cache object locked by another source");
-			}
-		} catch (SQLException e) {
-			logger.error(e.getMessage());
-
-		}
-		return ds;
+    public DawidSkene createDawidSkene(String id, Object source,Collection<Category> categories,boolean incremental) {
+	DawidSkene ds;		
+	if (incremental) {
+	    ds = new IncrementalDawidSkene(id,categories);
+	} else {
+	    ds = new BatchDawidSkene(id,categories);
 	}
+
+	CacheObject<DawidSkene> cacheObject = new CacheObject<DawidSkene>(ds);
+	cacheObject.getPayloadForEditing(source);
+	    if (cacheObject.isWriteLockedBy(source)) {
+		cacheObject.setPayload(ds, this);
+		cacheObject.relasePaloyadLock(source);
+		this.cache.put(ds.getId(), cacheObject);
+		logger.info("Added new object, with "+ds.getId()+" id, to cache.");
+	    } else {
+		logger.error("Attempting to write cache object locked by another source");
+	    }
+	return ds;
+    }
 
 	public DawidSkene insertDawidSkene(final DawidSkene ds, Object source) {
 		if(!this.cache.containsKey(ds.getId())){
