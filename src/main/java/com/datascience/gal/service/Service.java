@@ -141,7 +141,6 @@ public class Service {
         }
         return Response.ok(JSONUtils.gson.toJson(cargo)).build();
     }
-<<<<<<< HEAD
 
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext scontext = config.getServletContext();
@@ -170,8 +169,6 @@ public class Service {
 			logger.error(e.getMessage());
 		}
 	}
-=======
->>>>>>> cdb8725a2822b9bc722f3b3a08aa153929a49656
 
 	/**
 	 * a simple method to see if the service is awake
@@ -297,10 +294,8 @@ public class Service {
 			setup(context);
 			Collection<Category> categories = parseJsonInput(categoriesString, 
                     JSONUtils.categorySetType);
-			DawidSkene ds = (null == incremental) ? 
-                new BatchDawidSkene(id, categories) :
-                new IncrementalDawidSkene(id, categories);
-			CategoryWriter writer = new CategoryWriter(id,dscache,categories,incrementalDs);
+			CategoryWriter writer = new CategoryWriter(id, dscache, categories, 
+                    incremental != null);
 			manager.addProcessor(writer);
 			String message = "Built a ds model with " + categories.size()
 			    + " categories";
@@ -323,6 +318,7 @@ public class Service {
 	public Response loadMisclassificationCosts(
             @FormParam("id") String idString,
             @FormParam("costs") String costsString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
             Collection<MisclassificationCost> costs = parseJsonInput(
@@ -351,6 +347,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabel(@FormParam("id") String idString,
 		    @FormParam("label") String labelString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
             AssignedLabel label = parseJsonInput(labelString, 
@@ -378,6 +375,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabels(@FormParam("id") String idString,
 			@FormParam("labels") String labelsString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
 		    Collection<AssignedLabel> labels = parseJsonInput(labelsString,
@@ -410,7 +408,7 @@ public class Service {
                     JSONUtils.correctLabelType);
 			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
 			labels.add(label);
-			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
+			GoldLabelWriter writer = new GoldLabelWriter(id, dscache, labels);
 			manager.addProcessor(writer);
 			String message = "Added 1 gold label: " + label;
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -435,7 +433,7 @@ public class Service {
 			setup(context);
 		    Collection<CorrectLabel> labels = parseJsonInput(labelsString, 
                     JSONUtils.correctLabelSetType);
-			GoldLabelWriter writer = new GoldLabelWriter(id,dscache,input);
+			GoldLabelWriter writer = new GoldLabelWriter(id, dscache, labels);
 			manager.addProcessor(writer);
 			String message = "Adding " + labels.size() + " gold labels";
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -599,6 +597,7 @@ public class Service {
             @QueryParam("iterations") String iterations) {
         int its = Math.max(1,
                 null == iterations ? 1 : Integer.parseInt(iterations));
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
 			DawidSkene ds = getDawidSkeneFromInput(idString);
@@ -610,7 +609,7 @@ public class Service {
 			String message = "Performed ds iteration " + its + " times, took: "
 		            + time + "ms.";
 			logger.info(message);
-			CacheUpdater updater = new CacheUpdater(id,dscache,ds);
+			CacheUpdater updater = new CacheUpdater(id, dscache, ds);
 			manager.addProcessor(updater);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
