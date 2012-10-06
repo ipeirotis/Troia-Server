@@ -236,7 +236,7 @@ public class Service {
                 message = " Object has been inserted to the DB and removed " +
                     "from the DB ";
                 dsRetrieved = dscache.getDawidSkene(id);
-                message += (null != dsRetrieved) ? "successfully" : 
+                message += (null == dsRetrieved) ? "successfully" : 
                     "unsuccessfully";
             } else {
                 message = "Object has NOT been inserted to the DB";
