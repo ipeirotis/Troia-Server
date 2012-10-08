@@ -251,7 +251,14 @@ public class DawidSkeneCache {
 		return false;
 	}
 
-	public void deleteDawidSkene(String id) {
+	public void removeFromCache(String id){
+		synchronized (this.cache) {
+			if (this.cache.containsKey(id))
+				this.cache.remove(id);
+		}
+	}
+	
+	public void deleteFromCacheAndDatabase(String id) {
 
 		try {
 			synchronized (this.cache) {
