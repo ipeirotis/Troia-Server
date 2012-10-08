@@ -44,15 +44,8 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.core.DataQualityEstimator;
-import com.datascience.gal.dawidSkeneProcessors.CacheUpdater;
-import com.datascience.gal.dawidSkeneProcessors.CategoryWriter;
-import com.datascience.gal.dawidSkeneProcessors.DSalgorithmComputer;
-import com.datascience.gal.dawidSkeneProcessors.DawidSkeneProcessorManager;
-import com.datascience.gal.dawidSkeneProcessors.DawidSkeneRemover;
-import com.datascience.gal.dawidSkeneProcessors.GoldLabelWriter;
-import com.datascience.gal.dawidSkeneProcessors.LabelWriter;
-import com.datascience.gal.dawidSkeneProcessors.MisclassificationCostsWriter;
 
+import com.datascience.gal.dawidSkeneProcessors.*;
 
 /**
  * a simple web service wrapper for the get another label project
@@ -73,8 +66,6 @@ public class Service {
         logger.info("Static code execution");
     }
 
-	private static DawidSkeneCache dscache = null;
-
 	private static DawidSkeneProcessorManager manager = null;
        
     private static String getIdFromInput(String input, String def) {
@@ -91,10 +82,6 @@ public class Service {
         return getIdFromInput(input, "0");
     }
 
-    private static DawidSkene getDawidSkeneFromInput(String input) {
-        return dscache.getDawidSkene(getIdFromInput(input));
-    }
-    
     private static String getJobId(String jid) {
 		if (jid == null || jid == "") {
 			logger.info("No job ID or empty - using default");
@@ -173,26 +160,23 @@ public class Service {
 		Properties props = new Properties();
 		try {
 			props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-			if (dscache == null) {
+			if(manager == null) {
 				String user = props.getProperty("USER");
 				String password = props.getProperty("PASSWORD");
 				String db = props.getProperty("DB");
 				String url = props.getProperty("URL");
-				if (props.containsKey("cacheSize")) {
-					int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
-					dscache = new DawidSkeneCache(user,password,db,url,cachesize);
-				} else {
-					dscache = new DawidSkeneCache(user,password,db,url);
-				}
-			}
-			if(manager == null) {
 				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
 				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
-				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
+				if (props.containsKey("cacheSize")) {
+					int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
+					manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url,cachesize);
+				} else {
+					manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url);
+				}
 				manager.start();
 			}
 		} catch(Exception e) {
-			logger.error(e.getMessage());
+            logErrorFromException(e);
 		}
 	}
 
@@ -226,6 +210,8 @@ public class Service {
 	@Path("pingDB")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pingDB() {
+		//FIXME WRITE THIS FUNCTIONALITY FOR MULTITHREADING ENVIRONMENT
+		/*
 		final String id = "1234512345";
 		Set<Category> categories = new HashSet<Category>();
 		categories.add(new Category("mock"));
@@ -254,7 +240,11 @@ public class Service {
             logErrorFromException(e);
         }
         return Response.status(500).build();
+		*/
+        return buildResponse("Functionality not yet implemented", null, null,
+                null, null);
 	}
+
 	/**
 	 * resets the ds model
 	 *
@@ -268,9 +258,8 @@ public class Service {
 		try {
 			setup(context);
 			if (idString != null) {
-				DawidSkeneRemover remover = new DawidSkeneRemover(idString, 
-						dscache);
-				manager.addProcessor(remover);
+				String id = idString;
+				manager.deleteProject(id);
 			}
 			String message = "Reset the ds model";
             if (null != idString) {
@@ -295,7 +284,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			Boolean exists = dscache.hasDawidSkene(id);
+			Boolean exists = manager.containsProject(id);
             String message = "Request model with id: " + id + " " +  
                     (exists ? "exists" : "does not exist");
             return buildResponse(message, null, exists, null, null);
@@ -322,12 +311,9 @@ public class Service {
 			setup(context);
 			Collection<Category> categories = parseJsonInput(categoriesString, 
                     JSONUtils.categorySetType);
-			CategoryWriter writer = new CategoryWriter(id, dscache, categories, 
-                    incremental != null);
-			manager.addProcessor(writer);
+			manager.createProject(id, categories, incremental != null);
 			String message = "Built a request model with " + categories.size()
 			    + " categories";
-			logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
@@ -355,10 +341,7 @@ public class Service {
                     JSONUtils.misclassificationCostSetType);
 			String message = "Loaded " + costs.size()
 			    + " misclassification costs";
-			MisclassificationCostsWriter writer = 
-                new MisclassificationCostsWriter(id, dscache, costs);
-            // XXX manager.add(writer)?
-			logger.info(message);
+			manager.addMisclassificationCost(id, costs);
 			return buildResponse(message, SUCCESS, null, new DateTime(), null); 
 		} catch (Exception e) {
 			logErrorFromException(e);
@@ -384,10 +367,8 @@ public class Service {
                     JSONUtils.assignedLabelType);
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
 			labels.add(label);
-			LabelWriter writer = new LabelWriter(id, dscache, labels);
-			manager.addProcessor(writer);
+			manager.addLabels(id, labels);
 			String message = "Loaded label: " + label;
-			logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
@@ -411,10 +392,8 @@ public class Service {
 			setup(context);
 		    Collection<AssignedLabel> labels = parseJsonInput(labelsString,
 			    JSONUtils.assignedLabelSetType);
-			LabelWriter writer = new LabelWriter(id, dscache, labels);
-			manager.addProcessor(writer);
+			manager.addLabels(id, labels);
 			String message = "Loaded " + labels.size() + " labels";
-			logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
@@ -440,8 +419,7 @@ public class Service {
                     JSONUtils.correctLabelType);
 			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
 			labels.add(label);
-			GoldLabelWriter writer = new GoldLabelWriter(id, dscache, labels);
-			manager.addProcessor(writer);
+			manager.addGoldLabels(id, labels);
 			String message = "Loaded gold label: " + label;
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -466,8 +444,7 @@ public class Service {
 			setup(context);
 		    Collection<CorrectLabel> labels = parseJsonInput(labelsString, 
                     JSONUtils.correctLabelSetType);
-			GoldLabelWriter writer = new GoldLabelWriter(id, dscache, labels);
-			manager.addProcessor(writer);
+			manager.addGoldLabels(id, labels);
 			String message = "Loaded " + labels.size() + " gold labels";
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -487,9 +464,10 @@ public class Service {
 	public Response majorityVote(@QueryParam("id") String idString,
 	        @QueryParam("objectName") String objectName) {
         logRequestProcessing("majorityVote");
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String votes = ds.getMajorityVote(objectName);
 			if (votes == null) {
                 throw new Exception("Got a null majority vote for the object: " 
@@ -500,7 +478,9 @@ public class Service {
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -515,10 +495,11 @@ public class Service {
 	public Response majorityVotes(@FormParam("id") String idString,
 			@FormParam("objectsNames") String objectsNamesJson) {
         logRequestProcessing("majorityVotes");
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
-		    Map<String, String> votes = null;
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
+            Map<String, String> votes = null;
 			if (null == objectsNamesJson)
 				votes = ds.getMajorityVote();
 			else {
@@ -533,7 +514,9 @@ public class Service {
                     null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -547,9 +530,10 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVotes(@QueryParam("id") String idString) {
         logRequestProcessing("majorityVotes");
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 		    Map<String, String> votes = ds.getMajorityVote();
             String message = "Computing majority votes for " + 
                     (null == votes ? 0 : votes.size()) + " objects";
@@ -557,7 +541,10 @@ public class Service {
                     new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+            logger.info("Finalize reading");
+        }
 		return Response.status(500).build();
 	}
 
@@ -571,16 +558,20 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response objectProb(@QueryParam("id") String idString,
 	        @QueryParam("objectName") String objectName) {
+        logRequestProcessing("objectProb");
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 		    Map<String, Double> probs = ds.getObjectProbs(objectName);
 			String message = "Computing probs for the object: " + objectName;
             return buildResponse(message, SUCCESS, probs, new DateTime(),
                     null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 	/**
@@ -593,9 +584,10 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response objectProbs(@FormParam("id") String idString,
 		    @FormParam("objectsNames") String objectsNamesJson) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 		    Map<String, Map<String, Double>> probs = null;
 			if (null == objectsNamesJson)
 				probs = ds.getObjectProbs();
@@ -609,10 +601,11 @@ public class Service {
 			        (null == probs ? 0 : probs.size()) + " objects";
             return buildResponse(message, SUCCESS, probs, new DateTime(), 
                     null);
-
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -631,7 +624,7 @@ public class Service {
         String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			StopWatch sw = new StopWatch();
 			sw.start();
 			ds.estimate(its);
@@ -639,13 +632,13 @@ public class Service {
 			long time = sw.getTime();
 			String message = "Performed ds iteration " + its + " times, took: "
 		            + time + "ms.";
-			logger.info(message);
-			CacheUpdater updater = new CacheUpdater(id, dscache, ds);
-			manager.addProcessor(updater);
+			manager.updateDawidSkene(id, ds);
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -659,8 +652,7 @@ public class Service {
         String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DSalgorithmComputer computer = new DSalgorithmComputer(id, dscache, its);
-			manager.addProcessor(computer);
+			manager.computeDawidSkene(id, its);
 			String message = "Registered DScomputer with  " + 
                     its + " iterations";
             return buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -675,17 +667,20 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response printWorkerSummary(@QueryParam("id") String idString,
             @QueryParam("verbose") String verbose) {
-		boolean verb = null != verbose;
+        logRequestProcessing("printWorkerSummary");
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
-			String result = ds.printAllWorkerScores(verb);
+			String result = ds.printAllWorkerScores(null != verbose);
             return buildResponse(message, SUCCESS, result, new DateTime(), 
                     null); 
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -694,9 +689,11 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response printObjectsProbs(@QueryParam("id") String idString,
 	        @QueryParam("entropy") String ent) {
+        logRequestProcessing("printObjectsProbs");
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
             String message = "Object class probabilities";
 			String result = ds.printObjectClassProbabilities(entropy);
@@ -704,7 +701,9 @@ public class Service {
                     null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -714,9 +713,10 @@ public class Service {
 	public Response objectProbs(@QueryParam("id") String idString,
             @QueryParam("objectName") String objectName,
             @QueryParam("entropy") String ent) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
             logger.info("Processing request for object class probabilities");
 			Map<String, Double> probs = ds.objectClassProbabilities(objectName, 
@@ -724,7 +724,9 @@ public class Service {
             return buildResponse(null, null, probs, null, null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -732,15 +734,18 @@ public class Service {
 	@Path("printPriors")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response printPriors(@QueryParam("id") String idString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
 			String result = ds.printPriors();
             return buildResponse(null, null, result, null, null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+            manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -748,15 +753,18 @@ public class Service {
 	@Path("classPriors")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response computePriors(@QueryParam("id") String idString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
             Map<String, Double> priors = ds.computePriors(); 
             return buildResponse(null, null, priors, null, null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+            manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -764,13 +772,20 @@ public class Service {
 	@Path("getDawidSkene")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getDawidSkene(@QueryParam("id") String idString) {
+        String id = getIdFromInput(idString);
 		try {
 			setup(context);
-			DawidSkene ds = getDawidSkeneFromInput(idString);
+			while(manager.getProcessorCountForProject(id)>0){
+			    Thread.sleep(1);
+			}
+            logger.debug("Service retrives DS with id: " + id);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
             return buildResponse(null, null, ds, null, null);
 		} catch (Exception e) {
             logErrorFromException(e);
-		}
+		} finally {
+            manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
@@ -784,44 +799,42 @@ public class Service {
 		String message = "getEstimatedCost(" + method + ") for " + object + " in job " + id;
 		try {
 			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
+	        while (manager.getProcessorCountForProject(id) > 0) {
+			    Thread.sleep(1);
+			}
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			DataQualityEstimator dqe = new DataQualityEstimator();
 			Double ec = dqe.estimateMissclassificationCost(ds, method, object);
 			logger.info(message + " OK");
             return buildResponse(null, null, ec, null, null);
 		} catch (Exception e) {
 			handleException(message, e);
-		}
+		} finally {
+			manager.finalizeReading(id);
+        }
 		return Response.status(500).build();
 	}
 
 	private void setup(ServletContext scontext) throws IOException,
-		ClassNotFoundException, SQLException {
-		if(dscache==null||manager==null) {
-			logger.info("loading props file with context:"
-						+ scontext.getContextPath());
-			Properties props = new Properties();
-			props.load(scontext
-					   .getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-			if (dscache == null) {
-				String user = props.getProperty("USER");
-				String password = props.getProperty("PASSWORD");
-				String db = props.getProperty("DB");
-				String url = props.getProperty("URL");
-				if (props.containsKey("cacheSize")) {
-					int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
-					dscache = new DawidSkeneCache(user,password,db,url,cachesize);
-				} else {
-					dscache = new DawidSkeneCache(user,password,db,url);
-				}
-			}
-			if(manager == null) {
-				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
-				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
-				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod);
-				manager.start();
-			}
+	        ClassNotFoundException, SQLException {
+		Properties props = new Properties();
+		props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
+		if(manager == null) {
+			String user = props.getProperty("USER");
+			String password = props.getProperty("PASSWORD");
+			String db = props.getProperty("DB");
+			String url = props.getProperty("URL");
+			int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
+			int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
+			if (props.containsKey("cacheSize")) {
+				int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
+				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url,cachesize);
+			} else {
+				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url);
+			}		
+			manager.start();
 		}
+		
 	}
 
 }

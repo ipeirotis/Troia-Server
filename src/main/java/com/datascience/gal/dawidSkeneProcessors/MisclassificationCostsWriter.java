@@ -38,9 +38,9 @@ public class MisclassificationCostsWriter extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
 		ds.addMisclassificationCosts(costs);
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().insertDawidSkene(ds,this);
 	}
 
 	/**
