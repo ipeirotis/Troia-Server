@@ -120,6 +120,10 @@ public class Service {
         logger.error("Error processing the request: " + 
             e.getClass().getName() + ": " + e.getLocalizedMessage());
     }
+
+    private static void logRequestProcessing(String endpointName) {
+        logger.info("Processing the request: " + endpointName);
+    }
 	
 	private static void handleException(String endpointName, String message, 
 			Exception e){
@@ -260,6 +264,7 @@ public class Service {
 	@Path("reset")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response reset(@QueryParam("id") String idString) {
+        logRequestProcessing("reset");
 		try {
 			setup(context);
 			if (idString != null) {
@@ -311,6 +316,7 @@ public class Service {
 	public Response loadCategories(@FormParam("id") String idString,
             @FormParam("categories") String categoriesString,
 			@FormParam("incremental") String incremental) {
+        logRequestProcessing("loadCategories");
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -340,6 +346,7 @@ public class Service {
 	public Response loadMisclassificationCosts(
             @FormParam("id") String idString,
             @FormParam("costs") String costsString) {
+        logRequestProcessing("loadCosts");
         String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -369,6 +376,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabel(@FormParam("id") String idString,
 		    @FormParam("label") String labelString) {
+        logRequestProcessing("loadWorkerAssignedLabel");
         String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -397,6 +405,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabels(@FormParam("id") String idString,
 			@FormParam("labels") String labelsString) {
+        logRequestProcessing("loadWorkerAssignedLabels");
         String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -423,6 +432,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadGoldLabel(@FormParam("id") String idString,
 	        @FormParam("label") String labelString) {
+        logRequestProcessing("loadGoldLabel");
 		String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -450,6 +460,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadGoldLabels(@FormParam("id") String idString,
 			@FormParam("labels") String labelsString) {
+        logRequestProcessing("loadGoldLabels");
         String id = getIdFromInput(idString);
 		try {
 			setup(context);
@@ -475,6 +486,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVote(@QueryParam("id") String idString,
 	        @QueryParam("objectName") String objectName) {
+        logRequestProcessing("majorityVote");
 		try {
 			setup(context);
 			DawidSkene ds = getDawidSkeneFromInput(idString);
@@ -502,6 +514,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVotes(@FormParam("id") String idString,
 			@FormParam("objectsNames") String objectsNamesJson) {
+        logRequestProcessing("majorityVotes");
 		try {
 			setup(context);
 			DawidSkene ds = getDawidSkeneFromInput(idString);
@@ -533,6 +546,7 @@ public class Service {
 	@Path("majorityVotes")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response majorityVotes(@QueryParam("id") String idString) {
+        logRequestProcessing("majorityVotes");
 		try {
 			setup(context);
 			DawidSkene ds = getDawidSkeneFromInput(idString);
