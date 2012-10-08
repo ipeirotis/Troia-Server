@@ -189,10 +189,10 @@ public class Service {
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
+        logRequestProcessing("ping");
 		try {
 			setup(context);
             String message = "Request successfully processed";
-            logger.info(message);
             return buildResponse(message, SUCCESS, null, new DateTime(), null); 
 		} catch (Exception e) {
             logErrorFromException(e);
@@ -543,7 +543,6 @@ public class Service {
             logErrorFromException(e);
 		} finally {
 			manager.finalizeReading(id);
-            logger.info("Finalize reading");
         }
 		return Response.status(500).build();
 	}

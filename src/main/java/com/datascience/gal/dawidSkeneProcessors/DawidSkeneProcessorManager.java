@@ -171,6 +171,7 @@ public class DawidSkeneProcessorManager extends Thread {
 	
 	public void finalizeReading(String projectId){
 		this.cache.finalizeReading(projectId,Thread.currentThread());
+        logger.debug("Reading finalized.");
 	}
 
 	/**
