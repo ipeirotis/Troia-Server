@@ -60,6 +60,11 @@ public class Datum {
 		this.isGold = isGold;
 	}
 
+	
+	public boolean isEvaluationData(){
+		return null!=this.correctCategory&&!this.isGold();
+	}
+	
 	/**
 	 * @return the goldCategory
 	 */
