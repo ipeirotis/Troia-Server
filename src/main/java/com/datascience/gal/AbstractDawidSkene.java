@@ -27,10 +27,13 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	protected Map<String, Datum> objects;
 	protected Map<String, Worker> workers;
 	protected Map<String, Category> categories;
+	protected Map<String,CorrectLabel> evaluationData;
 
 	protected boolean fixedPriors;
 
 	protected final String id;
+	
+	protected double quality;
 
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
@@ -824,5 +827,54 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	public Category getCategory(String category) {
 		return categories.get(category);
+	}
+	
+	/**
+	 * @return the quality
+	 */
+	public double getQuality() {
+		return quality;
+	}
+
+	/**
+	 * This function calculates quality of this project and it's workers quality.
+	 */
+	public void computeProjectQuality(){
+		int correctEvaluationLabels = 0;
+		int totalEvaluationLabels = 0;
+		
+		//Calculating quality for whole project
+		for (String evaluationObjectName : this.evaluationData.keySet()) {
+			CorrectLabel correctLabel = this.evaluationData.get(evaluationObjectName); 
+			Datum object = this.objects.get(correctLabel.getObjectName());
+			if(object!=null){
+				totalEvaluationLabels++;
+				if(correctLabel.getCorrectCategory().equals(object.getMajorityCategory())){
+					correctEvaluationLabels++;
+				}
+			}
+		}
+		this.quality = (correctEvaluationLabels*100)/totalEvaluationLabels;
+		
+		//Calculating quality for workers
+		for (String workerName : this.workers.keySet()) {
+			Worker worker = this.workers.get(workerName);
+			Collection<AssignedLabel> labels = worker.getAssignedLabels();
+			correctEvaluationLabels = 0;
+			totalEvaluationLabels = 0;
+			for (AssignedLabel label : labels) {
+				if(this.evaluationData.containsKey(label.getObjectName())){
+					totalEvaluationLabels++;
+					if(evaluationData.get(label.getObjectName()).equals(label.getCategoryName())){
+						correctEvaluationLabels++;
+					}
+				}
+			}
+			worker.setQuality((correctEvaluationLabels*100)/totalEvaluationLabels);
+		}
+	}
+	
+	public  void addEvaluationData(CorrectLabel cl){
+		this.evaluationData.put(cl.getObjectName(),cl);
 	}
 }

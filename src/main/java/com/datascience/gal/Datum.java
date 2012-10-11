@@ -59,11 +59,6 @@ public class Datum {
 	public void setGold(boolean isGold) {
 		this.isGold = isGold;
 	}
-
-	
-	public boolean isEvaluationData(){
-		return null!=this.correctCategory&&!this.isGold();
-	}
 	
 	/**
 	 * @return the goldCategory

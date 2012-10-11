@@ -15,9 +15,10 @@
 
 package com.datascience.gal.quality;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectQualityEvaluation {
+public class ProjectQualityEvaluation  extends QualityEvaluation{
     
     public ProjectQualityEvaluation(String projectId){
 	super(projectId);
@@ -48,7 +49,7 @@ public class ProjectQualityEvaluation {
 	return this.workerEvaluations.get(workerName);
     }
 
-    public void setWorkerEvaluation(String workerName,WorkerQualityEvaluation revaluation){
+    public void setWorkerEvaluation(String workerName,WorkerQualityEvaluation evaluation){
 	this.workerEvaluations.put(workerName,evaluation);
     }
 }

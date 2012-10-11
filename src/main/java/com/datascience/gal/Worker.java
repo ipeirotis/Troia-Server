@@ -46,6 +46,22 @@ public class Worker {
 		return labels;
 	}
 
+	private double quality;
+	
+	/**
+	 * @return the quality
+	 */
+	public double getQuality() {
+		return quality;
+	}
+
+	/**
+	 * @param quality the quality to set
+	 */
+	public void setQuality(double quality) {
+		this.quality = quality;
+	}
+
 	private Worker(String name, Collection<AssignedLabel> labels,
 				   ConfusionMatrix cm) {
 		this.name = name;

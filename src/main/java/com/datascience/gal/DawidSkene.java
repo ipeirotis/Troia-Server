@@ -21,6 +21,8 @@ public interface DawidSkene {
 	public abstract void addCorrectLabels(Collection<CorrectLabel> cls);
 
 	public abstract void addCorrectLabel(CorrectLabel cl);
+	
+	public abstract void addEvaluationData(CorrectLabel cl);
 
 	/**
 	 * @return the fixedPriors
@@ -154,6 +156,8 @@ public interface DawidSkene {
 	public abstract String getId();
 
 	public abstract String toString();
+	
+	public abstract double getQuality(); 
 
 	Map<String, Double> getWorkerPriors(Worker worker);
 
