@@ -349,6 +349,9 @@ public class Service {
 		return Response.status(500).build();
 	}
 
+	
+	
+	
 	/**
 	 * add a worker-assigned label to the model
 	 *
@@ -453,6 +456,34 @@ public class Service {
 		return Response.status(500).build();
 	}
 
+	
+	/**
+	 * loads gold labels for the model
+	 *
+	 * @return a simple success message
+	 */
+	@POST
+	@Path("loadEvaluationData")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response loadEvaluationData(@FormParam("id") String idString,
+			@FormParam("labels") String labelsString) {
+        logRequestProcessing("loadGoldLabels");
+        String id = getIdFromInput(idString);
+		try {
+			setup(context);
+		    Collection<CorrectLabel> labels = parseJsonInput(labelsString, 
+                    JSONUtils.correctLabelSetType);
+			manager.addEvaluationData(id, labels);
+			String message = "Loaded " + labels.size() + " gold labels";
+            return buildResponse(message, SUCCESS, null, new DateTime(), null);
+		} catch (Exception e) {
+            logErrorFromException(e);
+		}
+		return Response.status(500).build();
+	}
+
+	
+	
 	/**
 	 * computes majority votes for the model 
 	 *

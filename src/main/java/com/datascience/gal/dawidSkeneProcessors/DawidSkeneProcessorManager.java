@@ -118,6 +118,13 @@ public class DawidSkeneProcessorManager extends Thread {
 		this.addProcessor(writer);
 	}
 	
+	public void addEvaluationData(String projectId,
+			Collection<CorrectLabel> goldLabels) {
+		EvaluationDataWriter writer = new EvaluationDataWriter(projectId, this.cache,
+				goldLabels);
+		this.addProcessor(writer);
+	}
+	
 	public void addMisclassificationCost(String projectId,Collection<MisclassificationCost> costs){
 		MisclassificationCostsWriter writer = new MisclassificationCostsWriter(projectId,this.cache,costs);
 		this.addProcessor(writer);

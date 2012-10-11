@@ -874,7 +874,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 	}
 	
-	public  void addEvaluationData(CorrectLabel cl){
-		this.evaluationData.put(cl.getObjectName(),cl);
+	public  void addEvaluationData(Collection<CorrectLabel> cl){
+		for (CorrectLabel correctLabel : cl) {
+			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
+		}
 	}
 }

@@ -22,7 +22,7 @@ public interface DawidSkene {
 
 	public abstract void addCorrectLabel(CorrectLabel cl);
 	
-	public abstract void addEvaluationData(CorrectLabel cl);
+	public abstract void addEvaluationData(Collection<CorrectLabel> cl);
 
 	/**
 	 * @return the fixedPriors
@@ -158,6 +158,7 @@ public interface DawidSkene {
 	public abstract String toString();
 	
 	public abstract double getQuality(); 
+	public abstract void computeProjectQuality();
 
 	Map<String, Double> getWorkerPriors(Worker worker);
 
