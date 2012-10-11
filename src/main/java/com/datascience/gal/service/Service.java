@@ -813,25 +813,6 @@ public class Service {
         }
 		return Response.status(500).build();
 	}
-	
-	@GET
-	@Path("getEvaluationDataCost")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEvaluationDataCost(@QueryParam("id") String jid, @QueryParam("method") String method, @QueryParam("object") String object) {
-		String id = getJobId(jid);
-		String message = "getEvaluationDataCost(" + method + ") for " + object + " in job " + id;
-		try {
-			setup(context);
-			DawidSkene ds = dscache.getDawidSkene(id);
-			DataQualityEstimator dqe = new DataQualityEstimator();
-			Double ec = dqe.estimateMissclassificationCost(ds, method, object);
-			logger.info(message + " OK");
-			return Response.ok(ec.toString()).build();
-		} catch (Exception e) {
-			handleException(message, e);
-		}
-		return Response.status(500).build();
-	}
 
 	private void setup(ServletContext scontext) throws IOException,
 	        ClassNotFoundException, SQLException {
