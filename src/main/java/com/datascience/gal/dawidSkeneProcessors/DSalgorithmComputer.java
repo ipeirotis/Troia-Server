@@ -15,6 +15,8 @@
 
 package com.datascience.gal.dawidSkeneProcessors;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
@@ -31,10 +33,12 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		logger.info("Started DS-computer for "+this.getDawidSkeneId() + " with "+this.iterations+" iterations.");
+	    DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
 		ds.estimate(this.iterations);
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().insertDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
+		logger.info("DS-computer for "+this.getDawidSkeneId()+" finished.");
 	}
 
 	/**
@@ -58,4 +62,5 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 		this.iterations = iterations;
 	}
 
+	private static Logger logger = Logger.getLogger(LabelWriter.class);
 }

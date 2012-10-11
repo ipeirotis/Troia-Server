@@ -33,9 +33,9 @@ public class LabelWriter extends DawidSkeneProcessor {
 	@Override
 	public void run() {
 		logger.info("Executing label writer for "+this.getDawidSkeneId()+".");
-		DawidSkene ds = this.getCache().getDawidSkene(this.getDawidSkeneId());
+		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
 		ds.addAssignedLabels(labels);
-		this.getCache().insertDawidSkene(ds);
+		this.getCache().insertDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 		logger.info("Label writer for "+this.getDawidSkeneId()+" finished.");
 	}
