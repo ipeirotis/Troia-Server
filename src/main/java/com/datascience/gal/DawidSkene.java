@@ -12,6 +12,8 @@ package com.datascience.gal;
 import java.util.Collection;
 import java.util.Map;
 
+import com.datascience.gal.quality.ClassificationCostEvaluator;
+
 public interface DawidSkene {
 
 	public abstract void addAssignedLabels(Collection<AssignedLabel> als);
@@ -155,10 +157,14 @@ public interface DawidSkene {
 
 	public abstract String getId();
 
+	public abstract Map<String, Category> getCategories();
+	
 	public abstract String toString();
 	
-	public abstract double getQuality(); 
-	public abstract void computeProjectQuality();
+	public abstract Double getQuality(String object,String category); 
+	public abstract Map<String,Map<String,Double>> getQualities();
+	public abstract void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object);
+	public abstract Map<String,Datum> getObjects();
 
 	Map<String, Double> getWorkerPriors(Worker worker);
 

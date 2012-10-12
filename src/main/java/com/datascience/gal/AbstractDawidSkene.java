@@ -18,6 +18,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
+import com.datascience.gal.quality.ClassificationCostEvaluator;
 import com.datascience.gal.service.JSONUtils;
 import com.datascience.utils.Utils;
 
@@ -33,10 +34,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	protected final String id;
 	
-	protected double quality;
+	protected Map<String,Map<String,Double>> qualities;
 
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
+		this.evaluationData = new HashMap<String,CorrectLabel>();
+		this.qualities = new HashMap<String,Map<String,Double>>();
 	}
 
 	/**
@@ -260,6 +263,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.workers.size();
 	}
 
+
+	
 	@Override
 	public Map<String, String> getMajorityVote() {
 
@@ -817,12 +822,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return objects.get(object_id);
 	}
 
-	public Collection<Datum> getObjects() {
-		return objects.values();
+	public Map<String,Datum> getObjects() {
+		return objects;
 	}
 
-	public Collection<Category> getCategories() {
-		return categories.values();
+	public Map<String,Category> getCategories() {
+		return categories;
 	}
 
 	public Category getCategory(String category) {
@@ -832,49 +837,27 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	/**
 	 * @return the quality
 	 */
-	public double getQuality() {
-		return quality;
+	public Double getQuality(String object,String category) {
+		return qualities.get(object).get(category);
+	}
+	
+	public Map<String,Map<String,Double>> getQualities(){
+		return this.qualities;
 	}
 
 	/**
 	 * This function calculates quality of this project and it's workers quality.
 	 */
-	public void computeProjectQuality(){
-		int correctEvaluationLabels = 0;
-		int totalEvaluationLabels = 0;
-		
-		//Calculating quality for whole project
-		for (String evaluationObjectName : this.evaluationData.keySet()) {
-			CorrectLabel correctLabel = this.evaluationData.get(evaluationObjectName); 
-			Datum object = this.objects.get(correctLabel.getObjectName());
-			if(object!=null){
-				totalEvaluationLabels++;
-				if(correctLabel.getCorrectCategory().equals(object.getMajorityCategory())){
-					correctEvaluationLabels++;
-				}
-			}
+	public void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object){
+		if(this.qualities.get(object)==null){
+			this.qualities.put(object, new HashMap<String,Double>());
 		}
-		this.quality = (correctEvaluationLabels*100)/totalEvaluationLabels;
+		this.qualities.get(object).put(category,evaluator.EvaluateClassificationCost(this, category,this.objects.get(object)));
 		
-		//Calculating quality for workers
-		for (String workerName : this.workers.keySet()) {
-			Worker worker = this.workers.get(workerName);
-			Collection<AssignedLabel> labels = worker.getAssignedLabels();
-			correctEvaluationLabels = 0;
-			totalEvaluationLabels = 0;
-			for (AssignedLabel label : labels) {
-				if(this.evaluationData.containsKey(label.getObjectName())){
-					totalEvaluationLabels++;
-					if(evaluationData.get(label.getObjectName()).equals(label.getCategoryName())){
-						correctEvaluationLabels++;
-					}
-				}
-			}
-			worker.setQuality((correctEvaluationLabels*100)/totalEvaluationLabels);
-		}
 	}
 	
-	public  void addEvaluationData(Collection<CorrectLabel> cl){
+	@Override
+	public void addEvaluationData(Collection<CorrectLabel> cl){
 		for (CorrectLabel correctLabel : cl) {
 			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
 		}

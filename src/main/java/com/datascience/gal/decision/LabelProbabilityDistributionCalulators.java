@@ -8,6 +8,7 @@ import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.Datum;
+import com.datascience.gal.DawidSkene;
 
 /**
  * @author Konrad Kurdej
@@ -19,7 +20,7 @@ public class LabelProbabilityDistributionCalulators {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
-				AbstractDawidSkene ads) {
+				DawidSkene ads) {
 			return datum.getCategoryProbability();
 		}
 	}
@@ -28,10 +29,10 @@ public class LabelProbabilityDistributionCalulators {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
-				AbstractDawidSkene ads) {
+				DawidSkene ads) {
 
 			Map<String, Double> pd = new HashMap<String, Double>();
-			for (Category c: ads.getCategories()) {
+			for (Category c: ads.getCategories().values()) {
 				pd.put(c.getName(), 0.0);
 			}
 			

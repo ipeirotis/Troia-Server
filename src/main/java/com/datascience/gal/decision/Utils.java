@@ -53,7 +53,7 @@ public class Utils {
 	
 	static public CostMatrix<String> getCategoriesCostMatrix(AbstractDawidSkene ads){
 		CostMatrix<String> cm = new CostMatrix<String>();
-		for (Category c: ads.getCategories()){
+		for (Category c: ads.getCategories().values()){
 			String name = c.getName();
 			for (Map.Entry<String, Double> entry: c.getMisclassificationCosts().entrySet()){
 				cm.add(name, entry.getKey(), entry.getValue());
