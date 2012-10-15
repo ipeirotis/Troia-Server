@@ -1,16 +1,11 @@
 package com.datascience.gal.quality;
 
-
 import com.datascience.gal.decision.LabelProbabilityDistributionCalulators;
 
-public class DS_MaxLikelihoodCostEvaluator extends
-		MaxLikelihoodCostEvaluator {
+public class DS_SoftCostEvaluator extends SoftCostEvaluator {
 
-	public DS_MaxLikelihoodCostEvaluator(){
+	protected DS_SoftCostEvaluator() {
 		super( new LabelProbabilityDistributionCalulators.DS());
 	}
-
-
-
 
 }

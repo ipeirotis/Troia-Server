@@ -1,17 +1,21 @@
 package com.datascience.gal.quality;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.gal.Category;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalulators;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
 
 
 
 public abstract class ClassificationCostEvaluator {
 
+	
+	protected ClassificationCostEvaluator(LabelProbabilityDistributionCalculator calculator){
+		this.calculator = calculator;
+	}
+	
 	public double EvaluateClassificationCost(DawidSkene ds,String evaluationCategory,Datum datum){
 		
 		Map<String, Double>	dest_probabilities = this.getProbabilityVector(ds,datum);
@@ -30,4 +34,5 @@ public abstract class ClassificationCostEvaluator {
 	
 	protected abstract Map<String, Double> getProbabilityVector(DawidSkene ds,Datum datum);
 
+	protected LabelProbabilityDistributionCalculator calculator;
 }
