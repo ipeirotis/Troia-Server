@@ -21,24 +21,28 @@ import com.datascience.gal.DawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
 /**
- * Objects of this class execute Dawid-Skene algorithm on DS model with
- * given id.
+ * Objects of this class execute Dawid-Skene algorithm on DS model with given
+ * id.
  */
 public class DSalgorithmComputer extends DawidSkeneProcessor {
 
-	public DSalgorithmComputer(String id,DawidSkeneCache cache,int iterations) {
-		super(id,cache);
+	public DSalgorithmComputer(String id, DawidSkeneCache cache, int iterations) {
+		super(id, cache);
 		this.setIterations(iterations);
 	}
 
 	@Override
 	public void run() {
-		logger.info("Started DS-computer for "+this.getDawidSkeneId() + " with "+this.iterations+" iterations.");
-	    DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
-		ds.estimate(this.iterations);
-		this.getCache().insertDawidSkene(ds,this);
+		logger.info("Started DS-computer for " + this.getDawidSkeneId()
+				+ " with " + this.iterations + " iterations.");
+		DawidSkene ds = this.getCache().getDawidSkeneForEditing(
+				this.getDawidSkeneId(), this);
+		if (!ds.isComputed()) {
+			ds.estimate(this.iterations);
+			this.getCache().insertDawidSkene(ds, this);
+		}
 		this.setState(DawidSkeneProcessorState.FINISHED);
-		logger.info("DS-computer for "+this.getDawidSkeneId()+" finished.");
+		logger.info("DS-computer for " + this.getDawidSkeneId() + " finished.");
 	}
 
 	/**
@@ -46,19 +50,18 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 	 */
 	private int iterations;
 
-
 	/**
 	 * @return How many iterations of Dawid-Skene algorithm will be run
 	 */
-	public int  getIterations() {
+	public int getIterations() {
 		return iterations;
 	}
 
-
 	/**
-	 * @param iterations How many iterations of Dawid-Skene algorithm will be run
+	 * @param iterations
+	 *            How many iterations of Dawid-Skene algorithm will be run
 	 */
-	public void setIterations(int  iterations) {
+	public void setIterations(int iterations) {
 		this.iterations = iterations;
 	}
 

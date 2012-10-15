@@ -747,6 +747,26 @@ public class Service {
         }
 		return Response.status(500).build();
 	}
+	
+	@GET
+	@Path("isComputed")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response isComputed(@QueryParam("id") String idString) {
+        String id = getIdFromInput(idString);
+        Response rs;
+		try {
+			setup(context);
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
+			boolean result = ds.isComputed();
+             rs = buildResponse(null, null, result, null, null);
+		} catch (Exception e) {
+            logErrorFromException(e);
+		} finally {
+            manager.finalizeReading(id);
+        }
+		rs = Response.status(500).build();
+		return rs;
+	}
 
 	@GET
 	@Path("classPriors")

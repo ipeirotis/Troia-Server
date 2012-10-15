@@ -74,6 +74,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			updatePriors();
 			rebuildWorkerConfusionMatrices();
 		}
+		this.computed=true;
 	}
 
 	private Map<String, Double> getCategoryPriors() {

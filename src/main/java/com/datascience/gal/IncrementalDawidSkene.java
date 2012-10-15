@@ -107,6 +107,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			updateWorkersWithAssignedLabel(al);
 			break;
 		}
+		this.computed=false;
 	}
 
 	private void iterateLocalLablel(AssignedLabel al) {
@@ -309,7 +310,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			for (Datum d : objects.values())
 				updateObjectInformation(d, true);
 		}
-
+		this.computed=true;
 	}
 
 	@Override
