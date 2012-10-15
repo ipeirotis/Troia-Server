@@ -34,7 +34,15 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	protected final String id;
 	
+
 	protected Map<String,Map<String,Double>> qualities;
+
+	/**
+	 * Set to true if this project was computed.
+	 * Any modification to DS project will set it to false
+	 */
+	protected boolean computed;
+
 
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
@@ -60,6 +68,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 				categories.put(from, c);
 			}
 		}
+		this.computed=false;
 	}
 
 	protected void initializePriors() {
@@ -69,6 +78,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			c.setPrior(1.0 / categories.keySet().size());
 			categories.put(cat, c);
 		}
+		this.computed=false;
 	}
 
 	@Override
@@ -372,6 +382,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			}
 		}
 		setPriors(priors);
+		this.computed=false;
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(String objectName) {
@@ -487,7 +498,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		Category c = this.categories.get(from);
 		c.setCost(to, cost);
 		this.categories.put(from, c);
-
+		this.computed=false;
 	}
 
 	@Override
@@ -575,7 +586,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 		w.addAssignedLabel(al);
 		workers.put(workerName, w);
-
+		this.computed=false;
 	}
 
 	/*
@@ -603,6 +614,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			d.setCorrectCategory(correctCategory);
 		}
 		this.objects.put(objectName, d);
+		this.computed=false;
 	}
 
 	@Override
@@ -834,6 +846,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return categories.get(category);
 	}
 	
+
 	/**
 	 * @return the quality
 	 */
@@ -861,5 +874,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		for (CorrectLabel correctLabel : cl) {
 			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
 		}
+	}
+
+	public  boolean  isComputed(){
+		return this.computed;
+
 	}
 }

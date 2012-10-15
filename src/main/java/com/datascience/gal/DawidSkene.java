@@ -169,4 +169,6 @@ public interface DawidSkene {
 	Map<String, Double> getWorkerPriors(Worker worker);
 
 	double getErrorRateForWorker(Worker worker, String from, String to);
+	
+	public abstract boolean  isComputed();
 }
