@@ -142,6 +142,10 @@ public class DawidSkeneProcessorManager extends Thread {
 		this.addProcessor(updater);
 	}
 
+	public void calculateEvaluationCost(String method){
+		
+	}
+	
 	public final DawidSkene getDawidSkeneForReadOnly(String projectId) {
 		Queue<DawidSkeneProcessor> processors;
 		DawidSkene ds = null;

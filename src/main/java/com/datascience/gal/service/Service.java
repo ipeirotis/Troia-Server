@@ -46,6 +46,7 @@ import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.core.DataQualityEstimator;
 
 import com.datascience.gal.dawidSkeneProcessors.*;
+import com.datascience.gal.quality.EvaluatorManager;
 
 /**
  * a simple web service wrapper for the get another label project
@@ -820,31 +821,30 @@ public class Service {
 	}
 
 	@GET
+	@Path("calculateEstimatedCost")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response calculateEstimatedCost(@QueryParam("id") String jid,
+            @QueryParam("method") String method) {
+		String id = getJobId(jid);
+		String message = "calculateEstimatedCost(" + method + ") for job " + id;
+		manager.calculateEvaluationCost(method);
+		return Response.status(500).build();
+	}
+	
+	@GET
 	@Path("getEstimatedCost")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEstimatedCost(@QueryParam("id") String jid, 
-            @QueryParam("method") String method, 
-            @QueryParam("object") String object) {
+	public Response getEstimatedCost(@QueryParam("id") String jid,
+			@QueryParam("object") String object,
+			@QueryParam("category") String category) {
 		String id = getJobId(jid);
-		String message = "getEstimatedCost(" + method + ") for " + object + " in job " + id;
-		try {
-			setup(context);
-	        while (manager.getProcessorCountForProject(id) > 0) {
-			    Thread.sleep(1);
-			}
-			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
-			DataQualityEstimator dqe = new DataQualityEstimator();
-			Double ec = dqe.estimateMissclassificationCost(ds, method, object);
-			logger.info(message + " OK");
-            return buildResponse(null, null, ec, null, null);
-		} catch (Exception e) {
-			handleException(message, e);
-		} finally {
-			manager.finalizeReading(id);
-        }
+		String message = "getEstimatedCost for job " + id;
+		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
+		ds.getQuality(object, category);
 		return Response.status(500).build();
 	}
 
+	
 	private void setup(ServletContext scontext) throws IOException,
 	        ClassNotFoundException, SQLException {
 		Properties props = new Properties();

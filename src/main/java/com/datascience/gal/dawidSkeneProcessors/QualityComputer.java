@@ -9,14 +9,14 @@ import com.datascience.gal.Category;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.quality.ClassificationCostEvaluator;
+import com.datascience.gal.quality.EvaluatorManager;
 import com.datascience.gal.service.DawidSkeneCache;
 
 public class QualityComputer extends DawidSkeneProcessor {
 
-	protected QualityComputer(String id, DawidSkeneCache cache,
-			ClassificationCostEvaluator evaluator,String category,String object) {
+	protected QualityComputer(String id, DawidSkeneCache cache,String method) {
 		super(id, cache);
-		this.evaluator = evaluator;
+		this.evaluator = EvaluatorManager.getEvaluatorForMethod(method);
 	}
 
 	@Override
