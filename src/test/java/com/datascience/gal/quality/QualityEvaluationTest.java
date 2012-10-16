@@ -36,40 +36,7 @@ public class QualityEvaluationTest extends TestCase {
 		super(name);
 	}
 
-	/**
-	 * Run the void computeProjectQuality() method test
-	 */
-	public void testComputeProjectQuality() {
-		Collection<Category> categories = new ArrayList<Category>();
-		categories.add(new Category("Category1"));
-		categories.add(new Category("Category2"));
-		DawidSkene ds = new IncrementalDawidSkene("TestProject",categories);
-		
-		Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
-		//Worker1 quality is 100%
-		labels.add(new AssignedLabel("Worker1","Object1","Category1"));
-		labels.add(new AssignedLabel("Worker1","Object2","Category1"));
-		labels.add(new AssignedLabel("Worker1","Object3","Category1"));
-		labels.add(new AssignedLabel("Worker1","Object4","Category1"));
-		//Worker2 quality is 0%
-		labels.add(new AssignedLabel("Worker2","Object1","Category2"));
-		labels.add(new AssignedLabel("Worker2","Object2","Category2"));
-		labels.add(new AssignedLabel("Worker2","Object3","Category2"));
-		labels.add(new AssignedLabel("Worker2","Object4","Category2"));
-		//Worker3 quality is 50%
-		labels.add(new AssignedLabel("Worker3","Object1","Category1"));
-		labels.add(new AssignedLabel("Worker3","Object2","Category1"));
-		labels.add(new AssignedLabel("Worker3","Object3","Category2"));
-		labels.add(new AssignedLabel("Worker3","Object4","Category2"));
-		ds.addAssignedLabels(labels);
-		
-		Collection<CorrectLabel> evaluationData = new ArrayList<CorrectLabel>();
-		evaluationData.add(new CorrectLabel("Object1","Category1"));
-		evaluationData.add(new CorrectLabel("Object2","Category1"));
-		evaluationData.add(new CorrectLabel("Object3","Category1"));
-		evaluationData.add(new CorrectLabel("Object4","Category1"));
-		ds.addEvaluationData(evaluationData);
-		
+	private void testData(DawidSkene ds){
 		ds.estimate(5);
 		ClassificationCostEvaluator evaluator = new DS_MaxLikelihoodCostEvaluator();
 		Map<String,Category> categoriesFromDs = ds.getCategories();
@@ -88,6 +55,43 @@ public class QualityEvaluationTest extends TestCase {
 				System.out.println("Object = "+objectName+" category = "+categoryName+" Quality = "+qualities.get(objectName).get(categoryName));
 			}
 		}
+	}
+	
+	/**
+	 * Run the void computeProjectQuality() method test
+	 */
+	public void testComputeProjectQuality() {
+		Collection<Category> categories = new ArrayList<Category>();
+		categories.add(new Category("Category1"));
+		categories.add(new Category("Category2"));
+		DawidSkene ds = new IncrementalDawidSkene("TestProject",categories);
+		
+		Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
+		//Worker1 quality is 100%
+		labels.add(new AssignedLabel("Worker1","Object1","Category1"));
+		labels.add(new AssignedLabel("Worker1","Object2","Category1"));
+		labels.add(new AssignedLabel("Worker1","Object3","Category2"));
+		labels.add(new AssignedLabel("Worker1","Object4","Category2"));
+		//worker2
+		labels.add(new AssignedLabel("Worker2","Object1","Category1"));
+		labels.add(new AssignedLabel("Worker2","Object2","Category1"));
+		labels.add(new AssignedLabel("Worker2","Object3","Category2"));
+		labels.add(new AssignedLabel("Worker2","Object4","Category2"));
+		//Worker3 
+		labels.add(new AssignedLabel("Worker3","Object1","Category1"));
+		labels.add(new AssignedLabel("Worker3","Object2","Category1"));
+		labels.add(new AssignedLabel("Worker3","Object3","Category2"));
+		labels.add(new AssignedLabel("Worker3","Object4","Category2"));
+		ds.addAssignedLabels(labels);
+		
+		Collection<CorrectLabel> evaluationData = new ArrayList<CorrectLabel>();
+		evaluationData.add(new CorrectLabel("Object1","Category1"));
+		evaluationData.add(new CorrectLabel("Object2","Category1"));
+		evaluationData.add(new CorrectLabel("Object3","Category2"));
+		evaluationData.add(new CorrectLabel("Object4","Category2"));
+		ds.addEvaluationData(evaluationData);
+		
+		testData(ds);
 		
 	}
 }
