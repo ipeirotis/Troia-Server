@@ -674,9 +674,10 @@ public class Service {
 	@GET
 	@Path("compute")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response computeDS(@QueryParam("id") String idString,
+	public Response compute(@QueryParam("id") String idString,
                 @QueryParam("iterations") String iterations) {
 		Response rs;
+		logger.info("Compute service called");
 		int its = Math.max(1,
 		        null == iterations ? 1 : Integer.parseInt(iterations));
         String id = getIdFromInput(idString);
