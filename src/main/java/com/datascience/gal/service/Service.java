@@ -672,12 +672,12 @@ public class Service {
 	}
 
 	@GET
-	@Path("compute")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path("computeNotBlocking")
+	    @Produces({MediaType.APPLICATION_JSON,MediaType.TEXT_HTML})
 	public Response compute(@QueryParam("id") String idString,
                 @QueryParam("iterations") String iterations) {
+	        logRequestProcessing("compute");
 		Response rs;
-		logger.info("Compute service called");
 		int its = Math.max(1,
 		        null == iterations ? 1 : Integer.parseInt(iterations));
         String id = getIdFromInput(idString);
