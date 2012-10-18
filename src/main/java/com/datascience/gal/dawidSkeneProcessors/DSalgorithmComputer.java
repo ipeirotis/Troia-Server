@@ -39,8 +39,8 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 				this.getDawidSkeneId(), this);
 		if (!ds.isComputed()) {
 			ds.estimate(this.iterations);
-			this.getCache().insertDawidSkene(ds, this);
 		}
+		this.getCache().insertDawidSkene(ds, this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 		logger.info("DS-computer for " + this.getDawidSkeneId() + " finished.");
 	}
