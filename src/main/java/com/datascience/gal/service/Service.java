@@ -62,9 +62,6 @@ public class Service {
 
 	private static String DEFAULT_JOB_ID = "0";
 	private static Logger logger = Logger.getLogger(Service.class);
-    {
-        logger.info("Static code execution");
-    }
 
 	private static DawidSkeneProcessorManager manager = null;
        
