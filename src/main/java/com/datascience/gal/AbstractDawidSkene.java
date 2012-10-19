@@ -80,7 +80,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	@Override
 	public String toString() {
-		return JSONUtils.gson.toJson(this);
+		return JSONUtils.toJson(this);
 	}
 
 	@Override
