@@ -4,6 +4,7 @@ If you would like to handle big jobs you will need to configure MySQL for this.
 In file **my.cnf** (on Ubuntu it is located in **/etc/mysql/my.cnf**) configure option **max_allowed_packet**. For example:
 
 ..
+
   max_allowed_packet=128MB
 
 
