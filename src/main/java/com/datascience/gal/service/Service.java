@@ -63,9 +63,6 @@ public class Service {
 
 	private static String DEFAULT_JOB_ID = "0";
 	private static Logger logger = Logger.getLogger(Service.class);
-    {
-        logger.info("Static code execution");
-    }
 
 	private static DawidSkeneProcessorManager manager = null;
        
@@ -704,10 +701,11 @@ public class Service {
 	}
 
 	@GET
-	@Path("compute")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response computeDS(@QueryParam("id") String idString,
+	@Path("computeNotBlocking")
+	    @Produces({MediaType.APPLICATION_JSON,MediaType.TEXT_HTML})
+	public Response compute(@QueryParam("id") String idString,
                 @QueryParam("iterations") String iterations) {
+	        logRequestProcessing("compute");
 		Response rs;
 		int its = Math.max(1,
 		        null == iterations ? 1 : Integer.parseInt(iterations));

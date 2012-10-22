@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CategoryPair;
@@ -36,6 +38,8 @@ import com.google.gson.reflect.TypeToken;
  *
  */
 public class JSONUtils {
+	private static final Logger logger = Logger.getLogger("troia.performance");
+	
 	public static final Gson gson;
 
 	public static final Type assignedLabelSetType = new TypeToken<Collection<AssignedLabel>>() {
@@ -116,6 +120,13 @@ public class JSONUtils {
 	}
 
 	public static String toJson(Object src) {
-		return gson.toJson(src);
+		long curr = System.currentTimeMillis();
+		long heapSize = Runtime.getRuntime().totalMemory();
+		String ret = gson.toJson(src);
+		curr = System.currentTimeMillis() - curr;
+		heapSize = Runtime.getRuntime().totalMemory() - heapSize;
+		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (curr / 1000.) + 
+				"s len: " + ret.length() + " size: " + heapSize);
+		return ret;
 	}
 }

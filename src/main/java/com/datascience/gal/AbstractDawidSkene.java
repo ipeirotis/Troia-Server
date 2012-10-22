@@ -41,15 +41,23 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * Set to true if this project was computed.
 	 * Any modification to DS project will set it to false
 	 */
-	protected boolean computed;
+	private boolean computed;
 
 
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
 		this.qualities = new HashMap<String,Map<String,Double>>();
+		this.computed = false;
 	}
 
+	protected void invalidateComputed(){
+		this.computed = false;
+	}
+	
+	protected void markComputed(){
+		this.computed = true;
+	}
 	/**
 	 * We initialize the misclassification costs using the 0/1 loss
 	 *
@@ -68,7 +76,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 				categories.put(from, c);
 			}
 		}
-		this.computed=false;
+		invalidateComputed();
 	}
 
 	protected void initializePriors() {
@@ -78,7 +86,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			c.setPrior(1.0 / categories.keySet().size());
 			categories.put(cat, c);
 		}
-		this.computed=false;
+		invalidateComputed();
 	}
 
 	@Override
@@ -88,7 +96,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	@Override
 	public String toString() {
-		return JSONUtils.gson.toJson(this);
+		return JSONUtils.toJson(this);
 	}
 
 	@Override
@@ -382,7 +390,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			}
 		}
 		setPriors(priors);
-		this.computed=false;
+		invalidateComputed();
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(String objectName) {
@@ -498,7 +506,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		Category c = this.categories.get(from);
 		c.setCost(to, cost);
 		this.categories.put(from, c);
-		this.computed=false;
+		invalidateComputed();
 	}
 
 	@Override
@@ -586,7 +594,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 		w.addAssignedLabel(al);
 		workers.put(workerName, w);
-		this.computed=false;
+		invalidateComputed();
 	}
 
 	/*
@@ -614,7 +622,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			d.setCorrectCategory(correctCategory);
 		}
 		this.objects.put(objectName, d);
-		this.computed=false;
+		invalidateComputed();
 	}
 
 	@Override
