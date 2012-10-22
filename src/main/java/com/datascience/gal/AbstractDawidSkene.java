@@ -888,4 +888,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.computed;
 
 	}
+	
+	public void  setComputed(boolean computed){
+		this.computed = computed;
+	}
 }
