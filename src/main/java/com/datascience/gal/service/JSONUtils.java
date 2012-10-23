@@ -121,10 +121,11 @@ public class JSONUtils {
 
 	public static String toJson(Object src) {
 		long curr = System.currentTimeMillis();
-		long heapSize = Runtime.getRuntime().totalMemory();
+		Runtime runtime = Runtime.getRuntime();
+		long heapSize = runtime.totalMemory() - runtime.freeMemory();
 		String ret = gson.toJson(src);
 		curr = System.currentTimeMillis() - curr;
-		heapSize = Runtime.getRuntime().totalMemory() - heapSize;
+		heapSize = (runtime.totalMemory() - runtime.freeMemory()) - heapSize;
 		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (curr / 1000.) + 
 				"s len: " + ret.length() + " size: " + heapSize);
 		return ret;
