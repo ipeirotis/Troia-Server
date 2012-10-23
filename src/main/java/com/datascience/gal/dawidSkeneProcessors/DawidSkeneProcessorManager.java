@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.AssignedLabel;
@@ -94,7 +95,7 @@ public class DawidSkeneProcessorManager extends Thread {
 		if (this.containsProject(projectId)) {
 			this.processorQueue.remove(projectId);
 			this.cache.removeFromCache(projectId);
-			this.executor.execute(new DawidSkeneRemover(projectId, this.cache));
+			executeProcessor(new DawidSkeneRemover(projectId, this.cache));
 		}
 	}
 
@@ -234,12 +235,21 @@ public class DawidSkeneProcessorManager extends Thread {
 						queue.poll();
 					}
 					if (queue.peek() != null) {
-						this.executor.execute(queue.peek());
+						executeProcessor(queue.peek());
 						queue.peek().setState(DawidSkeneProcessorState.RUNNING);
 					}
 				}
 			}
 		}
+	}
+	
+	private void executeProcessor(DawidSkeneProcessor dsp){
+		StopWatch timer = new StopWatch();
+		timer.start();
+		executor.execute(dsp);
+		timer.stop();
+		logger_perf.info("Executed processor: " + dsp.getClass().getSimpleName() +
+				" in " + timer.getTime() / 1000.);
 	}
 
 	/**
@@ -332,6 +342,7 @@ public class DawidSkeneProcessorManager extends Thread {
 
 	private List<Thread> readerThreads;
 
+	private static Logger logger_perf = Logger.getLogger("troia.performance");
 	private static Logger logger = Logger
 			.getLogger(DawidSkeneProcessorManager.class);
 }
