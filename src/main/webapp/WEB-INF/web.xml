@@ -23,6 +23,9 @@
 	</init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  <listener>
+    <listener-class>com.datascience.gal.service.InitializationSupport</listener-class>
+  </listener>
   <servlet-mapping>
     <servlet-name>get another label</servlet-name>
     <url-pattern>/rest/*</url-pattern>

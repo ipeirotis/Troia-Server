@@ -156,6 +156,7 @@ public class Service {
 	public void init(ServletConfig config) throws ServletException {
 		ServletContext scontext = config.getServletContext();
 		Properties props = new Properties();
+		logger.info("Started Service servlet initialization.");
 		try {
 			props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
 			if(manager == null) {
@@ -175,6 +176,8 @@ public class Service {
 			}
 		} catch(Exception e) {
 			logErrorFromException(e);
+		}finally{
+		    logger.info("Started Service servlet initialization.");
 		}
 	}
 
@@ -910,7 +913,7 @@ public class Service {
 	}
 
 
-	private void setup(ServletContext scontext) throws IOException,
+	public static void setup(ServletContext scontext) throws IOException,
 		ClassNotFoundException, SQLException {
 		Properties props = new Properties();
 		props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
