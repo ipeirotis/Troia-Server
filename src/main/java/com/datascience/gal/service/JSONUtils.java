@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.AssignedLabel;
@@ -120,13 +121,15 @@ public class JSONUtils {
 	}
 
 	public static String toJson(Object src) {
-		long curr = System.currentTimeMillis();
+		StopWatch stopwatch = new StopWatch();
 		Runtime runtime = Runtime.getRuntime();
-		long heapSize = runtime.totalMemory() - runtime.freeMemory();
+		
+		double heapSize = runtime.totalMemory() - runtime.freeMemory();
+		stopwatch.start();
 		String ret = gson.toJson(src);
-		curr = System.currentTimeMillis() - curr;
-		heapSize = (runtime.totalMemory() - runtime.freeMemory()) - heapSize;
-		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (curr / 1000.) + 
+		stopwatch.stop();
+		heapSize = ((runtime.totalMemory() - runtime.freeMemory()) - heapSize) / 1024. / 1024.;
+		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (stopwatch.getSplitTime() / 1000.) + 
 				"s len: " + ret.length() + " size: " + heapSize);
 		return ret;
 	}
