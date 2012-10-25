@@ -895,7 +895,7 @@ public class Service {
 										   @QueryParam("method") String method) {
 		String id = getJobId(jid);
 		String message = "calculateEstimatedCost(" + method + ") for job " + id;
-		manager.calculateEvaluationCost(method);
+		manager.calculateEvaluationCost(id,method);
 		return Response.status(500).build();
 	}
 
