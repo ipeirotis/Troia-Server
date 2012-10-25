@@ -31,14 +31,14 @@ import com.datascience.gal.DawidSkene;
 /**
  * a class for persisting DawidSkene Objects persists dawidskene objects to
  * mysql
- * 
- * 
+ *
+ *
  * TODO: cache using memcached TODO: make not shitty TODO: make read a
  * configuration
- * 
+ *
  * @author josh
- * 
- * 
+ *
+ *
  *         create table projects ( id varchar(1000) NOT NULL PRIMARY KEY, data
  *         TEXT NOT NULL); create index idIndex on projects (id);
  */
@@ -62,13 +62,13 @@ public class DawidSkeneCache {
 	private Map<String, CacheObject<DawidSkene>> cache;
 
 	public DawidSkeneCache(String user, String password, String db, String url)
-			throws ClassNotFoundException, SQLException, IOException {
+	throws ClassNotFoundException, SQLException, IOException {
 		this(user, password, db, url, DEFAULT_CACHE_SIZE);
 	}
 
 	public DawidSkeneCache(String user, String password, String db, String url,
-			int cachesize) throws ClassNotFoundException, SQLException,
-			IOException {
+						   int cachesize) throws ClassNotFoundException, SQLException,
+		IOException {
 
 		Class.forName("com.mysql.jdbc.Driver");
 
@@ -84,20 +84,20 @@ public class DawidSkeneCache {
 
 	/**
 	 * Connects to DB
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	private void connectDB() throws SQLException {
 		logger.info("attempting to connect to " + this.databaseUrl);
 		connection = DriverManager.getConnection(this.databaseUrl,
-				this.connectionProporties);
+					 this.connectionProporties);
 		logger.info("connected to " + this.databaseUrl);
 	}
 
 	/**
 	 * Makes sure that connection to DB is valid. We need to ensure that we wont
 	 * mess connection when multiple threads try to reconnect
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	private synchronized void ensureDBConnection() throws SQLException {
@@ -114,7 +114,7 @@ public class DawidSkeneCache {
 			synchronized (databaseUrl) {
 				this.ensureDBConnection();
 				PreparedStatement dsStatement = connection
-						.prepareStatement(GET_DS);
+												.prepareStatement(GET_DS);
 				dsStatement.setString(1, id);
 				dsResults = dsStatement.executeQuery();
 			}
@@ -122,7 +122,7 @@ public class DawidSkeneCache {
 				try {
 					String dsJson = dsResults.getString("data");
 					ds = JSONUtils.gson.fromJson(dsJson,
-							JSONUtils.dawidSkeneType);
+												 JSONUtils.dawidSkeneType);
 					synchronized (this.cache) {
 						logger.info("Retrieving ds object with id " + id + " from database.");
 						this.cache.put(id, new CacheObject<DawidSkene>(ds));
@@ -135,7 +135,7 @@ public class DawidSkeneCache {
 
 			} else {
 				logger.info("no ds object with id " + id
-						+ " found. returning null");
+							+ " found. returning null");
 				return null;
 			}
 
@@ -167,29 +167,29 @@ public class DawidSkeneCache {
 		this.cache.get(id).relasePaloyadLock(source);
 	}
 
-    public DawidSkene createDawidSkene(String id, Object source,Collection<Category> categories,boolean incremental) {
-	DawidSkene ds;		
-	if (incremental) {
-	    ds = new IncrementalDawidSkene(id,categories);
-	} else {
-	    ds = new BatchDawidSkene(id,categories);
+	public DawidSkene createDawidSkene(String id, Object source,Collection<Category> categories,boolean incremental) {
+		DawidSkene ds;
+		if (incremental) {
+			ds = new IncrementalDawidSkene(id,categories);
+		} else {
+			ds = new BatchDawidSkene(id,categories);
+		}
+
+		CacheObject<DawidSkene> cacheObject = new CacheObject<DawidSkene>(ds);
+		cacheObject.getPayloadForEditing(source);
+		if (cacheObject.isWriteLockedBy(source)) {
+			cacheObject.setPayload(ds, this);
+			cacheObject.relasePaloyadLock(source);
+			this.cache.put(ds.getId(), cacheObject);
+			logger.info("Added new object, with "+ds.getId()+" id, to cache.");
+		} else {
+			logger.error("Attempting to write cache object locked by another source");
+		}
+		return ds;
 	}
 
-	CacheObject<DawidSkene> cacheObject = new CacheObject<DawidSkene>(ds);
-	cacheObject.getPayloadForEditing(source);
-	    if (cacheObject.isWriteLockedBy(source)) {
-		cacheObject.setPayload(ds, this);
-		cacheObject.relasePaloyadLock(source);
-		this.cache.put(ds.getId(), cacheObject);
-		logger.info("Added new object, with "+ds.getId()+" id, to cache.");
-	    } else {
-		logger.error("Attempting to write cache object locked by another source");
-	    }
-	return ds;
-    }
-
 	public DawidSkene insertDawidSkene(final DawidSkene ds, Object source) {
-		if(!this.cache.containsKey(ds.getId())){
+		if(!this.cache.containsKey(ds.getId())) {
 			this.getDawidSkeneFromDb(ds.getId());
 		}
 		CacheObject<DawidSkene> cacheObject = this.cache.get(ds.getId());
@@ -199,7 +199,7 @@ public class DawidSkeneCache {
 					synchronized (databaseUrl) {
 						ensureDBConnection();
 						PreparedStatement dsStatement = connection
-								.prepareStatement(INSERT_DS);
+														.prepareStatement(INSERT_DS);
 						dsStatement.setString(1, ds.getId());
 						String dsString = ds.toString();
 						dsStatement.setString(2, dsString);
@@ -218,7 +218,7 @@ public class DawidSkeneCache {
 				logger.error(e.getMessage());
 
 			}
-		}else{
+		} else {
 			logger.error("Unable to get cache object with id "+ds.getId());
 		}
 		return ds;
@@ -235,7 +235,7 @@ public class DawidSkeneCache {
 			synchronized (databaseUrl) {
 				ensureDBConnection();
 				PreparedStatement dsStatement = connection
-						.prepareStatement(CHECK_DS);
+												.prepareStatement(CHECK_DS);
 				dsStatement.setString(1, id);
 
 				dsResults = dsStatement.executeQuery();
@@ -251,13 +251,13 @@ public class DawidSkeneCache {
 		return false;
 	}
 
-	public void removeFromCache(String id){
+	public void removeFromCache(String id) {
 		synchronized (this.cache) {
 			if (this.cache.containsKey(id))
 				this.cache.remove(id);
 		}
 	}
-	
+
 	public void deleteFromCacheAndDatabase(String id) {
 
 		try {
@@ -268,7 +268,7 @@ public class DawidSkeneCache {
 			synchronized (databaseUrl) {
 				ensureDBConnection();
 				PreparedStatement dsStatement = connection
-						.prepareStatement(DELETE_DS);
+												.prepareStatement(DELETE_DS);
 				dsStatement.setString(1, id);
 
 				dsStatement.executeUpdate();
@@ -282,7 +282,7 @@ public class DawidSkeneCache {
 
 	/**
 	 * This method is never called - this is bad ...
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	public void close() throws SQLException {

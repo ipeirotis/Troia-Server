@@ -5,9 +5,9 @@ import java.util.Map;
 
 /**
  * T must be hashable
- * 
+ *
  * @author Konrad Kurdej
- * 
+ *
  * @param <T>
  */
 public class CostMatrix<T> {
@@ -26,13 +26,13 @@ public class CostMatrix<T> {
 		}
 		entryMap.put(predictedValue, cost);
 	}
-	
-	public Double getCost(T trueValue, T predictedValue){
+
+	public Double getCost(T trueValue, T predictedValue) {
 		// I won't check if this "request" is correct - it should fail if not
 		return costMatrix.get(trueValue).get(predictedValue);
 	}
-	
-	public Map<T, Double> getDefinedCostsForValue(T trueValue){
+
+	public Map<T, Double> getDefinedCostsForValue(T trueValue) {
 		return new HashMap<T, Double>(costMatrix.get(trueValue));
 	}
 

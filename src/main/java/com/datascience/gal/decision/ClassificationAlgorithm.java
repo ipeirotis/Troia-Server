@@ -13,26 +13,26 @@ public class ClassificationAlgorithm {
 
 	private LabelProbabilityDistributionCalculator labelProbDistrCalc;
 	private ObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm;
-	
+
 	public ClassificationAlgorithm(LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm slda){
+								   ObjectLabelDecisionAlgorithm slda) {
 		labelProbDistrCalc = lpdc;
 		objectLabelDecisionAlgorithm = slda;
 	}
-	
-	public String predictLabel(Datum datum, AbstractDawidSkene ads){
+
+	public String predictLabel(Datum datum, AbstractDawidSkene ads) {
 		Map<String, Double> labelProbabilities = getLabelProbabilities(datum, ads);
 		CostMatrix<String> costMatrix = Utils.getCategoriesCostMatrix(ads);
-		return objectLabelDecisionAlgorithm.predictLabel(labelProbabilities, costMatrix);		
+		return objectLabelDecisionAlgorithm.predictLabel(labelProbabilities, costMatrix);
 	}
-	
-	public Double predictedLabelCost(Datum datum, AbstractDawidSkene ads){
+
+	public Double predictedLabelCost(Datum datum, AbstractDawidSkene ads) {
 		Map<String, Double> labelProbabilities = getLabelProbabilities(datum, ads);
 		CostMatrix<String> costMatrix = Utils.getCategoriesCostMatrix(ads);
 		return objectLabelDecisionAlgorithm.predictedLabelCost(labelProbabilities, costMatrix);
 	}
-	
-	private Map<String, Double> getLabelProbabilities(Datum datum, AbstractDawidSkene ads){
+
+	private Map<String, Double> getLabelProbabilities(Datum datum, AbstractDawidSkene ads) {
 		return labelProbDistrCalc.calculateDistribution(datum, ads);
 	}
 }

@@ -23,138 +23,138 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class CacheObject<PayloadType> {
-    
 
 
 
-    /**
-     * Object that is held in cache
-     */
-    private PayloadType payload;
-    
-    /**
-     * Writer that is currently modifing payload
-     */
-    private Object writerLockOwner;
-    
-    
-    boolean isWriteLockedBy(Object source){
-	return source==this.writerLockOwner;
-    }
 
-    boolean isReadLockedBy(Object source){
-	return this.readerLockOwners.contains(source);
-    }
+	/**
+	 * Object that is held in cache
+	 */
+	private PayloadType payload;
+
+	/**
+	 * Writer that is currently modifing payload
+	 */
+	private Object writerLockOwner;
 
 
-    private static final int READER_WRITER_SLEEP_PERIOD = 10;
-
-    /**
-     * Readers that are reading payload
-     */
-    private List<Object> readerLockOwners;
-
-    /**
-     * Readers that are waiting for access to payload
-     */
-    private Queue<Object> readersQueue;
-
-    /**
-     * Writers that are waiting for access to payload
-     */
-    private Queue<Object> writersQueue;
-
-
-    public CacheObject(PayloadType payload){
-	this.payload = payload;
-	this.writerLockOwner = null;
-	this.readerLockOwners = new ArrayList<Object>();
-	this.readersQueue = new LinkedBlockingQueue<Object>();
-	this.writersQueue = new LinkedBlockingQueue<Object>();
-    }
-
-    /**
-     * @return Object that is held in cache
-     */
-    public PayloadType getPayloadForReadOnly(Object reader) {
-	boolean wait = false;
-	synchronized(this.payload){
-	    if(this.writerLockOwner==null&&this.writersQueue.size()==0){
-		this.readerLockOwners.add(reader);
-	    }else{
-		this.readersQueue.add(reader);
-		wait = true;
-	    }
+	boolean isWriteLockedBy(Object source) {
+		return source==this.writerLockOwner;
 	}
-	while(wait){
-	    if(this.readerLockOwners.contains(reader)){
-		wait = false;
-	    }else{
-		try{
-			Thread.sleep(READER_WRITER_SLEEP_PERIOD);
-		}catch(InterruptedException e){
-		    //FIXME THIS MUST DO SOMETHING
+
+	boolean isReadLockedBy(Object source) {
+		return this.readerLockOwners.contains(source);
+	}
+
+
+	private static final int READER_WRITER_SLEEP_PERIOD = 10;
+
+	/**
+	 * Readers that are reading payload
+	 */
+	private List<Object> readerLockOwners;
+
+	/**
+	 * Readers that are waiting for access to payload
+	 */
+	private Queue<Object> readersQueue;
+
+	/**
+	 * Writers that are waiting for access to payload
+	 */
+	private Queue<Object> writersQueue;
+
+
+	public CacheObject(PayloadType payload) {
+		this.payload = payload;
+		this.writerLockOwner = null;
+		this.readerLockOwners = new ArrayList<Object>();
+		this.readersQueue = new LinkedBlockingQueue<Object>();
+		this.writersQueue = new LinkedBlockingQueue<Object>();
+	}
+
+	/**
+	 * @return Object that is held in cache
+	 */
+	public PayloadType getPayloadForReadOnly(Object reader) {
+		boolean wait = false;
+		synchronized(this.payload) {
+			if(this.writerLockOwner==null&&this.writersQueue.size()==0) {
+				this.readerLockOwners.add(reader);
+			} else {
+				this.readersQueue.add(reader);
+				wait = true;
+			}
 		}
-	    }
-	}
-	logger.debug("Returning payload for read-write mode.");
-	return payload;
-    }
-    
-    /**
-     * @return Object that is held in cache
-     */
-    public PayloadType getPayloadForEditing(Object writer) {
-	boolean wait = false;
-	synchronized(this.payload){
-	    if(this.writerLockOwner==null&&this.readerLockOwners.size()==0){
-	    	this.writerLockOwner=writer;
-	    }else{
-		if(this.writersQueue.size()==0){
-		    this.writerLockOwner=writer;
-		}else{
-		    this.writersQueue.add(writer);
+		while(wait) {
+			if(this.readerLockOwners.contains(reader)) {
+				wait = false;
+			} else {
+				try {
+					Thread.sleep(READER_WRITER_SLEEP_PERIOD);
+				} catch(InterruptedException e) {
+					//FIXME THIS MUST DO SOMETHING
+				}
+			}
 		}
-	    }
+		logger.debug("Returning payload for read-write mode.");
+		return payload;
 	}
-	while(wait){
-	    if(this.writerLockOwner==writer){
-		wait=true;
-	    }else{
-		try{
-			Thread.sleep(READER_WRITER_SLEEP_PERIOD);
-		}catch(InterruptedException e){
-		    //FIXME THIS MUST DO SOMETHING
-		}
-	    }
-	}
-	logger.debug("Returning payload for read-write mode.");
-	return payload;
-    }
 
-    public void setPayload(PayloadType payload,Object source){
-	if(source==this.writerLockOwner){
-	    this.payload=payload;
-	}
-    }
-
-    public void relasePaloyadLock(Object owner){
-	if(owner==this.writerLockOwner){
-	    this.writerLockOwner = this.writersQueue.poll();
-	    if(this.writerLockOwner==null){
-		while(this.readersQueue.size()>0){
-		    this.readerLockOwners.add(this.readersQueue.poll());
+	/**
+	 * @return Object that is held in cache
+	 */
+	public PayloadType getPayloadForEditing(Object writer) {
+		boolean wait = false;
+		synchronized(this.payload) {
+			if(this.writerLockOwner==null&&this.readerLockOwners.size()==0) {
+				this.writerLockOwner=writer;
+			} else {
+				if(this.writersQueue.size()==0) {
+					this.writerLockOwner=writer;
+				} else {
+					this.writersQueue.add(writer);
+				}
+			}
 		}
-	    }
-	    logger.debug("Relasing read-write lock.");
-	}else if(this.readerLockOwners.contains(owner)){
-	    this.readerLockOwners.remove(owner);
-	    if(this.readerLockOwners.size()==0){
-		this.writerLockOwner = this.writersQueue.poll();
-	    }
-	    logger.debug("Relasing read-only lock.");
+		while(wait) {
+			if(this.writerLockOwner==writer) {
+				wait=true;
+			} else {
+				try {
+					Thread.sleep(READER_WRITER_SLEEP_PERIOD);
+				} catch(InterruptedException e) {
+					//FIXME THIS MUST DO SOMETHING
+				}
+			}
+		}
+		logger.debug("Returning payload for read-write mode.");
+		return payload;
 	}
-    }
+
+	public void setPayload(PayloadType payload,Object source) {
+		if(source==this.writerLockOwner) {
+			this.payload=payload;
+		}
+	}
+
+	public void relasePaloyadLock(Object owner) {
+		if(owner==this.writerLockOwner) {
+			this.writerLockOwner = this.writersQueue.poll();
+			if(this.writerLockOwner==null) {
+				while(this.readersQueue.size()>0) {
+					this.readerLockOwners.add(this.readersQueue.poll());
+				}
+			}
+			logger.debug("Relasing read-write lock.");
+		} else if(this.readerLockOwners.contains(owner)) {
+			this.readerLockOwners.remove(owner);
+			if(this.readerLockOwners.size()==0) {
+				this.writerLockOwner = this.writersQueue.poll();
+			}
+			logger.debug("Relasing read-only lock.");
+		}
+	}
 
 	private static Logger logger = Logger.getLogger(CacheObject.class);
 

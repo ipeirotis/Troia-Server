@@ -33,7 +33,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	protected boolean fixedPriors;
 
 	protected final String id;
-	
+
 
 	protected Map<String,Map<String,Double>> qualities;
 
@@ -51,11 +51,11 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		this.computed = false;
 	}
 
-	protected void invalidateComputed(){
+	protected void invalidateComputed() {
 		this.computed = false;
 	}
-	
-	protected void markComputed(){
+
+	protected void markComputed() {
 		this.computed = true;
 	}
 	/**
@@ -282,7 +282,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 
-	
+
 	@Override
 	public Map<String, String> getMajorityVote() {
 
@@ -853,7 +853,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public Category getCategory(String category) {
 		return categories.get(category);
 	}
-	
+
 
 	/**
 	 * @return the quality
@@ -861,35 +861,39 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public Double getQuality(String object,String category) {
 		return qualities.get(object).get(category);
 	}
-	
-	public Map<String,Map<String,Double>> getQualities(){
+
+	public Map<String,Map<String,Double>> getQualities() {
 		return this.qualities;
 	}
 
 	/**
 	 * This function calculates quality of this project and it's workers quality.
 	 */
-	public void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object){
-		if(this.qualities.get(object)==null){
+	public void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object) {
+		if(this.qualities.get(object)==null) {
 			this.qualities.put(object, new HashMap<String,Double>());
 		}
 		this.qualities.get(object).put(category,evaluator.EvaluateClassificationCost(this, category,this.objects.get(object)));
-		
+
 	}
-	
+
 	@Override
-	public void addEvaluationData(Collection<CorrectLabel> cl){
+	public void addEvaluationData(Collection<CorrectLabel> cl) {
 		for (CorrectLabel correctLabel : cl) {
 			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
 		}
 	}
 
-	public  boolean  isComputed(){
+	public  boolean  isComputed() {
 		return this.computed;
 
 	}
-	
-	public void  setComputed(boolean computed){
+
+	public void  setComputed(boolean computed) {
 		this.computed = computed;
+	}
+
+	public Worker getWorker(String name) {
+		return this.workers.get(name);
 	}
 }

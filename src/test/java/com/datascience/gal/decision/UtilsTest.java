@@ -12,20 +12,20 @@ import com.datascience.utils.CostMatrix;
 
 /**
  * The class <code>UtilsTest</code> contains tests for the class {@link <code>Utils</code>}
- * 
+ *
  * @pattern JUnit Test Case
- * 
+ *
  * @generatedBy CodePro at 10/2/12 11:02 AM
- * 
+ *
  * @author Konrad Kurdej
- * 
+ *
  * @version $Revision$
  */
 public class UtilsTest extends TestCase {
 
 	/**
 	 * Construct new test instance
-	 * 
+	 *
 	 * @param name
 	 *            the test name
 	 */
@@ -50,7 +50,7 @@ public class UtilsTest extends TestCase {
 		costMatrix.add("OK", "HOK", 20.);
 
 		Double result = Utils.calculateLabelCost(calcLabel, labelProbabilities,
-				costMatrix);
+						costMatrix);
 		assertEquals(20.5, result);
 	}
 
@@ -65,7 +65,7 @@ public class UtilsTest extends TestCase {
 		}
 		double value = Math.PI;
 		Map<String, Double> result = Utils.generateConstantDistribution(
-				objects, value);
+										 objects, value);
 		for (String s : objects) {
 			assertEquals(Math.PI, result.get(s));
 		}

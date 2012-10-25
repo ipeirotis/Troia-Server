@@ -23,7 +23,7 @@ public interface DawidSkene {
 	public abstract void addCorrectLabels(Collection<CorrectLabel> cls);
 
 	public abstract void addCorrectLabel(CorrectLabel cl);
-	
+
 	public abstract void addEvaluationData(Collection<CorrectLabel> cl);
 
 	/**
@@ -158,10 +158,10 @@ public interface DawidSkene {
 	public abstract String getId();
 
 	public abstract Map<String, Category> getCategories();
-	
+
 	public abstract String toString();
-	
-	public abstract Double getQuality(String object,String category); 
+
+	public abstract Double getQuality(String object,String category);
 	public abstract Map<String,Map<String,Double>> getQualities();
 	public abstract void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object);
 	public abstract Map<String,Datum> getObjects();
@@ -169,7 +169,8 @@ public interface DawidSkene {
 	Map<String, Double> getWorkerPriors(Worker worker);
 
 	double getErrorRateForWorker(Worker worker, String from, String to);
-	
+
 	public abstract boolean  isComputed();
 	public abstract void  setComputed(boolean computed);
+	public Worker getWorker(String name);
 }

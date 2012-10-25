@@ -47,7 +47,7 @@ public class Worker {
 	}
 
 	private double quality;
-	
+
 	/**
 	 * @return the quality
 	 */

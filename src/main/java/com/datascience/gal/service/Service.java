@@ -44,6 +44,7 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.core.DataQualityEstimator;
+import com.datascience.gal.WorkerCostMethod;
 
 import com.datascience.gal.dawidSkeneProcessors.*;
 import com.datascience.gal.quality.EvaluatorManager;
@@ -176,8 +177,8 @@ public class Service {
 			}
 		} catch(Exception e) {
 			logErrorFromException(e);
-		}finally{
-		    logger.info("Started Service servlet initialization.");
+		} finally {
+			logger.info("Started Service servlet initialization.");
 		}
 	}
 
@@ -905,10 +906,36 @@ public class Service {
 									 @QueryParam("object") String object,
 									 @QueryParam("category") String category) {
 		String id = getJobId(jid);
+		Response rs;
 		String message = "getEstimatedCost for job " + id;
 		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
-		ds.getQuality(object, category);
-		return Response.status(500).build();
+		rs = buildResponse(null, null,ds.getQuality(object, category), null, null);
+		manager.finalizeReading(id);
+		return rs;
+
+	}
+
+
+
+	@GET
+	@Path("getWorkerCost")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response calculateEstimatedCost(@QueryParam("id") String jid,@QueryParam("method") String method,
+										   @QueryParam("worker") String worker) {
+		String id = getJobId(jid);
+		Response rs;
+		WorkerCostMethod methodEnum;
+		if("CostAdjusted".equals(method)) {
+			methodEnum = WorkerCostMethod.COST_ADJUSTED;
+		} else if("CostAdjustedMinimized".equals(method)) {
+			methodEnum = WorkerCostMethod.COST_ADJUSTED_MINIMIZED;
+		} else {
+			methodEnum = WorkerCostMethod.COST_ADJUSTED_MINIMIZED;
+		}
+		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
+		rs = buildResponse(null, null,ds.getWorkerCost(ds.getWorker(worker),methodEnum), null, null);
+		manager.finalizeReading(id);
+		return rs;
 
 	}
 

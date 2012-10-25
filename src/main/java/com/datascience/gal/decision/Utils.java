@@ -14,11 +14,11 @@ import com.datascience.utils.CostMatrix;
 public class Utils {
 
 	static public Double calculateLabelCost(String calcLabel,
-			Map<String, Double> labelProbabilities,
-			CostMatrix<String> costMatrix) {
+											Map<String, Double> labelProbabilities,
+											CostMatrix<String> costMatrix) {
 		double sum = 0.;
 		for (Map.Entry<String, Double> me : costMatrix.getDefinedCostsForValue(
-				calcLabel).entrySet()) {
+					calcLabel).entrySet()) {
 			String label = me.getKey();
 			double cost = me.getValue();
 			double prob = labelProbabilities.get(label);
@@ -28,7 +28,7 @@ public class Utils {
 	}
 
 	static public <T> Map<T, Double> generateConstantDistribution(
-			Collection<T> objects, double value) {
+		Collection<T> objects, double value) {
 		Map<T, Double> cd = new HashMap<T, Double>();
 		for (T object : objects) {
 			cd.put(object, value);
@@ -37,25 +37,25 @@ public class Utils {
 	}
 
 	static public <T> Map<T, Double> generateUniformDistribution(
-			Collection<T> objects) {
+		Collection<T> objects) {
 		Map<T, Double> inital = new HashMap<T, Double>();
 		return generateUniformDistribution(objects, inital);
 	}
 
 	static public <T> Map<T, Double> generateUniformDistribution(
-			Collection<T> objects, Map<T, Double> initialDistribution) {
+		Collection<T> objects, Map<T, Double> initialDistribution) {
 		double revn = 1. / objects.size();
 		for (T object : objects) {
 			initialDistribution.put(object, revn);
 		}
 		return initialDistribution;
 	}
-	
-	static public CostMatrix<String> getCategoriesCostMatrix(AbstractDawidSkene ads){
+
+	static public CostMatrix<String> getCategoriesCostMatrix(AbstractDawidSkene ads) {
 		CostMatrix<String> cm = new CostMatrix<String>();
-		for (Category c: ads.getCategories().values()){
+		for (Category c: ads.getCategories().values()) {
 			String name = c.getName();
-			for (Map.Entry<String, Double> entry: c.getMisclassificationCosts().entrySet()){
+			for (Map.Entry<String, Double> entry: c.getMisclassificationCosts().entrySet()) {
 				cm.add(name, entry.getKey(), entry.getValue());
 			}
 		}

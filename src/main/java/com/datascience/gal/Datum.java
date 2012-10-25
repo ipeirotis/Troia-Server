@@ -59,7 +59,7 @@ public class Datum {
 	public void setGold(boolean isGold) {
 		this.isGold = isGold;
 	}
-	
+
 	/**
 	 * @return the goldCategory
 	 */

@@ -15,8 +15,8 @@ import com.datascience.gal.DawidSkene;
  */
 public class LabelProbabilityDistributionCalulators {
 	// This classes should be in proper classes like MajorityVote, Dawid Skene etc.
-	
-	public static class DS implements LabelProbabilityDistributionCalculator{
+
+	public static class DS implements LabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
@@ -24,8 +24,8 @@ public class LabelProbabilityDistributionCalulators {
 			return datum.getCategoryProbability();
 		}
 	}
-	
-	public static class MV implements LabelProbabilityDistributionCalculator{
+
+	public static class MV implements LabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
@@ -35,9 +35,9 @@ public class LabelProbabilityDistributionCalulators {
 			for (Category c: ads.getCategories().values()) {
 				pd.put(c.getName(), 0.0);
 			}
-			
+
 			Collection<AssignedLabel> assignedLabels = datum.getAssignedLabels();
-			double revn = 1. / assignedLabels.size();	  
+			double revn = 1. / assignedLabels.size();
 			for (AssignedLabel al : assignedLabels) {
 				String c = al.getCategoryName();
 				Double current = pd.get(c);

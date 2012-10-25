@@ -32,13 +32,13 @@ public class QualityComputer extends DawidSkeneProcessor {
 				ds.computeProjectQuality(this.evaluator,categoryName,objectName);
 			}
 		}
-		
+
 		this.getCache().insertDawidSkene(ds,this);
 		this.setState(DawidSkeneProcessorState.FINISHED);
 		logger.info("Quality computer for "+this.getDawidSkeneId()+" finished.");
 	}
 
 	private ClassificationCostEvaluator evaluator;
-	
+
 	private static Logger logger = Logger.getLogger(QualityComputer.class);
 }

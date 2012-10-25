@@ -11,7 +11,7 @@ import com.datascience.gal.decision.LabelProbabilityDistributionCalulators;
 public abstract class MaxLikelihoodCostEvaluator extends ClassificationCostEvaluator {
 
 	protected MaxLikelihoodCostEvaluator(
-			LabelProbabilityDistributionCalculator calculator) {
+		LabelProbabilityDistributionCalculator calculator) {
 		super(calculator);
 	}
 
@@ -23,10 +23,10 @@ public abstract class MaxLikelihoodCostEvaluator extends ClassificationCostEvalu
 		for (String c : categoryProbability.keySet()) {
 			result.put(c, 0.0);
 		}
-		
+
 		if (datum.isGold()) {
 			result.put(datum.getCorrectCategory(), 1.0);
-		}else{
+		} else {
 			String label = null;
 			double maxProbability = -1;
 
@@ -50,7 +50,7 @@ public abstract class MaxLikelihoodCostEvaluator extends ClassificationCostEvalu
 
 			result.put(label, 1.0);
 		}
-		
+
 		return result;
 	}
 

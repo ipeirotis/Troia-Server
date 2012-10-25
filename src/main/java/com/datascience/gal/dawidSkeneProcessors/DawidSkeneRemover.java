@@ -33,7 +33,7 @@ public class DawidSkeneRemover extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-	    logger.info("Executing David-Skene remover for "+this.getDawidSkeneId()+" .");
+		logger.info("Executing David-Skene remover for "+this.getDawidSkeneId()+" .");
 		this.getCache().deleteFromCacheAndDatabase(this.getDawidSkeneId());
 		this.setState(DawidSkeneProcessorState.FINISHED);
 	}
