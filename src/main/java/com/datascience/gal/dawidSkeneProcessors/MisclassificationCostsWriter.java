@@ -19,8 +19,8 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.DawidSkene;
+import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.service.DawidSkeneCache;
 
 public class MisclassificationCostsWriter extends DawidSkeneProcessor {

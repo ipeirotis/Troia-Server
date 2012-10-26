@@ -18,7 +18,6 @@ package com.datascience.gal.dawidSkeneProcessors;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.DawidSkene;
-import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
 

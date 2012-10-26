@@ -1,12 +1,12 @@
 package com.datascience.gal.service;
 
-import java.util.Properties;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 

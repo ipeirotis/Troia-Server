@@ -3,14 +3,14 @@
  */
 package com.datascience.gal.superclass.category.pair;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import com.datascience.gal.CategoryPair;
 import com.google.gson.JsonElement;

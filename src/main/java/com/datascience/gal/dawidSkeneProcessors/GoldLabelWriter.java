@@ -19,9 +19,8 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.Category;
-import com.datascience.gal.DawidSkene;
 import com.datascience.gal.CorrectLabel;
+import com.datascience.gal.DawidSkene;
 import com.datascience.gal.service.DawidSkeneCache;
 
 

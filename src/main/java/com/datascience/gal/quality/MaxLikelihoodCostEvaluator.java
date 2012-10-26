@@ -6,7 +6,6 @@ import java.util.Map;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalulators;
 
 public abstract class MaxLikelihoodCostEvaluator extends ClassificationCostEvaluator {
 

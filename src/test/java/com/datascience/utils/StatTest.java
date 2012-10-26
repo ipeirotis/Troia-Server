@@ -5,7 +5,6 @@ package com.datascience.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -13,8 +12,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import com.datascience.utils.auxl.ModelDoubleDouble;
 import com.datascience.utils.auxl.ModelDoubleIntIntDouble;

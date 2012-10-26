@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
+import org.junit.Ignore;
+
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
-
-import junit.framework.TestCase;
-import org.junit.Ignore;
 
 /**
  * The class <code>QualityEvaluationTest</code> contains tests for the class

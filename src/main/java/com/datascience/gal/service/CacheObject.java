@@ -15,12 +15,12 @@
 
 package com.datascience.gal.service;
 
-import org.apache.log4j.Logger;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.apache.log4j.Logger;
 
 public class CacheObject<PayloadType> {
 

@@ -3,8 +3,8 @@
  */
 package com.datascience.gal;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -20,8 +20,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import com.datascience.gal.IncrementalDawidSkene.IncrementalDawidSkeneDeserializer;
 import com.datascience.gal.service.JSONUtils;

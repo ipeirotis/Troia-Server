@@ -9,16 +9,11 @@
  ******************************************************************************/
 package com.datascience.gal.service;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -38,16 +33,12 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
-import com.datascience.gal.core.DataQualityEstimator;
 import com.datascience.gal.WorkerCostMethod;
-
-import com.datascience.gal.dawidSkeneProcessors.*;
-import com.datascience.gal.quality.EvaluatorManager;
+import com.datascience.gal.dawidSkeneProcessors.DawidSkeneProcessorManager;
 
 /**
  * a simple web service wrapper for the get another label project

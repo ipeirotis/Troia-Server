@@ -4,13 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.BatchDawidSkene;
-import com.datascience.gal.Category;
-import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
-import com.datascience.gal.MisclassificationCost;
-import com.datascience.gal.Worker;
 import com.datascience.gal.service.ComputerHelper;
 
 /**

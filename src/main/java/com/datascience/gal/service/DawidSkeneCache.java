@@ -15,18 +15,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.Category;
-import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.gal.BatchDawidSkene;
+import com.datascience.gal.Category;
 import com.datascience.gal.DawidSkene;
+import com.datascience.gal.IncrementalDawidSkene;
 
 /**
  * a class for persisting DawidSkene Objects persists dawidskene objects to
