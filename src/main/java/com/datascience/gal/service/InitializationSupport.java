@@ -27,7 +27,6 @@ public class InitializationSupport implements ServletContextListener {
 		}
 	}
 
-
 	public void contextDestroyed(ServletContextEvent event) {
 		//We can put some cleanup here if it will be required
 	}
@@ -49,7 +48,7 @@ public class InitializationSupport implements ServletContextListener {
 		} else {
 			manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url);
 		}
-		Service.setManager(manager);
+        scontext.setAttribute("manager", manager);
 		manager.start();
 		logger.info("Manager and cache initialized.");
 	}

@@ -56,10 +56,8 @@ public class Service {
 	private static String DEFAULT_JOB_ID = "0";
 	private static Logger logger = Logger.getLogger(Service.class);
 
-	private static DawidSkeneProcessorManager manager = null;
-
-	public static void setManager(DawidSkeneProcessorManager newManager) {
-		manager = newManager;
+	private DawidSkeneProcessorManager getManager() {
+        return (DawidSkeneProcessorManager) context.getAttribute("manager");
 	}
 
 	private static String getIdFromInput(String input, String def) {
@@ -99,7 +97,10 @@ public class Service {
 
 	private static void logErrorFromException(Exception e) {
 		logger.error("Error processing the request: " +
-					 e.getClass().getName() + ": " + e.getLocalizedMessage());
+		    e.getClass().getName() + ": " + e.getLocalizedMessage());
+		for (StackTraceElement ste : e.getStackTrace()) {
+			logger.error(ste);
+		}
 	}
 
 	private static void logRequestProcessing(String endpointName) {
@@ -149,9 +150,9 @@ public class Service {
 		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 	}
 
-	public void init(ServletConfig config) throws ServletException {
-		//Initialization is handled by InitializationSupport class
-	}
+    public Service() {
+        logger.debug("A new Service instance has been created");
+    }
 
 	/**
 	 * a simple method to see if the service is awake
@@ -231,10 +232,9 @@ public class Service {
 		logRequestProcessing("reset");
 		Response rs;
 		try {
-
 			if (idString != null) {
 				String id = idString;
-				manager.deleteProject(id);
+				getManager().deleteProject(id);
 			}
 			String message = "Reset the ds model";
 			if (null != idString) {
@@ -261,7 +261,7 @@ public class Service {
 		Response rs;
 		try {
 
-			Boolean exists = manager.containsProject(id);
+			Boolean exists = getManager().containsProject(id);
 			String message = "Request model with id: " + id + " " +
 							 (exists ? "exists" : "does not exist");
 			rs = buildResponse(message, null, exists, null, null);
@@ -290,7 +290,7 @@ public class Service {
 
 			Collection<Category> categories = parseJsonInput(categoriesString,
 											  JSONUtils.categorySetType);
-			manager.createProject(id, categories, incremental != null);
+			getManager().createProject(id, categories, incremental != null);
 			String message = "Built a request model with " + categories.size()
 							 + " categories";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -316,13 +316,12 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-
 			Collection<MisclassificationCost> costs = parseJsonInput(
 						costsString,
 						JSONUtils.misclassificationCostSetType);
 			String message = "Loaded " + costs.size()
 							 + " misclassification costs";
-			manager.addMisclassificationCost(id, costs);
+			getManager().addMisclassificationCost(id, costs);
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
 			logErrorFromException(e);
@@ -348,12 +347,11 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-
 			AssignedLabel label = parseJsonInput(labelString,
 												 JSONUtils.assignedLabelType);
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
 			labels.add(label);
-			manager.addLabels(id, labels);
+			getManager().addLabels(id, labels);
 			String message = "Loaded label: " + label;
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -377,10 +375,9 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-
 			Collection<AssignedLabel> labels = parseJsonInput(labelsString,
 											   JSONUtils.assignedLabelSetType);
-			manager.addLabels(id, labels);
+			getManager().addLabels(id, labels);
 			String message = "Loaded " + labels.size() + " labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -404,12 +401,11 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-
 			CorrectLabel label = parseJsonInput(labelString,
 												JSONUtils.correctLabelType);
 			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
 			labels.add(label);
-			manager.addGoldLabels(id, labels);
+			getManager().addGoldLabels(id, labels);
 			String message = "Loaded gold label: " + label;
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -433,10 +429,9 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
-			manager.addGoldLabels(id, labels);
+			getManager().addGoldLabels(id, labels);
 			String message = "Loaded " + labels.size() + " gold labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -445,7 +440,6 @@ public class Service {
 		}
 		return rs;
 	}
-
 
 	/**
 	 * loads gold labels for the model
@@ -461,10 +455,9 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
-			manager.addEvaluationData(id, labels);
+			getManager().addEvaluationData(id, labels);
 			String message = "Loaded " + labels.size() + " gold labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -473,8 +466,6 @@ public class Service {
 		}
 		return rs;
 	}
-
-
 
 	/**
 	 * computes majority votes for the model
@@ -489,8 +480,8 @@ public class Service {
 		logRequestProcessing("majorityVote");
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String votes = ds.getMajorityVote(objectName);
 			if (votes == null) {
@@ -522,8 +513,8 @@ public class Service {
 		logRequestProcessing("majorityVotes");
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = null;
 			if (null == objectsNamesJson)
@@ -559,8 +550,8 @@ public class Service {
 		logRequestProcessing("majorityVotes");
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = ds.getMajorityVote();
 			String message = "Computing majority votes for " +
@@ -589,8 +580,8 @@ public class Service {
 		logRequestProcessing("objectProb");
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Double> probs = ds.getObjectProbs(objectName);
 			String message = "Computing probs for the object: " + objectName;
@@ -616,8 +607,8 @@ public class Service {
 								@FormParam("objectsNames") String objectsNamesJson) {
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Map<String, Double>> probs = null;
 			if (null == objectsNamesJson)
@@ -652,11 +643,11 @@ public class Service {
 	public Response computeDsBlocking(@QueryParam("id") String idString,
 									  @QueryParam("iterations") String iterations) {
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		int its = Math.max(1,
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			StopWatch sw = new StopWatch();
 			sw.start();
@@ -687,8 +678,7 @@ public class Service {
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
 		try {
-
-			manager.computeDawidSkene(id, its);
+			getManager().computeDawidSkene(id, its);
 			String message = "Registered DScomputer with  " +
 							 its + " iterations";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -707,8 +697,8 @@ public class Service {
 		logRequestProcessing("printWorkerSummary");
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
 			String result = ds.printAllWorkerScores(null != verbose);
@@ -731,8 +721,8 @@ public class Service {
 		logRequestProcessing("printObjectsProbs");
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
 			String message = "Object class probabilities";
@@ -756,8 +746,8 @@ public class Service {
 								@QueryParam("entropy") String ent) {
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
 			logger.info("Processing request for object class probabilities");
@@ -779,8 +769,8 @@ public class Service {
 	public Response printPriors(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
 			String result = ds.printPriors();
@@ -800,8 +790,8 @@ public class Service {
 	public Response isComputed(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
-
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			boolean result = ds.isComputed();
 			rs = buildResponse(null, null, result, null, null);
@@ -820,6 +810,7 @@ public class Service {
 	public Response computePriors(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
 
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
@@ -841,6 +832,7 @@ public class Service {
 	public Response getDawidSkene(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
+        DawidSkeneProcessorManager manager = getManager();
 		try {
 			while(manager.getProcessorCountForProject(id)>0) {
 				Thread.sleep(1);
@@ -864,7 +856,7 @@ public class Service {
 										   @QueryParam("method") String method) {
 		String id = getJobId(jid);
 		String message = "calculateEstimatedCost(" + method + ") for job " + id;
-		manager.calculateEvaluationCost(id,method);
+		getManager().calculateEvaluationCost(id,method);
 		return Response.status(500).build();
 	}
 
@@ -874,6 +866,7 @@ public class Service {
 	public Response getEstimatedCost(@QueryParam("id") String jid,
 									 @QueryParam("object") String object,
 									 @QueryParam("category") String category) {
+        DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
 		Response rs;
 		String message = "getEstimatedCost for job " + id;
@@ -884,13 +877,12 @@ public class Service {
 
 	}
 
-
-
 	@GET
 	@Path("getWorkerCost")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response calculateEstimatedCost(@QueryParam("id") String jid,@QueryParam("method") String method,
 										   @QueryParam("worker") String worker) {
+        DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
 		Response rs;
 		WorkerCostMethod methodEnum;
@@ -905,9 +897,5 @@ public class Service {
 		rs = buildResponse(null, null,ds.getWorkerCost(ds.getWorker(worker),methodEnum), null, null);
 		manager.finalizeReading(id);
 		return rs;
-
 	}
-
-
-
 }
