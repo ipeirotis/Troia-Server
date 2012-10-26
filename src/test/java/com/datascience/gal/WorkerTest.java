@@ -17,6 +17,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import com.datascience.utils.auxl.TestDataManager;
 
@@ -24,6 +25,7 @@ import com.datascience.utils.auxl.TestDataManager;
  * @author Michael Arshynov
  *
  */
+@Ignore
 public class WorkerTest {
 
 	Category category1 = new Category("category1");

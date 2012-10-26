@@ -12,6 +12,7 @@ import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 /**
  * The class <code>QualityEvaluationTest</code> contains tests for the class
@@ -25,6 +26,7 @@ import junit.framework.TestCase;
  *
  * @version $Revision$
  */
+@Ignore
 public class QualityEvaluationTest extends TestCase {
 
 	/**

@@ -10,6 +10,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import com.datascience.gal.CorrectLabel.CorrectLabelDeserializer;
 import com.google.gson.JsonObject;
@@ -18,6 +19,7 @@ import com.google.gson.JsonObject;
  * @author Michael Arshynov
  *
  */
+@Ignore
 public class CorrectLabelDeserializerTest extends CorrectLabelDeserializer {
 
 	/**

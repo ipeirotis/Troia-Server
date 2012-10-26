@@ -14,6 +14,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
@@ -25,6 +26,7 @@ import com.datascience.utils.auxl.TestDataManager;
  * @author Michael Arshynov
  *
  */
+@Ignore
 public class MainTest {
 
 	/**

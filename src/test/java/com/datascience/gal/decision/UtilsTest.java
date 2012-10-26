@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.utils.CostMatrix;
@@ -21,6 +22,7 @@ import com.datascience.utils.CostMatrix;
  *
  * @version $Revision$
  */
+@Ignore
 public class UtilsTest extends TestCase {
 
 	/**

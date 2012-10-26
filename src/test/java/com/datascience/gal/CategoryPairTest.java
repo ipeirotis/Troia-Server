@@ -10,11 +10,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * @author Michael Arshynov
  *
  */
+@Ignore
 public class CategoryPairTest {
 	String froms[] = {"src1", "src1","src3","src1", "", "src3"};
 	String tos[] = {"dest1","dest1","dest3", "dest4", null, "dest3"};
