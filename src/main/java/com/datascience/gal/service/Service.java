@@ -67,6 +67,10 @@ public class Service {
 
 	private static DawidSkeneProcessorManager manager = null;
 
+	public static void setManager(DawidSkeneProcessorManager newManager) {
+		manager = newManager;
+	}
+
 	private static String getIdFromInput(String input, String def) {
 		String id = def;
 		if (null == input)  {
@@ -155,31 +159,7 @@ public class Service {
 	}
 
 	public void init(ServletConfig config) throws ServletException {
-		ServletContext scontext = config.getServletContext();
-		Properties props = new Properties();
-		logger.info("Started Service servlet initialization.");
-		try {
-			props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-			if(manager == null) {
-				String user = props.getProperty("USER");
-				String password = props.getProperty("PASSWORD");
-				String db = props.getProperty("DB");
-				String url = props.getProperty("URL");
-				int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
-				int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
-				if (props.containsKey("cacheSize")) {
-					int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
-					manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url,cachesize);
-				} else {
-					manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url);
-				}
-				manager.start();
-			}
-		} catch(Exception e) {
-			logErrorFromException(e);
-		} finally {
-			logger.info("Started Service servlet initialization.");
-		}
+		//Initialization is handled by InitializationSupport class
 	}
 
 	/**
@@ -194,7 +174,6 @@ public class Service {
 		logRequestProcessing("ping");
 		Response rs;
 		try {
-			setup(context);
 			String message = "Request successfully processed";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -261,7 +240,7 @@ public class Service {
 		logRequestProcessing("reset");
 		Response rs;
 		try {
-			setup(context);
+
 			if (idString != null) {
 				String id = idString;
 				manager.deleteProject(id);
@@ -290,7 +269,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			Boolean exists = manager.containsProject(id);
 			String message = "Request model with id: " + id + " " +
 							 (exists ? "exists" : "does not exist");
@@ -317,7 +296,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			Collection<Category> categories = parseJsonInput(categoriesString,
 											  JSONUtils.categorySetType);
 			manager.createProject(id, categories, incremental != null);
@@ -346,7 +325,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			Collection<MisclassificationCost> costs = parseJsonInput(
 						costsString,
 						JSONUtils.misclassificationCostSetType);
@@ -378,7 +357,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			AssignedLabel label = parseJsonInput(labelString,
 												 JSONUtils.assignedLabelType);
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
@@ -407,7 +386,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			Collection<AssignedLabel> labels = parseJsonInput(labelsString,
 											   JSONUtils.assignedLabelSetType);
 			manager.addLabels(id, labels);
@@ -434,7 +413,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			CorrectLabel label = parseJsonInput(labelString,
 												JSONUtils.correctLabelType);
 			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
@@ -463,7 +442,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
 			manager.addGoldLabels(id, labels);
@@ -491,7 +470,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
 			manager.addEvaluationData(id, labels);
@@ -520,7 +499,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String votes = ds.getMajorityVote(objectName);
 			if (votes == null) {
@@ -553,7 +532,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = null;
 			if (null == objectsNamesJson)
@@ -590,7 +569,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = ds.getMajorityVote();
 			String message = "Computing majority votes for " +
@@ -620,7 +599,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Double> probs = ds.getObjectProbs(objectName);
 			String message = "Computing probs for the object: " + objectName;
@@ -647,7 +626,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Map<String, Double>> probs = null;
 			if (null == objectsNamesJson)
@@ -686,7 +665,7 @@ public class Service {
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			StopWatch sw = new StopWatch();
 			sw.start();
@@ -717,7 +696,7 @@ public class Service {
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
 		try {
-			setup(context);
+
 			manager.computeDawidSkene(id, its);
 			String message = "Registered DScomputer with  " +
 							 its + " iterations";
@@ -738,7 +717,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
 			String result = ds.printAllWorkerScores(null != verbose);
@@ -762,7 +741,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
 			String message = "Object class probabilities";
@@ -787,7 +766,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
 			logger.info("Processing request for object class probabilities");
@@ -810,7 +789,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
 			String result = ds.printPriors();
@@ -831,7 +810,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			boolean result = ds.isComputed();
 			rs = buildResponse(null, null, result, null, null);
@@ -851,7 +830,7 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
+
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
 			Map<String, Double> priors = ds.computePriors();
@@ -872,7 +851,6 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		try {
-			setup(context);
 			while(manager.getProcessorCountForProject(id)>0) {
 				Thread.sleep(1);
 			}
@@ -940,26 +918,5 @@ public class Service {
 	}
 
 
-	public static void setup(ServletContext scontext) throws IOException,
-		ClassNotFoundException, SQLException {
-		Properties props = new Properties();
-		props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-		if(manager == null) {
-			String user = props.getProperty("USER");
-			String password = props.getProperty("PASSWORD");
-			String db = props.getProperty("DB");
-			String url = props.getProperty("URL");
-			int threadPollSize = Integer.parseInt(props.getProperty("THREADPOLL_SIZE"));
-			int sleepPeriod = Integer.parseInt(props.getProperty("PROCESSOR_MANAGER_SLEEP_PERIOD"));
-			if (props.containsKey("cacheSize")) {
-				int cachesize = Integer.parseInt(props.getProperty("cacheSize"));
-				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url,cachesize);
-			} else {
-				manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url);
-			}
-			manager.start();
-		}
-
-	}
 
 }

@@ -129,8 +129,8 @@ public class JSONUtils {
 		String ret = gson.toJson(src);
 		stopwatch.stop();
 		heapSize = ((runtime.totalMemory() - runtime.freeMemory()) - heapSize) / 1024. / 1024.;
-		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (stopwatch.getTime() / 1000.) + 
-				"s len: " + ret.length() + " size: " + heapSize);
+		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (stopwatch.getTime() / 1000.) +
+					"s len: " + ret.length() + " size: " + heapSize);
 		return ret;
 	}
 }
