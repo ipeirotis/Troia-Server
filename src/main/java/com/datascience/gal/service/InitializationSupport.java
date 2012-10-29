@@ -48,7 +48,7 @@ public class InitializationSupport implements ServletContextListener {
 		} else {
 			manager = new DawidSkeneProcessorManager(threadPollSize,sleepPeriod,user,password,db,url);
 		}
-        scontext.setAttribute("manager", manager);
+		scontext.setAttribute("manager", manager);
 		manager.start();
 		logger.info("Manager and cache initialized.");
 	}

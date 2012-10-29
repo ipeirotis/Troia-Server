@@ -57,7 +57,7 @@ public class Service {
 	private static Logger logger = Logger.getLogger(Service.class);
 
 	private DawidSkeneProcessorManager getManager() {
-        return (DawidSkeneProcessorManager) context.getAttribute("manager");
+		return (DawidSkeneProcessorManager) context.getAttribute("manager");
 	}
 
 	private static String getIdFromInput(String input, String def) {
@@ -97,7 +97,7 @@ public class Service {
 
 	private static void logErrorFromException(Exception e) {
 		logger.error("Error processing the request: " +
-		    e.getClass().getName() + ": " + e.getLocalizedMessage());
+					 e.getClass().getName() + ": " + e.getLocalizedMessage());
 		for (StackTraceElement ste : e.getStackTrace()) {
 			logger.error(ste);
 		}
@@ -150,9 +150,9 @@ public class Service {
 		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 	}
 
-    public Service() {
-        logger.debug("A new Service instance has been created");
-    }
+	public Service() {
+		logger.debug("A new Service instance has been created");
+	}
 
 	/**
 	 * a simple method to see if the service is awake
@@ -477,7 +477,7 @@ public class Service {
 		logRequestProcessing("majorityVote");
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String votes = ds.getMajorityVote(objectName);
@@ -510,7 +510,7 @@ public class Service {
 		logRequestProcessing("majorityVotes");
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = null;
@@ -547,7 +547,7 @@ public class Service {
 		logRequestProcessing("majorityVotes");
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = ds.getMajorityVote();
@@ -577,7 +577,7 @@ public class Service {
 		logRequestProcessing("objectProb");
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Double> probs = ds.getObjectProbs(objectName);
@@ -604,7 +604,7 @@ public class Service {
 								@FormParam("objectsNames") String objectsNamesJson) {
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Map<String, Double>> probs = null;
@@ -640,7 +640,7 @@ public class Service {
 	public Response computeDsBlocking(@QueryParam("id") String idString,
 									  @QueryParam("iterations") String iterations) {
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		int its = Math.max(1,
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
@@ -694,7 +694,7 @@ public class Service {
 		logRequestProcessing("printWorkerSummary");
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
@@ -718,7 +718,7 @@ public class Service {
 		logRequestProcessing("printObjectsProbs");
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
@@ -743,7 +743,7 @@ public class Service {
 								@QueryParam("entropy") String ent) {
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
@@ -766,7 +766,7 @@ public class Service {
 	public Response printPriors(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
@@ -787,7 +787,7 @@ public class Service {
 	public Response isComputed(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			boolean result = ds.isComputed();
@@ -807,7 +807,7 @@ public class Service {
 	public Response computePriors(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
@@ -829,7 +829,7 @@ public class Service {
 	public Response getDawidSkene(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
 		Response rs;
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		try {
 			while(manager.getProcessorCountForProject(id)>0) {
 				Thread.sleep(1);
@@ -863,7 +863,7 @@ public class Service {
 	public Response getEstimatedCost(@QueryParam("id") String jid,
 									 @QueryParam("object") String object,
 									 @QueryParam("category") String category) {
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
 		Response rs;
 		String message = "getEstimatedCost for job " + id;
@@ -879,7 +879,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response calculateEstimatedCost(@QueryParam("id") String jid,@QueryParam("method") String method,
 										   @QueryParam("worker") String worker) {
-        DawidSkeneProcessorManager manager = getManager();
+		DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
 		Response rs;
 		WorkerCostMethod methodEnum;
