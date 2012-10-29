@@ -330,9 +330,6 @@ public class Service {
 		return rs;
 	}
 
-
-
-
 	/**
 	 * add a worker-assigned label to the model
 	 *
