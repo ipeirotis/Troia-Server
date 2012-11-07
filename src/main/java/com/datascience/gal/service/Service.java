@@ -672,7 +672,7 @@ public class Service {
 		logRequestProcessing("compute");
 		Response rs;
 		int its = Math.max(1,
-		    null == iterations ? 1 : Integer.parseInt(iterations));
+						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
 		try {
 			getManager().computeDawidSkene(id, its);
@@ -785,6 +785,7 @@ public class Service {
 	@Path("isComputed")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isComputed(@QueryParam("id") String idString) {
+		logRequestProcessing("isComputed");
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();

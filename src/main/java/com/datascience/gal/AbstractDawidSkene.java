@@ -23,26 +23,23 @@ import com.datascience.gal.service.JSONUtils;
 import com.datascience.utils.Utils;
 
 public abstract class AbstractDawidSkene implements DawidSkene {
-	protected static Logger logger = Logger.getLogger(DawidSkene.class);
 
 	protected Map<String, Datum> objects;
 	protected Map<String, Worker> workers;
 	protected Map<String, Category> categories;
-	protected Map<String,CorrectLabel> evaluationData;
+	protected Map<String, CorrectLabel> evaluationData;
 
 	protected boolean fixedPriors;
 
 	protected final String id;
 
-
-	protected Map<String,Map<String,Double>> qualities;
+	protected Map<String, Map<String,Double>> qualities;
 
 	/**
 	 * Set to true if this project was computed.
 	 * Any modification to DS project will set it to false
 	 */
 	private boolean computed;
-
 
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
@@ -89,22 +86,25 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		invalidateComputed();
 	}
 
-    protected Double getLogLikelihood() {
+	protected Double getLogLikelihood() {
 		double result = 0;
 		for (Datum d : objects.values()) {
 			for (AssignedLabel al: d.getAssignedLabels()) {
 				String workerName = al.getWorkerName();
 				String assignedLabel = al.getCategoryName();
-                // TODO ensure: what is getProbabilityVector() ?
 				Map<String, Double> estimatedCorrectLabel =
-                    d.getCategoryProbability();
+					d.getCategoryProbability();
 				for (String from: estimatedCorrectLabel.keySet()) {
 					Worker w = workers.get(workerName);
 					Double categoryProbability = estimatedCorrectLabel.get(from);
-                    Double labelingProbability = getErrorRateForWorker(w, from,
-                            assignedLabel);
-					result += Math.log(categoryProbability) +
-                        Math.log(labelingProbability);
+					Double labelingProbability = getErrorRateForWorker(w, from,
+												 assignedLabel);
+					if (categoryProbability > 0.0) {
+						result += Math.log(categoryProbability);
+					}
+					if (labelingProbability > 0.0) {
+						result += Math.log(labelingProbability);
+					}
 				}
 			}
 		}
@@ -906,12 +906,11 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 	}
 
-	public  boolean  isComputed() {
+	public boolean isComputed() {
 		return this.computed;
-
 	}
 
-	public void  setComputed(boolean computed) {
+	public void setComputed(boolean computed) {
 		this.computed = computed;
 	}
 
@@ -919,26 +918,34 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.workers.get(name);
 	}
 
-    // Log-likelihod stop condition.
+	// Log-likelihod stop condition.
 
-    // One pass of the incremental algorithm.
-    protected abstract void estimateInner();
+	// One pass of the incremental algorithm.
+	protected abstract void estimateInner();
 
-    @Override
-    public void estimate(int maxIterations) {
-        estimate(maxIterations, DEFAULT_EPSILON);
-    }
+	@Override
+	public void estimate(int maxIterations) {
+		estimate(maxIterations, DEFAULT_EPSILON);
+	}
 
-    @Override
-    public void estimate(int maxIterations, double epsilon) {
-        double prevLogLikelihood = Double.POSITIVE_INFINITY;
-        double currLogLikelihood = 0d;
-        for (int i = 0; i < maxIterations && Math.abs(currLogLikelihood -
-                prevLogLikelihood) > epsilon; i++) {
-            prevLogLikelihood = getLogLikelihood();
-            estimateInner();
-            currLogLikelihood = getLogLikelihood();
-        }
-        markComputed();
-    }
+	@Override
+	public void estimate(int maxIterations, double epsilon) {
+		double prevLogLikelihood = Double.POSITIVE_INFINITY;
+		double currLogLikelihood = 0d;
+		int iterations = 0;
+		for (int i = 0; i < maxIterations && Math.abs(currLogLikelihood -
+				prevLogLikelihood) > epsilon; i++, iterations++) {
+			prevLogLikelihood = getLogLikelihood();
+			estimateInner();
+			currLogLikelihood = getLogLikelihood();
+		}
+		double diffLogLikelihood = Math.abs(currLogLikelihood -
+                prevLogLikelihood);
+		logger.info("Estimated: performed " + iterations  + " / " +
+                maxIterations + " with log-likelihood difference " +
+                diffLogLikelihood);
+		markComputed();
+	}
+
+	protected static Logger logger = null; // will be initialized in subclasses
 }
