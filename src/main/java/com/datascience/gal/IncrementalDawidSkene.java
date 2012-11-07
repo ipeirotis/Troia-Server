@@ -305,15 +305,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	}
 
 	@Override
-	public void estimate(int iterations) {
-		for (int i = 0; i < iterations; i++) {
-			for (Datum d : objects.values())
-				updateObjectInformation(d, true);
-		}
-		markComputed();
-	}
-
-	@Override
 	public Map<String, Double> objectClassProbabilities(String objectName,
 			double entropyThreshold) {
 		// TODO Auto-generated method stub
@@ -336,7 +327,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	@Override
 	public double getErrorRateForWorker(Worker worker, String from, String to) {
 		return worker.getErrorRateIncremental(from, to,
-											  ConfusionMatrixNormalizationType.UNIFORM);
+		    ConfusionMatrixNormalizationType.UNIFORM);
 	}
 
 	@Override
@@ -349,6 +340,12 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			return super
 				   .getObjectClassProbabilities(objectName, workerToIgnore);
 	}
+
+    @Override
+    protected void estimateInner() {
+        for (Datum d : objects.values())
+            updateObjectInformation(d, true);
+    }
 
 	public static class IncrementalDawidSkeneDeserializer implements
 		JsonDeserializer<IncrementalDawidSkene> {

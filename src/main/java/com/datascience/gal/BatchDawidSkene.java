@@ -62,21 +62,6 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		initializeCosts();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ipeirotis.gal.DawidSkene#estimate(int)
-	 */
-	public void estimate(int iterations) {
-
-		for (int i = 0; i < iterations; i++) {
-			updateObjectClassProbabilities();
-			updatePriors();
-			rebuildWorkerConfusionMatrices();
-		}
-		markComputed();
-	}
-
 	private Map<String, Double> getCategoryPriors() {
 		Map<String, Double> out = new HashMap<String, Double>(categories.size());
 		for (Category cat : categories.values())
@@ -87,6 +72,11 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	@Override
 	public Map<String, Double> getWorkerPriors(Worker worker) {
 		return worker.getPrior(getCategoryPriors());
+	}
+
+	@Override
+	public double getErrorRateForWorker(Worker worker, String from, String to) {
+		return worker.getErrorRateBatch(from, to);
 	}
 
 	/*
@@ -175,6 +165,13 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 //                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
 
 	}
+
+    @Override
+    protected void estimateInner() {
+        updateObjectClassProbabilities();
+        updatePriors();
+        rebuildWorkerConfusionMatrices();
+    }
 
 	public static class BatchDawidSkeneDeserializer implements
 		JsonDeserializer<BatchDawidSkene> {

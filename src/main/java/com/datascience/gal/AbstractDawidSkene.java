@@ -89,6 +89,28 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		invalidateComputed();
 	}
 
+    protected Double getLogLikelihood() {
+		double result = 0;
+		for (Datum d : objects.values()) {
+			for (AssignedLabel al: d.getAssignedLabels()) {
+				String workerName = al.getWorkerName();
+				String assignedLabel = al.getCategoryName();
+                // TODO ensure: what is getProbabilityVector() ?
+				Map<String, Double> estimatedCorrectLabel =
+                    d.getCategoryProbability();
+				for (String from: estimatedCorrectLabel.keySet()) {
+					Worker w = workers.get(workerName);
+					Double categoryProbability = estimatedCorrectLabel.get(from);
+                    Double labelingProbability = getErrorRateForWorker(w, from,
+                            assignedLabel);
+					result += Math.log(categoryProbability) +
+                        Math.log(labelingProbability);
+				}
+			}
+		}
+		return result;
+	}
+
 	@Override
 	public String getId() {
 		return id;
@@ -896,4 +918,27 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public Worker getWorker(String name) {
 		return this.workers.get(name);
 	}
+
+    // Log-likelihod stop condition.
+
+    // One pass of the incremental algorithm.
+    protected abstract void estimateInner();
+
+    @Override
+    public void estimate(int maxIterations) {
+        estimate(maxIterations, DEFAULT_EPSILON);
+    }
+
+    @Override
+    public void estimate(int maxIterations, double epsilon) {
+        double prevLogLikelihood = Double.POSITIVE_INFINITY;
+        double currLogLikelihood = 0d;
+        for (int i = 0; i < maxIterations && Math.abs(currLogLikelihood -
+                prevLogLikelihood) > epsilon; i++) {
+            prevLogLikelihood = getLogLikelihood();
+            estimateInner();
+            currLogLikelihood = getLogLikelihood();
+        }
+        markComputed();
+    }
 }
