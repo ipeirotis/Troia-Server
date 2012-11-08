@@ -935,15 +935,15 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		int iterations = 0;
 		for (int i = 0; i < maxIterations && Math.abs(currLogLikelihood -
 				prevLogLikelihood) > epsilon; i++, iterations++) {
-			prevLogLikelihood = getLogLikelihood();
+			prevLogLikelihood = currLogLikelihood;
 			estimateInner();
 			currLogLikelihood = getLogLikelihood();
 		}
 		double diffLogLikelihood = Math.abs(currLogLikelihood -
-                prevLogLikelihood);
+											prevLogLikelihood);
 		logger.info("Estimated: performed " + iterations  + " / " +
-                maxIterations + " with log-likelihood difference " +
-                diffLogLikelihood);
+					maxIterations + " with log-likelihood difference " +
+					diffLogLikelihood);
 		markComputed();
 	}
 
