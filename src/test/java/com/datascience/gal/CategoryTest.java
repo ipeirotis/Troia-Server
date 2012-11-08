@@ -11,7 +11,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datascience.utils.auxl.TestDataManager;
@@ -20,7 +19,6 @@ import com.datascience.utils.auxl.TestDataManager;
  * @author Michael Arshynov
  *
  */
-@Ignore
 public class CategoryTest {
 
 	/**

@@ -27,7 +27,6 @@ import com.datascience.gal.IncrementalDawidSkene;
  *
  * @version $Revision$
  */
-@Ignore
 public class QualityEvaluationTest extends TestCase {
 
 	/**

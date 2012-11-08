@@ -20,7 +20,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datascience.gal.IncrementalDawidSkene.IncrementalDawidSkeneDeserializer;
@@ -32,7 +31,6 @@ import com.google.gson.JsonObject;
  * @author Michael Arshynov
  *
  */
-@Ignore
 public class IncrementalDawidSkeneTest {
 	int testCount = 5;
 	List<String> idList = new ArrayList<String>();

@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datascience.gal.CategoryPair;
@@ -19,7 +18,6 @@ import com.google.gson.JsonElement;
  * @author Michael Arshynov
  *
  */
-@Ignore
 public class CategoryPairSerializerDeserializerTest {
 
 	/**
