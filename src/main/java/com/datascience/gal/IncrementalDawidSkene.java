@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.service.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -63,7 +65,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			initializePriors();
 
 		initializeCosts();
-
+		super.logger = this.logger;
 	}
 
 	private IncrementalDawidSkene(String id, Map<String, Datum> objects,
@@ -305,15 +307,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	}
 
 	@Override
-	public void estimate(int iterations) {
-		for (int i = 0; i < iterations; i++) {
-			for (Datum d : objects.values())
-				updateObjectInformation(d, true);
-		}
-		markComputed();
-	}
-
-	@Override
 	public Map<String, Double> objectClassProbabilities(String objectName,
 			double entropyThreshold) {
 		// TODO Auto-generated method stub
@@ -350,6 +343,12 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 				   .getObjectClassProbabilities(objectName, workerToIgnore);
 	}
 
+	@Override
+	protected void estimateInner() {
+		for (Datum d : objects.values())
+			updateObjectInformation(d, true);
+	}
+
 	public static class IncrementalDawidSkeneDeserializer implements
 		JsonDeserializer<IncrementalDawidSkene> {
 
@@ -376,4 +375,5 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 		}
 	}
 
+	private static final Logger logger = Logger.getLogger(IncrementalDawidSkene.class);
 }

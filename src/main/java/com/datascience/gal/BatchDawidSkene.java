@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.gal.service.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -60,21 +62,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		// assuming a 0/1 loss function. The costs can be customized
 		// using the corresponding file
 		initializeCosts();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ipeirotis.gal.DawidSkene#estimate(int)
-	 */
-	public void estimate(int iterations) {
-
-		for (int i = 0; i < iterations; i++) {
-			updateObjectClassProbabilities();
-			updatePriors();
-			rebuildWorkerConfusionMatrices();
-		}
-		markComputed();
+		super.logger = this.logger;
 	}
 
 	private Map<String, Double> getCategoryPriors() {
@@ -87,6 +75,11 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	@Override
 	public Map<String, Double> getWorkerPriors(Worker worker) {
 		return worker.getPrior(getCategoryPriors());
+	}
+
+	@Override
+	public double getErrorRateForWorker(Worker worker, String from, String to) {
+		return worker.getErrorRateBatch(from, to);
 	}
 
 	/*
@@ -176,6 +169,13 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 	}
 
+	@Override
+	protected void estimateInner() {
+		updateObjectClassProbabilities();
+		updatePriors();
+		rebuildWorkerConfusionMatrices();
+	}
+
 	public static class BatchDawidSkeneDeserializer implements
 		JsonDeserializer<BatchDawidSkene> {
 
@@ -199,4 +199,5 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 	}
 
+	private static final Logger logger = Logger.getLogger(BatchDawidSkene.class);
 }
