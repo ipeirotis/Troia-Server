@@ -785,6 +785,7 @@ public class Service {
 	@Path("isComputed")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isComputed(@QueryParam("id") String idString) {
+		logRequestProcessing("isComputed");
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();

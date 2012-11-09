@@ -16,6 +16,8 @@ import com.datascience.gal.quality.ClassificationCostEvaluator;
 
 public interface DawidSkene {
 
+    public final static double DEFAULT_EPSILON = 1E-6;
+
 	public abstract void addAssignedLabels(Collection<AssignedLabel> als);
 
 	public abstract void addAssignedLabel(AssignedLabel al);
@@ -37,13 +39,22 @@ public interface DawidSkene {
 	public abstract void addMisclassificationCost(MisclassificationCost cl);
 
 	/**
-	 * Runs the algorithm, iterating the specified number of times TODO:
-	 * Estimate the model log-likelihood and stop once the log-likelihood values
-	 * converge
+	 * Runs the algorithm, iterating at most the specified number of times;
+     * estimates the model log-likelihood and stop once the log-likelihood
+     * values converge (with the default value of the epsilon)
 	 *
 	 * @param iterations
 	 */
-	public abstract void estimate(int iterations);
+	public abstract void estimate(int maxIterations);
+
+	/**
+	 * Runs the algorithm, iterating at most the specified number of times;
+     * estimates the model log-likelihood and stop once the log-likelihood
+     * values converge (with the specified value of the epsilon)
+	 *
+	 * @param iterations
+	 */
+    public abstract void estimate(int maxIterations, double epsilon);
 
 	/**
 	 * TODO:
