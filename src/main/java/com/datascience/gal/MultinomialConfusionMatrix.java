@@ -259,6 +259,27 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 		return JSONUtils.gson.toJson(this);
 	}
 
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof MultinomialConfusionMatrix))
+			return false;
+		MultinomialConfusionMatrix other = (MultinomialConfusionMatrix) obj;
+		if(!this.categories.equals(other.categories)) {
+			return false;
+		}
+		if (!this.matrix.equals(other.matrix)) {
+			return false;
+		}
+		if (!this.rowDenominator.equals(other.rowDenominator)) {
+			return false;
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *

@@ -185,6 +185,13 @@ public class Worker {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if(!this.labels.equals(other.labels)) {
+			return false;
+		}
+		if (!this.cm.equals(other.cm)) {
+			return false;
+		}
+
 		return true;
 	}
 
