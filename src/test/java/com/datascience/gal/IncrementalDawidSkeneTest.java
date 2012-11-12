@@ -628,13 +628,6 @@ public class IncrementalDawidSkeneTest {
 		assertEquals(1.0, objectsRet.get("category2").doubleValue(),TestDataManager.DELTA_DOUBLE);
 		assertEquals(0.0, objectsRet.get("category1").doubleValue(),TestDataManager.DELTA_DOUBLE);
 	}
-	/**
-	 * Test method for {@link com.datascience.gal.IncrementalDawidSkene#objectClassProbabilities(java.lang.String, double)}.
-	 */
-	@Test
-	public final void testObjectClassProbabilitiesStringDouble() {
-		fail("always retuns null"); // TODO
-	}
 
 	/**
 	 * Test method for {@link com.datascience.gal.IncrementalDawidSkene#getWorkerPriors(com.datascience.gal.Worker)}.

@@ -263,8 +263,6 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
 		if (!(obj instanceof MultinomialConfusionMatrix))
 			return false;
 		MultinomialConfusionMatrix other = (MultinomialConfusionMatrix) obj;

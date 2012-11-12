@@ -42,7 +42,9 @@ public class Utils {
 			while ((line = dataInput.readLine()) != null) {
 				// buffer.append(cleanLine(line.toLowerCase()));
 				buffer.append(line);
-				buffer.append('\n');
+				if (dataInput.ready()) {
+					buffer.append('\n');
+				}
 			}
 			dataInput.close();
 		} catch (Exception ex) {
