@@ -191,13 +191,11 @@ public class Service {
 			getManager().pingDatabase();
 			message = " Object has been inserted to the DB and removed " +
 					  "from the DB ";
-
+			rs = buildResponse(message, SUCCESS, null, new DateTime(),null);
 		} catch(Exception e) {
 			logErrorFromException(e);
 			message = e.getMessage();
-		} finally {
-			rs = buildResponse(message, SUCCESS, null, new DateTime(),null);
-
+			rs = buildResponse(message, FAILURE, null, new DateTime(),null);
 		}
 		return rs;
 
