@@ -117,6 +117,10 @@ public class Category {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if (this.prior!=other.prior) {
+			return false;
+		}
+
 		return true;
 	}
 
