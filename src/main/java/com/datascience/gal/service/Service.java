@@ -185,39 +185,22 @@ public class Service {
 	@Path("pingDB")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pingDB() {
-		//FIXME WRITE THIS FUNCTIONALITY FOR MULTITHREADING ENVIRONMENT
-		/*
-		final String id = "1234512345";
-		Set<Category> categories = new HashSet<Category>();
-		categories.add(new Category("mock"));
-		DawidSkene ds = new BatchDawidSkene(id, categories);
+		String message = null ;
+		Response rs;
 		try {
-			setup(context);
-		    String message = "";
-		    DawidSkene dsInserted = dscache.insertDawidSkene(ds);
-		    DawidSkene dsRetrieved = dscache.getDawidSkene(id);
-		    if (null != dsInserted && null != dsRetrieved) {
-		        dscache.deleteDawidSkene(id);
-		        message = " Object has been inserted to the DB and removed " +
-		            "from the DB ";
-		        dsRetrieved = dscache.getDawidSkene(id);
-		        message += (null == dsRetrieved) ? "successfully" :
-		            "unsuccessfully";
-		    } else {
-		        message = "Object has NOT been inserted to the DB";
-		    }
-		    logger.info(message);
-		    Map<String, Object> others = new HashMap<String, Object>();
-		    others.put("id", id);
-		    rs = buildResponse(message, SUCCESS, null, new DateTime(),
-		            others);
-		} catch (Exception e) {
-		    logErrorFromException(e);
+			getManager().pingDatabase();
+			message = " Object has been inserted to the DB and removed " +
+					  "from the DB ";
+
+		} catch(Exception e) {
+			logErrorFromException(e);
+			message = e.getMessage();
+		} finally {
+			rs = buildResponse(message, SUCCESS, null, new DateTime(),null);
+
 		}
 		return rs;
-		*/
-		return buildResponse("Functionality not yet implemented", null, null,
-							 null, null);
+
 	}
 
 	/**

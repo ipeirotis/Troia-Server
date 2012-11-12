@@ -81,6 +81,10 @@ public class DawidSkeneProcessorManager extends Thread {
 		logger.info("DawidSkene processor manager stopped.");
 	}
 
+	public void pingDatabase() throws SQLException {
+		this.cache.pingDatabase();
+	}
+
 	public void createProject(String projectId,
 							  Collection<Category> categories, boolean incremental) {
 		synchronized (this.processorQueue) {

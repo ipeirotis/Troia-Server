@@ -106,6 +106,26 @@ public class DawidSkeneCache {
 		}
 	}
 
+	public void pingDatabase() throws SQLException {
+		String pingId = "DatabasePing";
+		String pingPayload = "PING_PAYLOAD";
+		synchronized(databaseUrl) {
+			ensureDBConnection();
+			PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
+			dsStatement.setString(1,pingId);
+			dsStatement.setString(2, pingPayload);
+			dsStatement.setString(3, pingPayload);
+			dsStatement.executeUpdate();
+			dsStatement.close();
+
+			dsStatement = connection.prepareStatement(DELETE_DS);
+			dsStatement.setString(1,pingId);
+			dsStatement.executeUpdate();
+			dsStatement.close();
+
+		}
+	}
+
 	private DawidSkene getDawidSkeneFromDb(String id) {
 		ResultSet dsResults;
 		DawidSkene ds;

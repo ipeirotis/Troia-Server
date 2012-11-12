@@ -16,7 +16,7 @@ import com.datascience.gal.quality.ClassificationCostEvaluator;
 
 public interface DawidSkene {
 
-    public final static double DEFAULT_EPSILON = 1E-6;
+	public final static double DEFAULT_EPSILON = 1E-6;
 
 	public abstract void addAssignedLabels(Collection<AssignedLabel> als);
 
@@ -40,8 +40,8 @@ public interface DawidSkene {
 
 	/**
 	 * Runs the algorithm, iterating at most the specified number of times;
-     * estimates the model log-likelihood and stop once the log-likelihood
-     * values converge (with the default value of the epsilon)
+	 * estimates the model log-likelihood and stop once the log-likelihood
+	 * values converge (with the default value of the epsilon)
 	 *
 	 * @param iterations
 	 */
@@ -49,12 +49,12 @@ public interface DawidSkene {
 
 	/**
 	 * Runs the algorithm, iterating at most the specified number of times;
-     * estimates the model log-likelihood and stop once the log-likelihood
-     * values converge (with the specified value of the epsilon)
+	 * estimates the model log-likelihood and stop once the log-likelihood
+	 * values converge (with the specified value of the epsilon)
 	 *
 	 * @param iterations
 	 */
-    public abstract void estimate(int maxIterations, double epsilon);
+	public abstract void estimate(int maxIterations, double epsilon);
 
 	/**
 	 * TODO:
