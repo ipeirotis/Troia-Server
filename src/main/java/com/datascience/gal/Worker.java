@@ -190,7 +190,7 @@ public class Worker {
 
 	@Override
 	public String toString() {
-		return JSONUtils.gson.toJson(this);
+		return this.name;
 	}
 
 	public static class WorkerDeserializer implements JsonDeserializer<Worker> {

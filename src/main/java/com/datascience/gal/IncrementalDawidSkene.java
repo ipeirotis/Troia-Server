@@ -309,8 +309,19 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	@Override
 	public Map<String, Double> objectClassProbabilities(String objectName,
 			double entropyThreshold) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Map<String, Double> out = new HashMap<String, Double>();
+
+		if (!objects.containsKey(objectName)) {
+			logger.warn("attempting to get class probabilities for non-existent object");
+		} else {
+			Datum datum = objects.get(objectName);
+			if (datum.getEntropy() >= entropyThreshold) {
+				for (String cat : categories.keySet())
+					out.put(cat, datum.getCategoryProbability(cat));
+			}
+		}
+		return out;
 	}
 
 	@Override
