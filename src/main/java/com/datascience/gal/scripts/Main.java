@@ -313,6 +313,10 @@ public class Main {
 
 			AssignedLabel al = new AssignedLabel(workername, objectname,
 												 categoryname);
+			if (labels.contains(al)) {
+				labels.remove(al);
+			}
+
 			labels.add(al);
 		}
 		return labels;

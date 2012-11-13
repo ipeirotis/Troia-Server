@@ -86,7 +86,7 @@ public class MainTest {
 		String labelForDuplication = new String("Label1\tOn\tc1");
 		String [] labelsWhichAreNotUnique = {labelForDuplication, labelForDuplication};
 		Set<AssignedLabel> cSetLabel2 = Main.getAssignedLabels(labelsWhichAreNotUnique);
-		int sizeExpected = labelsWhichAreNotUnique.length;
+		int sizeExpected = labelsWhichAreNotUnique.length-1;
 		int sizeReturned = cSetLabel2.size();
 		assertTrue("expected size="+sizeExpected+", returned size="+sizeReturned, sizeExpected == sizeReturned);
 	}
