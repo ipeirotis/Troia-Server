@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -72,6 +73,7 @@ public class PricingTest {
 	/**
 	 * Test method for {@link com.datascience.gal.Pricing#probabilityCorrect(java.lang.Double, java.lang.Integer)}.
 	 */
+	@Ignore("Pricing - obsole")
 	@Test
 	public final void testProbabilityCorrectTestOnNaN() {
 		for (double p=0; p<1.05; p+=0.05) {
@@ -104,6 +106,7 @@ public class PricingTest {
 	/**
 	 * Test method for {@link com.datascience.gal.Pricing#probabilityCorrect(java.lang.Double, java.lang.Integer)}.
 	 */
+	@Ignore("Pricing - obsole")
 	@Test
 	public final void testProbabilityCorrectTestOnRange() {
 		for (double p=0.5; p<1.0; p+=0.05) {
