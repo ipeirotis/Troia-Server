@@ -583,8 +583,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		String categoryName = al.getCategoryName();
 		if (!categories.containsKey(categoryName)) {
-			logger.warn("attempting ot add invalid category: " + categoryName);
-			return;
+			String message = "attempting ot add invalid category: " + categoryName;
+			logger.warn(message);
+			throw new IllegalArgumentException(message);
 		}
 
 		// If we already have the object, then just add the label

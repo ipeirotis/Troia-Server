@@ -24,7 +24,6 @@ import org.junit.Test;
 
 import com.datascience.gal.IncrementalDawidSkene.IncrementalDawidSkeneDeserializer;
 import com.datascience.gal.service.JSONUtils;
-import com.datascience.gal.Category;
 import com.datascience.utils.auxl.TestDataManager;
 import com.google.gson.JsonObject;
 
