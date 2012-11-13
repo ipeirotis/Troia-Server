@@ -219,6 +219,11 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 		String correctCategory = cl.getCorrectCategory();
 
 		Datum d;
+		if (!categories.containsKey(correctCategory)) {
+			String message = "attempting ot add invalid category: " + correctCategory;
+			logger.warn(message);
+			throw new IllegalArgumentException(message);
+		}
 		if (objects.containsKey(objectName)) {
 			unupdatePrior(objectName);
 			unupdateWorkers(objectName);

@@ -633,6 +633,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		String correctCategory = cl.getCorrectCategory();
 
 		Datum d;
+		if (!categories.containsKey(correctCategory)) {
+			String message = "attempting to add invalid category: " + correctCategory;
+			logger.warn(message);
+			throw new IllegalArgumentException(message);
+		}
+
 		if (this.objects.containsKey(objectName)) {
 			d = this.objects.get(objectName);
 			d.setGold(true);
