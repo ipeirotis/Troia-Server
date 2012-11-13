@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import com.datascience.gal.IncrementalDawidSkene.IncrementalDawidSkeneDeserializer;
 import com.datascience.gal.service.JSONUtils;
+import com.datascience.gal.Category;
 import com.datascience.utils.auxl.TestDataManager;
 import com.google.gson.JsonObject;
 
@@ -647,6 +648,26 @@ public class IncrementalDawidSkeneTest {
 				}
 			}
 		}
+	}
+
+	@Test
+	public final void testAddLabelWithWrongCategory() {
+		Category category1 = new Category("category1");
+		Category category2 = new Category("category2");
+		ArrayList<Category> categories = new ArrayList<Category>();
+		categories.add(category1);
+		categories.add(category2);
+		IncrementalDawidSkene ds = new IncrementalDawidSkene("id",categories);
+		AssignedLabel correctLabel = new AssignedLabel("worker","object1","category1");
+		AssignedLabel incorrectLabel = new AssignedLabel("worker","object2","wrongLabel");
+		ds.addAssignedLabel(correctLabel);
+		try {
+			ds.addAssignedLabel(incorrectLabel);
+			assertTrue(false);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		assertEquals(ds.getNumberOfObjects(),1);
 	}
 
 }
