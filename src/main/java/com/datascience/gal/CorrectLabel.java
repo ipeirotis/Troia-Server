@@ -18,6 +18,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import com.google.common.base.Objects;
+
 public class CorrectLabel {
 
 	private String objectName;
@@ -51,13 +53,7 @@ public class CorrectLabel {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				 + ((correctCategory == null) ? 0 : correctCategory.hashCode());
-		result = prime * result
-				 + ((objectName == null) ? 0 : objectName.hashCode());
-		return result;
+		return Objects.hashCode(correctCategory, objectName);
 	}
 
 	/*
@@ -69,22 +65,11 @@ public class CorrectLabel {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
 		if (!(obj instanceof CorrectLabel))
 			return false;
 		CorrectLabel other = (CorrectLabel) obj;
-		if (correctCategory == null) {
-			if (other.correctCategory != null)
-				return false;
-		} else if (!correctCategory.equals(other.correctCategory))
-			return false;
-		if (objectName == null) {
-			if (other.objectName != null)
-				return false;
-		} else if (!objectName.equals(other.objectName))
-			return false;
-		return true;
+		return Objects.equal(correctCategory, other.correctCategory) &&
+				Objects.equal(objectName, other.objectName);
 	}
 
 	@Override
