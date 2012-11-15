@@ -111,6 +111,14 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return result;
 	}
 
+	protected void validateCategory(String categoryName) {
+		if (!categories.containsKey(categoryName)) {
+			String message = "attempting to add invalid category: " + categoryName;
+			logger.warn(message);
+			throw new IllegalArgumentException(message);
+		}
+	}
+
 	@Override
 	public String getId() {
 		return id;
@@ -582,12 +590,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		String objectName = al.getObjectName();
 
 		String categoryName = al.getCategoryName();
-		if (!categories.containsKey(categoryName)) {
-			String message = "attempting ot add invalid category: " + categoryName;
-			logger.warn(message);
-			throw new IllegalArgumentException(message);
-		}
-
+		this.validateCategory(categoryName);
 		// If we already have the object, then just add the label
 		// in the set of labels for the object.
 		// If it is the first time we see the object, then create
@@ -633,12 +636,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		String correctCategory = cl.getCorrectCategory();
 
 		Datum d;
-		if (!categories.containsKey(correctCategory)) {
-			String message = "attempting to add invalid category: " + correctCategory;
-			logger.warn(message);
-			throw new IllegalArgumentException(message);
-		}
-
+		this.validateCategory(correctCategory);
 		if (this.objects.containsKey(objectName)) {
 			d = this.objects.get(objectName);
 			d.setGold(true);

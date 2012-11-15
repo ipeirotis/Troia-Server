@@ -26,7 +26,7 @@ import com.datascience.utils.CostMatrix;
  *
  * @version $Revision$
  */
-public class UtilsTest{
+public class UtilsTest {
 
 	/**
 	 * Run the Double calculateLabelCost(String, Map<String,Double>,

@@ -69,7 +69,7 @@ public class CorrectLabel {
 			return false;
 		CorrectLabel other = (CorrectLabel) obj;
 		return Objects.equal(correctCategory, other.correctCategory) &&
-				Objects.equal(objectName, other.objectName);
+			   Objects.equal(objectName, other.objectName);
 	}
 
 	@Override
