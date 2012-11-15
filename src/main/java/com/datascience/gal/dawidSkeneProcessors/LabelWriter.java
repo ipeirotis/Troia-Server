@@ -34,8 +34,13 @@ public class LabelWriter extends DawidSkeneProcessor {
 	public void run() {
 		logger.info("Executing label writer for "+this.getDawidSkeneId()+".");
 		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
-		ds.addAssignedLabels(labels);
-		this.getCache().insertDawidSkene(ds,this);
+		try {
+			ds.addAssignedLabels(labels);
+		} catch(Exception e) {
+			logger.error("Failed to load assigned labels for "+this.getDawidSkeneId());
+		} finally {
+			this.getCache().insertDawidSkene(ds,this);
+		}
 		this.setState(DawidSkeneProcessorState.FINISHED);
 		logger.info("Label writer for "+this.getDawidSkeneId()+" finished.");
 	}
