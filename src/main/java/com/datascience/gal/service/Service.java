@@ -70,11 +70,11 @@ public class Service {
 		return id;
 	}
 
-	private static String getIdFromInput(String input) {
+	private String getIdFromInput(String input) {
 		return getIdFromInput(input, "0");
 	}
 
-	private static String getJobId(String jid) {
+	private String getJobId(String jid) {
 		if (jid == null || jid == "") {
 			logger.info("No job ID or empty - using default");
 			return DEFAULT_JOB_ID;
@@ -82,7 +82,7 @@ public class Service {
 		return jid;
 	}
 
-	private static <T> T parseJsonInput(String input, Type type) throws
+	private <T> T parseJsonInput(String input, Type type) throws
 		Exception {
 		if (null == input || input.length() < 3) {
 			throw new Exception("Invalid input: required JSON-ified " +
@@ -95,7 +95,7 @@ public class Service {
 		return result;
 	}
 
-	private static void logErrorFromException(Exception e) {
+	private void logErrorFromException(Exception e) {
 		logger.error("Error processing the request: " +
 					 e.getClass().getName() + ": " + e.getLocalizedMessage());
 		for (StackTraceElement ste : e.getStackTrace()) {
@@ -103,17 +103,11 @@ public class Service {
 		}
 	}
 
-	private static void logRequestProcessing(String endpointName) {
+	private void logRequestProcessing(String endpointName) {
 		logger.info("Processing the request: " + endpointName);
 	}
 
-	private static void handleException(String endpointName, String message,
-										Exception e) {
-		message = endpointName + " with " + message;
-		handleException(message, e);
-	}
-
-	private static void handleException(String message, Exception e) {
+	private void handleException(String message, Exception e) {
 		logger.error(message);
 		logger.error("EXCEPTION: " + e.getClass().getName());
 		for (StackTraceElement ste : e.getStackTrace()) {
@@ -121,9 +115,17 @@ public class Service {
 		}
 	}
 
-	private static Response buildResponse(String message, String status,
-										  Object result, DateTime timestamp,
-										  Map<String, ?> others) {
+	private Map<String, Object> baseResponseCargo(String message, String status){
+		Map<String, Object> cargo = new HashMap<String, Object>();
+		cargo.put("message", message);
+		cargo.put("status", status);
+		cargo.put("timestamp", DateTime.now().toString());
+		return cargo;
+	}
+	
+	private Map<String, Object> buildResopnseCargo(String message,
+			String status, Object result, DateTime timestamp,
+			Map<String, ?> others) {
 		Map<String, Object> cargo = new HashMap<String, Object>();
 		if (null != message) {
 			cargo.put("message", message);
@@ -140,6 +142,13 @@ public class Service {
 		if (null != others) {
 			cargo.putAll(others);
 		}
+		return cargo;
+	}
+		
+	private Response buildResponse(String message, String status,
+										  Object result, DateTime timestamp,
+										  Map<String, ?> others) {
+		Map<String, Object> cargo = buildResopnseCargo(message, status, result, timestamp, others);
 		if (null != message && null != status) {
 			if (!status.equals(FAILURE)) {
 				logger.info(message);
@@ -148,6 +157,20 @@ public class Service {
 			}
 		}
 		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
+	}
+	
+	
+	private Response errorResponse(int status, String message){
+		Map<String, Object> cargo = baseResponseCargo(message, FAILURE);
+		return Response.status(status).entity(JSONUtils.gson.toJson(cargo)).build();
+	}
+	
+	private Response noSuchElementResponse(String message){
+		return errorResponse(404, message);
+	}
+	
+	private Response noSuchJobResponse(String jid){
+		return noSuchElementResponse(String.format("Job with id %s doesn't exist", jid));
 	}
 
 	public Service() {
@@ -211,12 +234,15 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response reset(@QueryParam("id") String idString) {
 		logRequestProcessing("reset");
+		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
-			if (idString != null) {
-				String id = idString;
-				getManager().deleteProject(id);
-			}
+
+			getManager().deleteProject(id);
+
 			String message = "Reset the ds model";
 			if (null != idString) {
 				message += " with id: " + idString;
@@ -239,10 +265,10 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response exists(@QueryParam("id") String idString) {
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
 		Response rs;
 		try {
-
-			Boolean exists = getManager().containsProject(id);
+			Boolean exists = manager.containsProject(id);
 			String message = "Request model with id: " + id + " " +
 							 (exists ? "exists" : "does not exist");
 			rs = buildResponse(message, null, exists, null, null);
@@ -266,12 +292,13 @@ public class Service {
 								   @FormParam("incremental") String incremental) {
 		logRequestProcessing("loadCategories");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
 		Response rs;
 		try {
 
 			Collection<Category> categories = parseJsonInput(categoriesString,
 											  JSONUtils.categorySetType);
-			getManager().createProject(id, categories, incremental != null);
+			manager.createProject(id, categories, incremental != null);
 			String message = "Built a request model with " + categories.size()
 							 + " categories";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -295,6 +322,9 @@ public class Service {
 		@FormParam("costs") String costsString) {
 		logRequestProcessing("loadCosts");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
 			Collection<MisclassificationCost> costs = parseJsonInput(
@@ -302,7 +332,7 @@ public class Service {
 						JSONUtils.misclassificationCostSetType);
 			String message = "Loaded " + costs.size()
 							 + " misclassification costs";
-			getManager().addMisclassificationCost(id, costs);
+			manager.addMisclassificationCost(id, costs);
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
 			logErrorFromException(e);
@@ -323,13 +353,16 @@ public class Service {
 											@FormParam("label") String labelString) {
 		logRequestProcessing("loadWorkerAssignedLabel");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
 			AssignedLabel label = parseJsonInput(labelString,
 												 JSONUtils.assignedLabelType);
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
 			labels.add(label);
-			getManager().addLabels(id, labels);
+			manager.addLabels(id, labels);
 			String message = "Loaded label: " + label;
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -351,11 +384,14 @@ public class Service {
 			@FormParam("labels") String labelsString) {
 		logRequestProcessing("loadWorkerAssignedLabels");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
 			Collection<AssignedLabel> labels = parseJsonInput(labelsString,
 											   JSONUtils.assignedLabelSetType);
-			getManager().addLabels(id, labels);
+			manager.addLabels(id, labels);
 			String message = "Loaded " + labels.size() + " labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -377,13 +413,16 @@ public class Service {
 								  @FormParam("label") String labelString) {
 		logRequestProcessing("loadGoldLabel");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
 			CorrectLabel label = parseJsonInput(labelString,
 												JSONUtils.correctLabelType);
 			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
 			labels.add(label);
-			getManager().addGoldLabels(id, labels);
+			manager.addGoldLabels(id, labels);
 			String message = "Loaded gold label: " + label;
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -405,11 +444,14 @@ public class Service {
 								   @FormParam("labels") String labelsString) {
 		logRequestProcessing("loadGoldLabels");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
-			getManager().addGoldLabels(id, labels);
+			manager.addGoldLabels(id, labels);
 			String message = "Loaded " + labels.size() + " gold labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -431,11 +473,14 @@ public class Service {
 									   @FormParam("labels") String labelsString) {
 		logRequestProcessing("loadGoldLabels");
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		try {
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
-			getManager().addEvaluationData(id, labels);
+			manager.addEvaluationData(id, labels);
 			String message = "Loaded " + labels.size() + " gold labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
@@ -459,6 +504,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String votes = ds.getMajorityVote(objectName);
@@ -492,6 +539,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = null;
@@ -529,6 +578,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, String> votes = ds.getMajorityVote();
@@ -559,6 +610,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Double> probs = ds.getObjectProbs(objectName);
@@ -586,6 +639,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			Map<String, Map<String, Double>> probs = null;
@@ -625,6 +680,8 @@ public class Service {
 		int its = Math.max(1,
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			StopWatch sw = new StopWatch();
@@ -655,8 +712,11 @@ public class Service {
 		int its = Math.max(1,
 						   null == iterations ? 1 : Integer.parseInt(iterations));
 		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
-			getManager().computeDawidSkene(id, its);
+			manager.computeDawidSkene(id, its);
 			String message = "Registered DScomputer with  " +
 							 its + " iterations";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
@@ -676,6 +736,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
@@ -700,6 +762,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
@@ -725,6 +789,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			double entropy = null == ent ? 0. : Double.parseDouble(ent);
@@ -748,6 +814,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			logger.info("Returning request for object class probabilities");
@@ -770,6 +838,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			boolean result = ds.isComputed();
@@ -790,6 +860,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
@@ -812,6 +884,8 @@ public class Service {
 		String id = getIdFromInput(idString);
 		Response rs;
 		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		try {
 			while(manager.getProcessorCountForProject(id)>0) {
 				Thread.sleep(1);
@@ -834,8 +908,11 @@ public class Service {
 	public Response calculateEstimatedCost(@QueryParam("id") String jid,
 										   @QueryParam("method") String method) {
 		String id = getJobId(jid);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		String message = "calculateEstimatedCost(" + method + ") for job " + id;
-		getManager().calculateEvaluationCost(id,method);
+		manager.calculateEvaluationCost(id,method);
 		return Response.status(500).build();
 	}
 
@@ -847,6 +924,8 @@ public class Service {
 									 @QueryParam("category") String category) {
 		DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		String message = "getEstimatedCost for job " + id;
 		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
@@ -863,6 +942,8 @@ public class Service {
 										   @QueryParam("worker") String worker) {
 		DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
 		Response rs;
 		WorkerCostMethod methodEnum;
 		if("CostAdjusted".equals(method)) {
