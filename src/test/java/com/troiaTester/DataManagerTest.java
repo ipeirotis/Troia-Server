@@ -105,7 +105,8 @@ public class DataManagerTest extends TestCase {
 	}
 
 	@Test
-	public void testSaveLoadTestData() {
+	public void testSaveLoadTestData() throws
+		java.io.IOException, java.io.FileNotFoundException {
 		DataManager managerS = DataManager.getInstance();
 		int objectCount = 100;
 		int categoryCount = 3;
