@@ -1,4 +1,4 @@
-package test.troiaTester;
+package test.java.com.troiaTester;
 
 import java.util.Collection;
 import java.util.HashMap;

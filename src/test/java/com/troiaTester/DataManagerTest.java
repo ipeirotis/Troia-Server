@@ -1,4 +1,4 @@
-package test.troiaTester;
+package test.java.com.troiaTester;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,8 +19,8 @@ import main.com.troiaTester.TroiaObjectCollection;
 import static java.io.File.separator;
 
 /**
- * The class <code>TestDataManagerTest</code> contains tests for the class
- * {@link <code>TestDataManager</code>}
+ * The class <code>DataManagerTest</code> contains tests for the class
+ * {@link <code>DataManager</code>}
  *
  * @pattern JUnit Test Case
  *
@@ -44,70 +44,51 @@ public class DataManagerTest extends TestCase {
 		new File(RESULTS_ROOT).mkdir();
 	}
 
-	/**
-	 * Run the void saveTestObjectsToFile(String, TestObjectCollection) method
-	 * test
-	 */
 	@Test
-	public void testSaveTestObjectsToFile() {
-
-		DataManager fixture = DataManager.getInstance();
+	public void testSaveLoadTestObjectsToFile() throws
+		java.io.IOException, java.io.FileNotFoundException {
+		// Save
+		DataManager managerS = DataManager.getInstance();
 		DataGenerator generator = DataGenerator.getInstance();
+		TroiaObjectCollection objectsS = generator.generateTestObjects(10, 2);
 		String filename = TEST_OBJECTS_FILE;
-		TroiaObjectCollection objects = generator.generateTestObjects(10, 2);
-		try {
-			fixture.saveTestObjectsToFile(filename, objects);
-		} catch (IOException e) {
-			fail(e.getMessage());
+		managerS.saveTestObjectsToFile(filename, objectsS);
+		// Load
+		DataManager managerL = DataManager.getInstance();
+		TroiaObjectCollection objectsL = managerL.loadTestObjectsFromFile(filename);
+		assertTrue(objectsS.size() == objectsL.size());
+		for (String key : objectsS) {
+			assertTrue(objectsL.contains(key));
+			assertTrue(objectsL.getCategory(key).equals(objectsS.getCategory(key)));
 		}
 	}
 
 	@Test
-	public void testLoadTestObjectsFromFile() {
-		DataManager fixture = DataManager.getInstance();
-		try {
-			TroiaObjectCollection objects = fixture
-											.loadTestObjectsFromFile(TEST_OBJECTS_FILE);
-			for (String object : objects) {
-				logger.info(object + '\t' + objects.getCategory(object));
-			}
-		} catch (FileNotFoundException e) {
-			fail(e.getMessage());
-		}
-	}
-
-	@Test
-	public void testSaveArtificialWorkers() {
-		DataManager fixture = DataManager.getInstance();
+	public void testSaveLoadArtificialWorkers() throws
+		java.io.IOException, java.io.FileNotFoundException {
+		// Save
+		DataManager managerS = DataManager.getInstance();
 		DataGenerator generator = DataGenerator.getInstance();
 		String filename = ARTIFICIAL_WORKERS_FILE;
 		Collection<String> categories = generator.generateCategoryNames(3);
-		Collection<ArtificialWorker> workers = generator
-											   .generateArtificialWorkers(10, categories, 0, 1);
-		try {
-			fixture.saveArtificialWorkers(filename, workers);
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+		Collection<ArtificialWorker> workersS = generator
+												.generateArtificialWorkers(10, categories, 0, 1);
+		managerS.saveArtificialWorkers(filename, workersS);
+		// Load
+		DataManager managerL = DataManager.getInstance();
+		Collection<ArtificialWorker> workersL = managerL
+												.loadArtificialWorkersFromFile(filename);
+		// TODO redirect output to a file, extract this collections with grep
+		// and and check with diff.
+		logger.debug("ArtificialWorkersSaved:  " + workersS);
+		logger.debug("ArtificialWorkersLoaded: " + workersL);
+		assertTrue(workersS.equals(workersL));
 	}
 
 	@Test
-	public void testLoadArtificialWorkers() {
-		DataManager fixture = DataManager.getInstance();
-		try {
-			Collection<ArtificialWorker> workers = fixture
-												   .loadArtificialWorkersFromFile(ARTIFICIAL_WORKERS_FILE);
-			for (ArtificialWorker worker : workers) {
-				logger.info(worker.getName());
-			}
-		} catch (FileNotFoundException e) {
-			fail(e.getMessage());
-		}
-	}
-
-	@Test
-	public void testSaveLabelsToFile() {
-		DataManager fixture = DataManager.getInstance();
+	public void testSaveLoadLabelsToFile() throws
+		java.io.IOException, java.io.FileNotFoundException {
+		DataManager managerS = DataManager.getInstance();
 		DataGenerator generator = DataGenerator.getInstance();
 		String filename = LABELS_FILE;
 		Collection<String> categories = generator.generateCategoryNames(3);
@@ -115,34 +96,17 @@ public class DataManagerTest extends TestCase {
 										categories);
 		Collection<ArtificialWorker> workers = generator
 											   .generateArtificialWorkers(10, categories, 0, 1);
-		Collection<Label> labels = generator
-								   .generateLabels(workers, objects, 2);
-		try {
-			fixture.saveLabelsToFile(filename, labels);
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+		Collection<Label> labelsS = generator
+									.generateLabels(workers, objects, 2);
+		managerS.saveLabelsToFile(filename, labelsS);
+		DataManager managerL = DataManager.getInstance();
+		Collection<Label> labelsL = managerL.loadLabelsFromFile(LABELS_FILE);
+		assertTrue(labelsL.equals(labelsS));
 	}
 
 	@Test
-	public void testLoadLabelsFromFile() {
-		DataManager fixture = DataManager.getInstance();
-		try {
-			Collection<Label> labels = fixture.loadLabelsFromFile(LABELS_FILE);
-			for (Label label : labels) {
-				logger.info(label.getWorkerName() + '\t'
-							+ label.getObjectName() + '\t'
-							+ label.getCategoryName());
-			}
-		} catch (FileNotFoundException e) {
-			fail(e.getMessage());
-		}
-
-	}
-
-	@Test
-	public void testSaveTestData() {
-		DataManager fixture = DataManager.getInstance();
+	public void testSaveLoadTestData() {
+		DataManager managerS = DataManager.getInstance();
 		int objectCount = 100;
 		int categoryCount = 3;
 		int workerCount = 7;
@@ -150,24 +114,13 @@ public class DataManagerTest extends TestCase {
 		double maxQuality = 1;
 		double goldRatio = 0.1;
 		int workersPerObject = 3;
-		Data data = DataGenerator.getInstance().generateTestData(
-						"Test request", objectCount, categoryCount, workerCount,
-						minQuality, maxQuality, goldRatio, workersPerObject);
-		try {
-			fixture.saveTestData(FILENAME_BASE, data);
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-	}
-
-	@Test
-	public void testLoadTestData() {
-		DataManager fixture = DataManager.getInstance();
-		try {
-			fixture.loadTestData(FILENAME_BASE);
-		} catch (FileNotFoundException e) {
-			fail(e.getMessage());
-		}
+		Data dataS = DataGenerator.getInstance().generateTestData(
+						 "Test request", objectCount, categoryCount, workerCount,
+						 minQuality, maxQuality, goldRatio, workersPerObject);
+		managerS.saveTestData(FILENAME_BASE, dataS);
+		DataManager managerL = DataManager.getInstance();
+		Data dataL = managerL.loadTestData(FILENAME_BASE);
+		assertTrue(dataS.equals(dataL));
 	}
 
 	private static final String RESULTS_ROOT = "target" + separator + "test-results";
