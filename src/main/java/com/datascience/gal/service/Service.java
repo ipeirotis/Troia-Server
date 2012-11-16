@@ -115,14 +115,14 @@ public class Service {
 		}
 	}
 
-	private Map<String, Object> baseResponseCargo(String message, String status){
+	private Map<String, Object> baseResponseCargo(String message, String status) {
 		Map<String, Object> cargo = new HashMap<String, Object>();
 		cargo.put("message", message);
 		cargo.put("status", status);
 		cargo.put("timestamp", DateTime.now().toString());
 		return cargo;
 	}
-	
+
 	private Map<String, Object> buildResopnseCargo(String message,
 			String status, Object result, DateTime timestamp,
 			Map<String, ?> others) {
@@ -144,10 +144,10 @@ public class Service {
 		}
 		return cargo;
 	}
-		
+
 	private Response buildResponse(String message, String status,
-										  Object result, DateTime timestamp,
-										  Map<String, ?> others) {
+								   Object result, DateTime timestamp,
+								   Map<String, ?> others) {
 		Map<String, Object> cargo = buildResopnseCargo(message, status, result, timestamp, others);
 		if (null != message && null != status) {
 			if (!status.equals(FAILURE)) {
@@ -158,18 +158,18 @@ public class Service {
 		}
 		return Response.ok(JSONUtils.gson.toJson(cargo)).build();
 	}
-	
-	
-	private Response errorResponse(int status, String message){
+
+
+	private Response errorResponse(int status, String message) {
 		Map<String, Object> cargo = baseResponseCargo(message, FAILURE);
 		return Response.status(status).entity(JSONUtils.gson.toJson(cargo)).build();
 	}
-	
-	private Response noSuchElementResponse(String message){
+
+	private Response noSuchElementResponse(String message) {
 		return errorResponse(404, message);
 	}
-	
-	private Response noSuchJobResponse(String jid){
+
+	private Response noSuchJobResponse(String jid) {
 		return noSuchElementResponse(String.format("Job with id %s doesn't exist", jid));
 	}
 

@@ -125,6 +125,7 @@ public class StatTest {
 	 * Test method for {@link com.datascience.utils.Stat#incompleteBeta(double, int, int)}.
 	 */
 	@Test
+	@Ignore("TODO - we don't understand them yet")
 	public final void testIncompleteBetaWithZeroParameters() {
 		testIncompleteBetaWithLimitedParameters(0,0);
 	}
@@ -139,6 +140,7 @@ public class StatTest {
 	 * Test method for {@link com.datascience.utils.Stat#incompleteBeta(double, int, int)}.
 	 */
 	@Test
+	@Ignore("TODO - we don't understand them yet")
 	public final void testIncompleteBetaWithZeroParameterB() {
 		testIncompleteBetaWithLimitedParameters(1,0);
 	}
