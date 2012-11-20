@@ -14,3 +14,8 @@ target/*
 *.jar
 *.war
 *.ear
+
+# Astyle Files #
+*.orig
+
+target/*
