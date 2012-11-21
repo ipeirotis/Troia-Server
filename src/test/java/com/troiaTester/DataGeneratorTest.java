@@ -30,6 +30,18 @@ import main.com.troiaTester.TroiaObjectCollection;
  */
 public class DataGeneratorTest extends TestCase {
 
+
+	/**
+	 * Compares two floating point values with specified accuracy.
+	 *
+	 * @param val0
+	 * @param val1
+	 * @param eps
+	 */
+	public static void assertAround(double val0, double val1, double eps) {
+		assertTrue(Math.abs(val0 - val1) < eps);
+	}
+
 	/**
 	 * Construct new test instance
 	 *
@@ -59,59 +71,64 @@ public class DataGeneratorTest extends TestCase {
 	@Test
 	public void testGenerateTestObjectsWithEqualPercentage() {
 
-		logger.info("--------OBJECT GENERATION WITH AUTO-GENERATED CATEGORIES--------");
-		DataGenerator fixture = DataGenerator.getInstance();
-		int objectCount = 10000;
-		int categoryCount = 4;
-		TroiaObjectCollection result = fixture.generateTestObjects(objectCount,
-									   categoryCount);
-		Map<String, Integer> occurences = new HashMap<String, Integer>();
-		for (String object : result) {
-			String category = result.getCategory(object);
-			if (occurences.containsKey(category)) {
-				occurences.put(category, Integer.valueOf(occurences.get(
-								   category).intValue() + 1));
+		int objectsCount = 10000;
+		int categoriesCount = 4;
+		double prior = objectsCount / (double)(categoriesCount * objectsCount);
+		DataGenerator generator = DataGenerator.getInstance();
+		TroiaObjectCollection objects = generator.generateTestObjects(
+											objectsCount, categoriesCount);
+		Map<String, Integer> occurrences = new HashMap<String, Integer>();
+		for (String object : objects) {
+			String category = objects.getCategory(object);
+			// Increment the category occurrences count.
+			if (occurrences.containsKey(category)) {
+				occurrences.put(category, Integer.valueOf(occurrences.get(
+									category).intValue() + 1));
 			} else {
-				occurences.put(category, Integer.valueOf(1));
+				occurrences.put(category, Integer.valueOf(1));
 			}
 		}
-		logger.info("Occurences of categories in generated objects : ");
-		Collection<String> categoryNames = occurences.keySet();
-		for (String category : categoryNames) {
-			double occ = occurences.get(category).doubleValue();
-			double pr = occ / (double) objectCount;
-			logger.info(category + " : " + occ + "(" + pr + ")");
+		Collection<String> names = occurrences.keySet();
+		// Check if the prior of each category is objectsCount /
+		// categoriesCount indeed.
+		for (String name : names) {
+			double occ = occurrences.get(name).doubleValue();
+			double prr = occ / (double) objectsCount;
+			assertAround(prior, prr, PRIOR_EPSILON);
 		}
 	}
 
 	@Test
 	public void testGenerateTestObjectsWithUnequalPercentage() {
 
-		logger.info("--------OBJECT GENERATION WITH UNEQUALLY OCCURING CATEGORIES--------");
-		DataGenerator fixture = DataGenerator.getInstance();
-		int objectCount = 5000;
+		final int objectsCount = 5000;
+		final double prior0 = 0.6;
+		final double prior1 = 0.3;
+		final double prior2 = 0.1;
+		DataGenerator generator = DataGenerator.getInstance();
 		Map<String, Double> categories = new HashMap<String, Double>();
-		categories.put("Main category (0.6)", new Double(0.6));
-		categories.put("Minor category (0.3)", new Double(0.3));
-		categories.put("Small category (0.1)", new Double(0.1));
-		TroiaObjectCollection result = fixture.generateTestObjects(objectCount,
-									   categories);
-		Map<String, Integer> occurences = new HashMap<String, Integer>();
-		for (String object : result) {
-			String category = result.getCategory(object);
-			if (occurences.containsKey(category)) {
-				occurences.put(category, Integer.valueOf(occurences.get(
-								   category).intValue() + 1));
+		categories.put("Main", prior0);
+		categories.put("Minor", prior1);
+		categories.put("The smallest", prior2);
+		TroiaObjectCollection objects = generator.generateTestObjects(
+											objectsCount, categories);
+		Map<String, Integer> occurrences = new HashMap<String, Integer>();
+		for (String object : objects) {
+			String category = objects.getCategory(object);
+			// Increment the category occurrences count.
+			if (occurrences.containsKey(category)) {
+				occurrences.put(category, Integer.valueOf(occurrences.get(
+									category).intValue() + 1));
 			} else {
-				occurences.put(category, Integer.valueOf(1));
+				occurrences.put(category, Integer.valueOf(1));
 			}
 		}
-		logger.info("Occurences of categories in generated objects : ");
-		Collection<String> categoryNames = occurences.keySet();
-		for (String category : categoryNames) {
-			double occ = occurences.get(category).doubleValue();
-			double pr = occ / (double) objectCount;
-			logger.info(category + " : " + occ + "(" + pr + ")");
+		Collection<String> names = occurrences.keySet();
+		// Check if the prior of each category is requested category prior.
+		for (String name : names) {
+			double occ = occurrences.get(name).doubleValue();
+			double prr = occ / (double) objectsCount;
+			assertAround(categories.get(name), prr, PRIOR_EPSILON);
 		}
 	}
 
@@ -183,6 +200,8 @@ public class DataGeneratorTest extends TestCase {
 					+ " gold labels were generated");
 
 	}
+
+	public final static double PRIOR_EPSILON = 1E-1;
 
 	private static Logger logger = Logger
 								   .getLogger(DataGeneratorTest.class);
