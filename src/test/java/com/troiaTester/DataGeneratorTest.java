@@ -12,6 +12,7 @@ import org.junit.Test;
 import troiaClient.GoldLabel;
 import troiaClient.Label;
 import main.com.troiaTester.ArtificialWorker;
+import main.com.troiaTester.ConfusionMatrix;
 import main.com.troiaTester.RouletteNoisedLabelGenerator;
 import main.com.troiaTester.DataGenerator;
 import main.com.troiaTester.TroiaObjectCollection;
@@ -133,13 +134,26 @@ public class DataGeneratorTest extends TestCase {
 	}
 
 	@Test
-	public void testCreateArtificialWorker() {
-		logger.info("--------SINGLE WORKER GENERATION--------");
-		DataGenerator fixture = DataGenerator.getInstance();
-		Collection<String> categories = fixture.generateCategoryNames(4);
-		ArtificialWorker worker = fixture.generateArtificialWorker(
-									  "Worker name", 0.5, categories);
-		logger.info(worker);
+	public void testCreateSingleArtificialWorker() {
+		final String workerName = "Worker name";
+		DataGenerator generator = DataGenerator.getInstance();
+		Collection<String> categories = generator.generateCategoryNames(4);
+		ArtificialWorker worker = generator.generateArtificialWorker(
+									  workerName, 0.5, categories);
+		// Simple checks.
+		assertTrue(worker.getName().equals(workerName));
+		// Check worker's confusion matrix.
+		Map<String, Map<String, Double>> matrix = worker.getConfusionMatrix().getMatrix();
+		// Check if rows sum to 1.
+		for (String correctClassName : matrix.keySet()) {
+			Map<String, Double> vector = matrix.get(correctClassName);
+			double sum = 0.0;
+			for (String className : vector.keySet()) {
+				sum += vector.get(className).doubleValue();
+			}
+			assertAround(sum, 1.0, DataGenerator.CONFUSION_VECTOR_SUM_EPSILON);
+		}
+		// TODO checks for diagonal
 	}
 
 	@Test

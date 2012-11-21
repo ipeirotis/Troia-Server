@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 
@@ -137,21 +138,31 @@ public class DataGenerator {
 		Map<String, Map<String, Double>> confMatrix = new HashMap<String, Map<String, Double>>();
 		Map<String, Double> confVector;
 		double wrongProb = 1 - quality;
-		for (String correctClass : categories) {
+		Object []array = categories.toArray();
+		int length = array.length;
+		Random random = new Random();
+		for (String correctCategory : categories) {
 			double restProb = wrongProb;
-			double prob;
 			confVector = new HashMap<String, Double>();
-			for (String labeledClass : categories) {
-				if (labeledClass.equalsIgnoreCase(correctClass)) {
-					confVector.put(labeledClass, quality);
-					logger.debug("Set correct label probability to " + quality);
-				} else {
-					prob = Math.random() * restProb;
-					restProb -= prob;
-					confVector.put(labeledClass, prob);
-				}
+			for (String category : categories) {
+				confVector.put(category, 0.0);
 			}
-			confMatrix.put(correctClass, confVector);
+			confVector.put(correctCategory, quality);
+			while (restProb > CONFUSION_VECTOR_SUM_EPSILON) {
+				double prob = Math.random() * restProb;
+				String category = (String) array[random.nextInt(length)];
+				if (!category.equals(correctCategory)) {
+					Double actualProb = confVector.get(category);
+					if (actualProb == null) {
+						actualProb = 0.0;
+					}
+					actualProb += prob;
+					confVector.put(category, actualProb);
+					restProb -= prob;
+				}
+
+			}
+			confMatrix.put(correctCategory, confVector);
 		}
 		worker.setName(name);
 		worker.setConfusionMatrix(new ConfusionMatrix(confMatrix));
@@ -311,6 +322,7 @@ public class DataGenerator {
 	private DataGenerator() {
 
 	}
+	public final static double CONFUSION_VECTOR_SUM_EPSILON = 1E-6;
 
 	/**
 	 * Logger for this class
