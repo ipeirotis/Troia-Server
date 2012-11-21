@@ -148,15 +148,15 @@ public class DataGenerator {
 				confVector.put(category, 0.0);
 			}
 			confVector.put(correctCategory, quality);
-			while (restProb > CONFUSION_VECTOR_SUM_EPSILON) {
-				double prob = Math.random() * restProb;
+			while (restProb > 0) {
+				double prob = Math.random() * (wrongProb / 2.0);
 				String category = (String) array[random.nextInt(length)];
 				if (!category.equals(correctCategory)) {
 					Double actualProb = confVector.get(category);
 					if (actualProb == null) {
 						actualProb = 0.0;
 					}
-					actualProb += prob;
+					actualProb += Math.min(restProb, prob);
 					confVector.put(category, actualProb);
 					restProb -= prob;
 				}
