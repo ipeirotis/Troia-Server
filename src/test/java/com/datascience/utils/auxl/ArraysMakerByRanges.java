@@ -56,8 +56,12 @@ public class ArraysMakerByRanges {
 	public static ArraysDoubleIntInt makeDoubleIntIntArraysByRangeBothRevert(
 		double[] argsX, RangePairIntInt rp) {
 		if (argsX==null || rp==null || argsX.length<1 || !rp.isValid()) {
-			fail("wrong input parameters("+rp.getStart1()+","+rp.getEnd1()+","+rp.getStart2()+","+rp.getEnd2()
-				 +") (ArraysMakerByRanges:makeDoubleIntIntArraysByRangeBothRevert)");
+			String errMsg = "wrong input parameters(";
+			if (rp == null)
+				errMsg += "rp == null";
+			else
+				errMsg += "" + rp.getStart1()+","+rp.getEnd1()+","+rp.getStart2()+","+rp.getEnd2();
+			fail(errMsg + ") (ArraysMakerByRanges:makeDoubleIntIntArraysByRangeBothRevert)");
 		}
 		int size  = rp.calculateSize()*argsX.length;
 		ArraysDoubleIntInt ret = new ArraysDoubleIntInt(size);
