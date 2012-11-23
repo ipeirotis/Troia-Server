@@ -3,6 +3,7 @@ package test.java.com.troiaTester;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -58,12 +59,15 @@ public class DataGeneratorTest extends TestCase {
 	 */
 	@Test
 	public void testGenerateCategoryNames() {
-		logger.info("--------AUTOMATIC CATEGORY GENERATION--------");
-		DataGenerator fixture = DataGenerator.getInstance();
-		int categoryCount = 10;
-		Collection<String> result = fixture
-									.generateCategoryNames(categoryCount);
-		logger.info(result);
+		final int categoriesCount = 100;
+		final Pattern pattern = Pattern.compile("^Category-\\d+$");
+		DataGenerator generator = DataGenerator.getInstance();
+		Collection<String> names =  generator.generateCategoryNames(
+										categoriesCount);
+		for (String name : names) {
+			assertTrue(pattern.matcher(name).matches());
+
+		}
 	}
 
 	/**
@@ -163,68 +167,56 @@ public class DataGeneratorTest extends TestCase {
 
 	@Test
 	public void testGenerateLabels() {
-		Logger.getLogger(RouletteNoisedLabelGenerator.class).setLevel(Level.INFO);
-		logger.info("--------LABELS GENERATION--------");
-		DataGenerator fixture = DataGenerator.getInstance();
-		int categoryCount = 5;
-		int objectCount = 100000;
-		int workerCount = 1000;
-		double minQuality = 0;
-		double maxQuality = 1;
-		int workersPerObject = 1;
-		logger.info("Number of categories : " + categoryCount);
-		logger.info("Number of objects : " + objectCount);
-		logger.info("Number of workers : " + workerCount);
-		logger.info("Minimal worker quality : " + minQuality);
-		logger.info("Maximal worker quality : " + maxQuality);
-		Collection<String> categories = fixture
-										.generateCategoryNames(categoryCount);
-		TroiaObjectCollection objects = fixture.generateTestObjects(objectCount,
-										categories);
-		Collection<ArtificialWorker> workers = fixture
-											   .generateArtificialWorkers(workerCount, categories, minQuality,
-													   maxQuality);
-		Collection<Label> labels = fixture.generateLabels(workers, objects,
+		final int categoriesCount = 5;
+		final int objectsCount = 100000;
+		final int workersCount = 1000;
+		final double minQuality = 0;
+		final double maxQuality = 1;
+		final int workersPerObject = 1;
+
+		DataGenerator generator = DataGenerator.getInstance();
+		Collection<String> categories = generator.generateCategoryNames(
+											categoriesCount);
+		TroiaObjectCollection objects = generator.generateTestObjects(
+											objectsCount, categories);
+		Collection<ArtificialWorker> workers = generator.generateArtificialWorkers(
+				workersCount, categories, minQuality, maxQuality);
+		Collection<Label> labels = generator.generateLabels(workers, objects,
 								   workersPerObject);
-		int correctLabels = 0;
-		int totalLabels = 0;
-		double correctLabelsPercentage;
+
+		int correct = 0;
+		int total = 0;
 		for (Label label : labels) {
-			if (label.getCategoryName().equalsIgnoreCase(
+			if (label.getCategoryName().equals(
 						objects.getCategory(label.getObjectName()))) {
-				correctLabels++;
+				correct++;
 			}
-			totalLabels++;
+			total++;
 		}
-		correctLabelsPercentage = ((double) correctLabels / (double) totalLabels) * 100;
-		logger.info("Correct labels percentage : " + correctLabelsPercentage);
+		double percentage = (double)correct / (double)total;
+		assertEquals(percentage, 0.5, 0.1);
 
 	}
 
 	@Test
 	public void testGenerateGoldLabels() {
-		logger.info("--------GOLD LABELS GENERATION--------");
-		DataGenerator fixture = DataGenerator.getInstance();
-		int objectCount = 100;
-		int categoryCount = 2;
-		double goldCoverage = 0.5;
-		Collection<String> categories = fixture
-										.generateCategoryNames(categoryCount);
-		TroiaObjectCollection objects = fixture.generateTestObjects(objectCount,
-										categories);
-		Collection<GoldLabel> goldLabels = fixture.generateGoldLabels(objects,
-										   goldCoverage);
-		logger.info("For " + objectCount + " objects and " + goldCoverage
-					+ " gold coverage " + goldLabels.size()
-					+ " gold labels were generated");
-
+		final int objectsCount = 100;
+		final int categoriesCount = 2;
+		final double goldCoverage = 0.526;
+		DataGenerator generator = DataGenerator.getInstance();
+		Collection<String> categories = generator.generateCategoryNames(
+											categoriesCount);
+		TroiaObjectCollection objects = generator.generateTestObjects(
+											objectsCount, categories);
+		Collection<GoldLabel> goldLabels = generator.generateGoldLabels(
+											   objects, goldCoverage);
+		assertEquals(goldLabels.size(), (int)(objectsCount * goldCoverage));
 	}
 
 	public final static double PRIOR_EPSILON = 1E-1;
 	public final static double DOUBLE_EPSILON = 1E-6;
 
-	private static Logger logger = Logger
-								   .getLogger(DataGeneratorTest.class);
+	private static Logger logger = Logger.getLogger(DataGeneratorTest.class);
 }
 
 /*
