@@ -34,17 +34,6 @@ public class DataGeneratorTest extends TestCase {
 
 
 	/**
-	 * Compares two floating point values with specified accuracy.
-	 *
-	 * @param val0
-	 * @param val1
-	 * @param eps
-	 */
-	public static void assertAround(double val0, double val1, double eps) {
-		assertTrue(Math.abs(val0 - val1) < eps);
-	}
-
-	/**
 	 * Construct new test instance
 	 *
 	 * @param name
@@ -99,7 +88,7 @@ public class DataGeneratorTest extends TestCase {
 		for (String name : names) {
 			double occ = occurrences.get(name).doubleValue();
 			double prr = occ / (double) objectsCount;
-			assertAround(prior, prr, PRIOR_EPSILON);
+			assertEquals(prior, prr, PRIOR_EPSILON);
 		}
 	}
 
@@ -133,7 +122,7 @@ public class DataGeneratorTest extends TestCase {
 		for (String name : names) {
 			double occ = occurrences.get(name).doubleValue();
 			double prr = occ / (double) objectsCount;
-			assertAround(categories.get(name), prr, PRIOR_EPSILON);
+			assertEquals(categories.get(name), prr, PRIOR_EPSILON);
 		}
 	}
 
@@ -156,12 +145,12 @@ public class DataGeneratorTest extends TestCase {
 			for (String className : vector.keySet()) {
 				sum += vector.get(className).doubleValue();
 			}
-			assertAround(sum, 1.0, DataGenerator.CONFUSION_VECTOR_SUM_EPSILON);
+			assertEquals(sum, 1.0, DataGenerator.CONFUSION_VECTOR_SUM_EPSILON);
 		}
 		// Check diagonal elements.
 		for (String category : categories) {
 			Double prob = matrix.get(category).get(category);
-			assertAround(prob, workerQuality, DOUBLE_EPSILON);
+			assertEquals(prob, workerQuality, 1E-6);
 		}
 	}
 
@@ -214,7 +203,6 @@ public class DataGeneratorTest extends TestCase {
 	}
 
 	public final static double PRIOR_EPSILON = 1E-1;
-	public final static double DOUBLE_EPSILON = 1E-6;
 
 	private static Logger logger = Logger.getLogger(DataGeneratorTest.class);
 }
