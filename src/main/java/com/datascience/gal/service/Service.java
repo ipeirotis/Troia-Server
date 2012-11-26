@@ -907,13 +907,20 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response calculateEstimatedCost(@QueryParam("id") String jid,
 										   @QueryParam("method") String method) {
+		Response rs;
 		String id = getJobId(jid);
 		DawidSkeneProcessorManager manager = getManager();
 		if (!manager.containsProject(id))
 			return noSuchJobResponse(id);
+		try{
 		String message = "calculateEstimatedCost(" + method + ") for job " + id;
 		manager.calculateEvaluationCost(id,method);
-		return Response.status(500).build();
+		rs = buildResponse(message, SUCCESS, null,null, null);
+		}catch(Exception e){
+			logErrorFromException(e);
+			rs = Response.status(500).build();
+		}
+		return rs;
 	}
 
 	@GET
@@ -927,10 +934,15 @@ public class Service {
 		if (!manager.containsProject(id))
 			return noSuchJobResponse(id);
 		Response rs;
+		try{
 		String message = "getEstimatedCost for job " + id;
 		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 		rs = buildResponse(null, null,ds.getQuality(object, category), null, null);
 		manager.finalizeReading(id);
+		}catch(Exception e){
+			logErrorFromException(e);
+			rs = Response.status(500).build();
+		}
 		return rs;
 
 	}
