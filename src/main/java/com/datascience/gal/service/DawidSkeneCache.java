@@ -207,7 +207,11 @@ public class DawidSkeneCache {
 		return ds;
 	}
 
-	public DawidSkene insertDawidSkene(final DawidSkene ds, Object source) {
+	public void insertDawidSkene(final DawidSkene ds, Object source) {
+		if(ds==null){
+			logger.error("Called \"insertDawidSkene\" with null as parameter");
+			return;
+		}
 		if(!this.cache.containsKey(ds.getId())) {
 			this.getDawidSkeneFromDb(ds.getId());
 		}
@@ -240,7 +244,6 @@ public class DawidSkeneCache {
 		} else {
 			logger.error("Unable to get cache object with id "+ds.getId());
 		}
-		return ds;
 	}
 
 	public boolean hasDawidSkene(String id) {

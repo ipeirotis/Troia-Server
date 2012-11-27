@@ -33,15 +33,21 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-		logger.info("Started DS-computer for " + this.getDawidSkeneId()
+		DawidSkene ds = null;
+		try {
+			logger.info("Started DS-computer for " + this.getDawidSkeneId()
 					+ " with " + this.iterations + " iterations.");
-		DawidSkene ds = this.getCache().getDawidSkeneForEditing(
-							this.getDawidSkeneId(), this);
-		logger.debug("DS not computed - recomputing");
-		ds.estimate(this.iterations);
-		ds.setComputed(true);
-		this.getCache().insertDawidSkene(ds, this);
-		this.setState(DawidSkeneProcessorState.FINISHED);
+			ds = this.getCache().getDawidSkeneForEditing(
+					this.getDawidSkeneId(), this);
+			logger.debug("DS not computed - recomputing");
+			ds.estimate(this.iterations);
+			ds.setComputed(true);
+		} catch (Exception e) {
+			logger.error("DSalgorithmComputer filed becasue : "+e.getMessage());
+		}finally{
+			this.getCache().insertDawidSkene(ds, this);
+			this.setState(DawidSkeneProcessorState.FINISHED);
+		}
 		logger.info("DS-computer for " + this.getDawidSkeneId() + " finished.");
 	}
 
