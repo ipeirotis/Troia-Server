@@ -37,12 +37,17 @@ public class EvaluationDataWriter extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-		logger.info("Executing gold label writer for "+this.getDawidSkeneId()+".");
+		logger.info("Executing evaluation label writer for "+this.getDawidSkeneId()+".");
 		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
-		ds.addEvaluationData(this.goldLabels);
-		this.getCache().insertDawidSkene(ds,this);
+		try {
+			ds.addEvaluationData(this.goldLabels);
+		} catch(Exception e) {
+			logger.error("Failed to load evaluation labels for "+this.getDawidSkeneId());
+		} finally {
+			this.getCache().insertDawidSkene(ds,this);
+		}
 		this.setState(DawidSkeneProcessorState.FINISHED);
-		logger.info("Gold label writer for "+this.getDawidSkeneId()+" finished.");
+		logger.info("Evaluation label writer for "+this.getDawidSkeneId()+" finished.");
 	}
 
 

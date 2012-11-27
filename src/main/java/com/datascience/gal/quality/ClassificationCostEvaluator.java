@@ -18,7 +18,7 @@ public abstract class ClassificationCostEvaluator {
 
 	public double EvaluateClassificationCost(DawidSkene ds,String evaluationCategory,Datum datum) {
 
-		Map<String, Double>	dest_probabilities = this.getProbabilityVector(ds,datum);
+		Map<String, Double>	dest_probabilities = this.calculator.calculateDistribution(datum, ds);
 
 		Category fromCostVector = ds.getCategories().get(evaluationCategory);
 		Double cost = 0.0;
@@ -28,7 +28,6 @@ public abstract class ClassificationCostEvaluator {
 			Double misclassification_cost = fromCostVector.getCost(to);
 			cost += prob * misclassification_cost;
 		}
-
 		return cost;
 	}
 

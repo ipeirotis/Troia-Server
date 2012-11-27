@@ -42,13 +42,13 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 			logger.debug("DS not computed - recomputing");
 			ds.estimate(this.iterations);
 			ds.setComputed(true);
+			logger.info("DS-computer for " + this.getDawidSkeneId() + " finished.");
 		} catch (Exception e) {
 			logger.error("DSalgorithmComputer filed becasue : "+e.getMessage());
 		}finally{
 			this.getCache().insertDawidSkene(ds, this);
 			this.setState(DawidSkeneProcessorState.FINISHED);
 		}
-		logger.info("DS-computer for " + this.getDawidSkeneId() + " finished.");
 	}
 
 	/**
