@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datascience.gal.AssignedLabel;
@@ -157,7 +158,7 @@ public class MainTest {
 	/**
 	 * Test method for {@link com.datascience.gal.scripts.Main#getClassificationCost(java.lang.String[])}.
 	 */
-	@Test
+	@Test @Ignore("I don't think we need duplications")
 	public final void testGetClassificationCostWithDuplications() {
 		String froms[] = {"f1", "f2", " ", "4", "f1"};
 		String tos[] = {"t1", " ", "   ", "4", "t1"};
@@ -206,7 +207,7 @@ public class MainTest {
 	/**
 	 * Test method for {@link com.datascience.gal.scripts.Main#getCorrectLabels(java.lang.String[])}.
 	 */
-	@Test
+	@Test @Ignore("I don't think we need duplications")
 	public final void testGetCorrectLabelsWithDuplications() {
 		String [] objectNames = {"1", "2", "on3", " ", "2"};
 		String [] correctCategories = {"tc1","tc2","tc3"," ", "tc2"};
