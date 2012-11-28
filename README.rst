@@ -11,8 +11,8 @@ Test data generator installation
 --------------------------------
 To install this software you will need following programs 
 
-	- git - http://git-scm.com
-	- maven - http://maven.apache.org/
+- git - http://git-scm.com
+- maven - http://maven.apache.org/
 
 After setting up environment you must get repositories from 
 GitHub. They are stored at 
@@ -55,24 +55,24 @@ minimal command will look like this
 This will display help that lists available parameters with
 are :
 
- - f - Loads configuration from settings file
- - t - base name for output files
- - c - number of categories in test data
- - o - number of objects in test data
- - w - number of workers in test data
- - h - maximal quality of worker (from 0 to 1)
- - l - minimal quality of worker (from 0 to 1)
- - p - number of workers assigned to single object
- - g - ratio of gold labels among objects (from 0 to 1)
- - q -  name of file containing basic workers definition.
+- f - Loads configuration from settings file
+- t - base name for output files
+- c - number of categories in test data
+- o - number of objects in test data
+- w - number of workers in test data
+- h - maximal quality of worker (from 0 to 1)
+- l - minimal quality of worker (from 0 to 1)
+- p - number of workers assigned to single object
+- g - ratio of gold labels among objects (from 0 to 1)
+- q -  name of file containing basic workers definition.
 
 
 After setting up all parameters generator will create four files.
 
- - basename_aiworker.json
- - basename_goldLabels.txt
- - basename_labels.txt
- - basename_objects.txt
+- basename_aiworker.json
+- basename_goldLabels.txt
+- basename_labels.txt
+- basename_objects.txt
 
 Where basename is string given with parameter -t 
 
@@ -88,7 +88,7 @@ basename_goldLabels.txt
 Contains gold labels in format 
 ::
 
- \<object name\>\<tabulation\>\<category name\>
+ <object name><tabulation><category name>
 
 basename_labels.txt
 -------------------
@@ -96,7 +96,7 @@ Contains labels assigned to objects by artificial workers
 This file is formatted in following 
 ::
 
- \<worker name\>\<tabulation\>\<object name\>\<tabulation\>\<category name\>
+ <worker name><tabulation><object name><tabulation><category name>
 
 basebame_objects.txt
 --------------------
