@@ -186,6 +186,10 @@ public interface DawidSkene {
 	public abstract Double getQuality(String object,String category);
 	public abstract Map<String,Map<String,Double>> getQualities();
 	public abstract void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object);
+	public abstract Map<String, Double>  getEvaluatedQualities();
+	public abstract Double  getEvaluatedQuality(String category);
+	public abstract void computeProjectQualityWithEvaluationData();
+	
 	public abstract Map<String,Datum> getObjects();
 
 	Map<String, Double> getWorkerPriors(Worker worker);

@@ -209,7 +209,7 @@ public class DawidSkeneCache {
 
 	public void insertDawidSkene(final DawidSkene ds, Object source) {
 		if(ds==null){
-			logger.error("Called \"insertDawidSkene\" with null as parameter");
+			logger.warn("Called \"insertDawidSkene\" with null as parameter");
 			return;
 		}
 		if(!this.cache.containsKey(ds.getId())) {
