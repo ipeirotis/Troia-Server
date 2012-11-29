@@ -10,6 +10,7 @@
 package com.datascience.gal;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 
 import com.datascience.gal.quality.ClassificationCostEvaluator;
@@ -114,6 +115,8 @@ public interface DawidSkene {
 										 Map<String, String> posterior_voting);
 
 	public abstract String printAllWorkerScores(boolean detailed);
+	
+	public abstract LinkedList<Map<String, Object>> printAllWorkerScoresJSON(boolean detailed);
 
 	/**
 	 * TODO: (josh) i'm too lazy to make this more functional rather than
@@ -124,6 +127,14 @@ public interface DawidSkene {
 	 * @return
 	 */
 	public abstract String printWorkerScore(Worker w, boolean detailed);
+	
+	/**
+	 * Same as above function but returns result as a Map<String, Object>
+	 * @param w
+	 * @param detailed
+	 * @return
+	 */
+	public abstract Map<String, Object> printWorkerScoreJSON(Worker w, boolean detailed);
 
 	/**
 	 * Prints the objects that have probability distributions with entropy

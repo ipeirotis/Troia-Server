@@ -13,11 +13,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -742,6 +741,32 @@ public class Service {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
 			String result = ds.printAllWorkerScores(null != verbose);
+			rs = buildResponse(message, SUCCESS, result, new DateTime(),
+							   null);
+		} catch (Exception e) {
+			logErrorFromException(e);
+			rs = Response.status(500).build();
+		} finally {
+			manager.finalizeReading(id);
+		}
+		return rs;
+	}
+	
+	@GET
+	@Path("printWorkerSummaryJSON")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response printWorkerSummaryJSON(@QueryParam("id") String idString,
+									   @QueryParam("verbose") String verbose) {
+		logRequestProcessing("printWorkerSummaryJSON");
+		String id = getIdFromInput(idString);
+		Response rs;
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
+		try {
+			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
+			String message = "Worker summary";
+			LinkedList<Map<String, Object>> result = ds.printAllWorkerScoresJSON(null != verbose);
 			rs = buildResponse(message, SUCCESS, result, new DateTime(),
 							   null);
 		} catch (Exception e) {

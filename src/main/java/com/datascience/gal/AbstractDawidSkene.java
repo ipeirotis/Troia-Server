@@ -12,6 +12,7 @@ package com.datascience.gal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,7 +41,17 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * Any modification to DS project will set it to false
 	 */
 	private boolean computed;
+	
+	private String getAnnotatorCostNaiveStr(Worker w){
+		double cost_naive = this.getAnnotatorCostNaive(w);
+		return (Double.isNaN(cost_naive)) ? "---" : Utils.round(100 * cost_naive, 2) + "%";
+	}
 
+	private String getWorkerCostStr(Worker w, WorkerCostMethod method){
+		double cost_min = this.getWorkerCost(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
+		return (Double.isNaN(cost_min)) ? "---" : Math.round(100 * (1 - cost_min)) + "%";
+	}
+	
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
@@ -191,20 +202,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		StringBuilder sb = new StringBuilder();
 		String workerName = w.getName();
-
-		double cost_naive = this.getAnnotatorCostNaive(w);
-		String s_cost_naive = (Double.isNaN(cost_naive)) ? "---" : Utils.round(
-								  100 * cost_naive, 2) + "%";
-
-		double cost_adj = this.getWorkerCost(w, WorkerCostMethod.COST_ADJUSTED);
-		String s_cost_adj = (Double.isNaN(cost_adj)) ? "---" : Math
-							.round(100 * (1 - cost_adj)) + "%";
-
-		double cost_min = this.getWorkerCost(w,
-											 WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
-		String s_cost_min = (Double.isNaN(cost_min)) ? "---" : Math
-							.round(100 * (1 - cost_min)) + "%";
-
+		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
+		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
+		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
 		int contributions = w.getAssignedLabels().size();
 		int gold_tests = countGoldTests(w.getAssignedLabels());
 
@@ -236,6 +236,40 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 
 		return sb.toString();
+	}
+	
+	@Override
+	public Map<String, Object> printWorkerScoreJSON(Worker w, boolean detailed) {
+		String workerName = w.getName();
+		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
+		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
+		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
+		int contributions = w.getAssignedLabels().size();
+		int gold_tests = countGoldTests(w.getAssignedLabels());
+
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("Worker", workerName);
+		m.put("Error rate", s_cost_naive);
+		m.put("Quality (Expected)", s_cost_adj);
+		m.put("Quality (Optimized)", s_cost_min);
+		m.put("Number of Annotations", contributions);
+		m.put("Number of Gold Tests", gold_tests);
+		if (detailed){
+			LinkedList<Map<String, Object>> matrix = new LinkedList<Map<String, Object>>();
+			for (String correct_name : this.categories.keySet()) {
+				for (String assigned_name : this.categories.keySet()) {
+					Map<String, Object> val = new HashMap<String, Object>();
+					val.put("from", correct_name);
+					val.put("to", assigned_name);
+					double cm_entry = getErrorRateForWorker(w, correct_name, assigned_name);
+					String s_cm_entry = Double.isNaN(cm_entry) ? "---" : Utils.round(100 * cm_entry, 3).toString();
+					val.put("value", s_cm_entry);
+					matrix.add(val);
+				}
+			}
+			m.put("Confusion Matrix", matrix);
+		}
+		return m;
 	}
 
 	private int countGoldTests(Set<AssignedLabel> labels) {
@@ -278,6 +312,17 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			sb.append(printWorkerScore(w, detailed));
 		}
 		return sb.toString();
+	}
+	
+	@Override
+	public LinkedList<Map<String, Object>> printAllWorkerScoresJSON(boolean detailed) {
+
+		LinkedList<Map<String, Object>> workerScores = new LinkedList<Map<String, Object>>();
+		for (String workername : new TreeSet<String>(this.workers.keySet())) {
+			Worker w = this.workers.get(workername);
+			workerScores.add(printWorkerScoreJSON(w, detailed));
+		}
+		return workerScores;
 	}
 
 	@Override
@@ -651,7 +696,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		this.objects.put(objectName, d);
 		invalidateComputed();
 	}
-
+	
 	@Override
 	public double getWorkerCost(Worker w, WorkerCostMethod method) {
 
