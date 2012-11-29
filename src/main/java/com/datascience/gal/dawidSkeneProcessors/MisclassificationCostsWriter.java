@@ -38,9 +38,16 @@ public class MisclassificationCostsWriter extends DawidSkeneProcessor {
 
 	@Override
 	public void run() {
-		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
+		DawidSkene ds = null;
+		try{
+		ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
 		ds.addMisclassificationCosts(costs);
-		this.getCache().insertDawidSkene(ds,this);
+		logger.info("Loaded misclassification cost for "+this.getDawidSkeneId());
+		}catch(Exception e){
+			logger.error("Failed to load misclassification cost for "+this.getDawidSkeneId());
+		}finally{
+			this.getCache().insertDawidSkene(ds,this);
+		}
 	}
 
 	/**
