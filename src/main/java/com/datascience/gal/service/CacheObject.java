@@ -105,7 +105,7 @@ public class CacheObject<PayloadType> {
 	 * @return Object that is held in cache
 	 */
 	public PayloadType getPayloadForEditing(Object writer) {
-		boolean wait = false;
+		boolean wait = true;
 		synchronized(this.payload) {
 			if(this.writerLockOwner==null&&this.readerLockOwners.size()==0) {
 				this.writerLockOwner=writer;
@@ -119,7 +119,7 @@ public class CacheObject<PayloadType> {
 		}
 		while(wait) {
 			if(this.writerLockOwner==writer) {
-				wait=true;
+				wait=false;
 			} else {
 				try {
 					Thread.sleep(READER_WRITER_SLEEP_PERIOD);
