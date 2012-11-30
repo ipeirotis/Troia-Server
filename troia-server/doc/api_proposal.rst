@@ -59,17 +59,16 @@ We assume that you are authorized when you make following requests.
 
 
     POST /jobs/ <- create job with some random id and return this id similar to next one
-    POST /jobs/id:/ <- create new job with given id and with specified parameters
-    POST /jobs/id:/reset
+    POST /jobs/ data:id <- create new job with given id and with specified parameters
 
     POST /jobs/id:/costMatrix <- sends cost matrix
-    POST /jobs/id:/votes/ <- add votes to system - we have only version that adds multiple votes - possibly only one
+    POST /jobs/id:/assignedLabels/ <- add votes to system - we have only version that adds multiple votes - possibly only one
 
     POST /jobs/id:/prediction/algorithm:/calculate <- starts calculation for this project, takes parameters specific to used algorithm like number of iterations etc
     POST /jobs/id:/prediction/algorithm:/
 
 
-    DELETE /jobs/id:/ <- deletes job
+    DELETE /jobs/ data:id <- deletes job
 
 NOTE: Do we want to be able to remove some votes?
 

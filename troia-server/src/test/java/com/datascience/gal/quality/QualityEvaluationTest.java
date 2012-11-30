@@ -70,7 +70,7 @@ public class QualityEvaluationTest extends TestCase {
 		evaluationData.add(new CorrectLabel("Object2","Category1"));
 		evaluationData.add(new CorrectLabel("Object3","Category2"));
 		evaluationData.add(new CorrectLabel("Object4","Category2"));
-		ds.addEvaluationData(evaluationData);
+		ds.addEvaluationDatums(evaluationData);
 
 		testData(ds);
 

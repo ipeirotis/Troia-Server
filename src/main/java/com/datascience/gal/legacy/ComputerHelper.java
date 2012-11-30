@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.datascience.gal.service;
+package com.datascience.gal.legacy;
 
 import java.util.Collections;
 import java.util.HashSet;
