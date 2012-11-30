@@ -939,7 +939,27 @@ public class Service {
 			return noSuchJobResponse(id);
 		try{
 		String message = "calculateEstimatedCost(" + method + ") for job " + id;
-		manager.calculateEvaluationCost(id,method);
+		manager.calculateEstimatedCost(id,method);
+		rs = buildResponse(message, SUCCESS, null,null, null);
+		}catch(Exception e){
+			logErrorFromException(e);
+			rs = Response.status(500).build();
+		}
+		return rs;
+	}
+	
+	@GET
+	@Path("calculateEvaluatedCost")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response calculateEstimatedCost(@QueryParam("id") String jid) {
+		Response rs;
+		String id = getJobId(jid);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
+		try{
+		String message = "calculateEvaluatedCost for job " + id;
+		manager.calculateEvaluatedCost(id);
 		rs = buildResponse(message, SUCCESS, null,null, null);
 		}catch(Exception e){
 			logErrorFromException(e);
@@ -960,9 +980,29 @@ public class Service {
 			return noSuchJobResponse(id);
 		Response rs;
 		try{
-		String message = "getEstimatedCost for job " + id;
 		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 		rs = buildResponse(null, null,ds.getQuality(object, category), null, null);
+		manager.finalizeReading(id);
+		}catch(Exception e){
+			logErrorFromException(e);
+			rs = Response.status(500).build();
+		}
+		return rs;
+
+	}
+	
+	@GET
+	@Path("getEvaluatedCost")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getEvaluatedCost(@QueryParam("id") String jid,@QueryParam("category") String category) {
+		DawidSkeneProcessorManager manager = getManager();
+		String id = getJobId(jid);
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
+		Response rs;
+		try{
+		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
+		rs = buildResponse(null, null,ds.getEvaluatedQuality(category), null, null);
 		manager.finalizeReading(id);
 		}catch(Exception e){
 			logErrorFromException(e);

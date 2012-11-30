@@ -147,11 +147,16 @@ public class DawidSkeneProcessorManager extends Thread {
 		this.addProcessor(updater);
 	}
 
-	public void calculateEvaluationCost(String projectId,String method) {
+	public void calculateEstimatedCost(String projectId,String method) {
 		QualityComputer processor = new QualityComputer(projectId,this.cache,method);
 		this.addProcessor(processor);
 	}
 
+	public void calculateEvaluatedCost(String projectId) {
+		Evaluator processor = new Evaluator(projectId,this.cache);
+		this.addProcessor(processor);
+	}
+	
 	public final DawidSkene getDawidSkeneForReadOnly(String projectId) {
 		Queue<DawidSkeneProcessor> processors;
 		DawidSkene ds = null;
