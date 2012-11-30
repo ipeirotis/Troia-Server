@@ -138,7 +138,11 @@ public class DawidSkeneProcessorManager extends Thread {
 	public void computeDawidSkene(String projectId, int iterations) {
 		DSalgorithmComputer computer = new DSalgorithmComputer(projectId,
 				this.cache, iterations);
+		QualityComputer estimator = new QualityComputer(projectId,this.cache);
+		Evaluator evaluator = new Evaluator(projectId,this.cache);
 		this.addProcessor(computer);
+		this.addProcessor(estimator);
+		this.addProcessor(evaluator);
 	}
 
 	public void updateDawidSkene(String projectId, DawidSkene updatedDS) {
@@ -170,7 +174,7 @@ public class DawidSkeneProcessorManager extends Thread {
 						Thread.currentThread());
 			}
 		}
-		while (true) {
+		while (ds==null) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

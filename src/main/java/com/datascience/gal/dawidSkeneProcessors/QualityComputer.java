@@ -14,6 +14,12 @@ import com.datascience.gal.service.DawidSkeneCache;
 
 public class QualityComputer extends DawidSkeneProcessor {
 
+	private static final String DEFAULT_METHOD = "MV_MaxLikelihoodEvaluator";
+	
+	protected QualityComputer(String id, DawidSkeneCache cache) {
+		this(id,cache,DEFAULT_METHOD);
+	}
+	
 	protected QualityComputer(String id, DawidSkeneCache cache, String method) {
 		super(id, cache);
 		this.evaluator = EvaluatorManager.getEvaluatorForMethod(method);
