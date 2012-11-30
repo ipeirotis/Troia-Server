@@ -281,7 +281,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	@Override
-	public Map<String, Object> printWorkerScoreJSON(Worker w, boolean detailed) {
+	public Map<String, Object> getWorkerScore(Worker w, boolean detailed) {
 		String workerName = w.getName();
 		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
 		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
@@ -357,12 +357,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	@Override
-	public LinkedList<Map<String, Object>> printAllWorkerScoresJSON(boolean detailed) {
+	public LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed) {
 
 		LinkedList<Map<String, Object>> workerScores = new LinkedList<Map<String, Object>>();
 		for (String workername : new TreeSet<String>(this.workers.keySet())) {
 			Worker w = this.workers.get(workername);
-			workerScores.add(printWorkerScoreJSON(w, detailed));
+			workerScores.add(getWorkerScore(w, detailed));
 		}
 		return workerScores;
 	}

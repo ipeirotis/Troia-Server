@@ -766,7 +766,7 @@ public class Service {
 		try {
 			DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
 			String message = "Worker summary";
-			LinkedList<Map<String, Object>> result = ds.printAllWorkerScoresJSON(null != verbose);
+			LinkedList<Map<String, Object>> result = ds.getAllWorkerScores(null != verbose);
 			rs = buildResponse(message, SUCCESS, result, new DateTime(),
 							   null);
 		} catch (Exception e) {

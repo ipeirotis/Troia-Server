@@ -116,7 +116,7 @@ public interface DawidSkene {
 
 	public abstract String printAllWorkerScores(boolean detailed);
 	
-	public abstract LinkedList<Map<String, Object>> printAllWorkerScoresJSON(boolean detailed);
+	public abstract LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed);
 
 	/**
 	 * TODO: (josh) i'm too lazy to make this more functional rather than
@@ -134,7 +134,7 @@ public interface DawidSkene {
 	 * @param detailed
 	 * @return
 	 */
-	public abstract Map<String, Object> printWorkerScoreJSON(Worker w, boolean detailed);
+	public abstract Map<String, Object> getWorkerScore(Worker w, boolean detailed);
 
 	/**
 	 * Prints the objects that have probability distributions with entropy
