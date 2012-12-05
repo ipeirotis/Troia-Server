@@ -287,8 +287,8 @@ public class Service {
 	@Path("loadCategories")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadCategories(@FormParam("id") String idString,
-								   @FormParam("categories") String categoriesString,
-								   @FormParam("incremental") String incremental) {
+			@FormParam("categories") String categoriesString,
+			@FormParam("incremental") String incremental) {
 		logRequestProcessing("loadCategories");
 		String id = getIdFromInput(idString);
 		DawidSkeneProcessorManager manager = getManager();
@@ -317,14 +317,15 @@ public class Service {
 	@Path("loadCosts")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadMisclassificationCosts(
-		@FormParam("id") String idString,
-		@FormParam("costs") String costsString) {
+			@FormParam("id") String idString,
+			@FormParam("costs") String costsString) {
 		logRequestProcessing("loadCosts");
 		String id = getIdFromInput(idString);
 		DawidSkeneProcessorManager manager = getManager();
-		if (!manager.containsProject(id))
+		if (!manager.containsProject(id)) {
 			return noSuchJobResponse(id);
-		Response rs;
+		}
+		Response response;
 		try {
 			Collection<MisclassificationCost> costs = parseJsonInput(
 						costsString,
@@ -332,12 +333,34 @@ public class Service {
 			String message = "Loaded " + costs.size()
 							 + " misclassification costs";
 			manager.addMisclassificationCost(id, costs);
-			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
+			response = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
 			logErrorFromException(e);
-			rs = Response.status(500).build();
+			response = Response.status(500).build();
 		}
-		return rs;
+		return response;
+	}
+
+	@POST
+	@Path("loadObjects")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response loadObjects(
+			@FormParam("id") String idString,
+			@FormParam("objects") String objectsString) {
+		logRequestProcessing("loadObjects");
+		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id)) {
+			return noSuchJobResponse(id);
+		}
+		Response response;
+		try {
+			response = buildResponse(null, null, null, new DateTime(), null);
+		} catch (Exception e) {
+			logErrorFromException(e);
+			response = Response.status(500).build();
+		}
+		return response;
 	}
 
 	/**
@@ -349,7 +372,7 @@ public class Service {
 	@Path("loadWorkerAssignedLabel")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadWorkerAssignedLabel(@FormParam("id") String idString,
-											@FormParam("label") String labelString) {
+			@FormParam("label") String labelString) {
 		logRequestProcessing("loadWorkerAssignedLabel");
 		String id = getIdFromInput(idString);
 		DawidSkeneProcessorManager manager = getManager();
@@ -384,8 +407,9 @@ public class Service {
 		logRequestProcessing("loadWorkerAssignedLabels");
 		String id = getIdFromInput(idString);
 		DawidSkeneProcessorManager manager = getManager();
-		if (!manager.containsProject(id))
+		if (!manager.containsProject(id)) {
 			return noSuchJobResponse(id);
+		}
 		Response rs;
 		try {
 			Collection<AssignedLabel> labels = parseJsonInput(labelsString,
@@ -751,7 +775,7 @@ public class Service {
 		}
 		return rs;
 	}
-	
+
 	@GET
 	@Path("printWorkerSummaryJSON")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -947,7 +971,7 @@ public class Service {
 		}
 		return rs;
 	}
-	
+
 	@GET
 	@Path("calculateEvaluatedCost")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -990,7 +1014,7 @@ public class Service {
 		return rs;
 
 	}
-	
+
 	@GET
 	@Path("getEvaluatedCost")
 	@Produces(MediaType.APPLICATION_JSON)
