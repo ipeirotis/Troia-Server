@@ -355,7 +355,10 @@ public class Service {
 		}
 		Response response;
 		try {
-			response = buildResponse(null, null, null, new DateTime(), null);
+			Collection<String> objs = parseJsonInput(objectsString, JSONUtils.objectsType);
+			manager.addObjects(id, objs);
+			String message = String.format("Loaded %d unassigned objects.", objs.size());
+			response = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
 			logErrorFromException(e);
 			response = Response.status(500).build();

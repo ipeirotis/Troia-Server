@@ -28,6 +28,8 @@ public interface DawidSkene {
 	public abstract void addCorrectLabel(CorrectLabel cl);
 
 	public abstract void addEvaluationData(Collection<CorrectLabel> cl);
+	
+	public abstract void addObjects(Collection<String> objs);
 
 	/**
 	 * @return the fixedPriors
