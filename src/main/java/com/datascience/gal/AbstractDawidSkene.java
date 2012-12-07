@@ -740,6 +740,17 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	@Override
+	public void addObjects(Collection<String> objs){
+		Set<Category> categories = new HashSet<Category>(this.categories.values());
+		for (String obj : objs){
+			if (!this.objects.containsKey(obj)) {
+				this.objects.put(obj, new Datum(obj, categories));
+			}
+		}
+		invalidateComputed();
+	}
+	
+	@Override
 	public double getWorkerCost(Worker w, WorkerCostMethod method) {
 
 		double cost = 0.0;
@@ -793,6 +804,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			// this label.
 
 		}
+		//TODO: remove that after fixing worker getPrior func
+		if (Double.isNaN(cost))
+			cost = 0.;
+		///////////////////////////////////////////////
 
 		if (method == WorkerCostMethod.COST_NAIVE
 				|| method == WorkerCostMethod.COST_NAIVE_MINIMIZED) {
@@ -997,7 +1012,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
 		}
 	}
-
+	
 	public boolean isComputed() {
 		return this.computed;
 	}

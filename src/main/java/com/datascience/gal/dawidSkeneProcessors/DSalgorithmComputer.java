@@ -71,5 +71,5 @@ public class DSalgorithmComputer extends DawidSkeneProcessor {
 		this.iterations = iterations;
 	}
 
-	private static Logger logger = Logger.getLogger(LabelWriter.class);
+	private static Logger logger = Logger.getLogger(DSalgorithmComputer.class);
 }
