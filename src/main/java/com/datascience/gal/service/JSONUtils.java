@@ -59,6 +59,8 @@ public class JSONUtils {
 	} .getType();
 	public static final Type assignedLabelType = new TypeToken<AssignedLabel>() {
 	} .getType();
+	public static final Type objectsType = new TypeToken<Collection<String>>() {
+	} .getType();
 	public static final Type correctLabelType = new TypeToken<CorrectLabel>() {
 	} .getType();
 	public static final Type categoryType = new TypeToken<Category>() {

@@ -14,24 +14,49 @@
  ******************************************************************************/
 package com.datascience.gal.dawidSkeneProcessors;
 
-import com.datascience.gal.service.DawidSkeneCache;
+import org.apache.log4j.Logger;
 
+import com.datascience.gal.DawidSkene;
+import com.datascience.gal.service.DawidSkeneCache;
 
 /**
  * This class is root of all classes used for modyfing DS model.
  */
-public abstract class DawidSkeneProcessor implements Runnable {
-
+public class DawidSkeneProcessor implements Runnable {
 
 	/**
 	 * @param id Dawid-Skene project identifier
 	 * @param cache Dawid-Skene cache that will be used by this writer
 	 */
-	protected DawidSkeneProcessor(String id,DawidSkeneCache cache) {
+	public DawidSkeneProcessor(String id,DawidSkeneCache cache){
 		this.setDawidSkeneId(id);
 		this.setCache(cache);
 		this.setState(DawidSkeneProcessorState.CREATED);
 	}
+	
+	public DawidSkeneProcessor(String id,DawidSkeneCache cache, DawidSkeneCommand cmd){
+		this(id, cache);
+		this.command = cmd;
+	}
+	
+	@Override
+	public void run() {
+		logger.info("Executing writer for "+this.getDawidSkeneId()+".");
+		DawidSkene ds = this.getCache().getDawidSkeneForEditing(this.getDawidSkeneId(),this);
+		try {
+			command.execute(ds);
+		} catch(Exception e) {
+			logger.error("Failed to load objects for "+this.getDawidSkeneId());
+		} finally {
+			this.getCache().insertDawidSkene(ds,this);
+		}
+		this.setState(DawidSkeneProcessorState.FINISHED);
+		logger.info("Label writer for "+this.getDawidSkeneId()+" finished.");
+	}
+
+	private DawidSkeneCommand command;
+
+	private static Logger logger = Logger.getLogger(DawidSkeneProcessor.class);
 
 	/**
 	 * Identifier of DawidSkene model that will be modified
