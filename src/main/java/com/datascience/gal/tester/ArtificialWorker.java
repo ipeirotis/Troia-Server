@@ -1,4 +1,4 @@
-package main.com.troiaTester;
+package java.com.datascience.gal.tester;
 
 
 public class ArtificialWorker {

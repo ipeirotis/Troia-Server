@@ -1,5 +1,6 @@
-package main.com.troiaTester;
+package java.com.datascience.gal.tester;
 
+import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -275,6 +276,14 @@ public class DataGenerator {
 			}
 		}
 		return goldLabels;
+	}
+
+	public Collection<Double> computeArtificialWorkersQualities(
+			Collection<ArtificialWorker> workers,
+			Collection<Label> labes,
+			Collection<GoldLabel> goldLabels) {
+
+		return null;
 	}
 
 	public Data generateTestData(String requestId, int objectCount,

@@ -1,4 +1,4 @@
-package main.com.troiaTester;
+package java.com.datascience.gal.tester;
 
 /**
  * This interface provides functionality used for generating noised categories

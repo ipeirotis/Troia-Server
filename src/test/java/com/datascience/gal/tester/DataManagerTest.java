@@ -1,4 +1,4 @@
-package test.java.com.troiaTester;
+package com.datascience.gal.tester;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,11 +11,11 @@ import org.junit.Test;
 import junit.framework.TestCase;
 import troiaClient.Label;
 import troiaClient.Category;
-import main.com.troiaTester.ArtificialWorker;
-import main.com.troiaTester.Data;
-import main.com.troiaTester.DataGenerator;
-import main.com.troiaTester.DataManager;
-import main.com.troiaTester.TroiaObjectCollection;
+import java.com.datascience.gal.tester.ArtificialWorker;
+import java.com.datascience.gal.tester.Data;
+import java.com.datascience.gal.tester.DataGenerator;
+import java.com.datascience.gal.tester.DataManager;
+import java.com.datascience.gal.tester.TroiaObjectCollection;
 
 import static java.io.File.separator;
 
