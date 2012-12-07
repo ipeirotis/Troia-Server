@@ -112,26 +112,78 @@ public class DawidSkeneProcessorManager extends Thread {
 	}
 
 	public void addLabels(String projectId, Collection<AssignedLabel> labels) {
-		LabelWriter writer = new LabelWriter(projectId, this.cache, labels);
+		DawidSkeneProcessor writer = new DawidSkeneProcessor(projectId, this.cache, new DawidSkeneCommand() {
+			private Collection<AssignedLabel> als;
+			@Override
+			public void execute(DawidSkene ds) {
+				ds.addAssignedLabels(als);
+			}
+			public DawidSkeneCommand init(Collection<AssignedLabel> als){
+				this.als = als;
+				return this;
+			}
+		}.init(labels));
+		this.addProcessor(writer);
+	}
+	
+	public void addObjects(String projectId, Collection<String> objects) {
+		DawidSkeneProcessor writer = new DawidSkeneProcessor(projectId, this.cache, new DawidSkeneCommand() {
+			private Collection<String> objects;
+			@Override
+			public void execute(DawidSkene ds) {
+				ds.addObjects(objects);
+			}
+			public DawidSkeneCommand init(Collection<String> objects){
+				this.objects = objects;
+				return this;
+			}
+		}.init(objects));
 		this.addProcessor(writer);
 	}
 
-	public void addGoldLabels(String projectId,
-							  Collection<CorrectLabel> goldLabels) {
-		GoldLabelWriter writer = new GoldLabelWriter(projectId, this.cache,
-				goldLabels);
+	public void addGoldLabels(String projectId, Collection<CorrectLabel> goldLabels) {
+		DawidSkeneProcessor writer = new DawidSkeneProcessor(projectId, this.cache, new DawidSkeneCommand() {
+			private Collection<CorrectLabel> cls;
+			@Override
+			public void execute(DawidSkene ds) {
+				ds.addCorrectLabels(cls);
+			}
+			public DawidSkeneCommand init(Collection<CorrectLabel> cls){
+				this.cls = cls;
+				return this;
+			}
+		}.init(goldLabels));
 		this.addProcessor(writer);
 	}
 
 	public void addEvaluationData(String projectId,
 								  Collection<CorrectLabel> goldLabels) {
-		EvaluationDataWriter writer = new EvaluationDataWriter(projectId, this.cache,
-				goldLabels);
+		DawidSkeneProcessor writer = new DawidSkeneProcessor(projectId, this.cache, new DawidSkeneCommand() {
+			private Collection<CorrectLabel> cls;
+			@Override
+			public void execute(DawidSkene ds) {
+				ds.addEvaluationData(cls);
+			}
+			public DawidSkeneCommand init(Collection<CorrectLabel> cls){
+				this.cls = cls;
+				return this;
+			}
+		}.init(goldLabels));
 		this.addProcessor(writer);
 	}
 
 	public void addMisclassificationCost(String projectId,Collection<MisclassificationCost> costs) {
-		MisclassificationCostsWriter writer = new MisclassificationCostsWriter(projectId,this.cache,costs);
+		DawidSkeneProcessor writer = new DawidSkeneProcessor(projectId, this.cache, new DawidSkeneCommand() {
+			private Collection<MisclassificationCost> mcs;
+			@Override
+			public void execute(DawidSkene ds) {
+				ds.addMisclassificationCosts(mcs);
+			}
+			public DawidSkeneCommand init(Collection<MisclassificationCost> mcs){
+				this.mcs = mcs;
+				return this;
+			}
+		}.init(costs));
 		this.addProcessor(writer);
 	}
 
