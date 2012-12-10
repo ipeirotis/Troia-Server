@@ -11,16 +11,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ipeirotis</groupId>
-	<!-- <artifactId>DSaS</artifactId> -->
-	<artifactId>project-troia</artifactId>
-	<!-- <version>0.0.1-SNAPSHOT</version> -->
+	<artifactId>server</artifactId>
 	<version>0.0.1</version>
-	<!-- <packaging>war</packaging> -->
-	<packaging>pom</packaging>
-	<modules>
-		<module>server</module>
-		<module>data-generator</module>
-	</modules>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -96,94 +89,17 @@
 			<version>1.10</version>
 		</dependency>
 		<!-- Troia client library -->
-		<!-- <dependency> -->
-		<!-- 	<groupId>TroiaJavaClient</groupId> -->
-		<!-- 	<artifactId>TroiaJavaClient</artifactId> -->
-		<!-- 	<version>1.0</version> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>TroiaJavaClient</groupId>
+			<artifactId>TroiaJavaClient</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12.4</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
-			<!-- <plugin> -->
-				<!-- <groupId>org.apache.maven.plugins</groupId> -->
-				<!-- <artifactId>maven-shade-plugin</artifactId> -->
-				<!-- <version>1.7.1</version> -->
-				<!-- <executions> -->
-				<!-- 	<execution> -->
-				<!-- 		<phase>package</phase> -->
-				<!-- 		<goals> -->
-				<!-- 			<goal>shade</goal> -->
-				<!-- 		</goals> -->
-				<!-- 		<configuration> -->
-				<!-- 			<transformers> -->
-				<!-- 				<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> -->
-				<!-- 					<mainClass>com.datascience.gal.dataGenerator.TroiaDataGenerator</mainClass> -->
-				<!-- 				</transformer> -->
-				<!-- 			</transformers> -->
-				<!-- 		</configuration> -->
-				<!-- 	</execution> -->
-				<!-- </executions> -->
-			<!-- </plugin> -->
-			<!-- <plugin> -->
-			<!-- 	<groupId>org.apache.maven.plugins</groupId> -->
-			<!-- 	<artifactId>maven-jar-plugin</artifactId> -->
-			<!-- 	<version>2.4</version> -->
-			<!-- 	<configuration> -->
-					<!-- <includes> -->
-					<!-- 	<include>**/dataGenerator/*</include> -->
-					<!-- </includes> -->
-			<!-- 		<archive> -->
-			<!-- 			<manifest> -->
-			<!-- 				<addClasspath>true</addClasspath> -->
-			<!-- 				<mainClass>com.datascience.gal.dataGenerator.TroiaDataGenerator</mainClass> -->
-			<!-- 			</manifest> -->
-			<!-- 	</archive> -->
-			<!-- 	</configuration> -->
-			<!-- 	<executions> -->
-			<!-- 		<execution> -->
-			<!-- 			<id>make-a-jar</id> -->
-			<!-- 			<phase>compile</phase> -->
-			<!-- 			<goals> -->
-			<!-- 				<goal>jar</goal> -->
-			<!-- 			</goals> -->
-			<!-- 		</execution> -->
-			<!-- 	</executions> -->
-			<!-- </plugin> -->
-			<!-- <plugin> -->
-			<!-- 	<artifactId>maven-war-plugin</artifactId> -->
-			<!-- 	<version>2.3</version> -->
-			<!-- 	<configuration> -->
-			<!-- 		<packagingExcludes>**/dataGenerator/</packagingExcludes> -->
-			<!-- 	</configuration> -->
-			<!-- </plugin> -->
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
-				<inherited>true</inherited>
-				<configuration>
-					<skipTests>true</skipTests>
-					<classpathContainers>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-					</classpathContainers>
-				</configuration>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
 			</plugin>
 		</plugins>
 	</build>
