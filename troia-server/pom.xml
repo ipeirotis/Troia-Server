@@ -11,7 +11,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ipeirotis</groupId>
-	<artifactId>server</artifactId>
+	<artifactId>troia-server</artifactId>
 	<version>0.0.1</version>
 	<packaging>war</packaging>
 	<dependencies>
@@ -88,18 +88,25 @@
 			<artifactId>jersey-multipart</artifactId>
 			<version>1.10</version>
 		</dependency>
-		<!-- Troia client library -->
-		<dependency>
-			<groupId>TroiaJavaClient</groupId>
-			<artifactId>TroiaJavaClient</artifactId>
-			<version>1.0</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>make-a-jar</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

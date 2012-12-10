@@ -1,10 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>TestDataGenerator</groupId>
-	<artifactId>TestDataGenerator</artifactId>
+	<groupId>com.ipeirotis</groupId>
+	<artifactId>troia-data-generator</artifactId>
 	<version>0.5</version>
 	<packaging>jar</packaging>
+	<parent>
+		<groupId>com.ipeirotis</groupId>
+		<artifactId>project-troia</artifactId>
+		<version>0.0.1</version>
+	</parent>
+	<name>Troia Test Data Generator</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -21,21 +27,19 @@
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 		</dependency>
-		<!-- Troia client library -->
 		<dependency>
+			<!-- Troia client library -->
 			<groupId>TroiaJavaClient</groupId>
 			<artifactId>TroiaJavaClient</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- Troia server library -->
-		<!-- <dependency> -->
-		<!-- 	<groupId>com.ipeirotis</groupId> -->
-		<!-- 	<artifactId>DSaS</artifactId> -->
-		<!-- 	<version>0.0.1-SNAPSHOT</version> -->
-		<!-- 	<type>war</type> -->
-		<!-- </dependency> -->
+		<dependency>
+			<!-- Troia server library -->
+			<groupId>com.ipeirotis</groupId>
+			<artifactId>troia-server</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
-	<name>Test data generator</name>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -86,6 +90,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
 
