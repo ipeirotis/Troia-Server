@@ -18,4 +18,5 @@ target/*
 # Astyle Files #
 *.orig
 
-target/*
+*/target/*
+dependency-reduced-pom.xml
