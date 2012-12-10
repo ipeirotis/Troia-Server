@@ -68,12 +68,12 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	      <version>4.8.1</version>
-	      <scope>test</scope>
-    	</dependency>
-    	<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2</version>
@@ -87,6 +87,12 @@
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-multipart</artifactId>
 			<version>1.10</version>
+		</dependency>
+		<!-- Troia client library -->
+		<dependency>
+			<groupId>TroiaJavaClient</groupId>
+			<artifactId>TroiaJavaClient</artifactId>
+			<version>1.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -107,6 +113,58 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.7.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.datascience.gal.dataGenerator.TroiaDataGenerator</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin> -->
+			<!-- 	<groupId>org.apache.maven.plugins</groupId> -->
+			<!-- 	<artifactId>maven-jar-plugin</artifactId> -->
+			<!-- 	<version>2.4</version> -->
+			<!-- 	<configuration> -->
+					<!-- <includes> -->
+					<!-- 	<include>**/dataGenerator/*</include> -->
+					<!-- </includes> -->
+			<!-- 		<archive> -->
+			<!-- 			<manifest> -->
+			<!-- 				<addClasspath>true</addClasspath> -->
+			<!-- 				<mainClass>com.datascience.gal.dataGenerator.TroiaDataGenerator</mainClass> -->
+			<!-- 			</manifest> -->
+			<!-- 	</archive> -->
+			<!-- 	</configuration> -->
+			<!-- 	<executions> -->
+			<!-- 		<execution> -->
+			<!-- 			<id>make-a-jar</id> -->
+			<!-- 			<phase>compile</phase> -->
+			<!-- 			<goals> -->
+			<!-- 				<goal>jar</goal> -->
+			<!-- 			</goals> -->
+			<!-- 		</execution> -->
+			<!-- 	</executions> -->
+			<!-- </plugin> -->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<packagingExcludes>**/dataGenerator/</packagingExcludes>
 				</configuration>
 			</plugin>
 			<plugin>

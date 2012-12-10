@@ -1,4 +1,4 @@
-package com.datascience.gal.tester;
+package com.datascience.gal.dataGenerator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,11 +12,11 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import troiaClient.GoldLabel;
 import troiaClient.Label;
-import java.com.datascience.gal.tester.ArtificialWorker;
-import java.com.datascience.gal.tester.ConfusionMatrix;
-import java.com.datascience.gal.tester.RouletteNoisedLabelGenerator;
-import java.com.datascience.gal.tester.DataGenerator;
-import java.com.datascience.gal.tester.TroiaObjectCollection;
+import com.datascience.gal.dataGenerator.ArtificialWorker;
+import com.datascience.gal.dataGenerator.ConfusionMatrix;
+import com.datascience.gal.dataGenerator.RouletteNoisedLabelGenerator;
+import com.datascience.gal.dataGenerator.DataGenerator;
+import com.datascience.gal.dataGenerator.TroiaObjectCollection;
 
 /**
  * The class <code>TestDataGeneratorTest</code> contains tests for the class

@@ -1,4 +1,4 @@
-package java.com.datascience.gal.tester;
+package com.datascience.gal.dataGenerator;
 
 
 public class ArtificialWorker {
