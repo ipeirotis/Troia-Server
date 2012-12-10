@@ -195,7 +195,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			totalAssociations.put(evaluation.getCorrectCategory(), totalAssociations.get(evaluation.getCorrectCategory())+objectTotal);
 		}
 		for (String category : correctAssociations.keySet()) {
-			this.evaluatedQualities.put(category, (double)(correctAssociations.get(category)/totalAssociations.get(category)));
+			this.evaluatedQualities.put(category, (double)correctAssociations.get(category)/totalAssociations.get(category));
 		}
 	}
 

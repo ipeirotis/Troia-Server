@@ -497,7 +497,7 @@ public class Service {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loadEvaluationData(@FormParam("id") String idString,
 									   @FormParam("labels") String labelsString) {
-		logRequestProcessing("loadGoldLabels");
+		logRequestProcessing("loadEvaluationLabels");
 		String id = getIdFromInput(idString);
 		DawidSkeneProcessorManager manager = getManager();
 		if (!manager.containsProject(id))
@@ -507,7 +507,7 @@ public class Service {
 			Collection<CorrectLabel> labels = parseJsonInput(labelsString,
 											  JSONUtils.correctLabelSetType);
 			manager.addEvaluationData(id, labels);
-			String message = "Loaded " + labels.size() + " gold labels";
+			String message = "Loaded " + labels.size() + " evaluation labels";
 			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
 		} catch (Exception e) {
 			logErrorFromException(e);
