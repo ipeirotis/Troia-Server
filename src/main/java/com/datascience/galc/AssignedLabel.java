@@ -1,8 +1,9 @@
 package com.datascience.galc;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 
-public class AssignedLabel implements Comparable<AssignedLabel> {
+public class AssignedLabel {
 
 	private String	worker_id;
 	private String	object_id;
@@ -93,14 +94,12 @@ public class AssignedLabel implements Comparable<AssignedLabel> {
 		this.label = label;
 	}
 
-	@Override
 	public int compareTo(AssignedLabel o) {
 
-		int c1 = this.getDatum().compareTo(o.getDatum());
-		int c2 = this.getWorker().compareTo(o.getWorker());
-
-		return (c1 == 0) ? c2 : c1;
-
+		return ComparisonChain.start()
+		         .compare(this.getDatum(), o.getDatum())
+		         .compare(this.getWorker(), o.getWorker())
+		         .result();
 	}
 
 }
