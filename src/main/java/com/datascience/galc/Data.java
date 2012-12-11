@@ -1,14 +1,14 @@
 package com.datascience.galc;
 
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 
 public abstract class Data {
 
-	Set<DatumCont>			objects	= new TreeSet<DatumCont>();
-	Set<Worker>					workers	= new TreeSet<Worker>();
-	Set<AssignedLabel>	labels	= new TreeSet<AssignedLabel>();
+	Set<DatumCont>			objects	= new HashSet<DatumCont>();
+	Set<Worker>					workers	= new HashSet<Worker>();
+	Set<AssignedLabel>	labels	= new HashSet<AssignedLabel>();
 
 	
 	public Set<DatumCont> getObjects() {

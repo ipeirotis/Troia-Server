@@ -1,9 +1,9 @@
 package com.datascience.galc;
 
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
-public class DatumCont implements Comparable<DatumCont> {
+public class DatumCont {
 
 	private String							name;
 	private Set<AssignedLabel>	labels;
@@ -24,7 +24,7 @@ public class DatumCont implements Comparable<DatumCont> {
 
 		this.name = name;
 		this.isGold = false;
-		this.labels = new TreeSet<AssignedLabel>();
+		this.labels = new HashSet<AssignedLabel>();
 
 	}
 
@@ -188,13 +188,6 @@ public class DatumCont implements Comparable<DatumCont> {
 
 		this.labels = labels;
 	}
-
-	@Override
-	public int compareTo(DatumCont o) {
-
-		return this.getName().compareTo(o.getName());
-	}
-
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

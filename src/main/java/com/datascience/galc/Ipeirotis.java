@@ -3,7 +3,6 @@ package com.datascience.galc;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import com.datascience.galc.engine.EngineContext;
 
@@ -21,13 +20,13 @@ public class Ipeirotis {
 
 		
 		this.objects = data.getObjects();
-		this.objects_index = new TreeMap<String, DatumCont>();
+		this.objects_index = new HashMap<String, DatumCont>();
 		for (DatumCont d : this.objects) {
 			objects_index.put(d.getName(), d);
 		}
 
 		this.workers = data.getWorkers();
-		this.workers_index = new TreeMap<String, Worker>();
+		this.workers_index = new HashMap<String, Worker>();
 		for (Worker w : this.workers) {
 			workers_index.put(w.getName(), w);
 		}
