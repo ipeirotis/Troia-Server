@@ -20,13 +20,7 @@ public class AssignedLabel implements Comparable<AssignedLabel> {
 	 */
 	@Override
 	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((label == null) ? 0 : label.hashCode());
-		result = prime * result + ((object_id == null) ? 0 : object_id.hashCode());
-		result = prime * result + ((worker_id == null) ? 0 : worker_id.hashCode());
-		return result;
+		return com.google.common.base.Objects.hashCode( this.label, this.object_id, this.worker_id); 
 	}
 
 	/*

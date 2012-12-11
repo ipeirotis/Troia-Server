@@ -118,11 +118,7 @@ public class Worker {
 
 	@Override
 	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return com.google.common.base.Objects.hashCode( this.name);
 	}
 
 	@Override
