@@ -1,5 +1,7 @@
 package com.datascience.galc;
 
+import com.google.common.base.Objects;
+
 public class AssignedLabel implements Comparable<AssignedLabel> {
 
 	private String	worker_id;
@@ -30,30 +32,14 @@ public class AssignedLabel implements Comparable<AssignedLabel> {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-
-		if (this == obj)
-			return true;
 		if (obj == null)
 			return false;
 		if (!(obj instanceof AssignedLabel))
 			return false;
 		AssignedLabel other = (AssignedLabel) obj;
-		if (label == null) {
-			if (other.label != null)
-				return false;
-		} else if (!label.equals(other.label))
-			return false;
-		if (object_id == null) {
-			if (other.object_id != null)
-				return false;
-		} else if (!object_id.equals(other.object_id))
-			return false;
-		if (worker_id == null) {
-			if (other.worker_id != null)
-				return false;
-		} else if (!worker_id.equals(other.worker_id))
-			return false;
-		return true;
+		return Objects.equal(this.label, other.label) 
+			&& Objects.equal(this.object_id, other.object_id)
+			&& Objects.equal(this.worker_id, other.worker_id);
 	}
 
 	/**

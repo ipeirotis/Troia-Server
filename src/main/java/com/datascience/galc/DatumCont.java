@@ -3,6 +3,8 @@ package com.datascience.galc;
 import java.util.Set;
 import java.util.HashSet;
 
+import com.google.common.base.Objects;
+
 public class DatumCont {
 
 	private String							name;
@@ -152,20 +154,12 @@ public class DatumCont {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-
-		if (this == obj)
-			return true;
 		if (obj == null)
 			return false;
 		if (!(obj instanceof DatumCont))
 			return false;
 		DatumCont other = (DatumCont) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+		return Objects.equal(this.name, other.name);
 	}
 
 	/**
