@@ -184,9 +184,24 @@ public class DatumCont {
 	 */
 	@Override
 	public String toString() {
-
-		return "DatumCont [name=" + name + ", est_value=" + est_value + ", est_zeta=" + est_zeta + ", trueValue="
-				+ trueValue + ", trueZeta=" + trueZeta + "]";
+		String s1, s2;
+		s1 = Objects.toStringHelper(this)
+	       .add("name", name)
+	       .add("est_value", est_value)
+	       .add("est_zeta", est_zeta)
+	       .add("trueValue", trueValue)
+	       .add("trueZeta", trueZeta)
+	       .toString();
+		s2 =  "DatumCont [name=" + name + ", est_value=" + est_value + ", est_zeta=" + est_zeta + ", trueValue="
+		+ trueValue + ", trueZeta=" + trueZeta + "]";
+		
+		return Objects.toStringHelper(this)
+			       .add("name", name)
+			       .add("est_value", est_value)
+			       .add("est_zeta", est_zeta)
+			       .add("trueValue", trueValue)
+			       .add("trueZeta", trueZeta)
+			       .toString();
 	}
 
 

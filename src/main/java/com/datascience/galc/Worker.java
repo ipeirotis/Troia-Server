@@ -129,7 +129,6 @@ public class Worker {
 			return false;
 		Worker other = (Worker) obj;
 		return Objects.equal(this.name, other.name);
-
 	}
 
 	/*
@@ -139,9 +138,15 @@ public class Worker {
 	 */
 	@Override
 	public String toString() {
-
-		return "Worker [name=" + name + ", est_rho=" + est_rho + ", true_rho=" + true_rho + ", est_mu=" + est_mu
-				+ ", true_mu=" + true_mu + ", est_sigma=" + est_sigma + ", true_sigma=" + true_sigma + "]";
+		return Objects.toStringHelper(this)
+			       .add("name", name)
+			       .add("est_rho", est_rho)
+			       .add("true_rho", true_rho)
+			       .add("est_mu", est_mu)
+			       .add("true_mu", true_mu)
+			       .add("est_sigma", est_sigma)
+			       .add("true_sigma", true_sigma)
+			       .toString();
 	}
 
 	
