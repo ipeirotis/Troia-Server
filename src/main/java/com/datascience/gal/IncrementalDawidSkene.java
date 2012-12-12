@@ -114,7 +114,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 
 	private void iterateLocalLablel(AssignedLabel al) {
 		Datum d = coreAssignedLabelUpdate(al);
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 5; i++) // XXX: magic number
 			updateObjectInformation(d, 0 != i);
 	}
 
@@ -176,7 +176,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 		incrementPrior(objectName);
 		updateWorkers(objectName);
 	}
-
+	
 	@Override
 	public void addCorrectLabel(CorrectLabel cl) {
 
@@ -194,7 +194,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 
 	private void iterateLocalCorrectLablel(CorrectLabel cl) {
 		Datum d = coreCorrectLabelUpdate(cl);
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 5; i++)// XXX: magic number
 			updateObjectInformation(d, 0 != i);
 	}
 
@@ -228,6 +228,17 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			d.setCorrectCategory(correctCategory);
 		}
 		objects.put(objectName, d);
+		
+		//When marking an object as "gold", update workers quality estimates in the incremental algorithm
+//		for (Worker w : workers.values()){
+//			for (AssignedLabel al : w.getAssignedLabels()){
+//				if (al.getObjectName().equals(objectName)){
+//					
+//					break;
+//				}
+//			}
+//		}
+		
 		return d;
 	}
 

@@ -2,16 +2,12 @@ package com.datascience.gal.quality;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import junit.framework.TestCase;
-
-import org.junit.Ignore;
 
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
-import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 
@@ -39,24 +35,7 @@ public class QualityEvaluationTest extends TestCase {
 	}
 
 	private void testData(DawidSkene ds) {
-		ds.estimate(5);
-		ClassificationCostEvaluator evaluator = new DS_MaxLikelihoodCostEvaluator();
-		Map<String,Category> categoriesFromDs = ds.getCategories();
-		Map<String,Datum> objects = ds.getObjects();
-		Collection<String> categoryNames = categoriesFromDs.keySet();
-		Collection<String> objectNames = objects.keySet();
-		for (String objectName : objectNames) {
-			for (String categoryName : categoryNames) {
-				ds.computeProjectQuality(evaluator,categoryName,objectName);
-			}
-		}
 
-		Map<String,Map<String,Double>> qualities = ds.getQualities();
-		for (String objectName : objectNames) {
-			for (String categoryName : categoryNames) {
-				System.out.println("Object = "+objectName+" category = "+categoryName+" Quality = "+qualities.get(objectName).get(categoryName));
-			}
-		}
 	}
 
 	/**

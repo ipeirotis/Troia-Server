@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -190,27 +189,13 @@ public class DawidSkeneProcessorManager extends Thread {
 	public void computeDawidSkene(String projectId, int iterations) {
 		DSalgorithmComputer computer = new DSalgorithmComputer(projectId,
 				this.cache, iterations);
-		QualityComputer estimator = new QualityComputer(projectId,this.cache);
-		Evaluator evaluator = new Evaluator(projectId,this.cache);
 		this.addProcessor(computer);
-		this.addProcessor(estimator);
-		this.addProcessor(evaluator);
 	}
 
 	public void updateDawidSkene(String projectId, DawidSkene updatedDS) {
 		CacheUpdater updater = new CacheUpdater(projectId, this.cache,
 												updatedDS);
 		this.addProcessor(updater);
-	}
-
-	public void calculateEstimatedCost(String projectId,String method) {
-		QualityComputer processor = new QualityComputer(projectId,this.cache,method);
-		this.addProcessor(processor);
-	}
-
-	public void calculateEvaluatedCost(String projectId) {
-		Evaluator processor = new Evaluator(projectId,this.cache);
-		this.addProcessor(processor);
 	}
 	
 	public final DawidSkene getDawidSkeneForReadOnly(String projectId) {
@@ -406,7 +391,7 @@ public class DawidSkeneProcessorManager extends Thread {
 	 */
 	private DawidSkeneCache cache;
 
-	private List<Thread> readerThreads;
+//	private List<Thread> readerThreads;//never used locally
 
 	private static Logger logger_perf = Logger.getLogger("troia.performance");
 	private static Logger logger = Logger

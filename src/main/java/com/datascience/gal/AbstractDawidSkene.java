@@ -19,7 +19,6 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.quality.ClassificationCostEvaluator;
 import com.datascience.gal.service.JSONUtils;
 import com.datascience.utils.Utils;
 
@@ -33,10 +32,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	protected boolean fixedPriors;
 
 	protected final String id;
-
-	protected Map<String, Map<String,Double>> qualities;
-	protected Map<String,Double> evaluatedQualities;
-
 
 	/**
 	 * Set to true if this project was computed.
@@ -57,8 +52,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
-		this.qualities = new HashMap<String,Map<String,Double>>();
-		this.evaluatedQualities = new HashMap<String,Double>();
 		this.computed = false;
 	}
 
@@ -160,45 +153,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 	}
 	
-	/**
-	 * @return the evaluatedQualities
-	 */
-	public Map<String,Double> getEvaluatedQualities() {
-		return evaluatedQualities;
-	}
-	
-	public Double  getEvaluatedQuality(String category){
-		return evaluatedQualities.get(category);
-	}
-
-	/**
-	 * Computes quality of category associations with use of evaluation data.
-	 */
-	public void computeProjectQualityWithEvaluationData(){
-		this.evaluatedQualities = new HashMap<String,Double>();
-		Map<String,Integer> correctAssociations = new HashMap<String,Integer>();
-		Map<String,Integer> totalAssociations = new HashMap<String,Integer>();
-		for (CorrectLabel evaluation : this.evaluationData.values()) {
-			if(!totalAssociations.containsKey(evaluation.getCorrectCategory())){
-				correctAssociations.put(evaluation.getCorrectCategory(),0);
-				totalAssociations.put(evaluation.getCorrectCategory(),0);
-			}
-			int correctAss = 0;
-			int objectTotal = 0;
-			for (AssignedLabel label : this.objects.get(evaluation.getObjectName()).getAssignedLabels()) {
-				objectTotal++;
-				if(label.getCategoryName().equals(evaluation.getCorrectCategory())){
-					correctAss++;
-				}
-			}
-			correctAssociations.put(evaluation.getCorrectCategory(), correctAssociations.get(evaluation.getCorrectCategory())+correctAss);
-			totalAssociations.put(evaluation.getCorrectCategory(), totalAssociations.get(evaluation.getCorrectCategory())+objectTotal);
-		}
-		for (String category : correctAssociations.keySet()) {
-			this.evaluatedQualities.put(category, (double)correctAssociations.get(category)/totalAssociations.get(category));
-		}
-	}
-
 	@Override
 	public String printPriors() {
 
@@ -983,27 +937,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return categories.get(category);
 	}
 
-
-	/**
-	 * @return the quality
-	 */
-	public Double getQuality(String object,String category) {
-		return qualities.get(object).get(category);
-	}
-
-	public Map<String,Map<String,Double>> getQualities() {
-		return this.qualities;
-	}
-
-	/**
-	 * This function calculates quality of this project and it's workers quality.
-	 */
-	public void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object) {
-		if(this.qualities.get(object)==null) {
-			this.qualities.put(object, new HashMap<String,Double>());
-		}
-		this.qualities.get(object).put(category,evaluator.EvaluateClassificationCost(this, category,this.objects.get(object)));
-
+	public Map<String, CorrectLabel> getEvaluationData(){
+		return evaluationData;
 	}
 
 	@Override

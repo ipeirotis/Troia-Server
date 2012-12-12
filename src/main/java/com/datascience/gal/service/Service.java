@@ -37,6 +37,8 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.WorkerCostMethod;
+import com.datascience.gal.core.DataCostEstimator;
+import com.datascience.gal.core.DataCostEvaluator;
 import com.datascience.gal.dawidSkeneProcessors.DawidSkeneProcessorManager;
 
 /**
@@ -106,13 +108,13 @@ public class Service {
 		logger.info("Processing the request: " + endpointName);
 	}
 
-	private void handleException(String message, Exception e) {
-		logger.error(message);
-		logger.error("EXCEPTION: " + e.getClass().getName());
-		for (StackTraceElement ste : e.getStackTrace()) {
-			logger.error(ste);
-		}
-	}
+//	private void handleException(String message, Exception e) {
+//		logger.error(message);
+//		logger.error("EXCEPTION: " + e.getClass().getName());
+//		for (StackTraceElement ste : e.getStackTrace()) {
+//			logger.error(ste);
+//		}
+//	}
 
 	private Map<String, Object> baseResponseCargo(String message, String status) {
 		Map<String, Object> cargo = new HashMap<String, Object>();
@@ -955,52 +957,11 @@ public class Service {
 	}
 
 	@GET
-	@Path("calculateEstimatedCost")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response calculateEstimatedCost(@QueryParam("id") String jid,
-										   @QueryParam("method") String method) {
-		Response rs;
-		String id = getJobId(jid);
-		DawidSkeneProcessorManager manager = getManager();
-		if (!manager.containsProject(id))
-			return noSuchJobResponse(id);
-		try{
-		String message = "calculateEstimatedCost(" + method + ") for job " + id;
-		manager.calculateEstimatedCost(id,method);
-		rs = buildResponse(message, SUCCESS, null,null, null);
-		}catch(Exception e){
-			logErrorFromException(e);
-			rs = Response.status(500).build();
-		}
-		return rs;
-	}
-
-	@GET
-	@Path("calculateEvaluatedCost")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response calculateEstimatedCost(@QueryParam("id") String jid) {
-		Response rs;
-		String id = getJobId(jid);
-		DawidSkeneProcessorManager manager = getManager();
-		if (!manager.containsProject(id))
-			return noSuchJobResponse(id);
-		try{
-		String message = "calculateEvaluatedCost for job " + id;
-		manager.calculateEvaluatedCost(id);
-		rs = buildResponse(message, SUCCESS, null,null, null);
-		}catch(Exception e){
-			logErrorFromException(e);
-			rs = Response.status(500).build();
-		}
-		return rs;
-	}
-
-	@GET
 	@Path("getEstimatedCost")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getEstimatedCost(@QueryParam("id") String jid,
 									 @QueryParam("object") String object,
-									 @QueryParam("category") String category) {
+									 @QueryParam("method") String method) {
 		DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
 		if (!manager.containsProject(id))
@@ -1008,20 +969,22 @@ public class Service {
 		Response rs;
 		try{
 		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
-		rs = buildResponse(null, null,ds.getQuality(object, category), null, null);
+		DataCostEstimator dqe = DataCostEstimator.getInstance();
+		rs = buildResponse(null, null, dqe.estimateMissclassificationCost(ds, method, object), null, null);
 		manager.finalizeReading(id);
 		}catch(Exception e){
 			logErrorFromException(e);
 			rs = Response.status(500).build();
 		}
 		return rs;
-
 	}
 
 	@GET
 	@Path("getEvaluatedCost")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getEvaluatedCost(@QueryParam("id") String jid,@QueryParam("category") String category) {
+	public Response getEvaluatedCost(@QueryParam("id") String jid, 
+									 @QueryParam("object") String object,
+									 @QueryParam("method") String method) {
 		DawidSkeneProcessorManager manager = getManager();
 		String id = getJobId(jid);
 		if (!manager.containsProject(id))
@@ -1029,14 +992,14 @@ public class Service {
 		Response rs;
 		try{
 		DawidSkene ds = manager.getDawidSkeneForReadOnly(id);
-		rs = buildResponse(null, null,ds.getEvaluatedQuality(category), null, null);
+		DataCostEvaluator dce = DataCostEvaluator.getInstance();
+		rs = buildResponse(null, null, dce.evaluateMissclassificationCost(ds, method, object), null, null);
 		manager.finalizeReading(id);
 		}catch(Exception e){
 			logErrorFromException(e);
 			rs = Response.status(500).build();
 		}
 		return rs;
-
 	}
 
 	@GET
