@@ -13,8 +13,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
-import com.datascience.gal.quality.ClassificationCostEvaluator;
-
 public interface DawidSkene {
 
 	public final static double DEFAULT_EPSILON = 1E-6;
@@ -185,13 +183,6 @@ public interface DawidSkene {
 
 	public abstract String toString();
 
-	public abstract Double getQuality(String object,String category);
-	public abstract Map<String,Map<String,Double>> getQualities();
-	public abstract void computeProjectQuality(ClassificationCostEvaluator evaluator,String category,String object);
-	public abstract Map<String, Double>  getEvaluatedQualities();
-	public abstract Double  getEvaluatedQuality(String category);
-	public abstract void computeProjectQualityWithEvaluationData();
-	
 	public abstract Map<String,Datum> getObjects();
 
 	Map<String, Double> getWorkerPriors(Worker worker);
