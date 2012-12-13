@@ -276,7 +276,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			double prior = probs.get(catName);
 			Category category = categories.get(catName);
 			double oldValue = category.getPrior();
-			category.setPrior(Math.min(1, oldValue + prior));
+			category.setPrior(oldValue + prior);
 		}
 	}
 
