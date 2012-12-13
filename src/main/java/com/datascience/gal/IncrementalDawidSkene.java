@@ -100,27 +100,18 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 
 	@Override
 	public void addAssignedLabel(AssignedLabel al) {
+		Datum d = coreAssignedLabelUpdate(al);
 		switch (dsmethod) {
-		case ITERATELOCAL:
-			iterateLocalLablel(al);
-			break;
-		case UPDATEWORKERS:
-		default:
-			updateWorkersWithAssignedLabel(al);
-			break;
+			case ITERATELOCAL:
+				for (int i = 0; i < 5; i++) // XXX: magic number
+					updateObjectInformation(d, 0 != i);
+				break;
+			case UPDATEWORKERS:
+			default:
+				updateObjectInformation(d, false);
+				break;
 		}
 		invalidateComputed();
-	}
-
-	private void iterateLocalLablel(AssignedLabel al) {
-		Datum d = coreAssignedLabelUpdate(al);
-		for (int i = 0; i < 5; i++) // XXX: magic number
-			updateObjectInformation(d, 0 != i);
-	}
-
-	private void updateWorkersWithAssignedLabel(AssignedLabel al) {
-		Datum d = coreAssignedLabelUpdate(al);
-		updateObjectInformation(d, false);
 	}
 
 	private Datum coreAssignedLabelUpdate(AssignedLabel al) {
@@ -179,35 +170,24 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	
 	@Override
 	public void addCorrectLabel(CorrectLabel cl) {
-
+		Datum d = coreCorrectLabelUpdate(cl);
 		switch (dsmethod) {
-		case ITERATELOCAL:
-			iterateLocalCorrectLablel(cl);
-			break;
-		case UPDATEWORKERS:
-		default:
-			updateWorkersWithCorrectLabel(cl);
-			break;
+			case ITERATELOCAL:
+				for (int i = 0; i < 5; i++)// XXX: magic number
+					updateObjectInformation(d, 0 != i);
+				break;
+			case UPDATEWORKERS:
+			default:
+				updateObjectInformation(d, false);
+				break;
 		}
-
 	}
-
-	private void iterateLocalCorrectLablel(CorrectLabel cl) {
-		Datum d = coreCorrectLabelUpdate(cl);
-		for (int i = 0; i < 5; i++)// XXX: magic number
-			updateObjectInformation(d, 0 != i);
+	
+	@Override
+	public void addObjects(Collection<String> objs){
+		//TODO: abstractDawidSkene.addObjects hangs troia-server
 	}
-
-	/**
-	 * TODO: less gets- pass the datum object to methods.
-	 *
-	 */
-	private void updateWorkersWithCorrectLabel(CorrectLabel cl) {
-
-		Datum d = coreCorrectLabelUpdate(cl);
-		updateObjectInformation(d, false);
-	}
-
+	
 	private Datum coreCorrectLabelUpdate(CorrectLabel cl) {
 		String objectName = cl.getObjectName();
 		String correctCategory = cl.getCorrectCategory();
@@ -218,26 +198,14 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			unupdatePrior(objectName);
 			unupdateWorkers(objectName);
 			d = objects.get(objectName);
-			d.setGold(true);
-			d.setCorrectCategory(correctCategory);
 		} else {
 			Set<Category> categories = new HashSet<Category>(
 				this.categories.values());
 			d = new Datum(objectName, categories);
-			d.setGold(true);
-			d.setCorrectCategory(correctCategory);
 		}
+		d.setGold(true);
+		d.setCorrectCategory(correctCategory);
 		objects.put(objectName, d);
-		
-		//When marking an object as "gold", update workers quality estimates in the incremental algorithm
-//		for (Worker w : workers.values()){
-//			for (AssignedLabel al : w.getAssignedLabels()){
-//				if (al.getObjectName().equals(objectName)){
-//					
-//					break;
-//				}
-//			}
-//		}
 		
 		return d;
 	}

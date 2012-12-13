@@ -680,15 +680,13 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		this.validateCategory(correctCategory);
 		if (this.objects.containsKey(objectName)) {
 			d = this.objects.get(objectName);
-			d.setGold(true);
-			d.setCorrectCategory(correctCategory);
 		} else {
 			Set<Category> categories = new HashSet<Category>(
 				this.categories.values());
 			d = new Datum(objectName, categories);
-			d.setGold(true);
-			d.setCorrectCategory(correctCategory);
 		}
+		d.setGold(true);
+		d.setCorrectCategory(correctCategory);
 		this.objects.put(objectName, d);
 		invalidateComputed();
 	}

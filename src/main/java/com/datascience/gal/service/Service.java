@@ -488,7 +488,31 @@ public class Service {
 		}
 		return rs;
 	}
-
+	
+	@POST
+	@Path("markLabelAsGold")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response markLabelAsGold(@FormParam("id") String idString, @FormParam("label") String labelString) {
+		logRequestProcessing("markLabelAsGold");
+		String id = getIdFromInput(idString);
+		DawidSkeneProcessorManager manager = getManager();
+		if (!manager.containsProject(id))
+			return noSuchJobResponse(id);
+		Response rs;
+		try {
+			CorrectLabel label = parseJsonInput(labelString, JSONUtils.correctLabelType);
+			Collection<CorrectLabel> labels = new ArrayList<CorrectLabel>();
+			labels.add(label);
+			manager.addGoldLabels(id, labels);
+			String message = label + " marked as gold";
+			rs = buildResponse(message, SUCCESS, null, new DateTime(), null);
+		} catch (Exception e) {
+			logErrorFromException(e);
+			rs = Response.status(500).build();
+		}
+		return rs;
+	}
+	
 	/**
 	 * loads gold labels for the model
 	 *
