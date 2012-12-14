@@ -123,8 +123,6 @@ public class Worker {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
 		if (!(obj instanceof Worker))
 			return false;
 		Worker other = (Worker) obj;

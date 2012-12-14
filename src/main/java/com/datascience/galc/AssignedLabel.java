@@ -33,8 +33,6 @@ public class AssignedLabel {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
 		if (!(obj instanceof AssignedLabel))
 			return false;
 		AssignedLabel other = (AssignedLabel) obj;

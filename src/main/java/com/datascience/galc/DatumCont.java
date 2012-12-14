@@ -154,8 +154,6 @@ public class DatumCont {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
 		if (!(obj instanceof DatumCont))
 			return false;
 		DatumCont other = (DatumCont) obj;
