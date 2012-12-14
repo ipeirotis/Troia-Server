@@ -10,6 +10,7 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,39 +42,24 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
 
+	public IncrementalDawidSkene(String id, Collection<Category> categories) {
+		super(id, categories);
+		super.logger = this.logger;
+	}
+	
 	public IncrementalDawidSkene(String id, Collection<Category> categories,
 								 IncrementalDSMethod dsmethod) {
 		this(id, categories);
 		this.dsmethod = dsmethod;
 	}
 
-	public IncrementalDawidSkene(String id, Collection<Category> categories) {
-		super(id);
-		objects = new HashMap<String, Datum>();
-		workers = new HashMap<String, Worker>();
-
-		fixedPriors = false;
-		this.categories = new HashMap<String, Category>();
-
-		for (Category c : categories) {
-			this.categories.put(c.getName(), c);
-			if (c.hasPrior())
-				this.fixedPriors = true;
-		}
-
-		if (!fixedPriors)
-			initializePriors();
-
-		initializeCosts();
-		super.logger = this.logger;
-	}
-
-	private IncrementalDawidSkene(String id, Map<String, Datum> objects,
+	private IncrementalDawidSkene(String id, Map<String, Datum> objects, Map<String, Datum> objectsWithNoLabels,
 								  Map<String, Worker> workers, Map<String, Category> categories,
 								  boolean fixedPriors, IncrementalDSMethod dsmethod,
 								  double priorDenominator) {
-		super(id);
+		this(id, new ArrayList<Category> ());
 		this.objects = objects;
+		this.objectsWithNoLabels = objectsWithNoLabels;
 		this.workers = workers;
 		this.categories = categories;
 		this.fixedPriors = fixedPriors;
@@ -181,11 +167,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 				updateObjectInformation(d, false);
 				break;
 		}
-	}
-	
-	@Override
-	public void addObjects(Collection<String> objs){
-		//TODO: abstractDawidSkene.addObjects hangs troia-server
 	}
 	
 	private Datum coreCorrectLabelUpdate(CorrectLabel cl) {
@@ -344,18 +325,18 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 
 			String id = jobject.get("id").getAsString();
 			Map<String, Category> categories = JSONUtils.gson.fromJson(
-												   jobject.get("categories"), JSONUtils.stringCategoryMapType);
+					jobject.get("categories"), JSONUtils.stringCategoryMapType);
 			boolean fixedPriors = jobject.get("fixedPriors").getAsBoolean();
 			Map<String, Datum> objects = JSONUtils.gson.fromJson(
-											 jobject.get("objects"), JSONUtils.stringDatumMapType);
+					jobject.get("objects"), JSONUtils.stringDatumMapType);
+			Map<String, Datum> objectsWithNoLabels = JSONUtils.gson.fromJson(
+					jobject.get("objectsWithNoLabels"), JSONUtils.stringDatumMapType);
 			Map<String, Worker> workers = JSONUtils.gson.fromJson(
-											  jobject.get("workers"), JSONUtils.strinWorkerMapType);
-			IncrementalDSMethod dsmethod = IncrementalDSMethod.valueOf(jobject
-										   .get("dsmethod").getAsString());
-			double priorDenominator = jobject.get("priorDenominator")
-									  .getAsDouble();
+					jobject.get("workers"), JSONUtils.strinWorkerMapType);
+			IncrementalDSMethod dsmethod = IncrementalDSMethod.valueOf(jobject.get("dsmethod").getAsString());
+			double priorDenominator = jobject.get("priorDenominator").getAsDouble();
 
-			return new IncrementalDawidSkene(id, objects, workers, categories,
+			return new IncrementalDawidSkene(id, objects, objectsWithNoLabels, workers, categories,
 											 fixedPriors, dsmethod, priorDenominator);
 		}
 	}

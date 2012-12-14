@@ -25,6 +25,7 @@ import com.datascience.utils.Utils;
 public abstract class AbstractDawidSkene implements DawidSkene {
 
 	protected Map<String, Datum> objects;
+	protected Map<String, Datum> objectsWithNoLabels;
 	protected Map<String, Worker> workers;
 	protected Map<String, Category> categories;
 	protected Map<String, CorrectLabel> evaluationData;
@@ -49,10 +50,35 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return (Double.isNaN(cost_min)) ? "---" : Math.round(100 * (1 - cost_min)) + "%";
 	}
 	
-	protected AbstractDawidSkene(String id) {
+	protected AbstractDawidSkene(String id, Collection<Category> categories) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
 		this.computed = false;
+		
+		this.objects = new HashMap<String, Datum>();
+		this.workers = new HashMap<String, Worker>();
+		this.objectsWithNoLabels = new HashMap<String, Datum>();
+
+		this.fixedPriors = false;
+		this.categories = new HashMap<String, Category>();
+
+		for (Category c : categories) {
+			this.categories.put(c.getName(), c);
+			if (c.hasPrior()) {
+				this.fixedPriors = true;
+			}
+		}
+
+		// We initialize the priors to be uniform across classes
+		// if the user did not pass any information about the prior values
+
+		if (!fixedPriors)
+			initializePriors();
+
+		// By default, we initialize the misclassification costs
+		// assuming a 0/1 loss function. The costs can be customized
+		// using the corresponding file
+		initializeCosts();
 	}
 
 	protected void invalidateComputed() {
@@ -351,8 +377,11 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public int getNumberOfWorkers() {
 		return this.workers.size();
 	}
-
-
+	
+	@Override
+	public int getNumberOfUnassignedObjects() {
+		return this.objectsWithNoLabels.size();
+	}
 
 	@Override
 	public Map<String, String> getMajorityVote() {
@@ -644,6 +673,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 				categories.values());
 			d = new Datum(objectName, datumCategories);
 		}
+		if (objectsWithNoLabels.containsKey(objectName)) {
+			objectsWithNoLabels.remove(objectName);
+		}
 		d.addAssignedLabel(al);
 		objects.put(objectName, d);
 
@@ -685,6 +717,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 				this.categories.values());
 			d = new Datum(objectName, categories);
 		}
+		if (objectsWithNoLabels.containsKey(objectName)) {
+			objectsWithNoLabels.remove(objectName);
+		}
 		d.setGold(true);
 		d.setCorrectCategory(correctCategory);
 		this.objects.put(objectName, d);
@@ -695,8 +730,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public void addObjects(Collection<String> objs){
 		Set<Category> categories = new HashSet<Category>(this.categories.values());
 		for (String obj : objs){
-			if (!this.objects.containsKey(obj)) {
-				this.objects.put(obj, new Datum(obj, categories));
+			if (!this.objects.containsKey(obj) && !this.objectsWithNoLabels.containsKey(obj)) {
+				this.objectsWithNoLabels.put(obj, new Datum(obj, categories));
 			}
 		}
 		invalidateComputed();
@@ -920,9 +955,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	public Datum getObject(String object_id) {
-		return objects.get(object_id);
+		Datum ret = objects.get(object_id);
+		if (ret == null)
+			return objectsWithNoLabels.get(object_id);
+		return ret;
 	}
-
+	
 	public Map<String,Datum> getObjects() {
 		return objects;
 	}
