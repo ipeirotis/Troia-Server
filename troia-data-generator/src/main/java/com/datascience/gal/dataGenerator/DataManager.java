@@ -19,6 +19,7 @@ import troiaClient.GoldLabel;
 import troiaClient.Label;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 
@@ -117,7 +118,7 @@ public class DataManager {
 		logger.info("Saving qualities of artificial workers to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		out.write(gson.toJson(qualities));
 		out.close();
 	}
