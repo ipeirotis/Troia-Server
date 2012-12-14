@@ -10,6 +10,7 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,42 +28,20 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 	public static final BatchDawidSkeneDeserializer deserializer = new BatchDawidSkeneDeserializer();
 
-	private BatchDawidSkene(String id, Map<String, Datum> objects,
+	public BatchDawidSkene(String id, Collection<Category> categories) {
+		super(id, categories);
+		super.logger = this.logger;
+	}
+	
+	private BatchDawidSkene(String id, Map<String, Datum> objects, Map<String, Datum> objectsWithNoLabels,
 							Map<String, Worker> workers, Map<String, Category> categories,
 							boolean fixedPriors) {
-		super(id);
+		this(id, new ArrayList<Category> ());
 		this.objects = objects;
+		this.objectsWithNoLabels = objectsWithNoLabels;
 		this.workers = workers;
 		this.categories = categories;
 		this.fixedPriors = fixedPriors;
-	}
-
-	public BatchDawidSkene(String id, Collection<Category> categories) {
-		super(id);
-		this.objects = new HashMap<String, Datum>();
-		this.workers = new HashMap<String, Worker>();
-
-		this.fixedPriors = false;
-		this.categories = new HashMap<String, Category>();
-
-		for (Category c : categories) {
-			this.categories.put(c.getName(), c);
-			if (c.hasPrior()) {
-				this.fixedPriors = true;
-			}
-		}
-
-		// We initialize the priors to be uniform across classes
-		// if the user did not pass any information about the prior values
-
-		if (!fixedPriors)
-			initializePriors();
-
-		// By default, we initialize the misclassification costs
-		// assuming a 0/1 loss function. The costs can be customized
-		// using the corresponding file
-		initializeCosts();
-		super.logger = this.logger;
 	}
 
 	private Map<String, Double> getCategoryPriors() {
@@ -186,14 +165,16 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 			String id = jobject.get("id").getAsString();
 			Map<String, Category> categories = JSONUtils.gson.fromJson(
-												   jobject.get("categories"), JSONUtils.stringCategoryMapType);
+					jobject.get("categories"), JSONUtils.stringCategoryMapType);
 			boolean fixedPriors = jobject.get("fixedPriors").getAsBoolean();
 			Map<String, Datum> objects = JSONUtils.gson.fromJson(
-											 jobject.get("objects"), JSONUtils.stringDatumMapType);
+					jobject.get("objects"), JSONUtils.stringDatumMapType);
+			Map<String, Datum> objectsWithNoLabels = JSONUtils.gson.fromJson(
+					jobject.get("objectsWithNoLabels"), JSONUtils.stringDatumMapType);
 			Map<String, Worker> workers = JSONUtils.gson.fromJson(
-											  jobject.get("workers"), JSONUtils.strinWorkerMapType);
+					jobject.get("workers"), JSONUtils.strinWorkerMapType);
 
-			return new BatchDawidSkene(id, objects, workers, categories,
+			return new BatchDawidSkene(id, objects, objectsWithNoLabels, workers, categories,
 									   fixedPriors);
 		}
 

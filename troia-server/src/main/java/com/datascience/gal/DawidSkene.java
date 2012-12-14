@@ -92,6 +92,8 @@ public interface DawidSkene {
 
 	public abstract int getNumberOfObjects();
 
+	public abstract int getNumberOfUnassignedObjects();
+	
 	/**
 	 *
 	 * Estimates the cost for worker using various methods: COST_NAIVE: We do
