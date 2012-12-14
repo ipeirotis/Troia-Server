@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-
+import troiaClient.Category;
 import troiaClient.CategoryFactory;
 import troiaClient.GoldLabel;
 import troiaClient.Label;
@@ -120,6 +120,31 @@ public class DataManager {
 		Writer out = new OutputStreamWriter(stream);
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		out.write(gson.toJson(qualities));
+		out.close();
+	}
+
+	/**
+	 * Saves JSONified misclassification cost matrix.
+	 *
+	 * @param filename
+	 *            Target file
+	 * @param categories
+	 *            Collection of categories
+	 * @throws IOException
+	 *             Thrown if program was unable to save workers to file
+	 */
+	public void saveMisclassificationCost(String filename,
+			Collection<Category> categories) throws IOException {
+		logger.info("Saving misclassification cost matrix to file");
+		FileOutputStream stream = new FileOutputStream(filename);
+		Writer out = new OutputStreamWriter(stream);
+		for (Category c0 : categories) {
+			for (Category c1 : categories) {
+				out.append(c0.getName() + " " + c1.getName() + " "
+						+ c1.getMisclassificationCost(c0.getName()) + "\n");
+			}
+		}
+
 		out.close();
 	}
 
@@ -334,6 +359,10 @@ public class DataManager {
 			this.saveArtificialWorkerQualities(filename_base + ARTIFICIAL_WORKER_QUALITIES_TAG
 									   + FILE_EXTENSION, data.getArtificialWorkerQualities());
 		}
+		if(data.getCategories()!=null) {
+			this.saveMisclassificationCost(filename_base + MISCLASSIFICATION_COST_TAG
+									   + FILE_EXTENSION, data.getCategories());
+		}
 		if(data.getGoldLabels()!=null) {
 			this.saveGoldLabelsToFile(filename_base + GOLD_LABELS_TAG
 									  + FILE_EXTENSION, data.getGoldLabels());
@@ -414,6 +443,7 @@ public class DataManager {
 
 	private static final String ARTIFICIAL_WORKERS_TAG = "_aiworker";
 	private static final String ARTIFICIAL_WORKER_QUALITIES_TAG = "_aiworker_qual";
+	private static final String MISCLASSIFICATION_COST_TAG = "_cost";
 	private static final String LABELS_TAG = "_labels";
 	private static final String GOLD_LABELS_TAG = "_goldLabels";
 	private static final String OBJECTS_TAG = "_objects";

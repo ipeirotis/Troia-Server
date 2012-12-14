@@ -313,7 +313,11 @@ public class DataGenerator {
 		dawidSkene.addAssignedLabels(tsLabels);
 		dawidSkene.addCorrectLabels(tsCorrectLabels);
 		dawidSkene.computePriors();
-
+		System.out.println("DEBUG >>>");
+		for (Category c : categories) {
+			//com.datascience.gal.Category c = dawidSkene.getCategories().get(name);
+			System.out.println(">>>>>> " + c.getName() + " " + c.getPrior() + " " + c.getMisclassificationCostsMap());
+		}
 		return dawidSkene.getAllWorkerScores(true);
 	}
 
