@@ -8,7 +8,10 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import com.datascience.gal.BatchDawidSkene.BatchDawidSkeneDeserializer;
 import com.datascience.gal.core.DataCostEstimator;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 
 public class BatchDawidSkeneTest {
 
@@ -51,13 +54,23 @@ public class BatchDawidSkeneTest {
 		unassignedObjects.add("additional_object2");
 		unassignedObjects.add("additional_object3");
 		ds.addObjects(unassignedObjects);
-		assertEquals(ds.getNumberOfObjects(), 4);
+		assertEquals(ds.getNumberOfObjects(), 1);
+		assertEquals(ds.getNumberOfUnassignedObjects(), 3);
 		String j2 = ds.toString();
+		
+		//check serialization
 		assertNotSame(j1, j2);
+		
+		//check deserialization
+		BatchDawidSkeneDeserializer dsd = new BatchDawidSkeneDeserializer();
+		JsonParser jp = new JsonParser();
+		BatchDawidSkene dds = (BatchDawidSkene)dsd.deserialize(jp.parse(j2), null, null);
+		assertEquals(dds.getNumberOfUnassignedObjects(), 3);
 		
 		//check objects quality for each category. it should be 1./categories_size
 		for (String obj : unassignedObjects) {
 			assertEquals(1./categories.size(), DataCostEstimator.getInstance().estimateMissclassificationCost(ds, null, obj), 1e-10);
 		}
+		
 	}
 }
