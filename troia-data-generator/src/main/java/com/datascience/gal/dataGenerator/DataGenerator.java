@@ -282,7 +282,7 @@ public class DataGenerator {
 		return goldLabels;
 	}
 
-	public Collection<Map<String, Object>> computeArtificialWorkersQualities(
+	public Collection<Map<String, Object>> computeArtificialWorkerQualities(
 			Collection<Category> categories,
 			TroiaObjectCollection objects,
 			Collection<ArtificialWorker> workers,
@@ -341,8 +341,6 @@ public class DataGenerator {
 				workerNames.add(worker.getName());
 			}
 		}
-		// TODO
-		this.computeArtificialWorkersQualities(categories, objects, workers, labels, goldLabels);
 		data.setCategories(categories);
 		data.setGoldLabels(goldLabels);
 		data.setLabels(labels);
@@ -351,6 +349,7 @@ public class DataGenerator {
 		data.setRequestId(requestId);
 		data.setWorkers(workerNames);
 		data.setArtificialWorkers(workers);
+		data.setArtificialWorkerQualities(computeArtificialWorkerQualities(categories, objects, workers, labels, goldLabels));
 		return data;
 	}
 

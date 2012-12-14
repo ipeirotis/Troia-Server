@@ -1,6 +1,7 @@
 package com.datascience.gal.dataGenerator;
 
 import java.util.Collection;
+import java.util.Map;
 
 import troiaClient.Category;
 import troiaClient.GoldLabel;
@@ -138,6 +139,20 @@ public class Data {
 	}
 
 
+	/**
+	 * @return the artificialWorkerQualities
+	 */
+	public Collection<Map<String, Object>> getArtificialWorkerQualities() {
+		return artificialWorkerQualities;
+	}
+
+	/**
+	 * @param artificialWorkerQualities the artificialWorkerQualities to set
+	 */
+	public void setArtificialWorkerQualities(Collection<Map<String, Object>> artificialWorkerQualities) {
+		this.artificialWorkerQualities = artificialWorkerQualities;
+	}
+
 
 
 	/**
@@ -191,4 +206,6 @@ public class Data {
 	Collection<MisclassificationCost> misclassificationCost;
 
 	Collection<ArtificialWorker> artificialWorkers;
+
+	Collection<Map<String, Object>> artificialWorkerQualities;
 }

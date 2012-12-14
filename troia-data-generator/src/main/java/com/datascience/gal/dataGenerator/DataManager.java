@@ -93,12 +93,32 @@ public class DataManager {
 	 *             Thrown if program was unable to save workers to file
 	 */
 	public void saveArtificialWorkers(String filename,
-									  Collection<ArtificialWorker> workers) throws IOException {
+			Collection<ArtificialWorker> workers) throws IOException {
 		logger.info("Saving artificial workers to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
 		Gson gson = new Gson();
 		out.write(gson.toJson(workers));
+		out.close();
+	}
+
+	/**
+	 * Saves JSONified collection of artificial worker qualities to file.
+	 *
+	 * @param filename
+	 *            Target file
+	 * @param qualities
+	 *            Collection of qualities that will be saved
+	 * @throws IOException
+	 *             Thrown if program was unable to save workers to file
+	 */
+	public void saveArtificialWorkerQualities(String filename,
+			Collection<Map<String, Object>> qualities) throws IOException {
+		logger.info("Saving qualities of artificial workers to file");
+		FileOutputStream stream = new FileOutputStream(filename);
+		Writer out = new OutputStreamWriter(stream);
+		Gson gson = new Gson();
+		out.write(gson.toJson(qualities));
 		out.close();
 	}
 
@@ -309,6 +329,10 @@ public class DataManager {
 			this.saveArtificialWorkers(filename_base + ARTIFICIAL_WORKERS_TAG
 									   + FILE_EXTENSION, data.getArtificialWorkers());
 		}
+		if(data.getArtificialWorkerQualities()!=null) {
+			this.saveArtificialWorkerQualities(filename_base + ARTIFICIAL_WORKER_QUALITIES_TAG
+									   + FILE_EXTENSION, data.getArtificialWorkerQualities());
+		}
 		if(data.getGoldLabels()!=null) {
 			this.saveGoldLabelsToFile(filename_base + GOLD_LABELS_TAG
 									  + FILE_EXTENSION, data.getGoldLabels());
@@ -388,6 +412,7 @@ public class DataManager {
 	}
 
 	private static final String ARTIFICIAL_WORKERS_TAG = "_aiworker";
+	private static final String ARTIFICIAL_WORKER_QUALITIES_TAG = "_aiworker_qual";
 	private static final String LABELS_TAG = "_labels";
 	private static final String GOLD_LABELS_TAG = "_goldLabels";
 	private static final String OBJECTS_TAG = "_objects";
