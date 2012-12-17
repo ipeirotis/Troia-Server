@@ -113,7 +113,7 @@
 				<artifactId>maven-install-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>install</phase>
+						<phase>compile</phase>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
