@@ -54,8 +54,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
-		this.qualities = new HashMap<String,Map<String,Double>>();
-		this.evaluatedQualities = new HashMap<String,Double>();
 		this.objects = new HashMap<String, Datum>();
 		this.workers = new HashMap<String, Worker>();
 		this.objectsWithNoLabels = new HashMap<String, Datum>();
@@ -997,6 +995,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	@Override
 	public Collection<CorrectLabel> getEvaluationDatums() {
 		return this.evaluationData.values();
+	}
+        
+	public CorrectLabel getEvaluationDatum(String name) {
+		return this.evaluationData.get(name);
 	}
 
 	public boolean isComputed() {

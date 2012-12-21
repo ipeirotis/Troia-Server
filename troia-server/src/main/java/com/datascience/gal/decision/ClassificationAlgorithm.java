@@ -38,7 +38,7 @@ public class ClassificationAlgorithm {
 	}
 	
 	public Double predictedLabelEvalCost(Datum datum, AbstractDawidSkene ads) {
-		String correctLabel = ads.getEvaluationData().get(datum.getName()).getCorrectCategory();
+		String correctLabel = ads.getEvaluationDatum(datum.getName()).getCorrectCategory();
 		Double cost = 1.0;
 		if (correctLabel != null){
 			cost = 0.;
