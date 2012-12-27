@@ -9,25 +9,25 @@
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
-  <display-name>GetAnotherLabel</display-name>
- <servlet>
-    <servlet-name>get another label</servlet-name>
-    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-    <init-param>
-      <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>com.datascience.gal.service</param-value>
-    </init-param>
-    <init-param>
-		<param-name>com.sun.jersey.config.property.JSPTemplatesBasePath</param-name>
-		<param-value>/WEB-INF/jsp</param-value>
-	</init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <listener>
-    <listener-class>com.datascience.gal.service.InitializationSupport</listener-class>
-  </listener>
-  <servlet-mapping>
-    <servlet-name>get another label</servlet-name>
-    <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
+	<display-name>GetAnotherLabel</display-name>
+	<servlet>
+		<servlet-name>get another label</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>com.datascience.gal.service</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.JSPTemplatesBasePath</param-name>
+			<param-value>/WEB-INF/jsp</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<listener> 
+		<listener-class>com.datascience.gal.service.InitializationSupport</listener-class> 
+	</listener> 
+	<servlet-mapping>
+		<servlet-name>get another label</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 </web-app>

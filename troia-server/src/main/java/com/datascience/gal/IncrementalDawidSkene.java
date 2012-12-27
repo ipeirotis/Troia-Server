@@ -19,7 +19,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.service.JSONUtils;
+import com.datascience.core.storages.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -42,22 +42,27 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
 
-	public IncrementalDawidSkene(String id, Collection<Category> categories) {
-		super(id, categories);
-		super.logger = this.logger;
-	}
-	
 	public IncrementalDawidSkene(String id, Collection<Category> categories,
 								 IncrementalDSMethod dsmethod) {
 		this(id, categories);
 		this.dsmethod = dsmethod;
 	}
 
+	public IncrementalDawidSkene(String id, Collection<Category> categories) {
+		this(id);
+		initializeOnCategories(categories);
+	}
+
+	public IncrementalDawidSkene(String id) {
+		super(id);
+		super.logger = this.logger;
+	}
+
 	private IncrementalDawidSkene(String id, Map<String, Datum> objects, Map<String, Datum> objectsWithNoLabels,
 								  Map<String, Worker> workers, Map<String, Category> categories,
 								  boolean fixedPriors, IncrementalDSMethod dsmethod,
 								  double priorDenominator) {
-		this(id, new ArrayList<Category> ());
+		super(id);
 		this.objects = objects;
 		this.objectsWithNoLabels = objectsWithNoLabels;
 		this.workers = workers;
@@ -153,7 +158,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 		incrementPrior(objectName);
 		updateWorkers(objectName);
 	}
-	
+
 	@Override
 	public void addCorrectLabel(CorrectLabel cl) {
 		Datum d = coreCorrectLabelUpdate(cl);
@@ -167,6 +172,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 				updateObjectInformation(d, false);
 				break;
 		}
+
 	}
 	
 	private Datum coreCorrectLabelUpdate(CorrectLabel cl) {

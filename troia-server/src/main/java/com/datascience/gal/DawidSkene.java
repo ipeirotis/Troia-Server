@@ -25,7 +25,7 @@ public interface DawidSkene {
 
 	public abstract void addCorrectLabel(CorrectLabel cl);
 
-	public abstract void addEvaluationData(Collection<CorrectLabel> cl);
+	public abstract void addEvaluationDatums(Collection<CorrectLabel> cl);
 	
 	public abstract void addObjects(Collection<String> objs);
 
@@ -187,6 +187,8 @@ public interface DawidSkene {
 
 	public abstract Map<String,Datum> getObjects();
 
+	public abstract Collection<CorrectLabel> getGoldDatums();
+	public abstract Collection<CorrectLabel> getEvaluationDatums();
 	Map<String, Double> getWorkerPriors(Worker worker);
 
 	double getErrorRateForWorker(Worker worker, String from, String to);

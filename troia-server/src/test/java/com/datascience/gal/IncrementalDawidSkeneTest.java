@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.datascience.gal.IncrementalDawidSkene.IncrementalDawidSkeneDeserializer;
-import com.datascience.gal.service.JSONUtils;
+import com.datascience.core.storages.JSONUtils;
 import com.datascience.utils.auxl.TestDataManager;
 import com.google.gson.JsonObject;
 

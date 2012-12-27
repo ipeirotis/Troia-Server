@@ -11,7 +11,7 @@ package com.datascience.gal;
 
 import java.lang.reflect.Type;
 
-import com.datascience.gal.service.JSONUtils;
+import com.datascience.core.storages.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package com.datascience.gal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.service.JSONUtils;
+import com.datascience.core.storages.JSONUtils;
 import com.datascience.utils.Utils;
 
 public abstract class AbstractDawidSkene implements DawidSkene {
@@ -50,15 +51,24 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return (Double.isNaN(cost_min)) ? "---" : Math.round(100 * (1 - cost_min)) + "%";
 	}
 	
-	protected AbstractDawidSkene(String id, Collection<Category> categories) {
+	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
-		this.computed = false;
-		
 		this.objects = new HashMap<String, Datum>();
 		this.workers = new HashMap<String, Worker>();
 		this.objectsWithNoLabels = new HashMap<String, Datum>();
+		this.computed = false;
+	}
 
+	protected void invalidateComputed() {
+		this.computed = false;
+	}
+
+	protected void markComputed() {
+		this.computed = true;
+	}
+	
+	public void initializeOnCategories(Collection<Category> categories){
 		this.fixedPriors = false;
 		this.categories = new HashMap<String, Category>();
 
@@ -74,20 +84,13 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		if (!fixedPriors)
 			initializePriors();
-
+		
 		// By default, we initialize the misclassification costs
 		// assuming a 0/1 loss function. The costs can be customized
 		// using the corresponding file
 		initializeCosts();
 	}
-
-	protected void invalidateComputed() {
-		this.computed = false;
-	}
-
-	protected void markComputed() {
-		this.computed = true;
-	}
+	
 	/**
 	 * We initialize the misclassification costs using the 0/1 loss
 	 *
@@ -960,7 +963,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			return objectsWithNoLabels.get(object_id);
 		return ret;
 	}
-	
+
 	public Map<String,Datum> getObjects() {
 		return objects;
 	}
@@ -972,18 +975,32 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public Category getCategory(String category) {
 		return categories.get(category);
 	}
-
-	public Map<String, CorrectLabel> getEvaluationData(){
-		return evaluationData;
+	
+	public Collection<CorrectLabel> getGoldDatums() {
+		Collection<CorrectLabel> ret = new ArrayList<CorrectLabel>();
+		for (Datum d : objects.values()){
+			if (d.isGold())
+				ret.add(new CorrectLabel(d.getName(), d.getCorrectCategory()));
+		}
+		return ret;
 	}
 
 	@Override
-	public void addEvaluationData(Collection<CorrectLabel> cl) {
+	public void addEvaluationDatums(Collection<CorrectLabel> cl) {
 		for (CorrectLabel correctLabel : cl) {
 			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
 		}
 	}
 	
+	@Override
+	public Collection<CorrectLabel> getEvaluationDatums() {
+		return this.evaluationData.values();
+	}
+        
+	public CorrectLabel getEvaluationDatum(String name) {
+		return this.evaluationData.get(name);
+	}
+
 	public boolean isComputed() {
 		return this.computed;
 	}
@@ -994,6 +1011,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	public Worker getWorker(String name) {
 		return this.workers.get(name);
+	}
+	
+	public Collection<Worker> getWorkers() {
+		return this.workers.values();
 	}
 
 	// Log-likelihod stop condition.

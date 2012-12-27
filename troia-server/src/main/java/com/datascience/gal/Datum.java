@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.gal.service.JSONUtils;
+import com.datascience.core.storages.JSONUtils;
 import com.datascience.utils.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
