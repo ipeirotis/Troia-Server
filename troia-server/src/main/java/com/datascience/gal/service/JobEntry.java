@@ -6,7 +6,6 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -54,7 +53,7 @@ public class JobEntry {
 	
 	
 	@Path("categories/")
-	@PUT
+	@POST
 	public Response setCategories(@FormParam("categories") String sCategories){
 		Collection<Category> categories = serializer.parse(sCategories, JSONUtils.categorySetType);
 		ProjectCommand command = new CategoriesCommands.SetCategories(job.getDs(), categories);
@@ -70,7 +69,7 @@ public class JobEntry {
 	
 
 	@Path("costs/")
-	@PUT
+	@POST
 	public Response setCosts(@FormParam("costs") String sCosts){
 		Collection<MisclassificationCost> costs = serializer.parse(sCosts, JSONUtils.misclassificationCostSetType);
 		ProjectCommand command = new CostsCommands.SetCosts(job.getDs(), costs);
@@ -85,7 +84,7 @@ public class JobEntry {
 	}
 	
 	@Path("assignedLabels/")
-	@PUT
+	@POST
 	public Response addAssigns(@FormParam("labels") String labelsString){
 		Collection<AssignedLabel> labels = serializer.parse(labelsString, JSONUtils.assignedLabelSetType);
 		ProjectCommand command = new AssignsCommands.AddAssigns(job.getDs(), labels);
@@ -99,44 +98,44 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("goldDatums/")
-	@PUT
-	public Response addGoldDatums(@FormParam("labels") String labelsString){
+	@Path("goldData/")
+	@POST
+	public Response addGoldData(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		ProjectCommand command = new DatumCommands.AddGoldDatums(job.getDs(), labels);
+		ProjectCommand command = new DatumCommands.AddGoldData(job.getDs(), labels);
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("goldDatums/")
+	@Path("goldData/")
 	@GET
-	public Response getGoldDatums(){
-		ProjectCommand command = new DatumCommands.GetGoldDatums(job.getDs());
+	public Response getGoldData(){
+		ProjectCommand command = new DatumCommands.GetGoldData(job.getDs());
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("evaluationDatums/")
-	@PUT
-	public Response addEvaluationDatums(@FormParam("labels") String labelsString){
+	@Path("evaluationData/")
+	@POST
+	public Response addEvaluationData(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		ProjectCommand command = new DatumCommands.AddEvaluationDatums(job.getDs(), labels);
+		ProjectCommand command = new DatumCommands.AddEvaluationData(job.getDs(), labels);
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("evaluationDatums/")
+	@Path("evaluationData/")
 	@GET
-	public Response getEvaluationDatums(){
-		ProjectCommand command = new DatumCommands.GetEvaluationDatums(job.getDs());
+	public Response getEvaluationData(){
+		ProjectCommand command = new DatumCommands.GetEvaluationData(job.getDs());
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("datums/")
+	@Path("data/")
 	@GET
-	public Response getDatums(){
-		ProjectCommand command = new DatumCommands.GetDatums(job.getDs());
+	public Response getData(){
+		ProjectCommand command = new DatumCommands.GetData(job.getDs());
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("datums/{id}")
+	@Path("data/{id}")
 	@GET
 	public Response getDatum(@PathParam("id") String did){
 		ProjectCommand command = new DatumCommands.GetDatum(job.getDs(), did);
@@ -184,19 +183,19 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/{algorithm}/datums/")
+	@Path("prediction/{algorithm}/data/")
 	@GET
-	public Response getPredictionDatums(@PathParam("algorithm") String algorithm){
+	public Response getPredictionData(@PathParam("algorithm") String algorithm){
 		if (!algorithm.equals("MV")) {
 			throw ServiceException.wrongArgumentException(responser, "Unknown algorithm type: " + algorithm);
 		}
-		ProjectCommand command = new PredictionCommands.GetDatums(job.getDs(), algorithm);
+		ProjectCommand command = new PredictionCommands.GetData(job.getDs(), algorithm);
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/{algorithm}/datums/{id}")
+	@Path("prediction/{algorithm}/data/{id}")
 	@GET
-	public Response getPredictionDatums(@PathParam("algorithm") String algorithm, @PathParam("id") String did){
+	public Response getPredictionData(@PathParam("algorithm") String algorithm, @PathParam("id") String did){
 		if (!algorithm.equals("MV")) {
 			throw ServiceException.wrongArgumentException(responser, "Unknown algorithm type: " + algorithm);
 		}
@@ -204,7 +203,7 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/{algorithm}/datums/{id}/{costDecisionAlg}")
+	@Path("prediction/{algorithm}/data/{id}/{costDecisionAlg}")
 	@GET
 	public Response getEstimatedCost(@PathParam("algorithm") String algorithm, 
 			@PathParam("id") String did, 

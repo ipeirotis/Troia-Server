@@ -12,11 +12,11 @@ import com.datascience.gal.Datum;
  */
 public class DatumCommands {
 	
-	static public class AddGoldDatums extends ProjectCommand<Object> {
+	static public class AddGoldData extends ProjectCommand<Object> {
 
 		private Collection<CorrectLabel> labels;
 		
-		public AddGoldDatums(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
+		public AddGoldData(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
 			super(ads, true);
 			this.labels = labels;
 		}
@@ -24,13 +24,13 @@ public class DatumCommands {
 		@Override
 		void realExecute() {
 			ads.addCorrectLabels(labels);
-			setResult("Correct datums added");
+			setResult("Correct data added");
 		}
 	}
 	
-	static public class GetGoldDatums extends ProjectCommand<Collection<CorrectLabel>> {
+	static public class GetGoldData extends ProjectCommand<Collection<CorrectLabel>> {
 		
-		public GetGoldDatums(AbstractDawidSkene ads){
+		public GetGoldData(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
@@ -40,11 +40,11 @@ public class DatumCommands {
 		}
 	}
 	
-	static public class AddEvaluationDatums extends ProjectCommand<Object> {
+	static public class AddEvaluationData extends ProjectCommand<Object> {
 
 		private Collection<CorrectLabel> labels;
 		
-		public AddEvaluationDatums(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
+		public AddEvaluationData(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
 			super(ads, true);
 			this.labels = labels;
 		}
@@ -56,9 +56,9 @@ public class DatumCommands {
 		}
 	}
 	
-	static public class GetEvaluationDatums extends ProjectCommand<Collection<CorrectLabel>> {
+	static public class GetEvaluationData extends ProjectCommand<Collection<CorrectLabel>> {
 		
-		public GetEvaluationDatums(AbstractDawidSkene ads){
+		public GetEvaluationData(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
@@ -68,9 +68,9 @@ public class DatumCommands {
 		}
 	}
 	
-	static public class GetDatums extends ProjectCommand<Collection<Datum>> {
+	static public class GetData extends ProjectCommand<Collection<Datum>> {
 		
-		public GetDatums(AbstractDawidSkene ads){
+		public GetData(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		

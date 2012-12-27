@@ -25,8 +25,12 @@ public class CategoriesCommands {
 		
 		@Override
 		void realExecute() {
-			ads.initializeOnCategories(categories);
-			setResult("Categories added");
+			if (ads.getCategories() == null || ads.getCategories().isEmpty()){
+				ads.initializeOnCategories(categories);
+				setResult("Categories added");
+			}
+			else
+				setResult("You have already added some categories. You can't change them.");
 		}
 	}
 	

@@ -27,11 +27,11 @@ public class PredictionCommands {
 		}
 	}
 	
-	static public class GetDatums extends ProjectCommand<Map<String, String>> {
+	static public class GetData extends ProjectCommand<Map<String, String>> {
 		
 		private String algorithm;
 		
-		public GetDatums(AbstractDawidSkene ads, String algorithm){
+		public GetData(AbstractDawidSkene ads, String algorithm){
 			super(ads, false);
 			this.algorithm = algorithm;
 		}
