@@ -4,26 +4,50 @@ import com.datascience.core.Job;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author konrad
  */
 public class CachedJobStorage implements IJobStorage {
+	
+	private static Logger logger = Logger.getLogger(CachedJobStorage.class.getName());
 
 	protected IJobStorage cachedJobStorage;
 	protected LoadingCache<String, Job> cache; 
 	
+	@SuppressWarnings("OverridableMethodCallInConstructor")
 	public CachedJobStorage(final IJobStorage cachedJobStorage, int cacheSize){
 		this.cachedJobStorage = cachedJobStorage;
 		cache = CacheBuilder.newBuilder()
 			.maximumSize(cacheSize)
-			.build(new CacheLoader<String, Job>(){
-				@Override
-				public Job load(String id) throws Exception {
-					return cachedJobStorage.get(id);
+			.removalListener(getRemovalListener())
+			.build(getLoader());
+	}
+	
+	protected CacheLoader<String, Job> getLoader() {
+		return new CacheLoader<String, Job>(){
+			@Override
+			public Job load(String id) throws Exception {
+				return cachedJobStorage.get(id);
+			}
+		};
+	}
+	
+	protected RemovalListener<String, Job> getRemovalListener(){
+		return new RemovalListener<String, Job>() {
+			@Override
+			public void onRemoval(RemovalNotification<String, Job> rn){
+				try {
+					cachedJobStorage.add(rn.getValue());
+				} catch (Exception ex) {
+					logger.error("CachedJobStorage on eviction", ex);
 				}
-		});
+			}
+		};
 	}
 	
 	@Override
@@ -37,7 +61,7 @@ public class CachedJobStorage implements IJobStorage {
 	 */
 	@Override
 	public void add(Job job) throws Exception {
-		cachedJobStorage.add(job);
+		cache.put(job.getId(), job);
 	}
 
 	/**
@@ -47,8 +71,8 @@ public class CachedJobStorage implements IJobStorage {
 	 */
 	@Override
 	public void remove(String id) throws Exception {
-		cachedJobStorage.remove(id);
 		cache.invalidate(id);
+		cachedJobStorage.remove(id);
 	}
 
 	@Override
@@ -58,6 +82,7 @@ public class CachedJobStorage implements IJobStorage {
 
 	@Override
 	public void stop() throws Exception {
+		cache.invalidateAll();
 		cachedJobStorage.stop();
 	}
 }
