@@ -3,7 +3,6 @@ package com.datascience.gal.service;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -12,6 +11,7 @@ import com.datascience.core.Job;
 import com.datascience.core.JobFactory;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.executor.ProjectCommandExecutor;
+import javax.ws.rs.POST;
 
 /**
  * @author Konrad Kurdej
@@ -54,7 +54,7 @@ public class JobsEntry {
 		}
 	}
 	
-	@PUT
+	@POST
 	public Response createJob(@FormParam("id") String jid, @DefaultValue("batch") @FormParam("type") String type){
 		if (jid == null || "".equals(jid)){
 			jid = jidGenerator.getID();
