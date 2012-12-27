@@ -17,7 +17,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.service.JSONUtils;
+import com.datascience.core.storages.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -28,22 +28,36 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 	public static final BatchDawidSkeneDeserializer deserializer = new BatchDawidSkeneDeserializer();
 
+	private BatchDawidSkene(String id, Map<String, Datum> objects,
+							Map<String, Worker> workers, Map<String, Category> categories,
+							boolean fixedPriors) {
+		super(id);
+		this.objects = objects;
+		this.workers = workers;
+		this.categories = categories;
+		this.fixedPriors = fixedPriors;
+	}
+
 	public BatchDawidSkene(String id, Collection<Category> categories) {
-		super(id, categories);
+		this(id);
+		initializeOnCategories(categories);
+	}
+
+	public BatchDawidSkene(String id) {
+		super(id);
 		super.logger = this.logger;
 	}
 	
 	private BatchDawidSkene(String id, Map<String, Datum> objects, Map<String, Datum> objectsWithNoLabels,
 							Map<String, Worker> workers, Map<String, Category> categories,
 							boolean fixedPriors) {
-		this(id, new ArrayList<Category> ());
+		this(id);
 		this.objects = objects;
 		this.objectsWithNoLabels = objectsWithNoLabels;
 		this.workers = workers;
 		this.categories = categories;
 		this.fixedPriors = fixedPriors;
 	}
-
 	private Map<String, Double> getCategoryPriors() {
 		Map<String, Double> out = new HashMap<String, Double>(categories.size());
 		for (Category cat : categories.values())

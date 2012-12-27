@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.DawidSkene;
-import com.datascience.gal.service.ComputerHelper;
+import com.datascience.gal.legacy.ComputerHelper;
 
 /**
  * @author Michael Arshynov
