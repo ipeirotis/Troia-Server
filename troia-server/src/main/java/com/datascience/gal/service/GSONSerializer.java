@@ -5,6 +5,8 @@
 package com.datascience.gal.service;
 
 import com.datascience.core.storages.JSONUtils;
+import com.google.gson.stream.JsonReader;
+import java.io.StringReader;
 import java.lang.reflect.Type;
 import javax.ws.rs.core.MediaType;
 
@@ -26,6 +28,8 @@ public class GSONSerializer implements ISerializer{
 
 	@Override
 	public <T> T parse(String input, Type type) {
-		return JSONUtils.gson.fromJson(input, type);
+		JsonReader jr = new JsonReader(new StringReader(input));
+		jr.setLenient(true);
+		return JSONUtils.gson.fromJson(jr, type);
 	}
 }
