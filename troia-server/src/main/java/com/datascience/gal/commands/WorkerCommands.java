@@ -1,6 +1,7 @@
 package com.datascience.gal.commands;
 
 import java.util.Collection;
+import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Worker;
@@ -35,6 +36,17 @@ public class WorkerCommands {
 		@Override
 		void realExecute() {
 			setResult(ads.getWorkers());
+		}
+	}
+	
+	static public class GetWorkersScores extends ProjectCommand<Collection<Map<String, Object>>> {
+		public GetWorkersScores(AbstractDawidSkene ads){
+			super(ads, false);
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(ads.getAllWorkerScores(true));
 		}
 	}
 }

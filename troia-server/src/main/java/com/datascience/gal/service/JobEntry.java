@@ -214,4 +214,11 @@ public class JobEntry {
 		ProjectCommand command = new PredictionCommands.GetCost(job.getDs(), did, algorithm, cda);
 		return buildResponseOnCommand(job, command);
 	}
+	
+	@Path("prediction/workers")
+	@GET
+	public Response getPredictionData(){
+		ProjectCommand command = new WorkerCommands.GetWorkersScores(job.getDs());
+		return buildResponseOnCommand(job, command);
+	}
 }

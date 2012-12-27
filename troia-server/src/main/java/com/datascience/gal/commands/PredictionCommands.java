@@ -41,6 +41,9 @@ public class PredictionCommands {
 			if (algorithm.equals("MV")){
 				setResult(ads.getMajorityVote());
 			}
+			else {
+				//TODO:
+			}
 		}
 	}
 	
@@ -59,6 +62,9 @@ public class PredictionCommands {
 		void realExecute() {
 			if (algorithm.equals("MV")){
 				setResult(ads.getMajorityVote(datumId));
+			}
+			else {
+				//TODO:
 			}
 		}
 	}
