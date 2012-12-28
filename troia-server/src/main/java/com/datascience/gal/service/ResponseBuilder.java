@@ -19,8 +19,9 @@ public class ResponseBuilder {
 	Map<String, Object> initialResponseContent(String messageStatus, Object messageResult){
 		Map<String, Object> responseContent = new HashMap<String, Object>();
 		responseContent.put("status", messageStatus);
-		if (messageResult != null)
+		if (messageResult != null) {
 			responseContent.put("result", messageResult);
+		}
 		responseContent.put("timestamp", DateTime.now().toString());
 		return responseContent;
 	}
