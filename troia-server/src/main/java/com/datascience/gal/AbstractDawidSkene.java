@@ -594,6 +594,15 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			addCorrectLabel(cl);
 		}
 	}
+	
+	@Override
+	public void markObjectsAsGold(Collection<CorrectLabel> cls) {
+		for (CorrectLabel cl : cls) {
+			if (!objects.containsKey(cl.getObjectName()))
+				throw new IllegalArgumentException(String.format("{} is not present in objects map", cl.getObjectName()));
+		}
+		addCorrectLabels(cls);
+	}
 
 	@Override
 	public void addMisclassificationCosts(Collection<MisclassificationCost> cls) {

@@ -126,6 +126,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 				categories.values());
 			d = new Datum(objectName, datumCategories);
 		}
+		if (objectsWithNoLabels.containsKey(objectName)) {
+			objectsWithNoLabels.remove(objectName);
+		}
 		d.addAssignedLabel(al);
 		objects.put(objectName, d);
 
@@ -189,6 +192,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 			Set<Category> categories = new HashSet<Category>(
 				this.categories.values());
 			d = new Datum(objectName, categories);
+		}
+		if (objectsWithNoLabels.containsKey(objectName)) {
+			objectsWithNoLabels.remove(objectName);
 		}
 		d.setGold(true);
 		d.setCorrectCategory(correctCategory);

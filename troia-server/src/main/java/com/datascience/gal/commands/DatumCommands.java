@@ -13,6 +13,22 @@ import com.datascience.gal.Datum;
  */
 public class DatumCommands {
 	
+	static public class MarkDataAsGold extends ProjectCommand<Object> {
+
+		private Collection<CorrectLabel> labels;
+		
+		public MarkDataAsGold(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
+			super(ads, true);
+			this.labels = labels;
+		}
+		
+		@Override
+		void realExecute() {
+			ads.markObjectsAsGold(labels);
+			setResult("Data marked as gold");
+		}
+	}
+	
 	static public class AddGoldData extends ProjectCommand<Object> {
 
 		private Collection<CorrectLabel> labels;
@@ -96,7 +112,7 @@ public class DatumCommands {
 		
 		@Override
 		void realExecute() {
-			if (type.equals("only_with_assigns")) {
+			if (type.equals("assigned")) {
 				setResult(ads.getObjects().values());
 			}
 			else if (type.equals("unassigned")) {

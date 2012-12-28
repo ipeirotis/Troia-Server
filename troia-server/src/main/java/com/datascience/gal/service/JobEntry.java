@@ -90,6 +90,14 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
+	@Path("labels/markAsGold/")
+	@POST
+	public Response markAsGold(@FormParam("labels") String labelsString){
+		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
+		ProjectCommand command = new DatumCommands.MarkDataAsGold(job.getDs(), labels);
+		return buildResponseOnCommand(job, command);
+	}
+	
 	@Path("assignedLabels/")
 	@POST
 	public Response addAssigns(@FormParam("labels") String labelsString){

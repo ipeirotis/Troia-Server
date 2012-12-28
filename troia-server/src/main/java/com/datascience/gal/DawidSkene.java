@@ -28,6 +28,8 @@ public interface DawidSkene {
 	public abstract void addEvaluationDatums(Collection<CorrectLabel> cl);
 	
 	public abstract void addObjects(Collection<String> objs);
+	
+	public abstract void markObjectsAsGold(Collection<CorrectLabel> cl);
 
 	/**
 	 * @return the fixedPriors
