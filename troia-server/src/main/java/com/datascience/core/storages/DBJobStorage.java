@@ -79,7 +79,7 @@ public class DBJobStorage implements IJobStorage {
 		dsStatement.setString(1, id);
 		dsResults = dsStatement.executeQuery();
 		if (!dsResults.next()) {
-			throw new IllegalArgumentException("No job with id=" + id);
+			return null;
 		}
 		String dsJson = dsResults.getString("data");
 		dsStatement.close();

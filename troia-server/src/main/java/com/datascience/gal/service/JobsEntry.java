@@ -45,24 +45,32 @@ public class JobsEntry {
 	}
 	
 	@Path("/{id}/")
-	public JobEntry getJob(@PathParam("id") String jid){
-		try{
-			Job job = jobStorage.get(jid);
-			return jobEntryFactory(job);
-		} catch (Exception ex){
+	public JobEntry getJob(@PathParam("id") String jid) throws Exception{
+		Job job = jobStorage.get(jid);
+		if (job == null) {
 			throw ServiceException.wrongArgumentException(responser, "Job with ID: " + jid + " doesn't exists");
 		}
+		return jobEntryFactory(job);
 	}
 	
 	@POST
-	public Response createJob(@FormParam("id") String jid, @DefaultValue("batch") @FormParam("type") String type){
+	public Response createJob(@FormParam("id") String jid,
+			@DefaultValue("batch") @FormParam("type") String type) throws Exception{
 		if (jid == null || "".equals(jid)){
 			jid = jidGenerator.getID();
 		}
+
+		Job job_old = jobStorage.get(jid);
+		if (job_old != null) {
+			throw ServiceException.wrongArgumentException(responser,
+					"Job with ID: " + jid + " already exists");
+		}
+
 		Job job = jobFactory.createJob(type, jid);
 		if (job == null) {
 			throw ServiceException.wrongArgumentException(responser, "Unknown job type: " + type);
 		}
+		
 		try {
 			jobStorage.add(job);
 			return responser.makeOKResponse("New job created with ID: " + jid);

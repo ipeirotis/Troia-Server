@@ -1,11 +1,13 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
+import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 
 /**
@@ -17,7 +19,7 @@ public class CachedJobStorage implements IJobStorage {
 	private static Logger logger = Logger.getLogger(CachedJobStorage.class.getName());
 
 	protected IJobStorage cachedJobStorage;
-	protected LoadingCache<String, Job> cache; 
+	protected LoadingCache<String, Optional<Job>> cache; 
 	
 	@SuppressWarnings("OverridableMethodCallInConstructor")
 	public CachedJobStorage(final IJobStorage cachedJobStorage, int cacheSize){
@@ -28,21 +30,27 @@ public class CachedJobStorage implements IJobStorage {
 			.build(getLoader());
 	}
 	
-	protected CacheLoader<String, Job> getLoader() {
-		return new CacheLoader<String, Job>(){
+	protected CacheLoader<String, Optional<Job>> getLoader() {
+		return new CacheLoader<String, Optional<Job>>(){
 			@Override
-			public Job load(String id) throws Exception {
-				return cachedJobStorage.get(id);
+			public Optional<Job> load(String id) throws Exception {
+				// This is tricky - if absent we throw 
+				// exception to avoid putting this value into cache
+				Job job = cachedJobStorage.get(id);
+				if (job == null) {
+					throw new NotInCachedException();
+				}
+				return Optional.of(job);
 			}
 		};
 	}
 	
-	protected RemovalListener<String, Job> getRemovalListener(){
-		return new RemovalListener<String, Job>() {
+	protected RemovalListener<String, Optional<Job>> getRemovalListener(){
+		return new RemovalListener<String, Optional<Job>>() {
 			@Override
-			public void onRemoval(RemovalNotification<String, Job> rn){
+			public void onRemoval(RemovalNotification<String, Optional<Job>> rn){
 				try {
-					cachedJobStorage.add(rn.getValue());
+					cachedJobStorage.add(rn.getValue().get());
 				} catch (Exception ex) {
 					logger.error("CachedJobStorage on eviction", ex);
 				}
@@ -52,7 +60,15 @@ public class CachedJobStorage implements IJobStorage {
 	
 	@Override
 	public Job get(String id) throws Exception {
-		return cache.get(id);
+		try {
+			return cache.get(id).get();
+		} catch (ExecutionException ex){
+			if (ex.getCause() instanceof NotInCachedException) {
+				return null;
+			} else {
+				throw ex;
+			}
+		}
 	}
 
 	/**
@@ -61,7 +77,7 @@ public class CachedJobStorage implements IJobStorage {
 	 */
 	@Override
 	public void add(Job job) throws Exception {
-		cache.put(job.getId(), job);
+		cache.put(job.getId(), Optional.of(job));
 	}
 
 	/**
@@ -84,5 +100,8 @@ public class CachedJobStorage implements IJobStorage {
 	public void stop() throws Exception {
 		cache.invalidateAll();
 		cachedJobStorage.stop();
+	}
+	
+	static protected class NotInCachedException extends Exception{
 	}
 }
