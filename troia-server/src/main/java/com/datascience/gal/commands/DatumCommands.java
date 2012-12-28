@@ -1,5 +1,6 @@
 package com.datascience.gal.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.datascience.gal.AbstractDawidSkene;
@@ -68,15 +69,45 @@ public class DatumCommands {
 		}
 	}
 	
-	static public class GetData extends ProjectCommand<Collection<Datum>> {
+	static public class AddData extends ProjectCommand<Object> {
+
+		private Collection<String> objects;
 		
-		public GetData(AbstractDawidSkene ads){
-			super(ads, false);
+		public AddData(AbstractDawidSkene ads, Collection<String> objects){
+			super(ads, true);
+			this.objects = objects;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getObjects().values());
+			ads.addObjects(objects);
+			setResult("Object without labels added");
+		}
+	}
+	
+	static public class GetData extends ProjectCommand<Collection<Datum>> {
+		
+		private String type;
+		
+		public GetData(AbstractDawidSkene ads, String type){
+			super(ads, false);
+			this.type = type;
+		}
+		
+		@Override
+		void realExecute() {
+			if (type.equals("only_with_assigns")) {
+				setResult(ads.getObjects().values());
+			}
+			else if (type.equals("unassigned")) {
+				setResult(ads.getObjectsWithNoLabels().values());
+			}
+			else {
+				Collection<Datum> res = new ArrayList<Datum>();
+				res.addAll(ads.getObjects().values());
+				res.addAll(ads.getObjectsWithNoLabels().values());
+				setResult(res);
+			}
 		}
 	}
 	

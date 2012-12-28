@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.datascience.core.Job;
@@ -135,9 +136,17 @@ public class JobEntry {
 	}
 	
 	@Path("data/")
+	@POST
+	public Response addData(@FormParam("objects") String objectsString){
+		Collection<String> objects = serializer.parse(objectsString, JSONUtils.stringSetType);
+		ProjectCommand command = new DatumCommands.AddData(job.getDs(), objects);
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("data/")
 	@GET
-	public Response getData(){
-		ProjectCommand command = new DatumCommands.GetData(job.getDs());
+	public Response getData(@DefaultValue("only_with_assigns") @QueryParam("type") String type){
+		ProjectCommand command = new DatumCommands.GetData(job.getDs(), type);
 		return buildResponseOnCommand(job, command);
 	}
 	
