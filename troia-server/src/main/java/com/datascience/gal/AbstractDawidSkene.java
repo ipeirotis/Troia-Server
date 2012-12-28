@@ -939,7 +939,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	public Map<String,Datum> getObjectsWithNoLabels() {
-		return objects;
+		return objectsWithNoLabels;
 	}
 
 	public Map<String,Category> getCategories() {
