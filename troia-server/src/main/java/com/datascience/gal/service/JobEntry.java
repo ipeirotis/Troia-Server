@@ -153,7 +153,7 @@ public class JobEntry {
 	
 	@Path("data/")
 	@GET
-	public Response getData(@DefaultValue("only_with_assigns") @QueryParam("type") String type){
+	public Response getData(@DefaultValue("all") @QueryParam("type") String type){
 		ProjectCommand command = new DatumCommands.GetData(job.getDs(), type);
 		return buildResponseOnCommand(job, command);
 	}
