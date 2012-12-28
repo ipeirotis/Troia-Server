@@ -256,6 +256,7 @@ public class IncrementalDawidSkeneTest {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("id", id);
 		jsonObject.add("objects", JSONUtils.gson.toJsonTree(objects, JSONUtils.stringDatumMapType));
+		jsonObject.add("objectsWithNoLabels", JSONUtils.gson.toJsonTree(new HashMap<String, Datum>(), JSONUtils.stringDatumMapType));
 		jsonObject.add("workers", JSONUtils.gson.toJsonTree(workers, JSONUtils.strinWorkerMapType));
 		jsonObject.add("categories", JSONUtils.gson.toJsonTree(categories, JSONUtils.stringCategoryMapType));
 		jsonObject.addProperty("fixedPriors", fixedPriors);
