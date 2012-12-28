@@ -16,25 +16,26 @@ public class MemoryJobStorage implements IJobStorage{
 		storage = new HashMap<String, Job>();
 	}
 	
+	@Override
 	public Job get(String id) throws Exception {
-		Job job = storage.get(id);
-		if (job == null) {
-			throw new IllegalArgumentException("No job with id=" + id);
-		}
-		return job;
+		return storage.get(id);
 	}
 
+	@Override
 	public void add(Job job) throws Exception {
 		storage.put(job.getId(), job);
 	}
 
+	@Override
 	public void remove(String id) throws Exception {
 		storage.remove(id);
 	}
 
+	@Override
 	public void test() throws Exception {
 	}
 
+	@Override
 	public void stop() throws Exception {
 		storage.clear();
 	}
