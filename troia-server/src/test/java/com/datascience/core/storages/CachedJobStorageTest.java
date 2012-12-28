@@ -27,15 +27,12 @@ public class CachedJobStorageTest {
 		assertEquals(jobs[i], storage.get("" + i));
 	}
 	
-	public void assertNotIn(IJobStorage storage, int i){
-		try {
-			storage.get("" + i);
-			fail("Should raise exception for missing element " + i + " in cache");
-		} catch (Exception ex){
-		}
+	public void assertNotIn(IJobStorage storage, int i) throws Exception{
+		assertNull("Should raise exception for missing element " + i + " in cache",
+			storage.get("" + i));
 	}
 	
-	void assertEmpty(IJobStorage storage, int from, int too){
+	void assertEmpty(IJobStorage storage, int from, int too) throws Exception{
 		for (int i=from;i<too;i++) {
 			assertNotIn(storage, i);
 		}
