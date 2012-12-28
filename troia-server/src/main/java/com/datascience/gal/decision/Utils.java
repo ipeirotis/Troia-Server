@@ -14,13 +14,10 @@ import com.datascience.utils.CostMatrix;
 public class Utils {
 
 	static public Double calculateLabelCost(String calcLabel,
-											Map<String, Double> labelProbabilities,
-											CostMatrix<String> costMatrix) {
+			Map<String, Double> labelProbabilities, CostMatrix<String> costMatrix) {
 		double sum = 0.;
-		for (Map.Entry<String, Double> me : costMatrix.getDefinedCostsForValue(
-					calcLabel).entrySet()) {
-			String label = me.getKey();
-			double cost = me.getValue();
+		for (String label: costMatrix.getKnownValues()) {
+			double cost = costMatrix.getCost(label, calcLabel);
 			double prob = labelProbabilities.get(label);
 			sum += cost * prob;
 		}

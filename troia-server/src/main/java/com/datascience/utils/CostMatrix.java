@@ -2,6 +2,7 @@ package com.datascience.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * T must be hashable
@@ -36,4 +37,7 @@ public class CostMatrix<T> {
 		return new HashMap<T, Double>(costMatrix.get(trueValue));
 	}
 
+	public Set<T> getKnownValues() {
+		return costMatrix.keySet();
+	}
 }

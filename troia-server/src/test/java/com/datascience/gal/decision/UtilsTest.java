@@ -42,8 +42,8 @@ public class UtilsTest {
 
 		CostMatrix<String> costMatrix = new CostMatrix<String>();
 		costMatrix.add("OK", "OK", 1.);
-		costMatrix.add("OK", "LOK", 10.);
-		costMatrix.add("OK", "HOK", 20.);
+		costMatrix.add("LOK", "OK", 10.);
+		costMatrix.add("HOK", "OK", 20.);
 
 		Double result = Utils.calculateLabelCost(calcLabel, labelProbabilities,
 						costMatrix);
