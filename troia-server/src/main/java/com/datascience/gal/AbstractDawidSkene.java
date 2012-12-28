@@ -156,6 +156,23 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	@Override
+	public Map<String, String> getInfo() {
+		Map<String, String> ret = new HashMap<String, String>();
+		ret.put("DS kind", String.valueOf(this.getClass()));
+		int a = 0, g = 0;
+		for (Datum d : this.objects.values()){
+			if (d.isGold())
+				g++;
+			a += d.getAssignedLabels().size();
+		}
+		ret.put("Number of assigns", String.valueOf(a));
+		ret.put("Number of objects", String.valueOf(this.getNumberOfObjects()));
+		ret.put("Number of gold objects", String.valueOf(g));
+		ret.put("Number of workers", String.valueOf(this.workers.size()));
+		return ret;
+	}
+	
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -221,46 +238,16 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return sb.toString();
 
 	}
-
+	
 	@Override
-	public String printWorkerScore(Worker w, boolean detailed) {
+	public LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed) {
 
-		StringBuilder sb = new StringBuilder();
-		String workerName = w.getName();
-		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
-		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
-		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
-		int contributions = w.getAssignedLabels().size();
-		int gold_tests = countGoldTests(w.getAssignedLabels());
-
-		if (detailed) {
-			sb.append("Worker: " + workerName + "\n");
-			sb.append("Error Rate: " + s_cost_naive + "\n");
-			sb.append("Quality (Expected): " + s_cost_adj + "\n");
-			sb.append("Quality (Optimized): " + s_cost_min + "\n");
-			sb.append("Number of Annotations: " + contributions + "\n");
-			sb.append("Number of Gold Tests: " + gold_tests + "\n");
-
-			sb.append("Confusion Matrix: \n");
-			for (String correct_name : this.categories.keySet()) {
-				for (String assigned_name : this.categories.keySet()) {
-					double cm_entry = getErrorRateForWorker(w, correct_name,
-															assigned_name);
-					String s_cm_entry = Double.isNaN(cm_entry) ? "---" : Utils
-										.round(100 * cm_entry, 3).toString();
-					sb.append("P[" + correct_name + "->" + assigned_name + "]="
-							  + s_cm_entry + "%\t");
-				}
-				sb.append("\n");
-			}
-			sb.append("\n");
-		} else {
-			sb.append(workerName + "\t" + s_cost_naive + "\t" + s_cost_adj
-					  + "\t" + s_cost_min + "\t" + contributions + "\t"
-					  + gold_tests + "\n");
+		LinkedList<Map<String, Object>> workerScores = new LinkedList<Map<String, Object>>();
+		for (String workername : new TreeSet<String>(this.workers.keySet())) {
+			Worker w = this.workers.get(workername);
+			workerScores.add(getWorkerScore(w, detailed));
 		}
-
-		return sb.toString();
+		return workerScores;
 	}
 	
 	@Override
@@ -323,33 +310,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 		return sb.toString();
 	}
-
-	@Override
-	public String printAllWorkerScores(boolean detailed) {
-
-		StringBuilder sb = new StringBuilder();
-
-		if (!detailed) {
-			sb.append("Worker\tError Rate\tQuality (Expected)\tQuality (Optimized)\tNumber of Annotations\tGold Tests\n");
-		}
-		for (String workername : new TreeSet<String>(this.workers.keySet())) {
-			Worker w = this.workers.get(workername);
-			sb.append(printWorkerScore(w, detailed));
-		}
-		return sb.toString();
-	}
 	
-	@Override
-	public LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed) {
-
-		LinkedList<Map<String, Object>> workerScores = new LinkedList<Map<String, Object>>();
-		for (String workername : new TreeSet<String>(this.workers.keySet())) {
-			Worker w = this.workers.get(workername);
-			workerScores.add(getWorkerScore(w, detailed));
-		}
-		return workerScores;
-	}
-
 	@Override
 	public String printDiffVote(Map<String, String> prior_voting,
 								Map<String, String> posterior_voting) {
@@ -1044,6 +1005,62 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 					maxIterations + " with log-likelihood difference " +
 					diffLogLikelihood);
 		markComputed();
+	}
+	
+	///TO REMOVE
+	@Override
+	public String printAllWorkerScores(boolean detailed) {
+		StringBuilder sb = new StringBuilder();
+	
+		if (!detailed) {
+			sb.append("Worker\tError Rate\tQuality (Expected)\tQuality (Optimized)\tNumber of Annotations\tGold Tests\n");
+		}
+		for (String workername : new TreeSet<String>(this.workers.keySet())) {
+			Worker w = this.workers.get(workername);
+			sb.append(printWorkerScore(w, detailed));
+		}
+		return sb.toString();
+	}
+	
+	@Override
+	public String printWorkerScore(Worker w, boolean detailed) {
+
+		StringBuilder sb = new StringBuilder();
+		String workerName = w.getName();
+		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
+		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
+		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
+		int contributions = w.getAssignedLabels().size();
+		int gold_tests = countGoldTests(w.getAssignedLabels());
+
+		if (detailed) {
+			sb.append("Worker: " + workerName + "\n");
+			sb.append("Error Rate: " + s_cost_naive + "\n");
+			sb.append("Quality (Expected): " + s_cost_adj + "\n");
+			sb.append("Quality (Optimized): " + s_cost_min + "\n");
+			sb.append("Number of Annotations: " + contributions + "\n");
+			sb.append("Number of Gold Tests: " + gold_tests + "\n");
+
+			sb.append("Confusion Matrix: \n");
+			for (String correct_name : this.categories.keySet()) {
+				for (String assigned_name : this.categories.keySet()) {
+					double cm_entry = getErrorRateForWorker(w, correct_name,
+															assigned_name);
+					String s_cm_entry = Double.isNaN(cm_entry) ? "---" : Utils
+										.round(100 * cm_entry, 3).toString();
+					sb.append("P[" + correct_name + "->" + assigned_name + "]="
+							  + s_cm_entry + "%\t");
+				}
+				sb.append("\n");
+			}
+			sb.append("\n");
+		} else {
+			sb.append(workerName + "\t" + s_cost_naive + "\t" + s_cost_adj
+					  + "\t" + s_cost_min + "\t" + contributions + "\t"
+					  + gold_tests + "\n");
+		}
+
+		return sb.toString();
 	}
 
 	protected static Logger logger = null; // will be initialized in subclasses

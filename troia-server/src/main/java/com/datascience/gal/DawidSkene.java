@@ -116,26 +116,9 @@ public interface DawidSkene {
 	public abstract String printDiffVote(Map<String, String> prior_voting,
 										 Map<String, String> posterior_voting);
 
-	public abstract String printAllWorkerScores(boolean detailed);
-	
 	public abstract LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed);
 
-	/**
-	 * TODO: (josh) i'm too lazy to make this more functional rather than
-	 * something that returns some complex string structure.
-	 *
-	 * @param w
-	 * @param detailed
-	 * @return
-	 */
-	public abstract String printWorkerScore(Worker w, boolean detailed);
 	
-	/**
-	 * Same as above function but returns result as a Map<String, Object>
-	 * @param w
-	 * @param detailed
-	 * @return
-	 */
 	public abstract Map<String, Object> getWorkerScore(Worker w, boolean detailed);
 
 	/**
@@ -188,7 +171,11 @@ public interface DawidSkene {
 	public abstract Map<String,Datum> getObjects();
 
 	public abstract Collection<CorrectLabel> getGoldDatums();
+	
 	public abstract Collection<CorrectLabel> getEvaluationDatums();
+	
+	public abstract Map<String, String> getInfo();
+	
 	Map<String, Double> getWorkerPriors(Worker worker);
 
 	double getErrorRateForWorker(Worker worker, String from, String to);
@@ -196,4 +183,8 @@ public interface DawidSkene {
 	public abstract boolean  isComputed();
 	public abstract void  setComputed(boolean computed);
 	public Worker getWorker(String name);
+	
+	///////TO REMOVE
+	public abstract String printAllWorkerScores(boolean detailed);
+	public abstract String printWorkerScore(Worker w, boolean detailed);
 }

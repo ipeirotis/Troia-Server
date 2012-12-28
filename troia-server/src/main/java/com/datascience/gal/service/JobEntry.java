@@ -21,6 +21,7 @@ import com.datascience.gal.commands.CategoriesCommands;
 import com.datascience.gal.commands.CommandStatus;
 import com.datascience.gal.commands.CostsCommands;
 import com.datascience.gal.commands.DatumCommands;
+import com.datascience.gal.commands.JobCommands;
 import com.datascience.gal.commands.PredictionCommands;
 import com.datascience.gal.commands.ProjectCommand;
 import com.datascience.gal.commands.WorkerCommands;
@@ -51,6 +52,12 @@ public class JobEntry {
 		return responser.makeRedirectResponse(rec.commandId);
 	}
 	
+	@Path("/")
+	@GET
+	public Response getJobInfo(){
+		ProjectCommand command = new JobCommands.GetJobInfo(job.getDs());
+		return buildResponseOnCommand(job, command);
+	}
 	
 	@Path("categories/")
 	@POST
@@ -66,7 +73,6 @@ public class JobEntry {
 		ProjectCommand command = new CategoriesCommands.GetCategories(job.getDs());
 		return buildResponseOnCommand(job, command);
 	}
-	
 
 	@Path("costs/")
 	@POST
