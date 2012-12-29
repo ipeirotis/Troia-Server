@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.LabelingCostAlgorithm;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
 
 /**
@@ -49,22 +50,22 @@ public class PredictionCommands {
 	}
 	
 	
-	static public class GetCost extends ProjectCommand<Double> {
+	static public class GetCost extends ProjectCommand<Map<String, Double>> {
 		
-		private String datumId;
-		private String algorithm;
-		private String costDecisionAlg;
+		private String labelProbabilityDistribution;
+		private String labelingCostAlgorithm;
 		
-		public GetCost(AbstractDawidSkene ads, String datumId, String algorithm, String costDecisionAlgorithm){
+		public GetCost(AbstractDawidSkene ads, String lpd, String lca){
 			super(ads, false);
-			this.datumId = datumId;
-			this.algorithm = algorithm;
-			this.costDecisionAlg = costDecisionAlgorithm;
+			labelProbabilityDistribution = lpd;
+			labelingCostAlgorithm = lca;
 		}
 		
 		@Override
 		void realExecute() {
-			//TODO:
+			setResult(ads.getEstimatedCost(
+					LabelProbabilityDistributionCalculator.get(labelProbabilityDistribution),
+					LabelingCostAlgorithm.get(labelingCostAlgorithm)));
 		}
 	}
 }

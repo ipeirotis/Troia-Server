@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.LabelingCostAlgorithm;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
 
 public interface DawidSkene {
@@ -65,11 +66,21 @@ public interface DawidSkene {
 	public abstract Map<String, String> getPredictedCategory(
 			LabelProbabilityDistributionCalculator lpdc,
 			ObjectLabelDecisionAlgorithm olda);
+	
 	public abstract String getPredictedCategory(
 			String objectName,
 			LabelProbabilityDistributionCalculator lpdc,
 			ObjectLabelDecisionAlgorithm olda);
 
+	public abstract Map<String, Double> getEstimatedCost(
+			LabelProbabilityDistributionCalculator lpdc,
+			LabelingCostAlgorithm lca);
+	
+	public abstract Double getEstimatedCost(
+			String objectName,
+			LabelProbabilityDistributionCalculator lpdc,
+			LabelingCostAlgorithm lca);
+	
 	public abstract Map<String, Double> getObjectProbs(String objectName);
 
 	public abstract Map<String, Map<String, Double>> getObjectProbs();

@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
+import com.datascience.gal.decision.LabelingCostAlgorithm;
 import com.datascience.gal.decision.MaxProbabilityDecisionAlgorithm;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
 import com.datascience.utils.Utils;
@@ -367,6 +368,24 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			LabelProbabilityDistributionCalculator lpdc,
 			ObjectLabelDecisionAlgorithm olda){
 		return com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, objectName);
+	}
+	
+	@Override
+	public Map<String, Double> getEstimatedCost(
+			LabelProbabilityDistributionCalculator lpdc,
+			LabelingCostAlgorithm lca){
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (String s : objects.keySet()) {
+			ret.put(s, com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, s));
+		}
+		return ret;
+	}
+	
+	@Override
+	public Double getEstimatedCost(String objectName,
+			LabelProbabilityDistributionCalculator lpdc,
+			LabelingCostAlgorithm lca){
+		return com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, objectName);
 	}
 	
 	@Override	

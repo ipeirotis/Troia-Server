@@ -214,7 +214,27 @@ public class JobEntry {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label probability distribution type: " + lpd);
 		}
+		if (!lda.equals("Max") && !lda.equals("MinCost")) {
+			throw ServiceException.wrongArgumentException(responser, 
+					"Unknown label decision algorithm type: " + lda);
+		}
 		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpd, lda);
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("prediction/dataCost/")
+	@GET
+	public Response getPredictionDataCost(@DefaultValue("DS") @QueryParam("lpd") String lpd,
+			@DefaultValue("ExptectedCost") @QueryParam("lca") String lca){
+		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
+			throw ServiceException.wrongArgumentException(responser, 
+					"Unknown label probability distribution type: " + lpd);
+		}
+		if (!lca.equals("ExpectedCost") && !lca.equals("MinCost")) {
+			throw ServiceException.wrongArgumentException(responser, 
+					"Unknown labeling cost algorithm type: " + lca);
+		}
+		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpd, lca);
 		return buildResponseOnCommand(job, command);
 	}
 	
