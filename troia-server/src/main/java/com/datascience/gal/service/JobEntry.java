@@ -158,10 +158,18 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("data/{id}")
+	@Path("data/{id: [a-zA-Z_0-9/:.]+}")
 	@GET
 	public Response getDatum(@PathParam("id") String did){
 		ProjectCommand command = new DatumCommands.GetDatum(job.getDs(), did);
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("data/{id: [a-zA-Z_0-9/:.]+}/categoryProbability")
+	@GET
+	public Response getDatumCategoryProbability(@PathParam("id") String did, 
+			@DefaultValue("DS") @QueryParam("type") String type){
+		ProjectCommand command = new DatumCommands.GetDatumCategoryProbability(job.getDs(), did, type);
 		return buildResponseOnCommand(job, command);
 	}
 	

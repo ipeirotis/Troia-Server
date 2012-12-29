@@ -2,10 +2,12 @@ package com.datascience.gal.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
 
 /**
  *
@@ -139,6 +141,23 @@ public class DatumCommands {
 		@Override
 		void realExecute() {
 			setResult(ads.getObject(datumId));
+		}
+	}
+	
+	static public class GetDatumCategoryProbability extends ProjectCommand<Map<String, Double>> {
+		
+		private String datumId;
+		private String type;
+		
+		public GetDatumCategoryProbability(AbstractDawidSkene ads, String datumId, String type){
+			super(ads, false);
+			this.datumId = datumId;
+			this.type = type;
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(LabelProbabilityDistributionCalculator.get(type).calculateDistribution(ads.getObject(datumId), ads));
 		}
 	}
 }

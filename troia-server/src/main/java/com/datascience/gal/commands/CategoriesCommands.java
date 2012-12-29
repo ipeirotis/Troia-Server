@@ -30,7 +30,7 @@ public class CategoriesCommands {
 				setResult("Categories added");
 			}
 			else
-				setResult("You have already added some categories. You can't change them.");
+				setResult("You have already added some categories. You can not change them.");
 		}
 	}
 	
