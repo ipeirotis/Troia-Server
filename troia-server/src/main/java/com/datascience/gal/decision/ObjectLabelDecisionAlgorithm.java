@@ -12,6 +12,11 @@ public abstract class ObjectLabelDecisionAlgorithm {
 	abstract public String predictLabel(Map<String, Double> labelProbabilities,
 										CostMatrix<String> costMatrix);
 
-	abstract public Double predictedLabelCost(Map<String, Double> labelProbabilities,
-			CostMatrix<String> costMatrix);
+	static public ObjectLabelDecisionAlgorithm get(String olda) {
+		if (olda.equals("MinCost")){
+			return new MinCostDecisionAlgorithm();
+		}else { // Max
+			return new MaxProbabilityDecisionAlgorithm();
+		}
+	}
 }
