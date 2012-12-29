@@ -48,7 +48,7 @@ public class JobsEntry {
 	public JobEntry getJob(@PathParam("id") String jid) throws Exception{
 		Job job = jobStorage.get(jid);
 		if (job == null) {
-			throw ServiceException.wrongArgumentException(responser, "Job with ID: " + jid + " does not exists");
+			throw ServiceException.wrongArgumentException(responser, "Job with ID " + jid + " does not exist");
 		}
 		return jobEntryFactory(job);
 	}
