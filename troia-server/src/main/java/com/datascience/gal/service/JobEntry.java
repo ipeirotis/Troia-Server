@@ -209,12 +209,12 @@ public class JobEntry {
 	@Path("prediction/data/")
 	@GET
 	public Response getPredictionData(@DefaultValue("DS") @QueryParam("lpd") String lpd,
-			@DefaultValue("MAX") @QueryParam("lda") String lda){
+			@DefaultValue("Max") @QueryParam("lda") String lda){
 		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label probability distribution type: " + lpd);
 		}
-		ProjectCommand command = new PredictionCommands.GetData(job.getDs(), lpd, lda);
+		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpd, lda);
 		return buildResponseOnCommand(job, command);
 	}
 	

@@ -21,6 +21,10 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.storages.JSONUtils;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
+import com.datascience.gal.decision.MaxProbabilityDecisionAlgorithm;
+import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
 import com.datascience.utils.Utils;
 
 public abstract class AbstractDawidSkene implements DawidSkene {
@@ -348,19 +352,28 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	@Override
-	public Map<String, String> getPredictedCategory(String lpd, String lda){
+	public Map<String, String> getPredictedCategory(
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda){
 		Map<String, String> ret = new HashMap<String, String>();
 		for (String s : objects.keySet()) {
-			ret.put(s, com.datascience.gal.decision.Utils.predictLabel(this, lpd, lda, s));
+			ret.put(s, com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, s));
 		}
-		
 		return ret;
+	}
+	
+	@Override
+	public String getPredictedCategory(String objectName, 
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda){
+		return com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, objectName);
 	}
 	
 	@Override	
 	public Map<String, String> getMajorityVote() {
 		//DS_MAX
-		return getPredictedCategory("DS", "Max");
+		return getPredictedCategory(new LabelProbabilityDistributionCalculators.DS(), 
+				new MaxProbabilityDecisionAlgorithm());
 	}
 
 	@Override
@@ -382,13 +395,14 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	@Override
 	public boolean fixedPriors() {
-
 		return fixedPriors;
 	}
 
 	@Override
 	public String getMajorityVote(String objectName) {
-		return getPredictedCategory("DS", "Max").get(objectName);
+		return getPredictedCategory(objectName,
+				new LabelProbabilityDistributionCalculators.DS(), 
+				new MaxProbabilityDecisionAlgorithm());
 	}
 
 	@Override

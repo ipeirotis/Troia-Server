@@ -3,6 +3,8 @@ package com.datascience.gal.commands;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
 
 /**
  *
@@ -27,12 +29,12 @@ public class PredictionCommands {
 		}
 	}
 	
-	static public class GetData extends ProjectCommand<Map<String, String>> {
+	static public class GetPredictedCategory extends ProjectCommand<Map<String, String>> {
 		
 		private String labelProbabilityDistribution;
 		private String labelDecisionAlgorithm;
 		
-		public GetData(AbstractDawidSkene ads, String lpd, String lda){
+		public GetPredictedCategory(AbstractDawidSkene ads, String lpd, String lda){
 			super(ads, false);
 			labelProbabilityDistribution = lpd;
 			labelDecisionAlgorithm = lda;
@@ -40,9 +42,12 @@ public class PredictionCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getPredictedCategory(labelProbabilityDistribution, labelDecisionAlgorithm));
+			setResult(ads.getPredictedCategory(
+					LabelProbabilityDistributionCalculator.get(labelProbabilityDistribution),
+					ObjectLabelDecisionAlgorithm.get(labelDecisionAlgorithm)));
 		}
 	}
+	
 	
 	static public class GetCost extends ProjectCommand<Double> {
 		

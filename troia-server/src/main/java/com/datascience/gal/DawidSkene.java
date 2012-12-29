@@ -13,6 +13,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
+
 public interface DawidSkene {
 
 	public final static double DEFAULT_EPSILON = 1E-6;
@@ -59,12 +62,13 @@ public interface DawidSkene {
 	 */
 	public abstract void estimate(int maxIterations, double epsilon);
 
-	/**
-	 * @param lpd Label probability distribution (DS, MV)
-	 * @param lda label decision algorithm (MinCost, Max)
-	 * @return
-	 */
-	public abstract Map<String, String> getPredictedCategory(String lpd, String lda);
+	public abstract Map<String, String> getPredictedCategory(
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda);
+	public abstract String getPredictedCategory(
+			String objectName,
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda);
 
 	public abstract Map<String, Double> getObjectProbs(String objectName);
 

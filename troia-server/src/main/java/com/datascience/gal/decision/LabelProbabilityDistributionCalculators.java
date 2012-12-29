@@ -15,7 +15,7 @@ import com.datascience.gal.DawidSkene;
 public class LabelProbabilityDistributionCalculators {
 	// This classes should be in proper classes like MajorityVote, Dawid Skene etc.
 
-	public static class DS implements LabelProbabilityDistributionCalculator {
+	public static class DS extends LabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
@@ -24,7 +24,7 @@ public class LabelProbabilityDistributionCalculators {
 		}
 	}
 
-	public static class MV implements LabelProbabilityDistributionCalculator {
+	public static class MV extends LabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,

@@ -7,7 +7,7 @@ import com.datascience.utils.CostMatrix;
 /**
  * @author Konrad Kurdej
  */
-public class MaxProbabilityDecision extends ObjectLabelDecisionAlgorithm {
+public class MaxProbabilityDecisionAlgorithm extends ObjectLabelDecisionAlgorithm {
 
 	@Override
 	public String predictLabel(Map<String, Double> labelProbabilities,

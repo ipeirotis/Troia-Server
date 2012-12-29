@@ -62,50 +62,22 @@ public class Utils {
 	}
 	
 	static public double estimateMissclassificationCost(DawidSkene ds, 
-			String labelProbDisributionCalc, 
-			String labelingCostAlg, 
+			LabelProbabilityDistributionCalculator lpdc, 
+			LabelingCostAlgorithm lca, 
 			String object_id) {
 		// Ugly as hell but I don't see any other way ...
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
-		
-		LabelingCostAlgorithm lca;
-		LabelProbabilityDistributionCalculator lpdc;
-		
-		if (labelingCostAlg.equals("MinCost")){
-			lca = new MinCostAlgorithm();
-		}
-		else { //"ExpectedCost"
-			lca = new ExpectedCostAlgorithm();
-		}
-		
-		if (labelProbDisributionCalc.equals("MV")){
-			lpdc = new LabelProbabilityDistributionCalculators.MV();
-		}
-		else { // "DS"
-			lpdc = new LabelProbabilityDistributionCalculators.DS();
-		}
 		
 		return lca.predictedLabelCost(lpdc.calculateDistribution(datum, ads), getCategoriesCostMatrix(ads));
 	}
 	
 	static public double evaluateMissclassificationCost(DawidSkene ds, 
-			String labelProbDisributionCalc, 
-			String objLabelDecAlg,
+			LabelProbabilityDistributionCalculator lpdc, 
+			ObjectLabelDecisionAlgorithm olda,
 			String object_id) {
-		// Ugly as hell but I don't see any other way ...
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
-		
-		ObjectLabelDecisionAlgorithm olda = new MinCostDecisionAlgorithm();
-		LabelProbabilityDistributionCalculator lpdc;
-		
-		if (labelProbDisributionCalc.equals("MV")){
-			lpdc = new LabelProbabilityDistributionCalculators.MV();
-		}
-		else {
-			lpdc = new LabelProbabilityDistributionCalculators.DS();
-		}
 		
 		String correctLabel = ads.getEvaluationDatum(datum.getName()).getCorrectCategory();
 		Double cost = 1.0;
@@ -120,21 +92,11 @@ public class Utils {
 	}
 	
 	static public String predictLabel(DawidSkene ds, 
-			String labelProbDisributionCalc, 
-			String objLabelDecAlg,
+			LabelProbabilityDistributionCalculator lpdc, 
+			ObjectLabelDecisionAlgorithm olda,
 			String object_id) {
-		// Ugly as hell but I don't see any other way ...
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
-		
-		ObjectLabelDecisionAlgorithm olda = new MaxProbabilityDecision();
-		LabelProbabilityDistributionCalculator lpdc;
-		
-		if (labelProbDisributionCalc.equals("MV")){
-			lpdc = new LabelProbabilityDistributionCalculators.MV();
-		}
-		else // DS
-			lpdc = new LabelProbabilityDistributionCalculators.DS();
 		
 		return olda.predictLabel(lpdc.calculateDistribution(datum, ads), Utils.getCategoriesCostMatrix(ads));
 	}

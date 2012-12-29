@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 import com.datascience.gal.BatchDawidSkene.BatchDawidSkeneDeserializer;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
+import com.datascience.gal.decision.LabelingCostAlgorithm;
 import com.datascience.gal.decision.Utils;
 import com.google.gson.JsonParser;
 
@@ -68,7 +70,9 @@ public class BatchDawidSkeneTest {
 		
 		//check objects quality for each category. it should be 1./categories_size
 		for (String obj : unassignedObjects) {
-			assertEquals(1./categories.size(), Utils.estimateMissclassificationCost(ds, "DS", "", obj), 1e-10);
+			assertEquals(1./categories.size(), Utils.estimateMissclassificationCost(ds, 
+					new LabelProbabilityDistributionCalculators.DS(), 
+					LabelingCostAlgorithm.get(""), obj), 1e-10);
 		}
 		
 	}
