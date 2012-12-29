@@ -206,35 +206,15 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/{algorithm}/data/")
+	@Path("prediction/data/")
 	@GET
-	public Response getPredictionData(@PathParam("algorithm") String algorithm){
-		if (!algorithm.equals("MV")) {
-			throw ServiceException.wrongArgumentException(responser, "Unknown algorithm type: " + algorithm);
+	public Response getPredictionData(@DefaultValue("DS") @QueryParam("lpd") String lpd,
+			@DefaultValue("Max") @QueryParam("lda") String lda){
+		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
+			throw ServiceException.wrongArgumentException(responser, 
+					"Unknown label probability distribution type: " + lpd);
 		}
-		ProjectCommand command = new PredictionCommands.GetData(job.getDs(), algorithm);
-		return buildResponseOnCommand(job, command);
-	}
-	
-	@Path("prediction/{algorithm}/data/{id}")
-	@GET
-	public Response getPredictionData(@PathParam("algorithm") String algorithm, @PathParam("id") String did){
-		if (!algorithm.equals("MV")) {
-			throw ServiceException.wrongArgumentException(responser, "Unknown algorithm type: " + algorithm);
-		}
-		ProjectCommand command = new PredictionCommands.GetDatum(job.getDs(), did, algorithm);
-		return buildResponseOnCommand(job, command);
-	}
-	
-	@Path("prediction/{algorithm}/data/{id}/{costDecisionAlg}")
-	@GET
-	public Response getEstimatedCost(@PathParam("algorithm") String algorithm, 
-			@PathParam("id") String did, 
-			@PathParam("costDecisionAlg") String cda){
-		if (!algorithm.equals("MV")) {
-			throw ServiceException.wrongArgumentException(responser, "Unknown algorithm type: " + algorithm);
-		}
-		ProjectCommand command = new PredictionCommands.GetCost(job.getDs(), did, algorithm, cda);
+		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpd, lda);
 		return buildResponseOnCommand(job, command);
 	}
 	

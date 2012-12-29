@@ -8,8 +8,15 @@ import com.datascience.gal.DawidSkene;
 /**
  * @author Konrad Kurdej
  */
-public interface LabelProbabilityDistributionCalculator {
+public abstract class LabelProbabilityDistributionCalculator {
 
-	public Map<String, Double> calculateDistribution(Datum datum, DawidSkene ads);
+	public abstract Map<String, Double> calculateDistribution(Datum datum, DawidSkene ads);
 
+	static public LabelProbabilityDistributionCalculator get(String lpdc) {
+		if (lpdc.equals("MV")){
+			return new LabelProbabilityDistributionCalculators.MV();
+		}
+		else // DS
+			return new LabelProbabilityDistributionCalculators.DS();
+	}
 }

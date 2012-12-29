@@ -5,23 +5,19 @@ import java.util.Map;
 import com.datascience.utils.CostMatrix;
 
 /**
- * @author Konrad Kurdej
+ * @author Artur Ambroziak
  */
-public class MinCostDecisionAlgorithm extends ObjectLabelDecisionAlgorithm {
+public class MinCostAlgorithm extends LabelingCostAlgorithm {
 
 	@Override
-	public String predictLabel(Map<String, Double> labelProbabilities,
-							   CostMatrix<String> costMatrix) {
-		String minCostLabel = null;
+	public Double predictedLabelCost(Map<String, Double> labelProbabilities,
+									 CostMatrix<String> costMatrix) {
 		double minCostLabelCost = Double.MAX_VALUE;
 		for (String label: labelProbabilities.keySet()) {
 			double cost = Utils.calculateLabelCost(label, labelProbabilities, costMatrix);
-			if (cost < minCostLabelCost) {
-				minCostLabel = label;
+			if (cost < minCostLabelCost)
 				minCostLabelCost = cost;
-			}
 		}
-		return minCostLabel;
+		return minCostLabelCost;
 	}
-
 }

@@ -142,31 +142,6 @@ public class Datum {
 		return this.labels;
 	}
 
-	public String getMajorityCategory() {
-		double maxProbability = -1;
-		String majorityCategory = null;
-
-		for (String category : this.categoryProbability.keySet()) {
-			Double probability = this.categoryProbability.get(category);
-			if (probability > maxProbability) {
-				maxProbability = probability;
-				majorityCategory = category;
-			} else if (probability == maxProbability) {
-				// In case of a tie, break ties randomly
-				// TODO: This is a corner case. We can also break ties
-				// using the priors. But then we also need to group together
-				// all the ties, and break ties probabilistically across the
-				// group. Otherwise, we slightly favor the later comparisons.
-				if (Math.random() > 0.5) {
-					maxProbability = probability;
-					majorityCategory = category;
-				}
-			}
-		}
-
-		return majorityCategory;
-	}
-
 	/**
 	 * @return the categoryProbability
 	 */

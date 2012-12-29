@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
+import com.datascience.gal.Datum;
+import com.datascience.gal.DawidSkene;
 import com.datascience.utils.CostMatrix;
 
 /**
@@ -57,5 +59,45 @@ public class Utils {
 			}
 		}
 		return cm;
+	}
+	
+	static public double estimateMissclassificationCost(DawidSkene ds, 
+			LabelProbabilityDistributionCalculator lpdc, 
+			LabelingCostAlgorithm lca, 
+			String object_id) {
+		// Ugly as hell but I don't see any other way ...
+		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
+		Datum datum = ads.getObject(object_id);
+		
+		return lca.predictedLabelCost(lpdc.calculateDistribution(datum, ads), getCategoriesCostMatrix(ads));
+	}
+	
+	static public double evaluateMissclassificationCost(DawidSkene ds, 
+			LabelProbabilityDistributionCalculator lpdc, 
+			ObjectLabelDecisionAlgorithm olda,
+			String object_id) {
+		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
+		Datum datum = ads.getObject(object_id);
+		
+		String correctLabel = ads.getEvaluationDatum(datum.getName()).getCorrectCategory();
+		Double cost = 1.0;
+		if (correctLabel != null){
+			cost = 0.;
+			String predictedLabel = olda.predictLabel(lpdc.calculateDistribution(datum, ads), 
+					Utils.getCategoriesCostMatrix(ads));
+			Category correctLabelCostVector = ads.getCategories().get(correctLabel);
+			return correctLabelCostVector.getCost(predictedLabel);
+		}
+		return cost;
+	}
+	
+	static public String predictLabel(DawidSkene ds, 
+			LabelProbabilityDistributionCalculator lpdc, 
+			ObjectLabelDecisionAlgorithm olda,
+			String object_id) {
+		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
+		Datum datum = ads.getObject(object_id);
+		
+		return olda.predictLabel(lpdc.calculateDistribution(datum, ads), Utils.getCategoriesCostMatrix(ads));
 	}
 }
