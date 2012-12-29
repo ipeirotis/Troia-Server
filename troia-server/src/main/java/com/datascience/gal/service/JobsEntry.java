@@ -63,7 +63,7 @@ public class JobsEntry {
 		Job job_old = jobStorage.get(jid);
 		if (job_old != null) {
 			throw ServiceException.wrongArgumentException(responser,
-					"Job with ID: " + jid + " already exists");
+					"Job with ID " + jid + " already exist");
 		}
 
 		Job job = jobFactory.createJob(type, jid);
