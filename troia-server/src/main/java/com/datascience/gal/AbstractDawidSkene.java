@@ -348,16 +348,19 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	@Override
-	public Map<String, String> getMajorityVote() {
-
-		Map<String, String> result = new HashMap<String, String>();
-
-		for (String objectName : this.objects.keySet()) {
-			Datum d = this.objects.get(objectName);
-			String category = d.getMajorityCategory();
-			result.put(objectName, category);
+	public Map<String, String> getPredictedCategory(String lpd, String lda){
+		Map<String, String> ret = new HashMap<String, String>();
+		for (String s : objects.keySet()) {
+			ret.put(s, com.datascience.gal.decision.Utils.predictLabel(this, lpd, lda, s));
 		}
-		return result;
+		
+		return ret;
+	}
+	
+	@Override	
+	public Map<String, String> getMajorityVote() {
+		//DS_MAX
+		return getPredictedCategory("DS", "Max");
 	}
 
 	@Override
@@ -385,25 +388,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	@Override
 	public String getMajorityVote(String objectName) {
-
-		if (!objects.containsKey(objectName)) {
-			logger.warn("attempting to get majority vote label for a non-existant entity: "
-						+ objectName);
-			return null;
-
-		} else {
-			return objects.get(objectName).getMajorityCategory();
-		}
-	}
-
-	@Override
-	public Map<String, String> getMajorityVote(Collection<String> objectNames) {
-		Map<String, String> out = new HashMap<String, String>(
-			objectNames.size());
-		for (String objectName : objectNames) {
-			out.put(objectName, getMajorityVote(objectName));
-		}
-		return out;
+		return getPredictedCategory("DS", "Max").get(objectName);
 	}
 
 	@Override

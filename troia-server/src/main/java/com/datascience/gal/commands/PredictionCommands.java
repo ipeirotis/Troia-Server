@@ -29,43 +29,18 @@ public class PredictionCommands {
 	
 	static public class GetData extends ProjectCommand<Map<String, String>> {
 		
-		private String algorithm;
+		private String labelProbabilityDistribution;
+		private String labelDecisionAlgorithm;
 		
-		public GetData(AbstractDawidSkene ads, String algorithm){
+		public GetData(AbstractDawidSkene ads, String lpd, String lda){
 			super(ads, false);
-			this.algorithm = algorithm;
+			labelProbabilityDistribution = lpd;
+			labelDecisionAlgorithm = lda;
 		}
 		
 		@Override
 		void realExecute() {
-			if (algorithm.equals("MV")){
-				setResult(ads.getMajorityVote());
-			}
-			else {
-				//TODO:
-			}
-		}
-	}
-	
-	static public class GetDatum extends ProjectCommand<String> {
-		
-		private String datumId;
-		private String algorithm;
-		
-		public GetDatum(AbstractDawidSkene ads, String datumId, String algorithm){
-			super(ads, false);
-			this.datumId = datumId;
-			this.algorithm = algorithm;
-		}
-		
-		@Override
-		void realExecute() {
-			if (algorithm.equals("MV")){
-				setResult(ads.getMajorityVote(datumId));
-			}
-			else {
-				//TODO:
-			}
+			setResult(ads.getPredictedCategory(labelProbabilityDistribution, labelDecisionAlgorithm));
 		}
 	}
 	

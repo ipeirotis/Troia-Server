@@ -12,6 +12,4 @@ public abstract class ObjectLabelDecisionAlgorithm {
 	abstract public String predictLabel(Map<String, Double> labelProbabilities,
 										CostMatrix<String> costMatrix);
 
-	abstract public Double predictedLabelCost(Map<String, Double> labelProbabilities,
-			CostMatrix<String> costMatrix);
 }

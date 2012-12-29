@@ -60,18 +60,11 @@ public interface DawidSkene {
 	public abstract void estimate(int maxIterations, double epsilon);
 
 	/**
-	 * TODO:
-	 *
-	 * @param objectName
-	 *            - the name of the object being queried
-	 * @return the majority vote category if object name is found, else null.
+	 * @param lpd Label probability distribution (DS, MV)
+	 * @param lda label decision algorithm (MinCost, Max)
+	 * @return
 	 */
-	public abstract String getMajorityVote(String objectName);
-
-	public abstract Map<String, String> getMajorityVote();
-
-	public abstract Map<String, String> getMajorityVote(
-		Collection<String> objectNames);
+	public abstract Map<String, String> getPredictedCategory(String lpd, String lda);
 
 	public abstract Map<String, Double> getObjectProbs(String objectName);
 
@@ -189,4 +182,7 @@ public interface DawidSkene {
 	///////TO REMOVE
 	public abstract String printAllWorkerScores(boolean detailed);
 	public abstract String printWorkerScore(Worker w, boolean detailed);
+	//just for backward compatibility
+	public abstract String getMajorityVote(String objectName);
+	public abstract Map<String, String> getMajorityVote();
 }

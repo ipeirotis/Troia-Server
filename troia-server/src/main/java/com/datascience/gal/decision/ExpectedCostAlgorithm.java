@@ -8,7 +8,7 @@ import com.datascience.utils.CostMatrix;
 /**
  * @author Konrad Kurdej
  */
-public class ExpectedCostDecisionAlgorithm extends MaxProbabilityDecision {
+public class ExpectedCostAlgorithm extends LabelingCostAlgorithm {
 
 	@Override
 	public Double predictedLabelCost(Map<String, Double> labelProbabilities,

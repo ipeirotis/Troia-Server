@@ -12,7 +12,7 @@ import com.datascience.gal.DawidSkene;
 /**
  * @author Konrad Kurdej
  */
-public class LabelProbabilityDistributionCalulators {
+public class LabelProbabilityDistributionCalculators {
 	// This classes should be in proper classes like MajorityVote, Dawid Skene etc.
 
 	public static class DS implements LabelProbabilityDistributionCalculator {

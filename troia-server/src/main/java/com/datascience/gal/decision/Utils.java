@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
+import com.datascience.gal.Datum;
+import com.datascience.gal.DawidSkene;
 import com.datascience.utils.CostMatrix;
 
 /**
@@ -57,5 +59,83 @@ public class Utils {
 			}
 		}
 		return cm;
+	}
+	
+	static public double estimateMissclassificationCost(DawidSkene ds, 
+			String labelProbDisributionCalc, 
+			String labelingCostAlg, 
+			String object_id) {
+		// Ugly as hell but I don't see any other way ...
+		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
+		Datum datum = ads.getObject(object_id);
+		
+		LabelingCostAlgorithm lca;
+		LabelProbabilityDistributionCalculator lpdc;
+		
+		if (labelingCostAlg.equals("MinCost")){
+			lca = new MinCostAlgorithm();
+		}
+		else { //"ExpectedCost"
+			lca = new ExpectedCostAlgorithm();
+		}
+		
+		if (labelProbDisributionCalc.equals("MV")){
+			lpdc = new LabelProbabilityDistributionCalculators.MV();
+		}
+		else { // "DS"
+			lpdc = new LabelProbabilityDistributionCalculators.DS();
+		}
+		
+		return lca.predictedLabelCost(lpdc.calculateDistribution(datum, ads), getCategoriesCostMatrix(ads));
+	}
+	
+	static public double evaluateMissclassificationCost(DawidSkene ds, 
+			String labelProbDisributionCalc, 
+			String objLabelDecAlg,
+			String object_id) {
+		// Ugly as hell but I don't see any other way ...
+		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
+		Datum datum = ads.getObject(object_id);
+		
+		ObjectLabelDecisionAlgorithm olda = new MinCostDecisionAlgorithm();
+		LabelProbabilityDistributionCalculator lpdc;
+		
+		if (labelProbDisributionCalc.equals("MV")){
+			lpdc = new LabelProbabilityDistributionCalculators.MV();
+		}
+		else {
+			lpdc = new LabelProbabilityDistributionCalculators.DS();
+		}
+		
+		String correctLabel = ads.getEvaluationDatum(datum.getName()).getCorrectCategory();
+		Double cost = 1.0;
+		if (correctLabel != null){
+			cost = 0.;
+			String predictedLabel = olda.predictLabel(lpdc.calculateDistribution(datum, ads), 
+					Utils.getCategoriesCostMatrix(ads));
+			Category correctLabelCostVector = ads.getCategories().get(correctLabel);
+			return correctLabelCostVector.getCost(predictedLabel);
+		}
+		return cost;
+	}
+	
+	static public String predictLabel(DawidSkene ds, 
+			String labelProbDisributionCalc, 
+			String objLabelDecAlg,
+			String object_id) {
+		// Ugly as hell but I don't see any other way ...
+		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
+		Datum datum = ads.getObject(object_id);
+		
+		ObjectLabelDecisionAlgorithm olda = new MaxProbabilityDecision();
+		LabelProbabilityDistributionCalculator lpdc;
+		
+		if (labelProbDisributionCalc.equals("MV")){
+			lpdc = new LabelProbabilityDistributionCalculators.MV();
+		}
+		else // DS
+			lpdc = new LabelProbabilityDistributionCalculators.DS();
+		
+		return olda.predictLabel(lpdc.calculateDistribution(datum, ads), Utils.getCategoriesCostMatrix(ads));
 	}
 }
