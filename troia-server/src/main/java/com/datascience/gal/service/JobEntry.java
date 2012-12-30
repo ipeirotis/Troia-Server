@@ -217,12 +217,12 @@ public class JobEntry {
 	@Path("prediction/data/")
 	@GET
 	public Response getPredictionData(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("Maxlikelihood") @QueryParam("labelChoosing") String lda){
+			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label probability distribution type: " + lpd);
 		}
-		if (!lda.equals("Maxlikelihood") && !lda.equals("MinCost")) {
+		if (!lda.equals("MaxLikelihood") && !lda.equals("MinCost")) {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label decision algorithm type: " + lda);
 		}
