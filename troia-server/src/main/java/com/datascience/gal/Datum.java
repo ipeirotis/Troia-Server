@@ -18,6 +18,7 @@ import java.util.Set;
 
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.utils.Utils;
+import com.google.common.base.Objects;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -156,10 +157,7 @@ public class Datum {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return Objects.hashCode(name);
 	}
 
 	/*
@@ -169,19 +167,11 @@ public class Datum {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		if (!(obj instanceof Datum)) {
 			return false;
-		if (!(obj instanceof Datum))
-			return false;
+		}
 		Datum other = (Datum) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+		return Objects.equal(name, other.name);
 	}
 
 	/**
