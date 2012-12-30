@@ -16,6 +16,7 @@ import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
+import com.datascience.gal.WorkerCostMethod;
 import com.datascience.gal.commands.AssignsCommands;
 import com.datascience.gal.commands.CategoriesCommands;
 import com.datascience.gal.commands.CommandStatus;
@@ -27,9 +28,9 @@ import com.datascience.gal.commands.PredictionCommands;
 import com.datascience.gal.commands.ProjectCommand;
 import com.datascience.gal.commands.WorkerCommands;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.executor.ProjectCommandExecutor;
@@ -245,8 +246,24 @@ public class JobEntry {
 	
 	@Path("prediction/workers")
 	@GET
-	public Response getPredictionData(){
+	public Response getWorkersScore(){
 		ProjectCommand command = new WorkerCommands.GetWorkersScores(job.getDs());
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("prediction/workers/{id}")
+	@GET
+	public Response getWorkerScore(@PathParam("id") String wid){
+		ProjectCommand command = new WorkerCommands.GetWorkerScores(job.getDs(), wid);
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("prediction/workers/{id}/cost/")
+	@GET
+	public Response getEvaluatedWorkerCost(@PathParam("id") String wid, 
+			@DefaultValue("CostNaive") @QueryParam("costMethod") String cm){
+		
+		ProjectCommand command = new WorkerCommands.GetWorkerCost(job.getDs(), wid, WorkerCostMethod.get(cm));
 		return buildResponseOnCommand(job, command);
 	}
 }

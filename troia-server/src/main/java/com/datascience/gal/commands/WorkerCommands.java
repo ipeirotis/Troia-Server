@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Worker;
+import com.datascience.gal.WorkerCostMethod;
 
 /**
  *
@@ -47,6 +48,37 @@ public class WorkerCommands {
 		@Override
 		void realExecute() {
 			setResult(ads.getAllWorkerScores(true));
+		}
+	}
+	
+	static public class GetWorkerScores extends ProjectCommand<Map<String, Object>> {
+		
+		private String workerId;
+		public GetWorkerScores(AbstractDawidSkene ads, String wid){
+			super(ads, false);
+			workerId = wid;
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(ads.getWorkerScore(ads.getWorker(workerId), true));
+		}
+	}
+	
+	static public class GetWorkerCost extends ProjectCommand<Double> {
+		
+		private String workerId;
+		private WorkerCostMethod workerCostMethod;
+		
+		public GetWorkerCost(AbstractDawidSkene ads, String wid, WorkerCostMethod wcm){
+			super(ads, false);
+			workerId = wid;
+			workerCostMethod = wcm;
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(ads.getWorkerCost(ads.getWorker(workerId), workerCostMethod));
 		}
 	}
 }

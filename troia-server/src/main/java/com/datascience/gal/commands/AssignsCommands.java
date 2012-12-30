@@ -41,7 +41,6 @@ public class AssignsCommands {
 			super(ads, false);
 		}
 		
-		//TODO: fix that
 		@Override
 		void realExecute() {
 			setResult(ads.getObjects());

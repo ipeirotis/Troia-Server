@@ -9,6 +9,26 @@
  ******************************************************************************/
 package com.datascience.gal;
 
+
 public enum WorkerCostMethod {
-	COST_NAIVE, COST_ADJUSTED, COST_NAIVE_MINIMIZED, COST_ADJUSTED_MINIMIZED
+	COST_NAIVE, COST_ADJUSTED, COST_NAIVE_MINIMIZED, COST_ADJUSTED_MINIMIZED;
+	
+	static public WorkerCostMethod get(String cm){
+		cm = cm.toUpperCase();
+		if (cm.equals("COSTNAIVE")) {
+			return COST_NAIVE;
+		}
+		else if (cm.equals("COSTNAIVEMINIMIZED")){
+			return COST_NAIVE_MINIMIZED;
+		}
+		else if (cm.equals("COSTADJUSTED")){
+			return COST_ADJUSTED;
+		}
+		else if (cm.equals("COSTADJUSTEDMINIMIZED")){
+			return COST_ADJUSTED_MINIMIZED;
+		}
+		else {
+			throw new IllegalArgumentException("Unknown cost method type: " + cm);
+		}
+	}
 }
