@@ -15,7 +15,7 @@ public abstract class ObjectLabelDecisionAlgorithm {
 	static public ObjectLabelDecisionAlgorithm get(String olda) {
 		if (olda.equals("MinCost")){
 			return new MinCostDecisionAlgorithm();
-		}else { // Max
+		}else { // Maxlikelihood
 			return new MaxProbabilityDecisionAlgorithm();
 		}
 	}

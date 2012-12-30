@@ -216,13 +216,13 @@ public class JobEntry {
 	
 	@Path("prediction/data/")
 	@GET
-	public Response getPredictionData(@DefaultValue("DS") @QueryParam("lpd") String lpd,
-			@DefaultValue("Max") @QueryParam("lda") String lda){
+	public Response getPredictionData(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
+			@DefaultValue("Maxlikelihood") @QueryParam("labelChoosing") String lda){
 		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label probability distribution type: " + lpd);
 		}
-		if (!lda.equals("Max") && !lda.equals("MinCost")) {
+		if (!lda.equals("Maxlikelihood") && !lda.equals("MinCost")) {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label decision algorithm type: " + lda);
 		}
@@ -232,8 +232,8 @@ public class JobEntry {
 	
 	@Path("prediction/dataCost/")
 	@GET
-	public Response getPredictionDataCost(@DefaultValue("DS") @QueryParam("lpd") String lpd,
-			@DefaultValue("ExptectedCost") @QueryParam("lca") String lca){
+	public Response getPredictionDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
+			@DefaultValue("ExptectedCost") @QueryParam("costAlgorithm") String lca){
 		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown label probability distribution type: " + lpd);
