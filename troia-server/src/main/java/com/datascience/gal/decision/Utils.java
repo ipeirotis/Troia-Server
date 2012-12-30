@@ -64,8 +64,8 @@ public class Utils {
 	}
 	
 	static public double estimateMissclassificationCost(DawidSkene ds, 
-			LabelProbabilityDistributionCalculator lpdc, 
-			LabelingCostAlgorithm lca, 
+			ILabelProbabilityDistributionCalculator lpdc, 
+			ILabelProbabilityDistributionCostCalculator lca, 
 			String object_id) {
 		// Ugly as hell but I don't see any other way ...
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
@@ -76,8 +76,8 @@ public class Utils {
 	}
 	
 	static public double evaluateMissclassificationCost(DawidSkene ds, 
-			LabelProbabilityDistributionCalculator lpdc, 
-			ObjectLabelDecisionAlgorithm olda,
+			ILabelProbabilityDistributionCalculator lpdc, 
+			IObjectLabelDecisionAlgorithm olda,
 			String object_id) {
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
@@ -101,8 +101,8 @@ public class Utils {
 	}
 	
 	static public String predictLabel(DawidSkene ds, 
-			LabelProbabilityDistributionCalculator lpdc, 
-			ObjectLabelDecisionAlgorithm olda,
+			ILabelProbabilityDistributionCalculator lpdc, 
+			IObjectLabelDecisionAlgorithm olda,
 			String object_id) {
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);

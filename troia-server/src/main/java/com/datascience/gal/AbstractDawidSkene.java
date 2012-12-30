@@ -21,11 +21,11 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.storages.JSONUtils;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.LabelingCostAlgorithm;
-import com.datascience.gal.decision.MaxProbabilityDecisionAlgorithm;
-import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
+import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
 
 public abstract class AbstractDawidSkene implements DawidSkene {
@@ -354,8 +354,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	@Override
 	public Map<String, String> getPredictedCategory(
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda){
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda){
 		Map<String, String> ret = new HashMap<String, String>();
 		for (String s : objects.keySet()) {
 			ret.put(s, com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, s));
@@ -365,15 +365,15 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	
 	@Override
 	public String getPredictedCategory(String objectName, 
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda){
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda){
 		return com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, objectName);
 	}
 	
 	@Override
 	public Map<String, Double> getEstimatedCost(
-			LabelProbabilityDistributionCalculator lpdc,
-			LabelingCostAlgorithm lca){
+			ILabelProbabilityDistributionCalculator lpdc,
+			ILabelProbabilityDistributionCostCalculator lca){
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (String s : objects.keySet()) {
 			ret.put(s, com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, s));
@@ -383,15 +383,15 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	
 	@Override
 	public Double getEstimatedCost(String objectName,
-			LabelProbabilityDistributionCalculator lpdc,
-			LabelingCostAlgorithm lca){
+			ILabelProbabilityDistributionCalculator lpdc,
+			ILabelProbabilityDistributionCostCalculator lca){
 		return com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, objectName);
 	}
 	
 	@Override
 	public Map<String, Double> getEvaluatedCost(
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda){
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda){
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (String s : objects.keySet()) {
 			ret.put(s, com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, s));
@@ -402,8 +402,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	@Override
 	public Double getEvaluatedCost(
 			String objectName,
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda){
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda){
 		return com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, objectName);
 	}
 	
@@ -411,7 +411,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public Map<String, String> getMajorityVote() {
 		//DS_MAX
 		return getPredictedCategory(new LabelProbabilityDistributionCalculators.DS(), 
-				new MaxProbabilityDecisionAlgorithm());
+				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 	}
 
 	@Override
@@ -439,8 +439,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	@Override
 	public String getMajorityVote(String objectName) {
 		return getPredictedCategory(objectName,
-				new LabelProbabilityDistributionCalculators.DS(), 
-				new MaxProbabilityDecisionAlgorithm());
+			new LabelProbabilityDistributionCalculators.DS(), 
+			new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 	}
 
 	@Override

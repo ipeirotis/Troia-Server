@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import com.datascience.core.Job;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.commands.AssignsCommands;
@@ -27,6 +26,12 @@ import com.datascience.gal.commands.JobCommands;
 import com.datascience.gal.commands.PredictionCommands;
 import com.datascience.gal.commands.ProjectCommand;
 import com.datascience.gal.commands.WorkerCommands;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
+import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
+import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 
 /**
@@ -162,7 +167,8 @@ public class JobEntry {
 	@GET
 	public Response getDatumCategoryProbability(@PathParam("id") String did, 
 			@DefaultValue("DS") @QueryParam("type") String type){
-		ProjectCommand command = new DatumCommands.GetDatumCategoryProbability(job.getDs(), did, type);
+		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(type);
+		ProjectCommand command = new DatumCommands.GetDatumCategoryProbability(job.getDs(), did, lpdc);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -195,7 +201,7 @@ public class JobEntry {
 				return responser.makeExceptionResponse(status.getError());
 			case NOT_READY:
 				return responser.makeNotReadyResponse();
-			default://should never happend
+			default:
 				return null;
 		}
 	}
@@ -211,15 +217,9 @@ public class JobEntry {
 	@GET
 	public Response getPredictionData(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
-		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
-			throw ServiceException.wrongArgumentException(responser, 
-					"Unknown label probability distribution type: " + lpd);
-		}
-		if (!lda.equals("MaxLikelihood") && !lda.equals("MinCost")) {
-			throw ServiceException.wrongArgumentException(responser, 
-					"Unknown label decision algorithm type: " + lda);
-		}
-		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpd, lda);
+		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
+		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
+		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpdc, olda);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -227,15 +227,9 @@ public class JobEntry {
 	@GET
 	public Response getEstimatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("ExptectedCost") @QueryParam("costAlgorithm") String lca){
-		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
-			throw ServiceException.wrongArgumentException(responser, 
-					"Unknown label probability distribution type: " + lpd);
-		}
-		if (!lca.equals("ExpectedCost") && !lca.equals("MinCost")) {
-			throw ServiceException.wrongArgumentException(responser, 
-					"Unknown labeling cost algorithm type: " + lca);
-		}
-		ProjectCommand command = new PredictionCommands.GetCost(job.getDs(), lpd, lca);
+		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		ProjectCommand command = new PredictionCommands.GetCost(job.getDs(), lpdc, lpdcc);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -243,15 +237,9 @@ public class JobEntry {
 	@GET
 	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
-		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
-			throw ServiceException.wrongArgumentException(responser, 
-					"Unknown label probability distribution type: " + lpd);
-		}
-		if (!lda.equals("MaxLikelihood") && !lda.equals("MinCost")) {
-			throw ServiceException.wrongArgumentException(responser, 
-					"Unknown label decision algorithm type: " + lda);
-		}
-		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), lpd, lda);
+		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
+		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
+		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), lpdc, olda);
 		return buildResponseOnCommand(job, command);
 	}
 	

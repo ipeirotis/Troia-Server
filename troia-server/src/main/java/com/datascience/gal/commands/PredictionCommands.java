@@ -3,9 +3,9 @@ package com.datascience.gal.commands;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.LabelingCostAlgorithm;
-import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 
 /**
  *
@@ -31,40 +31,41 @@ public class PredictionCommands {
 	
 	static public class GetPredictedCategory extends ProjectCommand<Map<String, String>> {
 		
-		private String labelProbabilityDistribution;
-		private String labelDecisionAlgorithm;
+		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
+		private IObjectLabelDecisionAlgorithm labelDecisionAlgorithm;
 		
-		public GetPredictedCategory(AbstractDawidSkene ads, String lpd, String lda){
+		public GetPredictedCategory(AbstractDawidSkene ads, ILabelProbabilityDistributionCalculator lpd,
+				IObjectLabelDecisionAlgorithm lda){
 			super(ads, false);
-			labelProbabilityDistribution = lpd;
+			labelProbabilityDistributionCalculator = lpd;
 			labelDecisionAlgorithm = lda;
 		}
 		
 		@Override
 		void realExecute() {
 			setResult(ads.getPredictedCategory(
-					LabelProbabilityDistributionCalculator.get(labelProbabilityDistribution),
-					ObjectLabelDecisionAlgorithm.get(labelDecisionAlgorithm)));
+				labelProbabilityDistributionCalculator, labelDecisionAlgorithm));
 		}
 	}
 	
 	
 	static public class GetCost extends ProjectCommand<Map<String, Double>> {
 		
-		private String labelProbabilityDistribution;
-		private String labelingCostAlgorithm;
+		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
+		private ILabelProbabilityDistributionCostCalculator labelingCostAlgorithm;
 		
-		public GetCost(AbstractDawidSkene ads, String lpd, String lca){
+		public GetCost(AbstractDawidSkene ads,
+				ILabelProbabilityDistributionCalculator lpd,
+				ILabelProbabilityDistributionCostCalculator lca){
 			super(ads, false);
-			labelProbabilityDistribution = lpd;
+			labelProbabilityDistributionCalculator = lpd;
 			labelingCostAlgorithm = lca;
 		}
 		
 		@Override
 		void realExecute() {
 			setResult(ads.getEstimatedCost(
-					LabelProbabilityDistributionCalculator.get(labelProbabilityDistribution),
-					LabelingCostAlgorithm.get(labelingCostAlgorithm)));
+				labelProbabilityDistributionCalculator, labelingCostAlgorithm));
 		}
 	}
 }

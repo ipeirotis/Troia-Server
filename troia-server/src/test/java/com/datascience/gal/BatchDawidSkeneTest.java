@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.datascience.gal.BatchDawidSkene.BatchDawidSkeneDeserializer;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.LabelingCostAlgorithm;
+import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.Utils;
 import com.google.gson.JsonParser;
 
@@ -72,7 +72,7 @@ public class BatchDawidSkeneTest {
 		for (String obj : unassignedObjects) {
 			assertEquals(1./categories.size(), Utils.estimateMissclassificationCost(ds, 
 					new LabelProbabilityDistributionCalculators.DS(), 
-					LabelingCostAlgorithm.get(""), obj), 1e-10);
+					LabelProbabilityDistributionCostCalculators.get(""), obj), 1e-10);
 		}
 		
 	}

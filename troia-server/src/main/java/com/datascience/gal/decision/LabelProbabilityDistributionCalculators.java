@@ -8,6 +8,7 @@ import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
+import com.google.common.base.Strings;
 
 /**
  * @author Konrad Kurdej
@@ -15,7 +16,7 @@ import com.datascience.gal.DawidSkene;
 public class LabelProbabilityDistributionCalculators {
 	// This classes should be in proper classes like MajorityVote, Dawid Skene etc.
 
-	public static class DS extends LabelProbabilityDistributionCalculator {
+	public static class DS implements ILabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
@@ -24,7 +25,7 @@ public class LabelProbabilityDistributionCalculators {
 		}
 	}
 
-	public static class MV extends LabelProbabilityDistributionCalculator {
+	public static class MV implements ILabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
@@ -44,5 +45,19 @@ public class LabelProbabilityDistributionCalculators {
 			}
 			return pd;
 		}
+	}
+	
+	public static ILabelProbabilityDistributionCalculator get(String algorithm){
+		if (Strings.isNullOrEmpty(algorithm)) {
+			algorithm = "DS";
+		}
+		algorithm = algorithm.toUpperCase();
+		if ("DS".equals(algorithm)) {
+			return new DS();
+		}
+		if ("MV".equals(algorithm)) {
+			return new MV();
+		}
+		throw new IllegalArgumentException("Not known label probability distrinbution calculator: " + algorithm);
 	}
 }

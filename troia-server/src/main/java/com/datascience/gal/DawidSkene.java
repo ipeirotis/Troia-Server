@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.LabelingCostAlgorithm;
-import com.datascience.gal.decision.ObjectLabelDecisionAlgorithm;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 
 public interface DawidSkene {
 
@@ -64,31 +64,31 @@ public interface DawidSkene {
 	public abstract void estimate(int maxIterations, double epsilon);
 
 	public abstract Map<String, String> getPredictedCategory(
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda);
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda);
 	
 	public abstract String getPredictedCategory(
 			String objectName,
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda);
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda);
 
 	public abstract Map<String, Double> getEstimatedCost(
-			LabelProbabilityDistributionCalculator lpdc,
-			LabelingCostAlgorithm lca);
+			ILabelProbabilityDistributionCalculator lpdc,
+			ILabelProbabilityDistributionCostCalculator lca);
 	
 	public abstract Double getEstimatedCost(
 			String objectName,
-			LabelProbabilityDistributionCalculator lpdc,
-			LabelingCostAlgorithm lca);
+			ILabelProbabilityDistributionCalculator lpdc,
+			ILabelProbabilityDistributionCostCalculator lca);
 	
 	public abstract Map<String, Double> getEvaluatedCost(
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda);
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda);
 	
 	public abstract Double getEvaluatedCost(
 			String objectName,
-			LabelProbabilityDistributionCalculator lpdc,
-			ObjectLabelDecisionAlgorithm olda);
+			ILabelProbabilityDistributionCalculator lpdc,
+			IObjectLabelDecisionAlgorithm olda);
 	
 	public abstract Map<String, Double> getObjectProbs(String objectName);
 

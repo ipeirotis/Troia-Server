@@ -7,7 +7,7 @@ import java.util.Map;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 
 /**
  *
@@ -147,17 +147,18 @@ public class DatumCommands {
 	static public class GetDatumCategoryProbability extends ProjectCommand<Map<String, Double>> {
 		
 		private String datumId;
-		private String type;
+		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
 		
-		public GetDatumCategoryProbability(AbstractDawidSkene ads, String datumId, String type){
+		public GetDatumCategoryProbability(AbstractDawidSkene ads, String datumId,
+				ILabelProbabilityDistributionCalculator type){
 			super(ads, false);
 			this.datumId = datumId;
-			this.type = type;
+			labelProbabilityDistributionCalculator = type;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(LabelProbabilityDistributionCalculator.get(type).calculateDistribution(ads.getObject(datumId), ads));
+			setResult(labelProbabilityDistributionCalculator.calculateDistribution(ads.getObject(datumId), ads));
 		}
 	}
 }
