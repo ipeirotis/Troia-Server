@@ -47,6 +47,20 @@ public class LabelProbabilityDistributionCalculators {
 		}
 	}
 	
+	public static class PriorBased implements ILabelProbabilityDistributionCalculator {
+
+		@Override
+		public Map<String, Double> calculateDistribution(Datum datum,
+				DawidSkene ads) {
+
+			Map<String, Double> pd = new HashMap<String, Double>();
+			for (Category c: ads.getCategories().values()) {
+				pd.put(c.getName(), c.getPrior());
+			}
+			return pd;
+		}
+	}
+	
 	public static ILabelProbabilityDistributionCalculator get(String algorithm){
 		if (Strings.isNullOrEmpty(algorithm)) {
 			algorithm = "DS";
@@ -57,6 +71,9 @@ public class LabelProbabilityDistributionCalculators {
 		}
 		if ("MV".equals(algorithm)) {
 			return new MV();
+		}
+		if ("SPAMMER".equals(algorithm)) {
+			return new PriorBased();
 		}
 		throw new IllegalArgumentException("Not known label probability distrinbution calculator: " + algorithm);
 	}
