@@ -54,7 +54,7 @@ public class JobEntry {
 		return responser.makeRedirectResponse(rec.commandId);
 	}
 	
-	@Path("/")
+	@Path("")
 	@GET
 	public Response getJobInfo(){
 		ProjectCommand command = new JobCommands.GetJobInfo(job.getDs());
