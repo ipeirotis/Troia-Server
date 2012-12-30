@@ -18,10 +18,22 @@ public class ExceptionMapping implements ExceptionMapper<Exception>{
 	@Context
 	ServletContext context;
 	
+	protected ResponseBuilder getResponser() {
+		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
+	}
+	
 	@Override
 	public Response toResponse(Exception e) {
+		ResponseBuilder responser = getResponser();
+		Integer status_code = null;
+		if (e instanceof IllegalArgumentException) {
+			status_code = Response.Status.BAD_REQUEST.getStatusCode();
+		}
+		if (status_code != null) {
+			return responser.makeErrorResponse(status_code, e.getMessage());
+		}
 		log.fatal("Formating exception into response", e);
-		return ((ResponseBuilder) context.getAttribute(Constants.RESPONSER)).makeExceptionResponse(e);
+		return responser.makeExceptionResponse(e);
 	}
 	
 }

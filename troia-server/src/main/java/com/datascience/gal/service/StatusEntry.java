@@ -22,13 +22,9 @@ public class StatusEntry {
 	}
 	
 	@GET @Path("/pingDB")
-	public Response pingDB(){
-		try {
-			jobStorage.test();
-			return responser.makeOKResponse("Job storage " +
-				jobStorage.getClass().getName() + " works fine");
-		} catch (Exception ex) {
-			return responser.makeExceptionResponse(ex);
-		}
+	public Response pingDB() throws Exception{
+		jobStorage.test();
+		return responser.makeOKResponse("Job storage " +
+			jobStorage.getClass().getName() + " works fine");
 	}
 }
