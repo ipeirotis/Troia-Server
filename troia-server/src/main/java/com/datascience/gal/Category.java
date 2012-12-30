@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.storages.JSONUtils;
+import com.google.common.base.Objects;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -79,10 +80,7 @@ public class Category {
 	 *            the prior to set
 	 */
 	public boolean hasPrior() {
-		if (this.prior != -1)
-			return true;
-		else
-			return false;
+		return this.prior != -1;
 	}
 
 	/*
@@ -92,10 +90,7 @@ public class Category {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode()) + Double.valueOf(this.prior).hashCode();
-		return result;
+		return Objects.hashCode(name, prior);
 	}
 
 	/*
@@ -105,23 +100,11 @@ public class Category {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
 		if (!(obj instanceof Category))
 			return false;
 		Category other = (Category) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (this.prior!=other.prior) {
-			return false;
-		}
-
-		return true;
+		return Objects.equal(name, other.name) &&
+			Objects.equal(prior, other.prior);
 	}
 
 	/**
