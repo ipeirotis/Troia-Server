@@ -191,7 +191,6 @@ public interface DawidSkene {
 	double getErrorRateForWorker(Worker worker, String from, String to);
 
 	public abstract boolean  isComputed();
-	public abstract void  setComputed(boolean computed);
 	public Worker getWorker(String name);
 	
 	///////TO REMOVE

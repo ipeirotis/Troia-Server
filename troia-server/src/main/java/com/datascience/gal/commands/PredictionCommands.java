@@ -25,8 +25,7 @@ public class PredictionCommands {
 		@Override
 		void realExecute() {
 			ads.estimate(iterations);
-			ads.setComputed(true);
-			setResult("Compute started");
+			setResult("Computation done");
 		}
 	}
 	

@@ -997,10 +997,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.computed;
 	}
 
-	public void setComputed(boolean computed) {
-		this.computed = computed;
-	}
-
 	public Worker getWorker(String name) {
 		return this.workers.get(name);
 	}
