@@ -10,7 +10,10 @@ import javax.ws.rs.core.Response;
 import com.datascience.core.Job;
 import com.datascience.core.JobFactory;
 import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.storages.JSONUtils;
+import com.datascience.gal.Category;
 import com.datascience.gal.executor.ProjectCommandExecutor;
+import java.util.Collection;
 import javax.ws.rs.POST;
 
 /**
@@ -48,47 +51,42 @@ public class JobsEntry {
 	public JobEntry getJob(@PathParam("id") String jid) throws Exception{
 		Job job = jobStorage.get(jid);
 		if (job == null) {
-			throw ServiceException.wrongArgumentException(responser, "Job with ID " + jid + " does not exist");
+			throw new IllegalArgumentException("Job with ID " + jid + " does not exist");
 		}
 		return jobEntryFactory(job);
 	}
 	
+	private boolean empty_jid(String jid){
+		return jid == null || "".equals(jid);
+	}
+	
 	@POST
 	public Response createJob(@FormParam("id") String jid,
+			@FormParam("categories") String sCategories,
 			@DefaultValue("batch") @FormParam("type") String type) throws Exception{
-		if (jid == null || "".equals(jid)){
+		if (empty_jid(jid)){
 			jid = jidGenerator.getID();
 		}
 
 		Job job_old = jobStorage.get(jid);
 		if (job_old != null) {
-			throw ServiceException.wrongArgumentException(responser,
-					"Job with ID " + jid + " already exist");
+			throw new IllegalArgumentException("Job with ID " + jid + " already exist");
 		}
 
-		Job job = jobFactory.createJob(type, jid);
-		if (job == null) {
-			throw ServiceException.wrongArgumentException(responser, "Unknown job type: " + type);
-		}
-		
-		try {
-			jobStorage.add(job);
-			return responser.makeOKResponse("New job created with ID: " + jid);
-		} catch (Exception ex) {
-			return responser.makeExceptionResponse(ex);
-		}
+		Collection<Category> categories = responser.getSerializer().parse(sCategories,
+			JSONUtils.categorySetType);
+		Job job = jobFactory.createJob(type, jid, categories);
+
+		jobStorage.add(job);
+		return responser.makeOKResponse("New job created with ID: " + jid);
 	}
 	
 	@DELETE
-	public Response deleteJob(@FormParam("id") String jid){
-		if (jid == null) {
-			throw ServiceException.wrongArgumentException(responser, "No job ID given");
+	public Response deleteJob(@FormParam("id") String jid) throws Exception{
+		if (empty_jid(jid)) {
+			throw new IllegalArgumentException("No job ID given");
 		}
-		try{
-			jobStorage.remove(jid);
-			return responser.makeOKResponse("Removed job with ID: " + jid);
-		} catch (Exception ex) {
-			return responser.makeExceptionResponse(ex);
-		}
+		jobStorage.remove(jid);
+		return responser.makeOKResponse("Removed job with ID: " + jid);
 	}
 }

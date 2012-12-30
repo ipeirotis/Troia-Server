@@ -62,14 +62,6 @@ public class JobEntry {
 	}
 	
 	@Path("categories/")
-	@POST
-	public Response setCategories(@FormParam("categories") String sCategories){
-		Collection<Category> categories = serializer.parse(sCategories, JSONUtils.categorySetType);
-		ProjectCommand command = new CategoriesCommands.SetCategories(job.getDs(), categories);
-		return buildResponseOnCommand(job, command);
-	}
-	
-	@Path("categories/")
 	@GET
 	public Response getCategories(){
 		ProjectCommand command = new CategoriesCommands.GetCategories(job.getDs());
