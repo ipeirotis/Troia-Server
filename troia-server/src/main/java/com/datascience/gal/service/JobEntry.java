@@ -22,6 +22,7 @@ import com.datascience.gal.commands.CategoriesCommands;
 import com.datascience.gal.commands.CommandStatus;
 import com.datascience.gal.commands.CostsCommands;
 import com.datascience.gal.commands.DatumCommands;
+import com.datascience.gal.commands.EvaluationCommands;
 import com.datascience.gal.commands.JobCommands;
 import com.datascience.gal.commands.PredictionCommands;
 import com.datascience.gal.commands.ProjectCommand;
@@ -232,7 +233,7 @@ public class JobEntry {
 	
 	@Path("prediction/dataCost/")
 	@GET
-	public Response getPredictionDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
+	public Response getEstimatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("ExptectedCost") @QueryParam("costAlgorithm") String lca){
 		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
 			throw ServiceException.wrongArgumentException(responser, 
@@ -242,7 +243,23 @@ public class JobEntry {
 			throw ServiceException.wrongArgumentException(responser, 
 					"Unknown labeling cost algorithm type: " + lca);
 		}
-		ProjectCommand command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpd, lca);
+		ProjectCommand command = new PredictionCommands.GetCost(job.getDs(), lpd, lca);
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("evaluation/dataCost/")
+	@GET
+	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
+			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
+		if (!lpd.equals("MV") && !lpd.equals("DS") ) {
+			throw ServiceException.wrongArgumentException(responser, 
+					"Unknown label probability distribution type: " + lpd);
+		}
+		if (!lda.equals("MaxLikelihood") && !lda.equals("MinCost")) {
+			throw ServiceException.wrongArgumentException(responser, 
+					"Unknown label decision algorithm type: " + lda);
+		}
+		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), lpd, lda);
 		return buildResponseOnCommand(job, command);
 	}
 	

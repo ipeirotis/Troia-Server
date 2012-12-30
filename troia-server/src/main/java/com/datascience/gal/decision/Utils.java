@@ -3,9 +3,11 @@ package com.datascience.gal.decision;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
+import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.utils.CostMatrix;
@@ -68,7 +70,8 @@ public class Utils {
 		// Ugly as hell but I don't see any other way ...
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
-		
+		if (datum == null)
+			throw new IllegalArgumentException(String.format("{} is not present in objects map", object_id));
 		return lca.predictedLabelCost(lpdc.calculateDistribution(datum, ads), getCategoriesCostMatrix(ads));
 	}
 	
@@ -79,7 +82,14 @@ public class Utils {
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
 		
-		String correctLabel = ads.getEvaluationDatum(datum.getName()).getCorrectCategory();
+		if (datum == null)
+			throw new IllegalArgumentException(String.format("{} is not present in objects map", object_id));
+		
+		CorrectLabel ed = ads.getEvaluationDatum(datum.getName());
+		if (ed == null)
+			throw new NoSuchElementException(String.format("There is no evaluation datum for {}", object_id));
+		
+		String correctLabel = ed.getCorrectCategory();
 		Double cost = 1.0;
 		if (correctLabel != null){
 			cost = 0.;
@@ -97,7 +107,8 @@ public class Utils {
 			String object_id) {
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
 		Datum datum = ads.getObject(object_id);
-		
+		if (datum == null)
+			throw new IllegalArgumentException(String.format("{} is not present in objects map", object_id));
 		return olda.predictLabel(lpdc.calculateDistribution(datum, ads), Utils.getCategoriesCostMatrix(ads));
 	}
 }

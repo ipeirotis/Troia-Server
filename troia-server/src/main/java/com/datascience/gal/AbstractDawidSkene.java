@@ -388,6 +388,25 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, objectName);
 	}
 	
+	@Override
+	public Map<String, Double> getEvaluatedCost(
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda){
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (String s : objects.keySet()) {
+			ret.put(s, com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, s));
+		}
+		return ret;
+	}
+	
+	@Override
+	public Double getEvaluatedCost(
+			String objectName,
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda){
+		return com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, objectName);
+	}
+	
 	@Override	
 	public Map<String, String> getMajorityVote() {
 		//DS_MAX

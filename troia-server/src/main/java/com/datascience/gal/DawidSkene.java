@@ -81,6 +81,15 @@ public interface DawidSkene {
 			LabelProbabilityDistributionCalculator lpdc,
 			LabelingCostAlgorithm lca);
 	
+	public abstract Map<String, Double> getEvaluatedCost(
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda);
+	
+	public abstract Double getEvaluatedCost(
+			String objectName,
+			LabelProbabilityDistributionCalculator lpdc,
+			ObjectLabelDecisionAlgorithm olda);
+	
 	public abstract Map<String, Double> getObjectProbs(String objectName);
 
 	public abstract Map<String, Map<String, Double>> getObjectProbs();
