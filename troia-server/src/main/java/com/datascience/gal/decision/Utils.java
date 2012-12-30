@@ -66,27 +66,20 @@ public class Utils {
 	static public double estimateMissclassificationCost(DawidSkene ds, 
 			ILabelProbabilityDistributionCalculator lpdc, 
 			ILabelProbabilityDistributionCostCalculator lca, 
-			String object_id) {
+			Datum datum) {
 		// Ugly as hell but I don't see any other way ...
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
-		Datum datum = ads.getObject(object_id);
-		if (datum == null)
-			throw new NoSuchElementException(String.format("{} is not present in objects map", object_id));
 		return lca.predictedLabelCost(lpdc.calculateDistribution(datum, ads), getCategoriesCostMatrix(ads));
 	}
 	
 	static public double evaluateMissclassificationCost(DawidSkene ds, 
 			ILabelProbabilityDistributionCalculator lpdc, 
 			IObjectLabelDecisionAlgorithm olda,
-			String object_id) {
+			Datum datum) {
 		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
-		Datum datum = ads.getObject(object_id);
-		if (datum == null)
-			throw new NoSuchElementException(String.format("{} is not present in objects map", object_id));
-		
 		CorrectLabel ed = ads.getEvaluationDatum(datum.getName());
 		if (ed == null)
-			throw new IllegalArgumentException(String.format("There is no evaluation datum for {}", object_id));
+			throw new IllegalArgumentException(String.format("There is no evaluation datum for {}", datum.getName()));
 		
 		String correctLabel = ed.getCorrectCategory();
 		Double cost = 1.0;

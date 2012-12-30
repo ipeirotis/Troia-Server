@@ -77,7 +77,7 @@ public interface DawidSkene {
 			ILabelProbabilityDistributionCostCalculator lca);
 	
 	public abstract Double getEstimatedCost(
-			String objectName,
+			Datum datum,
 			ILabelProbabilityDistributionCalculator lpdc,
 			ILabelProbabilityDistributionCostCalculator lca);
 	
@@ -86,7 +86,7 @@ public interface DawidSkene {
 			IObjectLabelDecisionAlgorithm olda);
 	
 	public abstract Double getEvaluatedCost(
-			String objectName,
+			Datum datum,
 			ILabelProbabilityDistributionCalculator lpdc,
 			IObjectLabelDecisionAlgorithm olda);
 	
@@ -184,8 +184,6 @@ public interface DawidSkene {
 	public abstract String getId();
 
 	public abstract Map<String, Category> getCategories();
-
-	public abstract String toString();
 
 	public abstract Map<String,Datum> getObjects();
 

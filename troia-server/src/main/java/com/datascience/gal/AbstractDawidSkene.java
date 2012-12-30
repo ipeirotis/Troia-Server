@@ -375,17 +375,17 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			ILabelProbabilityDistributionCalculator lpdc,
 			ILabelProbabilityDistributionCostCalculator lca){
 		Map<String, Double> ret = new HashMap<String, Double>();
-		for (String s : objects.keySet()) {
-			ret.put(s, com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, s));
+		for (Map.Entry<String, Datum> e: objects.entrySet()) {
+			ret.put(e.getKey(), com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, e.getValue()));
 		}
 		return ret;
 	}
 	
 	@Override
-	public Double getEstimatedCost(String objectName,
+	public Double getEstimatedCost(Datum datum,
 			ILabelProbabilityDistributionCalculator lpdc,
 			ILabelProbabilityDistributionCostCalculator lca){
-		return com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, objectName);
+		return com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, datum);
 	}
 	
 	@Override
@@ -393,18 +393,18 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			ILabelProbabilityDistributionCalculator lpdc,
 			IObjectLabelDecisionAlgorithm olda){
 		Map<String, Double> ret = new HashMap<String, Double>();
-		for (String s : objects.keySet()) {
-			ret.put(s, com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, s));
+		for (Map.Entry<String, Datum> e: objects.entrySet()) {
+			ret.put(e.getKey(), com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, e.getValue()));
 		}
 		return ret;
 	}
 	
 	@Override
 	public Double getEvaluatedCost(
-			String objectName,
+			Datum datum,
 			ILabelProbabilityDistributionCalculator lpdc,
 			IObjectLabelDecisionAlgorithm olda){
-		return com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, objectName);
+		return com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, datum);
 	}
 	
 	@Override	
