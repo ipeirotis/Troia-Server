@@ -1,23 +1,17 @@
 package com.datascience.gal.dataGenerator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Collection;
+import static java.io.File.separator;
 
+import java.io.File;
+import java.util.Collection;
 import org.apache.log4j.Logger;
-import org.junit.Test;
 
 import junit.framework.TestCase;
-import troiaClient.Label;
-import troiaClient.Category;
-import com.datascience.gal.dataGenerator.ArtificialWorker;
-import com.datascience.gal.dataGenerator.Data;
-import com.datascience.gal.dataGenerator.DataGenerator;
-import com.datascience.gal.dataGenerator.DataManager;
-import com.datascience.gal.dataGenerator.TroiaObjectCollection;
 
-import static java.io.File.separator;
+import org.junit.Test;
+
+import com.datascience.gal.AssignedLabel;
+import com.datascience.gal.Category;
 
 /**
  * The class <code>DataManagerTest</code> contains tests for the class
@@ -97,11 +91,11 @@ public class DataManagerTest extends TestCase {
 										categories);
 		Collection<ArtificialWorker> workers = generator
 											   .generateArtificialWorkers(10, categories, 0, 1);
-		Collection<Label> labelsS = generator
+		Collection<AssignedLabel> labelsS = generator
 									.generateLabels(workers, objects, 2);
 		managerS.saveLabelsToFile(filename, labelsS);
 		DataManager managerL = DataManager.getInstance();
-		Collection<Label> labelsL = managerL.loadLabelsFromFile(LABELS_FILE);
+		Collection<AssignedLabel> labelsL = managerL.loadLabelsFromFile(LABELS_FILE);
 		assertTrue(labelsL.equals(labelsS));
 	}
 

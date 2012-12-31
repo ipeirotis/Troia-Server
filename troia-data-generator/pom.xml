@@ -28,12 +28,6 @@
 			<version>4.10</version>
 		</dependency>
 		<dependency>
-			<!-- Troia client library -->
-			<groupId>TroiaJavaClient</groupId>
-			<artifactId>TroiaJavaClient</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<!-- Troia server library -->
 			<groupId>com.ipeirotis</groupId>
 			<artifactId>troia-server</artifactId>

@@ -3,20 +3,15 @@ package com.datascience.gal.dataGenerator;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Logger;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
 import junit.framework.TestCase;
+
 import org.junit.Test;
-import troiaClient.GoldLabel;
-import troiaClient.Label;
-import com.datascience.gal.dataGenerator.ArtificialWorker;
-import com.datascience.gal.dataGenerator.ConfusionMatrix;
-import com.datascience.gal.dataGenerator.RouletteNoisedLabelGenerator;
-import com.datascience.gal.dataGenerator.DataGenerator;
-import com.datascience.gal.dataGenerator.TroiaObjectCollection;
+
+import com.datascience.gal.AssignedLabel;
+import com.datascience.gal.CorrectLabel;
 
 /**
  * The class <code>TestDataGeneratorTest</code> contains tests for the class
@@ -170,12 +165,12 @@ public class DataGeneratorTest extends TestCase {
 											objectsCount, categories);
 		Collection<ArtificialWorker> workers = generator.generateArtificialWorkers(
 				workersCount, categories, minQuality, maxQuality);
-		Collection<Label> labels = generator.generateLabels(workers, objects,
+		Collection<AssignedLabel> labels = generator.generateLabels(workers, objects,
 								   workersPerObject);
 
 		int correct = 0;
 		int total = 0;
-		for (Label label : labels) {
+		for (AssignedLabel label : labels) {
 			if (label.getCategoryName().equals(
 						objects.getCategory(label.getObjectName()))) {
 				correct++;
@@ -197,7 +192,7 @@ public class DataGeneratorTest extends TestCase {
 											categoriesCount);
 		TroiaObjectCollection objects = generator.generateTestObjects(
 											objectsCount, categories);
-		Collection<GoldLabel> goldLabels = generator.generateGoldLabels(
+		Collection<CorrectLabel> goldLabels = generator.generateGoldLabels(
 											   objects, goldCoverage);
 		assertEquals(goldLabels.size(), (int)(objectsCount * goldCoverage));
 	}

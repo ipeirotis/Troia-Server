@@ -6,24 +6,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
 
-import troiaClient.Category;
-import troiaClient.CategoryFactory;
-import troiaClient.GoldLabel;
-import troiaClient.Label;
-
+import com.datascience.gal.AssignedLabel;
+import com.datascience.gal.Category;
+import com.datascience.gal.CorrectLabel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
-
-import org.apache.log4j.*;
 
 /**
  * Test data manager is used for managing text files containing test data.
@@ -141,7 +138,7 @@ public class DataManager {
 		for (Category c0 : categories) {
 			for (Category c1 : categories) {
 				out.append(c0.getName() + " " + c1.getName() + " "
-						+ c1.getMisclassificationCost(c0.getName()) + "\n");
+						+ c1.getCost(c0.getName()) + "\n");
 			}
 		}
 
@@ -222,12 +219,12 @@ public class DataManager {
 	 * @param labels
 	 * @throws IOException
 	 */
-	public void saveLabelsToFile(String filename, Collection<Label> labels)
+	public void saveLabelsToFile(String filename, Collection<AssignedLabel> labels)
 	throws IOException {
 		logger.info("Saving labels to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (Label label : labels) {
+		for (AssignedLabel label : labels) {
 			out.write(label.getWorkerName() + '\t' + label.getObjectName()
 					  + '\t' + label.getCategoryName() + '\n');
 		}
@@ -244,13 +241,13 @@ public class DataManager {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public Collection<Label> loadLabelsFromFile(String filename)
+	public Collection<AssignedLabel> loadLabelsFromFile(String filename)
 	throws FileNotFoundException {
 		logger.info("Loading labels from file");
 		FileInputStream stream = new FileInputStream(filename);
 		Scanner scanner = new Scanner(stream);
 		String line;
-		Collection<Label> labels = new ArrayList<Label>();
+		Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			labels.add(this.parseLabelFromString(line));
@@ -267,14 +264,14 @@ public class DataManager {
 	 * @param line
 	 * @return
 	 */
-	public Label parseLabelFromString(String line) {
+	public AssignedLabel parseLabelFromString(String line) {
 		String objectName, objectCategory, workerName;
 		workerName = line.substring(0, line.indexOf('\t'));
 		objectName = line.substring(line.indexOf('\t') + 1,
 									line.lastIndexOf('\t'));
 		objectCategory = line.substring(line.lastIndexOf('\t') + 1,
 										line.length());
-		return new Label(workerName, objectName, objectCategory);
+		return new AssignedLabel(workerName, objectName, objectCategory);
 	}
 
 	/**
@@ -285,11 +282,11 @@ public class DataManager {
 	 * @throws IOException
 	 */
 	public void saveGoldLabelsToFile(String filename,
-									 Collection<GoldLabel> labels) throws IOException {
+									 Collection<CorrectLabel> labels) throws IOException {
 		logger.info("Saving gold labels objects to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (GoldLabel label : labels) {
+		for (CorrectLabel label : labels) {
 			out.write(label.getObjectName() + '\t' + label.getCorrectCategory()
 					  + '\n');
 		}
@@ -303,19 +300,19 @@ public class DataManager {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public Collection<GoldLabel> loadGoldLabelsFromFile(String filename)
+	public Collection<CorrectLabel> loadGoldLabelsFromFile(String filename)
 	throws FileNotFoundException {
 		logger.info("Loading gold labels from file");
 		FileInputStream stream = new FileInputStream(filename);
 		Scanner scanner = new Scanner(stream);
 		String line, objectName, objectCategory;
-		Collection<GoldLabel> goldLabels = new ArrayList<GoldLabel>();
+		Collection<CorrectLabel> goldLabels = new ArrayList<CorrectLabel>();
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			objectName = line.substring(0, line.indexOf('\t'));
 			objectCategory = line.substring(line.indexOf('\t') + 1,
 											line.length());
-			goldLabels.add(new GoldLabel(objectName, objectCategory));
+			goldLabels.add(new CorrectLabel(objectName, objectCategory));
 		}
 		scanner.close();
 		return goldLabels;
@@ -397,9 +394,9 @@ public class DataManager {
 	}
 
 	public Collection<String> extractWorkerNamesFromLabels(
-		Collection<Label> labels) {
+		Collection<AssignedLabel> labels) {
 		Collection<String> workers = new ArrayList<String>();
-		for (Label label : labels) {
+		for (AssignedLabel label : labels) {
 			if (!workers.contains(label.getWorkerName())) {
 				workers.add(label.getWorkerName());
 			}
@@ -408,9 +405,9 @@ public class DataManager {
 	}
 
 	public Collection<String> extractCategoryNamesFromLabels(
-		Collection<Label> labels) {
+		Collection<AssignedLabel> labels) {
 		Collection<String> categories = new ArrayList<String>();
-		for (Label label : labels) {
+		for (AssignedLabel label : labels) {
 			if (!categories.contains(label.getCategoryName())) {
 				categories.add(label.getCategoryName());
 			}

@@ -3,10 +3,10 @@ package com.datascience.gal.dataGenerator;
 import java.util.Collection;
 import java.util.Map;
 
-import troiaClient.Category;
-import troiaClient.GoldLabel;
-import troiaClient.Label;
-import troiaClient.MisclassificationCost;
+import com.datascience.gal.AssignedLabel;
+import com.datascience.gal.Category;
+import com.datascience.gal.CorrectLabel;
+import com.datascience.gal.MisclassificationCost;
 
 public class Data {
 
@@ -80,28 +80,28 @@ public class Data {
 	/**
 	 * @return Collection of generated labels
 	 */
-	public Collection<Label> getLabels() {
+	public Collection<AssignedLabel> getLabels() {
 		return labels;
 	}
 
 	/**
 	 * @param labels Collection of labels
 	 */
-	public void setLabels(Collection<Label> labels) {
+	public void setLabels(Collection<AssignedLabel> labels) {
 		this.labels = labels;
 	}
 
 	/**
 	 * @return Collection of gold labels in request
 	 */
-	public Collection<GoldLabel> getGoldLabels() {
+	public Collection<CorrectLabel> getGoldLabels() {
 		return goldLabels;
 	}
 
 	/**
 	 * @param goldLabels Collection of gold labels in request
 	 */
-	public void setGoldLabels(Collection<GoldLabel> goldLabels) {
+	public void setGoldLabels(Collection<CorrectLabel> goldLabels) {
 		this.goldLabels = goldLabels;
 	}
 
@@ -193,12 +193,12 @@ public class Data {
 	/**
 	 * Collection of generated labels
 	 */
-	Collection<Label> labels;
+	Collection<AssignedLabel> labels;
 
 	/**
 	 * Collection of gold labels in request
 	 */
-	Collection<GoldLabel> goldLabels;
+	Collection<CorrectLabel> goldLabels;
 
 	/**
 	 * Collection of misclassification costs
