@@ -893,7 +893,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 *
 	 * @return The expected cost of a spammer worker
 	 */
-	private double getMinSpammerCost() {
+	public double getMinSpammerCost() {
 
 		HashMap<String, Double> prior = new HashMap<String, Double>();
 		for (Category c : this.categories.values()) {
@@ -908,7 +908,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 *
 	 * @return The expected cost of a spammer worker
 	 */
-	private double getSpammerCost() {
+	public double getSpammerCost() {
 
 		Map<String, Double> prior = new HashMap<String, Double>();
 		for (Category c : categories.values()) {
