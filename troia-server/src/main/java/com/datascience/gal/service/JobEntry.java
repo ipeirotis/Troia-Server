@@ -34,6 +34,7 @@ import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.executor.ProjectCommandExecutor;
+import java.util.NoSuchElementException;
 
 /**
  * @author Konrad Kurdej
@@ -193,7 +194,7 @@ public class JobEntry {
 		CommandStatus status = job.getCommandStatusesContainer()
 			.getCommandResult(sid);
 		if (status == null) {
-			throw ServiceException.notFoundException(responser);
+			throw new NoSuchElementException("No status with id: " + sid);
 		}
 		switch(status.getStatus()){
 			case OK:
