@@ -4,6 +4,9 @@ import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
+import com.datascience.utils.CostMatrix;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,13 +33,16 @@ public class DecisionEngine {
 	}
 
 	
-	public double estimateMissclassificationCost(DawidSkene ds, Datum datum) {
-		return labelProbabilityDistributionCostCalculator.predictedLabelCost(
-			getPD(datum, ds), Utils.getCategoriesCostMatrix(ds));
+	public String predictLabel(DawidSkene ds, Datum datum, CostMatrix<String> cm) {
+		return objectLabelDecisionAlgorithm.predictLabel(getPD(datum, ds), cm);
 	}
 	
+	public double estimateMissclassificationCost(DawidSkene ds, Datum datum, CostMatrix<String> cm) {
+		return labelProbabilityDistributionCostCalculator.predictedLabelCost(
+			getPD(datum, ds), cm);
+	}
 	
-	public double evaluateMissclassificationCost(DawidSkene ds, CorrectLabel ed) {
+	public double evaluateMissclassificationCost(DawidSkene ds, CorrectLabel ed, CostMatrix<String> cm) {
 		String correctLabel = ed.getCorrectCategory();
 		if (correctLabel != null){
 			Datum datum = ds.getObjects().get(ed.getObjectName());
@@ -44,7 +50,7 @@ public class DecisionEngine {
 				throw new IllegalArgumentException("Evalutaion object doesn't match any datum: " + correctLabel);
 			}
 			
-			String predictedLabel = predictLabel(ds, datum);
+			String predictedLabel = predictLabel(ds, datum, cm);
 			Category correctLabelCostVector = ds.getCategories().get(correctLabel);
 			return correctLabelCostVector.getCost(predictedLabel);
 		}
@@ -53,7 +59,45 @@ public class DecisionEngine {
 	
 	
 	public String predictLabel(DawidSkene ds, Datum datum) {
-		return objectLabelDecisionAlgorithm.predictLabel(getPD(datum, ds),
-			Utils.getCategoriesCostMatrix(ds));
+		return predictLabel(ds, datum, Utils.getCategoriesCostMatrix(ds));
+	}
+
+	public double estimateMissclassificationCost(DawidSkene ds, Datum datum) {
+		return estimateMissclassificationCost(ds, datum, Utils.getCategoriesCostMatrix(ds));
+	}
+
+	public double evaluateMissclassificationCost(DawidSkene ds, CorrectLabel ed) {
+		return evaluateMissclassificationCost(ds, ed, Utils.getCategoriesCostMatrix(ds));
+	}
+	
+	
+	public Map<String, String> predictLabels(DawidSkene ds){
+		Map<String, Datum> datums = ds.getObjects();
+		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
+		Map<String, String> ret = new HashMap<String, String>();
+		for (Map.Entry<String, Datum> e: datums.entrySet()) {
+			ret.put(e.getKey(), predictLabel(ds, e.getValue(), cm));
+		}
+		return ret;
+	}
+	
+	public Map<String, Double> estimateMissclassificationCosts(DawidSkene ds){
+		Map<String, Datum> datums = ds.getObjects();
+		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (Map.Entry<String, Datum> e: datums.entrySet()) {
+			ret.put(e.getKey(), estimateMissclassificationCost(ds, e.getValue(), cm));
+		}
+		return ret;
+	}
+	
+	public Map<String, Double> evaluateMissclassificationCosts(DawidSkene ds){
+		Collection<CorrectLabel> evalData = ds.getEvaluationDatums();
+		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (CorrectLabel cl: evalData) {
+			ret.put(cl.getObjectName(), evaluateMissclassificationCost(ds, cl, cm));
+		}
+		return ret;
 	}
 }
