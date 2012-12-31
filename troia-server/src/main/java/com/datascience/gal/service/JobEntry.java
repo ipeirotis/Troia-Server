@@ -235,6 +235,16 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
+	@Path("prediction/dataQuality/")
+	@GET
+	public Response getEstimatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
+			@DefaultValue("ExptectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		ProjectCommand command = new PredictionCommands.GetQuality(job.getDs(), lpdc, lpdcc);
+		return buildResponseOnCommand(job, command);
+	}
+	
 	@Path("evaluation/dataCost/")
 	@GET
 	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
@@ -242,6 +252,16 @@ public class JobEntry {
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
 		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), lpdc, olda);
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("evaluation/dataQuality/")
+	@GET
+	public Response getEvaluatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
+			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
+		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
+		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
+		ProjectCommand command = new EvaluationCommands.GetQuality(job.getDs(), lpdc, olda);
 		return buildResponseOnCommand(job, command);
 	}
 	

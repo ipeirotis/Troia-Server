@@ -5,6 +5,7 @@ import java.util.Map;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 
 /**
@@ -26,6 +27,23 @@ public class EvaluationCommands {
 		@Override
 		void realExecute() {
 			setResult(decisionEngine.evaluateMissclassificationCosts(ads));
+		}
+	}
+	
+	static public class GetQuality extends ProjectCommand<Map<String, Double>> {
+		
+		private DecisionEngine decisionEngine;
+		
+		public GetQuality(AbstractDawidSkene ads, ILabelProbabilityDistributionCalculator lpd,
+				IObjectLabelDecisionAlgorithm lda){
+			super(ads, false);
+			decisionEngine = new DecisionEngine(lpd, null, lda);
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(decisionEngine.costToQuality(ads,
+				decisionEngine.evaluateMissclassificationCosts(ads)));
 		}
 	}
 }

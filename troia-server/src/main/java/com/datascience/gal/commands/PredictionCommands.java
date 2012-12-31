@@ -64,4 +64,22 @@ public class PredictionCommands {
 			setResult(decisionEngine.estimateMissclassificationCosts(ads));
 		}
 	}
+	
+	static public class GetQuality extends ProjectCommand<Map<String, Double>> {
+		
+		private DecisionEngine decisionEngine;
+		
+		public GetQuality(AbstractDawidSkene ads,
+				ILabelProbabilityDistributionCalculator lpd,
+				ILabelProbabilityDistributionCostCalculator lca){
+			super(ads, false);
+			decisionEngine = new DecisionEngine(lpd, lca, null);
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(decisionEngine.costToQuality(ads,
+				decisionEngine.estimateMissclassificationCosts(ads)));
+		}
+	}
 }

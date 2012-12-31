@@ -1,5 +1,6 @@
 package com.datascience.gal.decision;
 
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
@@ -57,6 +58,17 @@ public class DecisionEngine {
 		return 1.; // FIXME: in previous version was 1. - maybe we should throw exception if correctLabel== null ?
 	}
 	
+	public double costToQuality(DawidSkene ds, double cost){
+		return 1. - cost / ((AbstractDawidSkene) ds).getSpammerCost();
+	}
+	
+	public Map<String, Double> costToQuality(DawidSkene ds, Map<String, Double> costs){
+		Map<String, Double> quality = new HashMap<String, Double>();
+		for (Map.Entry<String, Double> e: costs.entrySet()) {
+			quality.put(e.getKey(), costToQuality(ds, e.getValue()));
+		}
+		return quality;
+	}
 	
 	public String predictLabel(DawidSkene ds, Datum datum) {
 		return predictLabel(ds, datum, Utils.getCategoriesCostMatrix(ds));
