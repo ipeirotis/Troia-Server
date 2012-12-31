@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.ipeirotis</groupId>
 		<artifactId>project-troia</artifactId>
-		<version>0.0.1</version>
+		<version>0.8</version>
 	</parent>
 	<name>Troia Test Data Generator</name>
 	<dependencies>
@@ -37,7 +37,7 @@
 			<!-- Troia server library -->
 			<groupId>com.ipeirotis</groupId>
 			<artifactId>troia-server</artifactId>
-			<version>0.0.1</version>
+			<version>0.8</version>
 		</dependency>
 	</dependencies>
 	<build>
