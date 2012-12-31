@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.storages.JSONUtils;
+import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
@@ -40,6 +41,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	protected final String id;
 
+	protected DecisionEngine mvDecisionEnginge;
 	/**
 	 * Set to true if this project was computed.
 	 * Any modification to DS project will set it to false
@@ -63,6 +65,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		this.workers = new HashMap<String, Worker>();
 		this.objectsWithNoLabels = new HashMap<String, Datum>();
 		this.computed = false;
+		mvDecisionEnginge = new DecisionEngine(
+			new LabelProbabilityDistributionCalculators.DS(), null,
+			new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 	}
 
 	protected void invalidateComputed() {
@@ -351,67 +356,11 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public int getNumberOfUnassignedObjects() {
 		return this.objectsWithNoLabels.size();
 	}
-
-	@Override
-	public Map<String, String> getPredictedCategory(
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda){
-		Map<String, String> ret = new HashMap<String, String>();
-		for (String s : objects.keySet()) {
-			ret.put(s, com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, s));
-		}
-		return ret;
-	}
-	
-	@Override
-	public String getPredictedCategory(String objectName, 
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda){
-		return com.datascience.gal.decision.Utils.predictLabel(this, lpdc, olda, objectName);
-	}
-	
-	@Override
-	public Map<String, Double> getEstimatedCost(
-			ILabelProbabilityDistributionCalculator lpdc,
-			ILabelProbabilityDistributionCostCalculator lca){
-		Map<String, Double> ret = new HashMap<String, Double>();
-		for (Map.Entry<String, Datum> e: objects.entrySet()) {
-			ret.put(e.getKey(), com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, e.getValue()));
-		}
-		return ret;
-	}
-	
-	@Override
-	public Double getEstimatedCost(Datum datum,
-			ILabelProbabilityDistributionCalculator lpdc,
-			ILabelProbabilityDistributionCostCalculator lca){
-		return com.datascience.gal.decision.Utils.estimateMissclassificationCost(this, lpdc, lca, datum);
-	}
-	
-	@Override
-	public Map<String, Double> getEvaluatedCost(
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda){
-		Map<String, Double> ret = new HashMap<String, Double>();
-		for (Map.Entry<String, Datum> e: objects.entrySet()) {
-			ret.put(e.getKey(), com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, e.getValue()));
-		}
-		return ret;
-	}
-	
-	@Override
-	public Double getEvaluatedCost(
-			Datum datum,
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda){
-		return com.datascience.gal.decision.Utils.evaluateMissclassificationCost(this, lpdc, olda, datum);
-	}
 	
 	@Override	
 	public Map<String, String> getMajorityVote() {
 		//DS_MAX
-		return getPredictedCategory(new LabelProbabilityDistributionCalculators.DS(), 
-				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
+		return mvDecisionEnginge.predictLabels(this);
 	}
 
 	@Override
@@ -438,9 +387,11 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	@Override
 	public String getMajorityVote(String objectName) {
-		return getPredictedCategory(objectName,
-			new LabelProbabilityDistributionCalculators.DS(), 
-			new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
+		Datum datum = objects.get(objectName);
+		if (datum == null) {
+			throw new IllegalArgumentException("Unknown datum with id: " + objectName);
+		}
+		return mvDecisionEnginge.predictLabel(this, datum);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.datascience.gal.commands;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
@@ -31,41 +32,36 @@ public class PredictionCommands {
 	
 	static public class GetPredictedCategory extends ProjectCommand<Map<String, String>> {
 		
-		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
-		private IObjectLabelDecisionAlgorithm labelDecisionAlgorithm;
+		private DecisionEngine decisionEngine;
+
 		
 		public GetPredictedCategory(AbstractDawidSkene ads, ILabelProbabilityDistributionCalculator lpd,
 				IObjectLabelDecisionAlgorithm lda){
 			super(ads, false);
-			labelProbabilityDistributionCalculator = lpd;
-			labelDecisionAlgorithm = lda;
+			decisionEngine = new DecisionEngine(lpd, null, lda);
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getPredictedCategory(
-				labelProbabilityDistributionCalculator, labelDecisionAlgorithm));
+			setResult(decisionEngine.predictLabels(ads));
 		}
 	}
 	
 	
 	static public class GetCost extends ProjectCommand<Map<String, Double>> {
 		
-		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
-		private ILabelProbabilityDistributionCostCalculator labelingCostAlgorithm;
+		private DecisionEngine decisionEngine;
 		
 		public GetCost(AbstractDawidSkene ads,
 				ILabelProbabilityDistributionCalculator lpd,
 				ILabelProbabilityDistributionCostCalculator lca){
 			super(ads, false);
-			labelProbabilityDistributionCalculator = lpd;
-			labelingCostAlgorithm = lca;
+			decisionEngine = new DecisionEngine(lpd, lca, null);
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getEstimatedCost(
-				labelProbabilityDistributionCalculator, labelingCostAlgorithm));
+			setResult(decisionEngine.estimateMissclassificationCosts(ads));
 		}
 	}
 }
