@@ -52,7 +52,7 @@ public class Utils {
 		return initialDistribution;
 	}
 
-	static public CostMatrix<String> getCategoriesCostMatrix(AbstractDawidSkene ads) {
+	static public CostMatrix<String> getCategoriesCostMatrix(DawidSkene ads) {
 		CostMatrix<String> cm = new CostMatrix<String>();
 		for (Category c: ads.getCategories().values()) {
 			String name = c.getName();

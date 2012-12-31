@@ -63,33 +63,6 @@ public interface DawidSkene {
 	 */
 	public abstract void estimate(int maxIterations, double epsilon);
 
-	public abstract Map<String, String> getPredictedCategory(
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda);
-	
-	public abstract String getPredictedCategory(
-			String objectName,
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda);
-
-	public abstract Map<String, Double> getEstimatedCost(
-			ILabelProbabilityDistributionCalculator lpdc,
-			ILabelProbabilityDistributionCostCalculator lca);
-	
-	public abstract Double getEstimatedCost(
-			Datum datum,
-			ILabelProbabilityDistributionCalculator lpdc,
-			ILabelProbabilityDistributionCostCalculator lca);
-	
-	public abstract Map<String, Double> getEvaluatedCost(
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda);
-	
-	public abstract Double getEvaluatedCost(
-			Datum datum,
-			ILabelProbabilityDistributionCalculator lpdc,
-			IObjectLabelDecisionAlgorithm olda);
-	
 	public abstract Map<String, Double> getObjectProbs(String objectName);
 
 	public abstract Map<String, Map<String, Double>> getObjectProbs();
