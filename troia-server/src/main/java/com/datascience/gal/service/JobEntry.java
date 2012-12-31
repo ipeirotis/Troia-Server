@@ -228,7 +228,7 @@ public class JobEntry {
 	@Path("prediction/dataCost/")
 	@GET
 	public Response getEstimatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("ExptectedCost") @QueryParam("costAlgorithm") String lca){
+			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
 		ProjectCommand command = new PredictionCommands.GetCost(job.getDs(), lpdc, lpdcc);
@@ -238,7 +238,7 @@ public class JobEntry {
 	@Path("prediction/dataQuality/")
 	@GET
 	public Response getEstimatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("ExptectedCost") @QueryParam("costAlgorithm") String lca){
+			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
 		ProjectCommand command = new PredictionCommands.GetQuality(job.getDs(), lpdc, lpdcc);
