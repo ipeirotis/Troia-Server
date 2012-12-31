@@ -664,6 +664,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * com.ipeirotis.gal.DawidSkene#addAssignedLabel(com.ipeirotis.gal.AssignedLabel
 	 * )
 	 */
+	@Override
 	public void addAssignedLabel(AssignedLabel al) {
 
 		String workerName = al.getWorkerName();
@@ -713,6 +714,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * com.ipeirotis.gal.DawidSkene#addCorrectLabel(com.ipeirotis.gal.CorrectLabel
 	 * )
 	 */
+	@Override
 	public void addCorrectLabel(CorrectLabel cl) {
 
 		String objectName = cl.getObjectName();
@@ -971,6 +973,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return ret;
 	}
 
+	@Override
 	public Map<String,Datum> getObjects() {
 		return objects;
 	}
@@ -979,6 +982,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return objectsWithNoLabels;
 	}
 
+	@Override
 	public Map<String,Category> getCategories() {
 		return categories;
 	}
@@ -1012,10 +1016,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.evaluationData.get(name);
 	}
 
+	@Override
 	public boolean isComputed() {
 		return this.computed;
 	}
 
+	@Override
 	public Worker getWorker(String name) {
 		return this.workers.get(name);
 	}
