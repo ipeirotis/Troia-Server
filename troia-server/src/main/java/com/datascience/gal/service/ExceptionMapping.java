@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Provider;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * We assume that jersey errors are less important mostly user errors
  * @author konrad
  */
 @Provider
@@ -26,8 +26,8 @@ public class ExceptionMapping implements ExceptionMapper<Exception>{
 	
 	@Override
 	public Response toResponse(Exception e) {
-		log.fatal("Formating exception into response", e);
 		if (e instanceof WebApplicationException) {
+			log.debug("Formating exception", e);
 			return serviceTechnicalError((WebApplicationException) e);
 		}
 		ResponseBuilder responser = getResponser();
@@ -38,8 +38,10 @@ public class ExceptionMapping implements ExceptionMapper<Exception>{
 			status_code = Response.Status.NOT_FOUND.getStatusCode();
 		}
 		if (status_code != null) {
+			log.debug("Formating exception", e);
 			return responser.makeErrorResponse(status_code, e.getMessage());
 		}
+		log.fatal("Formating exception into response", e);
 		return responser.makeExceptionResponse(e);
 	}
 	
