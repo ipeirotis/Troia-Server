@@ -62,45 +62,4 @@ public class Utils {
 		}
 		return cm;
 	}
-	
-	static public double estimateMissclassificationCost(DawidSkene ds, 
-			ILabelProbabilityDistributionCalculator lpdc, 
-			ILabelProbabilityDistributionCostCalculator lca, 
-			Datum datum) {
-		// Ugly as hell but I don't see any other way ...
-		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
-		return lca.predictedLabelCost(lpdc.calculateDistribution(datum, ads), getCategoriesCostMatrix(ads));
-	}
-	
-	static public double evaluateMissclassificationCost(DawidSkene ds, 
-			ILabelProbabilityDistributionCalculator lpdc, 
-			IObjectLabelDecisionAlgorithm olda,
-			Datum datum) {
-		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
-		CorrectLabel ed = ads.getEvaluationDatum(datum.getName());
-		if (ed == null)
-			throw new IllegalArgumentException(String.format("There is no evaluation datum for {}", datum.getName()));
-		
-		String correctLabel = ed.getCorrectCategory();
-		Double cost = 1.0;
-		if (correctLabel != null){
-			cost = 0.;
-			String predictedLabel = olda.predictLabel(lpdc.calculateDistribution(datum, ads), 
-					Utils.getCategoriesCostMatrix(ads));
-			Category correctLabelCostVector = ads.getCategories().get(correctLabel);
-			return correctLabelCostVector.getCost(predictedLabel);
-		}
-		return cost;
-	}
-	
-	static public String predictLabel(DawidSkene ds, 
-			ILabelProbabilityDistributionCalculator lpdc, 
-			IObjectLabelDecisionAlgorithm olda,
-			String object_id) {
-		AbstractDawidSkene ads = (AbstractDawidSkene) ds;
-		Datum datum = ads.getObject(object_id);
-		if (datum == null)
-			throw new NoSuchElementException(String.format("{} is not present in objects map", object_id));
-		return olda.predictLabel(lpdc.calculateDistribution(datum, ads), Utils.getCategoriesCostMatrix(ads));
-	}
 }
