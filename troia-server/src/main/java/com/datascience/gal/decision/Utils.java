@@ -3,12 +3,7 @@ package com.datascience.gal.decision;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
-
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
-import com.datascience.gal.CorrectLabel;
-import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.utils.CostMatrix;
 
