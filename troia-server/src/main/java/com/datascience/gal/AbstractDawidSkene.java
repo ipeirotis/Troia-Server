@@ -524,7 +524,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 				String assigned_category = al.getCategoryName();
 				double evidence_for_category = getErrorRateForWorker(w,
-											   category.getName(), assigned_category);
+					category.getName(), assigned_category);
 				if (Double.isNaN(evidence_for_category))
 					continue;
 				categoryNominator *= evidence_for_category;
