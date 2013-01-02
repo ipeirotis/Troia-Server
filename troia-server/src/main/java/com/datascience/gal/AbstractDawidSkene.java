@@ -24,8 +24,6 @@ import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
 
