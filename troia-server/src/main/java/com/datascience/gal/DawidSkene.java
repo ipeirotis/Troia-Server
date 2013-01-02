@@ -13,9 +13,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
-import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 
 public interface DawidSkene {
 
