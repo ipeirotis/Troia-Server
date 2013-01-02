@@ -12,7 +12,6 @@ import com.datascience.gal.BatchDawidSkene.BatchDawidSkeneDeserializer;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
-import com.datascience.gal.decision.Utils;
 import com.google.gson.JsonParser;
 import java.util.HashSet;
 import java.util.Set;
