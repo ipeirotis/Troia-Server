@@ -940,6 +940,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return categories.get(category);
 	}
 	
+	@Override
 	public Collection<CorrectLabel> getGoldDatums() {
 		Collection<CorrectLabel> ret = new ArrayList<CorrectLabel>();
 		for (Datum d : objects.values()){
