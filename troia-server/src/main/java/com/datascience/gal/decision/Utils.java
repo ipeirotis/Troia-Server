@@ -46,6 +46,14 @@ public class Utils {
 		}
 		return initialDistribution;
 	}
+	
+	static public Map<String, Double> generateGoldDistribution(Collection<String> categories, String correctCat){
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (String s : categories)
+			ret.put(s, 0.);
+		ret.put(correctCat, 1.);
+		return ret;
+	}
 
 	static public CostMatrix<String> getCategoriesCostMatrix(DawidSkene ads) {
 		CostMatrix<String> cm = new CostMatrix<String>();

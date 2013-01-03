@@ -21,6 +21,8 @@ public class LabelProbabilityDistributionCalculators {
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
 				DawidSkene ads) {
+			if (datum.isGold())
+				return Utils.generateGoldDistribution(ads.getCategories().keySet(), datum.getCorrectCategory());
 			return datum.getCategoryProbability();
 		}
 	}
@@ -30,7 +32,8 @@ public class LabelProbabilityDistributionCalculators {
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
 				DawidSkene ads) {
-
+			if (datum.isGold())
+				return Utils.generateGoldDistribution(ads.getCategories().keySet(), datum.getCorrectCategory());
 			Map<String, Double> pd = new HashMap<String, Double>();
 			for (Category c: ads.getCategories().values()) {
 				pd.put(c.getName(), 0.0);
@@ -52,7 +55,8 @@ public class LabelProbabilityDistributionCalculators {
 		@Override
 		public Map<String, Double> calculateDistribution(Datum datum,
 				DawidSkene ads) {
-
+			if (datum.isGold())
+				return Utils.generateGoldDistribution(ads.getCategories().keySet(), datum.getCorrectCategory());
 			Map<String, Double> pd = new HashMap<String, Double>();
 			for (Category c: ads.getCategories().values()) {
 				pd.put(c.getName(), c.getPrior());
