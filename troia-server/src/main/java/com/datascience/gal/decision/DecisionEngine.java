@@ -48,7 +48,7 @@ public class DecisionEngine {
 		if (correctLabel != null){
 			Datum datum = ds.getObjects().get(ed.getObjectName());
 			if (datum == null) {
-				throw new IllegalArgumentException("Evalutaion object doesn't match any datum: " + correctLabel);
+				throw new IllegalArgumentException("Evaluation object doesn't match any datum: " + correctLabel);
 			}
 			
 			String predictedLabel = predictLabel(ds, datum, cm);
