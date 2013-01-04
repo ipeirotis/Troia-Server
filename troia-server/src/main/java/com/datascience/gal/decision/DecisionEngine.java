@@ -59,7 +59,7 @@ public class DecisionEngine {
 	}
 	
 	public double costToQuality(DawidSkene ds, double cost){
-		return 1. - cost / ((AbstractDawidSkene) ds).getSpammerCost();
+		return 1. - cost / ((AbstractDawidSkene) ds).getMinSpammerCost();
 	}
 	
 	public Map<String, Double> costToQuality(DawidSkene ds, Map<String, Double> costs){
