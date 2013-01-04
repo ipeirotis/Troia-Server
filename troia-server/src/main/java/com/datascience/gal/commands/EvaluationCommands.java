@@ -5,7 +5,6 @@ import java.util.Map;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 
 /**

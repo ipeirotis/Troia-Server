@@ -48,7 +48,7 @@ public class DecisionEngine {
 		if (correctLabel != null){
 			Datum datum = ds.getObjects().get(ed.getObjectName());
 			if (datum == null) {
-				throw new IllegalArgumentException("Evalutaion object doesn't match any datum: " + correctLabel);
+				throw new IllegalArgumentException("Evaluation object doesn't match any datum: " + correctLabel);
 			}
 			
 			String predictedLabel = predictLabel(ds, datum, cm);
@@ -59,7 +59,7 @@ public class DecisionEngine {
 	}
 	
 	public double costToQuality(DawidSkene ds, double cost){
-		return 1. - cost / ((AbstractDawidSkene) ds).getSpammerCost();
+		return 1. - cost / ((AbstractDawidSkene) ds).getMinSpammerCost();
 	}
 	
 	public Map<String, Double> costToQuality(DawidSkene ds, Map<String, Double> costs){
