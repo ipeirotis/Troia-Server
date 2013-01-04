@@ -46,8 +46,7 @@ public class DataGeneratorTest extends TestCase {
 		final int categoriesCount = 100;
 		final Pattern pattern = Pattern.compile("^Category-\\d+$");
 		DataGenerator generator = DataGenerator.getInstance();
-		Collection<String> names =  generator.generateCategoryNames(
-										categoriesCount);
+		Collection<String> names =  generator.generateCategoryNames(categoriesCount);
 		for (String name : names) {
 			assertTrue(pattern.matcher(name).matches());
 
@@ -64,15 +63,14 @@ public class DataGeneratorTest extends TestCase {
 		int categoriesCount = 4;
 		double prior = objectsCount / (double)(categoriesCount * objectsCount);
 		DataGenerator generator = DataGenerator.getInstance();
-		TroiaObjectCollection objects = generator.generateTestObjects(
-											objectsCount, categoriesCount);
+		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categoriesCount);
 		Map<String, Integer> occurrences = new HashMap<String, Integer>();
 		for (String object : objects) {
 			String category = objects.getCategory(object);
 			// Increment the category occurrences count.
 			if (occurrences.containsKey(category)) {
 				occurrences.put(category, Integer.valueOf(occurrences.get(
-									category).intValue() + 1));
+					category).intValue() + 1));
 			} else {
 				occurrences.put(category, Integer.valueOf(1));
 			}
@@ -99,15 +97,14 @@ public class DataGeneratorTest extends TestCase {
 		categories.put("Main", prior0);
 		categories.put("Minor", prior1);
 		categories.put("The smallest", prior2);
-		TroiaObjectCollection objects = generator.generateTestObjects(
-											objectsCount, categories);
+		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categories);
 		Map<String, Integer> occurrences = new HashMap<String, Integer>();
 		for (String object : objects) {
 			String category = objects.getCategory(object);
 			// Increment the category occurrences count.
 			if (occurrences.containsKey(category)) {
 				occurrences.put(category, Integer.valueOf(occurrences.get(
-									category).intValue() + 1));
+					category).intValue() + 1));
 			} else {
 				occurrences.put(category, Integer.valueOf(1));
 			}
@@ -128,7 +125,7 @@ public class DataGeneratorTest extends TestCase {
 		DataGenerator generator = DataGenerator.getInstance();
 		Collection<String> categories = generator.generateCategoryNames(4);
 		ArtificialWorker worker = generator.generateArtificialWorker(
-									  workerName, workerQuality, categories);
+				workerName, workerQuality, categories);
 		// Simple checks.
 		assertTrue(worker.getName().equals(workerName));
 		// Check worker's confusion matrix.
@@ -159,20 +156,18 @@ public class DataGeneratorTest extends TestCase {
 		final int workersPerObject = 1;
 
 		DataGenerator generator = DataGenerator.getInstance();
-		Collection<String> categories = generator.generateCategoryNames(
-											categoriesCount);
-		TroiaObjectCollection objects = generator.generateTestObjects(
-											objectsCount, categories);
+		Collection<String> categories = generator.generateCategoryNames(categoriesCount);
+		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categories);
 		Collection<ArtificialWorker> workers = generator.generateArtificialWorkers(
 				workersCount, categories, minQuality, maxQuality);
 		Collection<AssignedLabel> labels = generator.generateLabels(workers, objects,
-								   workersPerObject);
+					workersPerObject);
 
 		int correct = 0;
 		int total = 0;
 		for (AssignedLabel label : labels) {
 			if (label.getCategoryName().equals(
-						objects.getCategory(label.getObjectName()))) {
+					objects.getCategory(label.getObjectName()))) {
 				correct++;
 			}
 			total++;
@@ -188,12 +183,9 @@ public class DataGeneratorTest extends TestCase {
 		final int categoriesCount = 2;
 		final double goldCoverage = 0.526;
 		DataGenerator generator = DataGenerator.getInstance();
-		Collection<String> categories = generator.generateCategoryNames(
-											categoriesCount);
-		TroiaObjectCollection objects = generator.generateTestObjects(
-											objectsCount, categories);
-		Collection<CorrectLabel> goldLabels = generator.generateGoldLabels(
-											   objects, goldCoverage);
+		Collection<String> categories = generator.generateCategoryNames(categoriesCount);
+		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categories);
+		Collection<CorrectLabel> goldLabels = generator.generateGoldLabels(objects, goldCoverage);
 		assertEquals(goldLabels.size(), (int)(objectsCount * goldCoverage));
 	}
 
