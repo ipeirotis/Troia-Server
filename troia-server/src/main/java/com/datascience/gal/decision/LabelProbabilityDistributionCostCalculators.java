@@ -49,13 +49,15 @@ public class LabelProbabilityDistributionCostCalculators {
 			method = "ExpectedCost";
 		}
 		method = method.toUpperCase();
-		if ("MINCOST".equals(method)){
-			return new SelectedLabeBased(new ObjectLabelDecisionAlgorithms.MinCostDecisionAlgorithm());
-		}
 		if ("EXPECTEDCOST".equals(method)) {
 			return new ExpectedCostAlgorithm();
 		}
-		throw new IllegalArgumentException(
-			"Unknown cost calculation method: " + method);
+		try {
+			IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(method);
+			return new SelectedLabeBased(olda);
+		} catch (IllegalArgumentException ex) {
+			throw new IllegalArgumentException(
+				"Unknown cost calculation method: " + method);
+		}
 	}
 }
