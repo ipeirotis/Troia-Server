@@ -40,8 +40,7 @@ public class DataManagerTest extends TestCase {
 	}
 
 	@Test
-	public void testSaveLoadTestObjectsToFile() throws
-		java.io.IOException, java.io.FileNotFoundException {
+	public void testSaveLoadTestObjectsToFile() throws java.io.IOException, java.io.FileNotFoundException {
 		// Save
 		DataManager managerS = DataManager.getInstance();
 		DataGenerator generator = DataGenerator.getInstance();
@@ -59,8 +58,7 @@ public class DataManagerTest extends TestCase {
 	}
 
 	@Test
-	public void testSaveLoadArtificialWorkers() throws
-		java.io.IOException, java.io.FileNotFoundException {
+	public void testSaveLoadArtificialWorkers() throws java.io.IOException, java.io.FileNotFoundException {
 		// Save
 		DataManager managerS = DataManager.getInstance();
 		DataGenerator generator = DataGenerator.getInstance();
@@ -79,8 +77,7 @@ public class DataManagerTest extends TestCase {
 	}
 
 	@Test
-	public void testSaveLoadLabelsToFile() throws
-		java.io.IOException, java.io.FileNotFoundException {
+	public void testSaveLoadLabelsToFile() throws java.io.IOException, java.io.FileNotFoundException {
 		DataManager managerS = DataManager.getInstance();
 		DataGenerator generator = DataGenerator.getInstance();
 		String filename = LABELS_FILE;
@@ -95,8 +92,7 @@ public class DataManagerTest extends TestCase {
 	}
 
 	@Test
-	public void testSaveLoadTestData() throws
-		java.io.IOException, java.io.FileNotFoundException {
+	public void testSaveLoadTestData() throws java.io.IOException, java.io.FileNotFoundException {
 		DataManager managerS = DataManager.getInstance();
 		int objectCount = 100;
 		int categoryCount = 3;
