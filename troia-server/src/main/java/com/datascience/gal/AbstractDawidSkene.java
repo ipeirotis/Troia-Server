@@ -24,8 +24,6 @@ import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
 
@@ -42,6 +40,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	protected final String id;
 
 	protected DecisionEngine mvDecisionEnginge;
+	protected ILabelProbabilityDistributionCalculator spammerProbDistr;
+	
 	/**
 	 * Set to true if this project was computed.
 	 * Any modification to DS project will set it to false
@@ -68,6 +68,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		mvDecisionEnginge = new DecisionEngine(
 			new LabelProbabilityDistributionCalculators.DS(), null,
 			new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
+		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
 	}
 
 	protected void invalidateComputed() {
@@ -523,7 +524,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 				String assigned_category = al.getCategoryName();
 				double evidence_for_category = getErrorRateForWorker(w,
-											   category.getName(), assigned_category);
+					category.getName(), assigned_category);
 				if (Double.isNaN(evidence_for_category))
 					continue;
 				categoryNominator *= evidence_for_category;
@@ -894,11 +895,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * @return The expected cost of a spammer worker
 	 */
 	public double getMinSpammerCost() {
+		Map<String, Double> prior =
+			spammerProbDistr.calculateDistribution(null, this);
 
-		HashMap<String, Double> prior = new HashMap<String, Double>();
-		for (Category c : this.categories.values()) {
-			prior.put(c.getName(), prior(c.getName()));
-		}
 		return getMinSoftLabelCost(prior);
 	}
 
@@ -909,11 +908,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * @return The expected cost of a spammer worker
 	 */
 	public double getSpammerCost() {
-
-		Map<String, Double> prior = new HashMap<String, Double>();
-		for (Category c : categories.values()) {
-			prior.put(c.getName(), prior(c.getName()));
-		}
+		Map<String, Double> prior =
+			spammerProbDistr.calculateDistribution(null, this);
 		return getSoftLabelCost(prior);
 	}
 
@@ -942,6 +938,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return categories.get(category);
 	}
 	
+	@Override
 	public Collection<CorrectLabel> getGoldDatums() {
 		Collection<CorrectLabel> ret = new ArrayList<CorrectLabel>();
 		for (Datum d : objects.values()){

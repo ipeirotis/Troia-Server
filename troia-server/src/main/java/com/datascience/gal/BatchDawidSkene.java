@@ -10,7 +10,6 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +28,8 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	public static final BatchDawidSkeneDeserializer deserializer = new BatchDawidSkeneDeserializer();
 
 	private BatchDawidSkene(String id, Map<String, Datum> objects,
-							Map<String, Worker> workers, Map<String, Category> categories,
-							boolean fixedPriors) {
+			Map<String, Worker> workers, Map<String, Category> categories,
+			boolean fixedPriors) {
 		super(id);
 		this.objects = objects;
 		this.workers = workers;
@@ -49,8 +48,8 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	}
 	
 	private BatchDawidSkene(String id, Map<String, Datum> objects, Map<String, Datum> objectsWithNoLabels,
-							Map<String, Worker> workers, Map<String, Category> categories,
-							boolean fixedPriors) {
+			Map<String, Worker> workers, Map<String, Category> categories,
+			boolean fixedPriors) {
 		this(id);
 		this.objects = objects;
 		this.objectsWithNoLabels = objectsWithNoLabels;
@@ -82,6 +81,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	 * com.ipeirotis.gal.DawidSkene#objectClassProbabilities(java.lang.String,
 	 * double)
 	 */
+	@Override
 	public Map<String, Double> objectClassProbabilities(String objectName,
 			double entropyThreshold) {
 		Map<String, Double> out = new HashMap<String, Double>();
@@ -108,8 +108,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	private void updateObjectClassProbabilities(String objectName) {
 
 		Datum d = objects.get(objectName);
-		Map<String, Double> probabilities = getObjectClassProbabilities(
-												objectName, null);
+		Map<String, Double> probabilities = getObjectClassProbabilities(objectName, null);
 		if (probabilities == null)
 			return;
 		for (String category : probabilities.keySet()) {
@@ -144,8 +143,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			// We get the classification of the object
 			// based on the votes of all the other workers
 			// We treat this classification as the "correct" one
-			Map<String, Double> probabilities = this
-												.getObjectClassProbabilities(objectName, workerName);
+			Map<String, Double> probabilities = this.getObjectClassProbabilities(objectName, workerName);
 			if (probabilities == null)
 				continue; // No other worker labeled the object
 
@@ -174,7 +172,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 		@Override
 		public BatchDawidSkene deserialize(JsonElement json, Type type,
-										   JsonDeserializationContext context) throws JsonParseException {
+				JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
 
 			String id = jobject.get("id").getAsString();
