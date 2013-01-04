@@ -130,10 +130,10 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 				// category. In this case, we switch to Laplacean smoothing for
 				// computing the matrix
 				if (from_marginal == 0.0) {
-					// error_rate = Double.NaN;
+					 error_rate = Double.NaN;
 					// System.out.println(from_marginal);
-					error_rate = (error + 1)
-								 / (from_marginal + this.categories.size());
+//					error_rate = (error + 1)
+//								 / (from_marginal + this.categories.size());
 				} else {
 					error_rate = error / from_marginal;
 				}
