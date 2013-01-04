@@ -76,7 +76,7 @@ public class LabelProbabilityDistributionCalculators {
 		if ("MV".equals(algorithm)) {
 			return new MV();
 		}
-		if ("SPAMMER".equals(algorithm)) {
+		if ("SPAMMER".equals(algorithm) || "NOVOTE".equals(algorithm)) {
 			return new PriorBased();
 		}
 		throw new IllegalArgumentException("Not known label probability distrinbution calculator: " + algorithm);
