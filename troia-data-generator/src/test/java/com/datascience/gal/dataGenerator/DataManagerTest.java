@@ -66,13 +66,11 @@ public class DataManagerTest extends TestCase {
 		DataGenerator generator = DataGenerator.getInstance();
 		String filename = ARTIFICIAL_WORKERS_FILE;
 		Collection<String> categories = generator.generateCategoryNames(3);
-		Collection<ArtificialWorker> workersS = generator
-												.generateArtificialWorkers(10, categories, 0, 1);
+		Collection<ArtificialWorker> workersS = generator.generateArtificialWorkers(10, categories, 0, 1);
 		managerS.saveArtificialWorkers(filename, workersS);
 		// Load
 		DataManager managerL = DataManager.getInstance();
-		Collection<ArtificialWorker> workersL = managerL
-												.loadArtificialWorkersFromFile(filename);
+		Collection<ArtificialWorker> workersL = managerL.loadArtificialWorkersFromFile(filename);
 		// TODO redirect output to a file, extract this collections with grep
 		// and and check with diff.
 		logger.debug("ArtificialWorkersSaved:  " + workersS);
@@ -87,12 +85,9 @@ public class DataManagerTest extends TestCase {
 		DataGenerator generator = DataGenerator.getInstance();
 		String filename = LABELS_FILE;
 		Collection<String> categories = generator.generateCategoryNames(3);
-		TroiaObjectCollection objects = generator.generateTestObjects(10,
-										categories);
-		Collection<ArtificialWorker> workers = generator
-											   .generateArtificialWorkers(10, categories, 0, 1);
-		Collection<AssignedLabel> labelsS = generator
-									.generateLabels(workers, objects, 2);
+		TroiaObjectCollection objects = generator.generateTestObjects(10, categories);
+		Collection<ArtificialWorker> workers = generator.generateArtificialWorkers(10, categories, 0, 1);
+		Collection<AssignedLabel> labelsS = generator.generateLabels(workers, objects, 2);
 		managerS.saveLabelsToFile(filename, labelsS);
 		DataManager managerL = DataManager.getInstance();
 		Collection<AssignedLabel> labelsL = managerL.loadLabelsFromFile(LABELS_FILE);
@@ -111,8 +106,8 @@ public class DataManagerTest extends TestCase {
 		double goldRatio = 0.1;
 		int workersPerObject = 3;
 		Data dataS = DataGenerator.getInstance().generateTestData(
-						 "Test request", objectCount, categoryCount, workerCount,
-						 minQuality, maxQuality, goldRatio, workersPerObject);
+			"Test request", objectCount, categoryCount, workerCount,
+			minQuality, maxQuality, goldRatio, workersPerObject);
 		managerS.saveTestData(FILENAME_BASE, dataS);
 		DataManager managerL = DataManager.getInstance();
 		Data dataL = managerL.loadTestData(FILENAME_BASE);
