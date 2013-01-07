@@ -7,6 +7,7 @@ import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -15,15 +16,15 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Konrad
- * 
+ *
  * this initializing commands shouldn't use ServletContext or even be here
  * TODO: ^^^^
- * 
+ *
  */
 public class InitializationSupport implements ServletContextListener {
-	
+
 	private static Logger logger = Logger.getLogger(InitializationSupport.class);
-	
+
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
@@ -71,15 +72,15 @@ public class InitializationSupport implements ServletContextListener {
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}
-	
+
 	public StatusEntry loadStatusEntry(ServletContext scontext){
 		IJobStorage jobStorage = (IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
 		ResponseBuilder responser = (ResponseBuilder) scontext.getAttribute(Constants.RESPONSER);
-		StatusEntry se = new StatusEntry(jobStorage, responser);
+		StatusEntry se = new StatusEntry(jobStorage, responser, new Date());
 		scontext.setAttribute(Constants.STATUS_ENTRY, se);
 		return se;
 	}
-	
+
 	public JobsEntry loadJobsEntry(ServletContext scontext){
 		ResponseBuilder responser = (ResponseBuilder) scontext.getAttribute(Constants.RESPONSER);
 		IJobStorage jobStorage = (IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
@@ -88,7 +89,7 @@ public class InitializationSupport implements ServletContextListener {
 		scontext.setAttribute(Constants.JOBS_ENTRY, je);
 		return je;
 	}
-	
+
 	private ProjectCommandExecutor loadProjectCommandExecutor(){
 		return new ProjectCommandExecutor();
 	}
