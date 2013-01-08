@@ -33,6 +33,7 @@ import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
+import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 
 /**
@@ -243,14 +244,14 @@ public class JobEntry {
 		ProjectCommand command = new PredictionCommands.GetQuality(job.getDs(), lpdc, lpdcc);
 		return buildResponseOnCommand(job, command);
 	}
-	
+
 	@Path("evaluation/dataCost/")
 	@GET
 	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), lpdc, olda);
+		DataEvaluator dataEvaluator= DataEvaluator.get(lpd, lpdc);
+		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -259,8 +260,8 @@ public class JobEntry {
 	public Response getEvaluatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		ProjectCommand command = new EvaluationCommands.GetQuality(job.getDs(), lpdc, olda);
+		DataEvaluator dataEvaluator= DataEvaluator.get(lpd, lpdc);
+		ProjectCommand command = new EvaluationCommands.GetQuality(job.getDs(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
 	

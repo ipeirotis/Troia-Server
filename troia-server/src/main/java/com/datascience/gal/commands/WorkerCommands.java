@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
@@ -77,7 +78,7 @@ public class WorkerCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(decisionEngine.costToQuality(ads, decisionEngine.estimateWorkersCost(ads)));
+			setResult(Quality.fromCosts(ads, decisionEngine.estimateWorkersCost(ads)));
 		}
 	}
 	

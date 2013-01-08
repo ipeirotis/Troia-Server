@@ -3,9 +3,8 @@ package com.datascience.gal.commands;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.decision.DecisionEngine;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
+import com.datascience.gal.Quality;
+import com.datascience.gal.evaluation.DataEvaluator;
 
 /**
  *
@@ -15,34 +14,34 @@ public class EvaluationCommands {
 	
 	static public class GetCost extends ProjectCommand<Map<String, Double>> {
 
-		private DecisionEngine decisionEngine;
+		private DataEvaluator dataEvaluator;
 		
-		public GetCost(AbstractDawidSkene ads, ILabelProbabilityDistributionCalculator lpd,
-				IObjectLabelDecisionAlgorithm lda){
+		public GetCost(AbstractDawidSkene ads,
+				DataEvaluator dataEvaluator){
 			super(ads, false);
-			decisionEngine = new DecisionEngine(lpd, null, lda);
+			this.dataEvaluator = dataEvaluator;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(decisionEngine.evaluateMissclassificationCosts(ads));
+			setResult(dataEvaluator.evaluate(ads));
 		}
 	}
 	
 	static public class GetQuality extends ProjectCommand<Map<String, Double>> {
 		
-		private DecisionEngine decisionEngine;
+		private DataEvaluator dataEvaluator;
 		
-		public GetQuality(AbstractDawidSkene ads, ILabelProbabilityDistributionCalculator lpd,
-				IObjectLabelDecisionAlgorithm lda){
+		public GetQuality(AbstractDawidSkene ads,
+				DataEvaluator dataEvaluator){
 			super(ads, false);
-			decisionEngine = new DecisionEngine(lpd, null, lda);
+			this.dataEvaluator = dataEvaluator;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(decisionEngine.costToQuality(ads,
-				decisionEngine.evaluateMissclassificationCosts(ads)));
+			setResult(Quality.fromCosts(ads,
+				dataEvaluator.evaluate(ads)));
 		}
 	}
 }
