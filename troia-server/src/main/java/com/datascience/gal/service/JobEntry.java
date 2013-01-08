@@ -265,11 +265,19 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
+	@Path("evaluation/workersQuality")
+	@GET
+	public Response getEvaluatedWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), lpdcc, true);
+		return buildResponseOnCommand(job, command);
+	}
+	
 	@Path("prediction/workersQuality")
 	@GET
 	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), lpdcc);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), lpdcc, false);
 		return buildResponseOnCommand(job, command);
 	}
 	

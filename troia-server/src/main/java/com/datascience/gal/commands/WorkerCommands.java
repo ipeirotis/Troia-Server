@@ -69,16 +69,19 @@ public class WorkerCommands {
 	
 	static public class GetWorkersQuality extends ProjectCommand<Map<String, Double>> {
 		private DecisionEngine decisionEngine;
+		private boolean evaluated;
 		
 		public GetWorkersQuality(AbstractDawidSkene ads,
-				ILabelProbabilityDistributionCostCalculator lca){
+				ILabelProbabilityDistributionCostCalculator lca,
+				boolean evaluated){
 			super(ads, false);
+			this.evaluated = evaluated;
 			decisionEngine = new DecisionEngine(null, lca, null);
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(Quality.fromCosts(ads, decisionEngine.estimateWorkersCost(ads)));
+			setResult(Quality.fromCosts(ads, evaluated ? decisionEngine.evaluateWorkersCost(ads) : decisionEngine.estimateWorkersCost(ads)));
 		}
 	}
 	

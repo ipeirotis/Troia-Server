@@ -646,7 +646,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return c;
 	}
 
-	public Map<String, Double> getSoftLabelForHardCategoryLabel(Worker w, String label) {
+	public Map<String, Double> getSoftLabelForHardCategoryLabel(Worker w, String label, boolean evaluate) {
 
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 
@@ -654,8 +654,16 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		Map<String, Double> result = new HashMap<String, Double>();
 		for (Category source : categories.values()) {
-			double error = getErrorRateForWorker(w, source.getName(), label);
-			double soft = prior(source.getName()) * error / worker_prior.get(label);
+			double soft = 0.;
+			if (worker_prior.get(label) > 0){
+				double error = 0.;
+				if (evaluate){
+					w.computeEvalConfusionMatrix(evaluationData, categories.values());
+					error = w.getEvalErrorRate(source.getName(), label);
+				} else
+					error = getErrorRateForWorker(w, source.getName(), label);
+				soft = prior(source.getName()) * error / worker_prior.get(label);
+			}
 			result.put(source.getName(), soft);
 		}
 

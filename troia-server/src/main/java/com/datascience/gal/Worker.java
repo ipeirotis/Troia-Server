@@ -31,6 +31,9 @@ public class Worker {
 
 	// The error matrix for the worker
 	public ConfusionMatrix cm;
+	
+	//The confusion matrix for the worker based on evaluation data
+	private ConfusionMatrix eval_cm;
 
 	// The labels that have been assigned to this object, together with the
 	// workers who
@@ -151,6 +154,25 @@ public class Worker {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	public void computeEvalConfusionMatrix(Map<String, CorrectLabel> evalData, Collection<Category> categories) {
+		ConfusionMatrix eval_cm = new MultinomialConfusionMatrix(categories);
+		eval_cm.empty();
+		for (AssignedLabel l : labels) {
+			String objectName = l.getObjectName();
+			CorrectLabel d = evalData.get(objectName);
+			if (d != null){
+				String assignedCategory = l.getCategoryName();
+				String correctCategory = d.getCorrectCategory();
+				eval_cm.addError(correctCategory, assignedCategory, 1.0);
+			}
+		}
+		eval_cm.normalize();
+	}
+	
+	public double getEvalErrorRate(String from, String to){
+		return eval_cm.getErrorRateBatch(from, to);
 	}
 
 	/*
