@@ -5,7 +5,9 @@ import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
+import com.datascience.gal.Worker;
 import com.datascience.utils.CostMatrix;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,21 @@ public class DecisionEngine {
 	public double estimateMissclassificationCost(DawidSkene ds, Datum datum, CostMatrix<String> cm) {
 		return labelProbabilityDistributionCostCalculator.predictedLabelCost(
 			getPD(datum, ds), cm);
+	}
+	
+	public double estimateWorkerQuality(DawidSkene ds, Worker w){
+		Map<String, Double> categoryPriors = new HashMap<String, Double>();
+		for (Category c : ds.getCategories().values())
+			categoryPriors.put(c.getName(), c.getPrior());
+		Map<String, Double> workerPriors = w.getPrior(categoryPriors);
+
+		double cost = 0.;
+		for (Category c : ds.getCategories().values()) {
+			Map<String, Double> softLabel = w.getSoftLabelForLabel(c.getName(), ds.getCategories(), workerPriors);
+			cost += labelProbabilityDistributionCostCalculator.predictedLabelCost(softLabel, Utils.getCategoriesCostMatrix(ds)) * workerPriors.get(c.getName());
+		}
+
+		return 1. - cost / ((AbstractDawidSkene) ds).getMinSpammerCost();
 	}
 	
 	public double evaluateMissclassificationCost(DawidSkene ds, CorrectLabel ed, CostMatrix<String> cm) {
@@ -109,6 +126,14 @@ public class DecisionEngine {
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (CorrectLabel cl: evalData) {
 			ret.put(cl.getObjectName(), evaluateMissclassificationCost(ds, cl, cm));
+		}
+		return ret;
+	}
+	
+	public Map<String, Double> estimateWorkersQuality(DawidSkene ds){
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (Worker w : ds.getWorkers()){
+			ret.put(w.getName(), estimateWorkerQuality(ds, w));
 		}
 		return ret;
 	}

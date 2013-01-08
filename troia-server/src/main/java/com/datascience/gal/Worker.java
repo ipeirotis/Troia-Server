@@ -105,6 +105,18 @@ public class Worker {
 
 		return worker_prior;
 	}
+	
+	public Map<String, Double> getSoftLabelForLabel(String label, Map<String, Category>	categories, Map<String, Double> workerPriors) {
+		HashMap<String, Double> result = new HashMap<String, Double>();
+		for (Category source : categories.values()) {
+			double error = getErrorRateBatch(source.getName(), label);
+			double workerprior = workerPriors.get(label);
+			double sourceprior = source.getPrior();
+			result.put(source.getName(), workerprior > 0 ? sourceprior * error / workerprior : 0);
+		}
+
+		return result;
+	}
 
 	public void addError(String source, String destination, double error) {
 		cm.addError(source, destination, error);

@@ -1,6 +1,7 @@
 package com.datascience.gal.service;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -16,7 +17,6 @@ import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
-import com.datascience.gal.WorkerCostMethod;
 import com.datascience.gal.commands.AssignsCommands;
 import com.datascience.gal.commands.CategoriesCommands;
 import com.datascience.gal.commands.CommandStatus;
@@ -34,7 +34,6 @@ import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.executor.ProjectCommandExecutor;
-import java.util.NoSuchElementException;
 
 /**
  * @author Konrad Kurdej
@@ -265,6 +264,14 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
+	@Path("prediction/workersQuality")
+	@GET
+	public Response getWorkersCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), lpdcc);
+		return buildResponseOnCommand(job, command);
+	}
+	
 	@Path("prediction/workers")
 	@GET
 	public Response getWorkersScore(){
@@ -279,12 +286,12 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/workers/{id}/cost/")
-	@GET
-	public Response getEvaluatedWorkerCost(@PathParam("id") String wid, 
-			@DefaultValue("CostNaive") @QueryParam("costMethod") String cm){
-		
-		ProjectCommand command = new WorkerCommands.GetWorkerCost(job.getDs(), wid, WorkerCostMethod.get(cm));
-		return buildResponseOnCommand(job, command);
-	}
+//	@Path("prediction/workers/{id}/cost/")
+//	@GET
+//	public Response getEvaluatedWorkerCost(@PathParam("id") String wid, 
+//			@DefaultValue("CostNaive") @QueryParam("costMethod") String cm){
+//		
+//		ProjectCommand command = new WorkerCommands.GetWorkerCost(job.getDs(), wid, WorkerCostMethod.get(cm));
+//		return buildResponseOnCommand(job, command);
+//	}
 }

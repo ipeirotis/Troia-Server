@@ -5,7 +5,8 @@ import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Worker;
-import com.datascience.gal.WorkerCostMethod;
+import com.datascience.gal.decision.DecisionEngine;
+import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 
 /**
  *
@@ -65,20 +66,18 @@ public class WorkerCommands {
 		}
 	}
 	
-	static public class GetWorkerCost extends ProjectCommand<Double> {
+	static public class GetWorkersQuality extends ProjectCommand<Map<String, Double>> {
+		private DecisionEngine decisionEngine;
 		
-		private String workerId;
-		private WorkerCostMethod workerCostMethod;
-		
-		public GetWorkerCost(AbstractDawidSkene ads, String wid, WorkerCostMethod wcm){
+		public GetWorkersQuality(AbstractDawidSkene ads,
+				ILabelProbabilityDistributionCostCalculator lca){
 			super(ads, false);
-			workerId = wid;
-			workerCostMethod = wcm;
+			decisionEngine = new DecisionEngine(null, lca, null);
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getWorkerCost(ads.getWorker(workerId), workerCostMethod));
+			setResult(decisionEngine.estimateWorkersQuality(ads));
 		}
 	}
 }
