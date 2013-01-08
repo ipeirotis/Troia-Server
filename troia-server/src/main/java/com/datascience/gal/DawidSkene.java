@@ -127,7 +127,7 @@ public interface DawidSkene {
 	double prior(String categoryName);
 
 	double getErrorRateForWorker(Worker worker, String from, String to);
-
+	
 	public abstract boolean  isComputed();
 	public Worker getWorker(String name);
 	public Collection<Worker> getWorkers();

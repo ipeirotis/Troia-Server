@@ -646,8 +646,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return c;
 	}
 
-	private Map<String, Double> getSoftLabelForHardCategoryLabel(Worker w,
-			String label) {
+	public Map<String, Double> getSoftLabelForHardCategoryLabel(Worker w, String label) {
 
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 

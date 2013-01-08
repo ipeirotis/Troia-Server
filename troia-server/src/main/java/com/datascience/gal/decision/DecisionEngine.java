@@ -34,7 +34,6 @@ public class DecisionEngine {
 	public Map<String, Double> getPD(Datum datum, DawidSkene ds){
 		return labelProbabilityDistributionCalculator.calculateDistribution(datum, ds);
 	}
-
 	
 	public String predictLabel(DawidSkene ds, Datum datum, CostMatrix<String> cm) {
 		return objectLabelDecisionAlgorithm.predictLabel(getPD(datum, ds), cm);
@@ -45,19 +44,16 @@ public class DecisionEngine {
 			getPD(datum, ds), cm);
 	}
 	
-	public double estimateWorkerQuality(DawidSkene ds, Worker w){
-		Map<String, Double> categoryPriors = new HashMap<String, Double>();
-		for (Category c : ds.getCategories().values())
-			categoryPriors.put(c.getName(), c.getPrior());
+	public double estimateWorkerCost(DawidSkene ds, Worker w){
+		Map<String, Double> categoryPriors = ds.getCategoryPriors();
 		Map<String, Double> workerPriors = w.getPrior(categoryPriors);
 
 		double cost = 0.;
 		for (Category c : ds.getCategories().values()) {
-			Map<String, Double> softLabel = w.getSoftLabelForLabel(c.getName(), ds.getCategories(), workerPriors);
+			Map<String, Double> softLabel = ((AbstractDawidSkene)ds).getSoftLabelForHardCategoryLabel(w, c.getName());
 			cost += labelProbabilityDistributionCostCalculator.predictedLabelCost(softLabel, Utils.getCategoriesCostMatrix(ds)) * workerPriors.get(c.getName());
 		}
-
-		return 1. - cost / ((AbstractDawidSkene) ds).getMinSpammerCost();
+		return cost;
 	}
 	
 	public double evaluateMissclassificationCost(DawidSkene ds, CorrectLabel ed, CostMatrix<String> cm) {
@@ -130,10 +126,10 @@ public class DecisionEngine {
 		return ret;
 	}
 	
-	public Map<String, Double> estimateWorkersQuality(DawidSkene ds){
+	public Map<String, Double> estimateWorkersCost(DawidSkene ds){
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (Worker w : ds.getWorkers()){
-			ret.put(w.getName(), estimateWorkerQuality(ds, w));
+			ret.put(w.getName(), estimateWorkerCost(ds, w));
 		}
 		return ret;
 	}

@@ -77,7 +77,22 @@ public class WorkerCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(decisionEngine.estimateWorkersQuality(ads));
+			setResult(decisionEngine.costToQuality(ads, decisionEngine.estimateWorkersCost(ads)));
+		}
+	}
+	
+	static public class GetWorkersCost extends ProjectCommand<Map<String, Double>> {
+		private DecisionEngine decisionEngine;
+		
+		public GetWorkersCost(AbstractDawidSkene ads,
+				ILabelProbabilityDistributionCostCalculator lca){
+			super(ads, false);
+			decisionEngine = new DecisionEngine(null, lca, null);
+		}
+		
+		@Override
+		void realExecute() {
+			setResult(decisionEngine.estimateWorkersCost(ads));
 		}
 	}
 }
