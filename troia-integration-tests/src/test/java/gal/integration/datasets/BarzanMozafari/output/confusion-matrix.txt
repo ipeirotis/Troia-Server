@@ -1,0 +1,48 @@
+Estimated Confusion Matrix (MV_MaxLikelihood):
+P[1->1]=78.222%	P[1->0]=21.778%	
+P[0->1]=10.712%	P[0->0]=89.288%	
+
+Estimated Confusion Matrix (DS_MaxLikelihood):
+P[1->1]=96.248%	P[1->0]=3.752%	
+P[0->1]=1.287%	P[0->0]=98.713%	
+
+Estimated Confusion Matrix (MV_Soft):
+P[1->1]=67.408%	P[1->0]=32.592%	
+P[0->1]=13.273%	P[0->0]=86.727%	
+
+Estimated Confusion Matrix (DS_Soft):
+P[1->1]=93.458%	P[1->0]=6.542%	
+P[0->1]=2.41%	P[0->0]=97.59%	
+
+Estimated Confusion Matrix (MV_MinCost):
+P[1->1]=78.222%	P[1->0]=21.778%	
+P[0->1]=10.712%	P[0->0]=89.288%	
+
+Estimated Confusion Matrix (DS_MinCost):
+P[1->1]=96.248%	P[1->0]=3.752%	
+P[0->1]=1.287%	P[0->0]=98.713%	
+
+Actual Confusion Matrix (MV_MaxLikelihood):
+P[1->1]=---%	P[1->0]=---%	
+P[0->1]=---%	P[0->0]=---%	
+
+Actual Confusion Matrix (DS_MaxLikelihood):
+P[1->1]=---%	P[1->0]=---%	
+P[0->1]=---%	P[0->0]=---%	
+
+Actual Confusion Matrix (MV_Soft):
+P[1->1]=---%	P[1->0]=---%	
+P[0->1]=---%	P[0->0]=---%	
+
+Actual Confusion Matrix (DS_Soft):
+P[1->1]=---%	P[1->0]=---%	
+P[0->1]=---%	P[0->0]=---%	
+
+Actual Confusion Matrix (MV_MinCost):
+P[1->1]=---%	P[1->0]=---%	
+P[0->1]=---%	P[0->0]=---%	
+
+Actual Confusion Matrix (DS_MinCost):
+P[1->1]=---%	P[1->0]=---%	
+P[0->1]=---%	P[0->0]=---%	
+

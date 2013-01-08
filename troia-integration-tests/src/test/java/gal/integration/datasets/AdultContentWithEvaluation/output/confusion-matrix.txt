@@ -1,0 +1,48 @@
+Estimated Confusion Matrix (MV_MaxLikelihood):
+P[porn->porn]=80.0%	P[porn->notporn]=20.0%	
+P[notporn->porn]=20.0%	P[notporn->notporn]=80.0%	
+
+Estimated Confusion Matrix (DS_MaxLikelihood):
+P[porn->porn]=96.621%	P[porn->notporn]=3.379%	
+P[notporn->porn]=5.0%	P[notporn->notporn]=95.0%	
+
+Estimated Confusion Matrix (MV_Soft):
+P[porn->porn]=77.143%	P[porn->notporn]=22.857%	
+P[notporn->porn]=29.091%	P[notporn->notporn]=70.909%	
+
+Estimated Confusion Matrix (DS_Soft):
+P[porn->porn]=93.952%	P[porn->notporn]=6.048%	
+P[notporn->porn]=9.062%	P[notporn->notporn]=90.938%	
+
+Estimated Confusion Matrix (MV_MinCost):
+P[porn->porn]=80.0%	P[porn->notporn]=20.0%	
+P[notporn->porn]=20.0%	P[notporn->notporn]=80.0%	
+
+Estimated Confusion Matrix (DS_MinCost):
+P[porn->porn]=96.621%	P[porn->notporn]=3.379%	
+P[notporn->porn]=5.0%	P[notporn->notporn]=95.0%	
+
+Actual Confusion Matrix (MV_MaxLikelihood):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=66.667%	P[notporn->notporn]=33.333%	
+
+Actual Confusion Matrix (DS_MaxLikelihood):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=66.667%	P[notporn->notporn]=33.333%	
+
+Actual Confusion Matrix (MV_Soft):
+P[porn->porn]=70.0%	P[porn->notporn]=30.0%	
+P[notporn->porn]=46.667%	P[notporn->notporn]=53.333%	
+
+Actual Confusion Matrix (DS_Soft):
+P[porn->porn]=55.0%	P[porn->notporn]=45.0%	
+P[notporn->porn]=63.288%	P[notporn->notporn]=36.712%	
+
+Actual Confusion Matrix (MV_MinCost):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=66.667%	P[notporn->notporn]=33.333%	
+
+Actual Confusion Matrix (DS_MinCost):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=66.667%	P[notporn->notporn]=33.333%	
+
