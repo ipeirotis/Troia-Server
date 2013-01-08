@@ -250,7 +250,7 @@ public class JobEntry {
 	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		DataEvaluator dataEvaluator= DataEvaluator.get(lpd, lpdc);
+		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
 		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
@@ -260,7 +260,7 @@ public class JobEntry {
 	public Response getEvaluatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		DataEvaluator dataEvaluator= DataEvaluator.get(lpd, lpdc);
+		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
 		ProjectCommand command = new EvaluationCommands.GetQuality(job.getDs(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
