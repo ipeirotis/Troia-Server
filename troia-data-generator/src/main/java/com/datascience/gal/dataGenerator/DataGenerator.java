@@ -306,7 +306,7 @@ public class DataGenerator {
 				new com.datascience.gal.BatchDawidSkene("data-generation", tsCategories);
 		dawidSkene.addAssignedLabels(tsLabels);
 		dawidSkene.addCorrectLabels(tsCorrectLabels);
-		dawidSkene.computePriors();
+		dawidSkene.getCategoryPriors();
 		System.out.println("DEBUG >>>");
 		for (Category c : categories) {
 			//com.datascience.gal.Category c = dawidSkene.getCategories().get(name);

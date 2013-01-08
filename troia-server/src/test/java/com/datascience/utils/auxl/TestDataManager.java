@@ -14,10 +14,13 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
+
 /**
  * @author Michael Arshynov
  *
  */
+@Ignore
 public class TestDataManager {
 	/**
 	 * @see org.junit.Assert#assertEquals(double expected, double actual, double delta)

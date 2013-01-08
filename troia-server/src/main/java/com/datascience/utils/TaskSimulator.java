@@ -226,10 +226,7 @@ public class TaskSimulator {
 			if (i % 1000 == 0)
 				System.out.println(i + "\t" + al);
 		}
-		System.out.println(ds.printAllWorkerScores(false));
 		ds2.estimate(5);
-		System.out.println("+++++");
-		System.out.println(ds2.printAllWorkerScores(false));
 	}
 
 }

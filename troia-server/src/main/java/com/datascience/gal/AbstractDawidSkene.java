@@ -53,11 +53,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return (Double.isNaN(cost_naive)) ? "---" : Utils.round(100 * cost_naive, 2) + "%";
 	}
 
-	private String getWorkerCostStr(Worker w, WorkerCostMethod method){
-		double cost_min = this.getWorkerCost(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
-		return (Double.isNaN(cost_min)) ? "---" : Math.round(100 * (1 - cost_min)) + "%";
-	}
-	
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
@@ -146,12 +141,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 					Double categoryProbability = estimatedCorrectLabel.get(from);
 					Double labelingProbability = getErrorRateForWorker(w, from,
 												 assignedLabel);
-					if (categoryProbability > 0.0) {
-						result += Math.log(categoryProbability);
-					}
-					if (labelingProbability > 0.0) {
-						result += Math.log(labelingProbability);
-					}
+					if (categoryProbability == 0.0 || labelingProbability ==0.0 ) 
+						continue; 
+					else
+						result += Math.log(categoryProbability) + Math.log(labelingProbability);
 				}
 			}
 		}
@@ -211,46 +204,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	@Override
-	public String printPriors() {
-
-		StringBuilder sb = new StringBuilder();
-		for (Category c : this.categories.values()) {
-			sb.append("Prior[" + c.getName() + "]=" + prior(c.getName()) + "\n");
-		}
-		return sb.toString();
-	}
-
-	@Override
-	public String printObjectClassProbabilities(double entropy_threshold) {
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("Object\t");
-		for (String c : this.categories.keySet()) {
-			sb.append("Pr[" + c + "]\t");
-		}
-		// TODO: Also print majority label and the min-cost label, pre-DS and
-		// post-DS
-		sb.append("Pre-DS Majority Label\tPre-DS Min Cost Label\tPost-DS Majority Label\tPost-DS Min Cost Label\n");
-
-		for (String object_name : new TreeSet<String>(this.objects.keySet())) {
-			Datum d = this.objects.get(object_name);
-
-			double entropy = d.getEntropy();
-			if (entropy < entropy_threshold)
-				continue;
-
-			sb.append(object_name + "\t");
-			for (String c : this.categories.keySet()) {
-				sb.append(d.getCategoryProbability(c) + "\t");
-			}
-			sb.append("\n");
-		}
-
-		return sb.toString();
-
-	}
-	
-	@Override
 	public LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed) {
 
 		LinkedList<Map<String, Object>> workerScores = new LinkedList<Map<String, Object>>();
@@ -265,16 +218,16 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public Map<String, Object> getWorkerScore(Worker w, boolean detailed) {
 		String workerName = w.getName();
 		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
-		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
-		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
+//		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
+//		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
 		int contributions = w.getAssignedLabels().size();
 		int gold_tests = countGoldTests(w.getAssignedLabels());
 
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("Worker", workerName);
 		m.put("Error rate", s_cost_naive);
-		m.put("Quality (Expected)", s_cost_adj);
-		m.put("Quality (Optimized)", s_cost_min);
+//		m.put("Quality (Expected)", s_cost_adj);
+//		m.put("Quality (Optimized)", s_cost_min);
 		m.put("Number of Annotations", contributions);
 		m.put("Number of Gold Tests", gold_tests);
 		if (detailed){
@@ -309,41 +262,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	@Override
-	public String printVote() {
-
-		StringBuilder sb = new StringBuilder();
-
-		Map<String, String> vote = getMajorityVote();
-
-		for (String obj : (new TreeSet<String>(vote.keySet()))) {
-			String majority_vote = vote.get(obj);
-			sb.append(obj + "\t" + majority_vote + "\n");
-		}
-		return sb.toString();
-	}
-	
-	@Override
-	public String printDiffVote(Map<String, String> prior_voting,
-								Map<String, String> posterior_voting) {
-
-		StringBuilder sb = new StringBuilder();
-
-		for (String obj : (new TreeSet<String>(prior_voting.keySet()))) {
-			String prior_vote = prior_voting.get(obj);
-			String posterior_vote = posterior_voting.get(obj);
-
-			if (prior_vote.equals(posterior_vote)) {
-				sb.append("SAME\t" + obj + "\t" + prior_vote);
-			} else {
-				sb.append("DIFF\t" + obj + "\t" + prior_vote + "->"
-						  + posterior_vote);
-			}
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
-
-	@Override
 	public int getNumberOfObjects() {
 		return this.objects.size();
 	}
@@ -358,12 +276,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.objectsWithNoLabels.size();
 	}
 	
-	@Override	
-	public Map<String, String> getMajorityVote() {
-		//DS_MAX
-		return mvDecisionEnginge.predictLabels(this);
-	}
-
 	@Override
 	public double getAnnotatorCostNaive(Worker w) {
 
@@ -384,15 +296,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	@Override
 	public boolean fixedPriors() {
 		return fixedPriors;
-	}
-
-	@Override
-	public String getMajorityVote(String objectName) {
-		Datum datum = objects.get(objectName);
-		if (datum == null) {
-			throw new IllegalArgumentException("Unknown datum with id: " + objectName);
-		}
-		return mvDecisionEnginge.predictLabel(this, datum);
 	}
 
 	@Override
@@ -448,11 +351,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	protected Map<String, Double> getObjectClassProbabilities(String objectName) {
 		return getObjectClassProbabilities(objectName, null);
-	}
-
-	@Override
-	public double getErrorRateForWorker(Worker worker, String from, String to) {
-		return worker.getErrorRateBatch(from, to);
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(
@@ -563,14 +461,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	@Override
-	public Map<String, Double> computePriors() {
-		Map<String, Double> out = new HashMap<String, Double>();
-		for (Category cat : categories.values())
-			out.put(cat.getName(), prior(cat.getName()));
-		return out;
-	}
-
-	@Override
 	public void addAssignedLabels(Collection<AssignedLabel> als) {
 		for (AssignedLabel al : als) {
 			addAssignedLabel(al);
@@ -602,11 +492,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	@Override
 	public Map<String, Double> objectClassProbabilities(String objectName) {
 		return objectClassProbabilities(objectName, 0.);
-	}
-
-	@Override
-	public double prior(String categoryName) {
-		return categories.get(categoryName).getPrior();
 	}
 
 	/*
@@ -700,81 +585,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		}
 		invalidateComputed();
 	}
-	
-	@Override
-	public double getWorkerCost(Worker w, WorkerCostMethod method) {
-
-		double cost = 0.0;
-
-		// We estimate first how often the worker assigns each category label
-
-		// If we do not have a fixed prior, we can just use the data about the
-		// worker
-		// TODO: josh: problem with worker priors
-		Map<String, Double> worker_prior = getWorkerPriors(w);
-
-		// We now know the frequency with which we will see a label
-		// "assigned_label" from worker
-		// Each of this "hard" labels from the annotator k will corresponds to a
-		// corrected
-		// "soft" label
-		for (Category assigned : this.categories.values()) {
-			// Let's find the soft label that corresponds to assigned_label
-			String assignedCategory = assigned.getName();
-
-			if (method == WorkerCostMethod.COST_NAIVE) {
-				// TODO: Check this for correctness. Compare results wth tested
-				// implementation first
-				Map<String, Double> naiveSoftLabel = getNaiveSoftLabel(w,
-													 assignedCategory);
-				cost += getNaiveSoftLabelCost(assigned.getName(),
-											  naiveSoftLabel) * prior(assignedCategory);
-			} else if (method == WorkerCostMethod.COST_NAIVE_MINIMIZED) {
-				// TODO: Check this for correctness. Compare results wth tested
-				// implementation first
-				Map<String, Double> naiveSoftLabel = getNaiveSoftLabel(w,
-													 assignedCategory);
-				cost += getNaiveSoftLabelCost(assigned.getName(),
-											  naiveSoftLabel) * prior(assignedCategory);
-			} else if (method == WorkerCostMethod.COST_ADJUSTED) {
-				Map<String, Double> softLabel = getSoftLabelForHardCategoryLabel(
-													w, assignedCategory);
-				cost += getSoftLabelCost(softLabel)
-						* worker_prior.get(assignedCategory);
-			} else if (method == WorkerCostMethod.COST_ADJUSTED_MINIMIZED) {
-				Map<String, Double> softLabel = getSoftLabelForHardCategoryLabel(
-													w, assignedCategory);
-				cost += getMinSoftLabelCost(softLabel)
-						* worker_prior.get(assignedCategory);
-			} else {
-				// We should never reach this
-				System.err.println("Error: Incorrect method for cost");
-			}
-
-			// And add the cost of this label, weighted with the prior of seeing
-			// this label.
-
-		}
-		//TODO: remove that after fixing worker getPrior func
-		if (Double.isNaN(cost))
-			cost = 0.;
-		///////////////////////////////////////////////
-
-		if (method == WorkerCostMethod.COST_NAIVE
-				|| method == WorkerCostMethod.COST_NAIVE_MINIMIZED) {
-			return cost;
-		} else if (method == WorkerCostMethod.COST_ADJUSTED) {
-			return cost / getSpammerCost();
-		} else if (method == WorkerCostMethod.COST_ADJUSTED_MINIMIZED) {
-			return cost / getMinSpammerCost();
-		} else {
-			// We should never reach this
-			System.err
-			.println("Error: We should have never reached this in getWorkerCost");
-			return Double.NaN;
-		}
-
-	}
 
 	// josh- over ride the proceeding with incremental methods.
 
@@ -841,13 +651,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 
-		Map<String, Double> worker_prior = getWorkerPriors(w);
+		Map<String, Double> worker_prior = w.getPrior(getCategoryPriors());
 
 		Map<String, Double> result = new HashMap<String, Double>();
 		for (Category source : categories.values()) {
 			double error = getErrorRateForWorker(w, source.getName(), label);
-			double soft = prior(source.getName()) * error
-						  / worker_prior.get(label);
+			double soft = prior(source.getName()) * error / worker_prior.get(label);
 			result.put(source.getName(), soft);
 		}
 
@@ -974,6 +783,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.workers.get(name);
 	}
 	
+	@Override
 	public Collection<Worker> getWorkers() {
 		return this.workers.values();
 	}
@@ -1007,61 +817,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		markComputed();
 	}
 	
-	///TO REMOVE
-	@Override
-	public String printAllWorkerScores(boolean detailed) {
-		StringBuilder sb = new StringBuilder();
-	
-		if (!detailed) {
-			sb.append("Worker\tError Rate\tQuality (Expected)\tQuality (Optimized)\tNumber of Annotations\tGold Tests\n");
-		}
-		for (String workername : new TreeSet<String>(this.workers.keySet())) {
-			Worker w = this.workers.get(workername);
-			sb.append(printWorkerScore(w, detailed));
-		}
-		return sb.toString();
-	}
-	
-	@Override
-	public String printWorkerScore(Worker w, boolean detailed) {
-
-		StringBuilder sb = new StringBuilder();
-		String workerName = w.getName();
-		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
-		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
-		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
-		int contributions = w.getAssignedLabels().size();
-		int gold_tests = countGoldTests(w.getAssignedLabels());
-
-		if (detailed) {
-			sb.append("Worker: " + workerName + "\n");
-			sb.append("Error Rate: " + s_cost_naive + "\n");
-			sb.append("Quality (Expected): " + s_cost_adj + "\n");
-			sb.append("Quality (Optimized): " + s_cost_min + "\n");
-			sb.append("Number of Annotations: " + contributions + "\n");
-			sb.append("Number of Gold Tests: " + gold_tests + "\n");
-
-			sb.append("Confusion Matrix: \n");
-			for (String correct_name : this.categories.keySet()) {
-				for (String assigned_name : this.categories.keySet()) {
-					double cm_entry = getErrorRateForWorker(w, correct_name,
-															assigned_name);
-					String s_cm_entry = Double.isNaN(cm_entry) ? "---" : Utils
-										.round(100 * cm_entry, 3).toString();
-					sb.append("P[" + correct_name + "->" + assigned_name + "]="
-							  + s_cm_entry + "%\t");
-				}
-				sb.append("\n");
-			}
-			sb.append("\n");
-		} else {
-			sb.append(workerName + "\t" + s_cost_naive + "\t" + s_cost_adj
-					  + "\t" + s_cost_min + "\t" + contributions + "\t"
-					  + gold_tests + "\n");
-		}
-
-		return sb.toString();
-	}
 
 	protected static Logger logger = null; // will be initialized in subclasses
 }

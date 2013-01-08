@@ -10,7 +10,6 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -292,16 +291,11 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	}
 
 	@Override
-	public Map<String, Double> computePriors() {
+	public Map<String, Double> getCategoryPriors() {
 		Map<String, Double> out = new HashMap<String, Double>(categories.size());
 		for (String catName : categories.keySet())
 			out.put(catName, prior(catName));
 		return out;
-	}
-
-	@Override
-	public Map<String, Double> getWorkerPriors(Worker worker) {
-		return worker.getPrior(computePriors());
 	}
 
 	@Override

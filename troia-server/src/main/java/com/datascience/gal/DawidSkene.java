@@ -83,41 +83,9 @@ public interface DawidSkene {
 
 	public abstract int getNumberOfUnassignedObjects();
 	
-	/**
-	 *
-	 * Estimates the cost for worker using various methods: COST_NAIVE: We do
-	 * not adjust the label assigned by the worker (i.e., use the "hard" label)
-	 * COST_ADJUSTED: We use the error rates of the worker and compute the
-	 * posterior probability vector for each object COST_MINIMIZED: Like
-	 * COST_ADJUSTED but we also assign the object to the category that
-	 * generates the minimum expected error
-	 *
-	 * @param w
-	 *            The worker object
-	 * @param method
-	 *            One of DawidSkene.COST_NAIVE, DawidSkene.COST_ADJUSTED,
-	 *            DawidSkene.COST_MINIMIZED
-	 * @return The expected cost of the worker, normalized to be between 0 and
-	 *         1, where 1 is the cost of a "spam" worker
-	 */
-	public abstract double getWorkerCost(Worker w, WorkerCostMethod method);
-
-	public abstract String printDiffVote(Map<String, String> prior_voting,
-										 Map<String, String> posterior_voting);
-
 	public abstract LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed);
 
-	
 	public abstract Map<String, Object> getWorkerScore(Worker w, boolean detailed);
-
-	/**
-	 * Prints the objects that have probability distributions with entropy
-	 * higher than the given threshold
-	 *
-	 * @param entropy_threshold
-	 */
-	public abstract String printObjectClassProbabilities(
-		double entropy_threshold);
 
 	/**
 	 *
@@ -139,14 +107,6 @@ public interface DawidSkene {
 	public abstract Map<String, Double> objectClassProbabilities(
 		String objectName, double entropyThreshold);
 
-	public abstract String printPriors();
-
-	public abstract Map<String, Double> computePriors();
-
-	public abstract double prior(String categoryName);
-
-	public abstract String printVote();
-
 	public abstract void setFixedPriors(Map<String, Double> priors);
 
 	public abstract void unsetFixedPriors();
@@ -163,17 +123,12 @@ public interface DawidSkene {
 	
 	public abstract Map<String, String> getInfo();
 	
-	Map<String, Double> getWorkerPriors(Worker worker);
+	Map<String, Double> getCategoryPriors();
+	double prior(String categoryName);
 
 	double getErrorRateForWorker(Worker worker, String from, String to);
 
 	public abstract boolean  isComputed();
 	public Worker getWorker(String name);
-	
-	///////TO REMOVE
-	public abstract String printAllWorkerScores(boolean detailed);
-	public abstract String printWorkerScore(Worker w, boolean detailed);
-	//just for backward compatibility
-	public abstract String getMajorityVote(String objectName);
-	public abstract Map<String, String> getMajorityVote();
+	public Collection<Worker> getWorkers();
 }

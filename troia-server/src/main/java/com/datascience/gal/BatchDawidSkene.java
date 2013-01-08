@@ -57,16 +57,18 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		this.categories = categories;
 		this.fixedPriors = fixedPriors;
 	}
-	private Map<String, Double> getCategoryPriors() {
+	
+	@Override
+	public Map<String, Double> getCategoryPriors() {
 		Map<String, Double> out = new HashMap<String, Double>(categories.size());
 		for (Category cat : categories.values())
 			out.put(cat.getName(), cat.getPrior());
 		return out;
 	}
-
+	
 	@Override
-	public Map<String, Double> getWorkerPriors(Worker worker) {
-		return worker.getPrior(getCategoryPriors());
+	public double prior(String categoryName) {
+		return categories.get(categoryName).getPrior();
 	}
 
 	@Override
