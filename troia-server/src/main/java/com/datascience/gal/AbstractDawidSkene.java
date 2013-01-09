@@ -141,7 +141,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 					Double categoryProbability = estimatedCorrectLabel.get(from);
 					Double labelingProbability = getErrorRateForWorker(w, from,
 												 assignedLabel);
-					if (categoryProbability == 0.0 || labelingProbability ==0.0 ) 
+					if (categoryProbability == 0.0 || Double.isNaN(labelingProbability) || labelingProbability ==0.0 ) 
 						continue; 
 					else
 						result += Math.log(categoryProbability) + Math.log(labelingProbability);
@@ -646,30 +646,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return c;
 	}
 
-	public Map<String, Double> getSoftLabelForHardCategoryLabel(Worker w, String label, boolean evaluate) {
-
-		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
-
-		Map<String, Double> worker_prior = w.getPrior(getCategoryPriors());
-
-		Map<String, Double> result = new HashMap<String, Double>();
-		for (Category source : categories.values()) {
-			double soft = 0.;
-			if (worker_prior.get(label) > 0){
-				double error = 0.;
-				if (evaluate){
-					w.computeEvalConfusionMatrix(evaluationData, categories.values());
-					error = w.getEvalErrorRate(source.getName(), label);
-				} else
-					error = getErrorRateForWorker(w, source.getName(), label);
-				soft = prior(source.getName()) * error / worker_prior.get(label);
-			}
-			result.put(source.getName(), soft);
-		}
-
-		return result;
-	}
-
 	/**
 	 * Gets as input a "soft label" (i.e., a distribution of probabilities over
 	 * classes) and returns the smallest possible cost for this soft label.
@@ -772,8 +748,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	@Override
-	public Collection<CorrectLabel> getEvaluationDatums() {
-		return this.evaluationData.values();
+	public Map<String, CorrectLabel> getEvaluationDatums() {
+		return this.evaluationData;
 	}
         
 	public CorrectLabel getEvaluationDatum(String name) {

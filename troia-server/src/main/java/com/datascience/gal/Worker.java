@@ -157,7 +157,7 @@ public class Worker {
 	}
 	
 	public void computeEvalConfusionMatrix(Map<String, CorrectLabel> evalData, Collection<Category> categories) {
-		ConfusionMatrix eval_cm = new MultinomialConfusionMatrix(categories);
+		eval_cm = new MultinomialConfusionMatrix(categories);
 		eval_cm.empty();
 		for (AssignedLabel l : labels) {
 			String objectName = l.getObjectName();

@@ -83,7 +83,7 @@ public class DatumCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getEvaluationDatums());
+			setResult(ads.getEvaluationDatums().values());
 		}
 	}
 	

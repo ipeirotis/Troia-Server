@@ -33,7 +33,9 @@ import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
+import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.evaluation.DataEvaluator;
+import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 
 /**
@@ -269,7 +271,7 @@ public class JobEntry {
 	@GET
 	public Response getEvaluatedWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), lpdcc, true);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), new WorkerEvaluator(lpdcc));
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -277,15 +279,7 @@ public class JobEntry {
 	@GET
 	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), lpdcc, false);
-		return buildResponseOnCommand(job, command);
-	}
-	
-	@Path("prediction/workersCost")
-	@GET
-	public Response getWorkersCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
-		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		ProjectCommand command = new WorkerCommands.GetWorkersCost(job.getDs(), lpdcc);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), new WorkerEstimator(lpdcc));
 		return buildResponseOnCommand(job, command);
 	}
 	

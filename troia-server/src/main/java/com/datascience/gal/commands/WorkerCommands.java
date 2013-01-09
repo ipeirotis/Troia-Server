@@ -1,13 +1,16 @@
 package com.datascience.gal.commands;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
-import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.gal.decision.WorkerEstimator;
+import com.datascience.gal.decision.WorkerQualityCalculator;
+import com.datascience.gal.evaluation.WorkerEvaluator;
 
 /**
  *
@@ -68,35 +71,22 @@ public class WorkerCommands {
 	}
 	
 	static public class GetWorkersQuality extends ProjectCommand<Map<String, Double>> {
-		private DecisionEngine decisionEngine;
-		private boolean evaluated;
+		private AbstractDawidSkene ds;
+		private WorkerQualityCalculator wqc;
 		
-		public GetWorkersQuality(AbstractDawidSkene ads,
-				ILabelProbabilityDistributionCostCalculator lca,
-				boolean evaluated){
+		public GetWorkersQuality(AbstractDawidSkene ads, WorkerQualityCalculator wqc){
 			super(ads, false);
-			this.evaluated = evaluated;
-			decisionEngine = new DecisionEngine(null, lca, null);
+			this.ds = ads;
+			this.wqc = wqc;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(Quality.fromCosts(ads, evaluated ? decisionEngine.evaluateWorkersCost(ads) : decisionEngine.estimateWorkersCost(ads)));
-		}
-	}
-	
-	static public class GetWorkersCost extends ProjectCommand<Map<String, Double>> {
-		private DecisionEngine decisionEngine;
-		
-		public GetWorkersCost(AbstractDawidSkene ads,
-				ILabelProbabilityDistributionCostCalculator lca){
-			super(ads, false);
-			decisionEngine = new DecisionEngine(null, lca, null);
-		}
-		
-		@Override
-		void realExecute() {
-			setResult(decisionEngine.estimateWorkersCost(ads));
+			Map<String, Double> result = new HashMap<String, Double>();
+			for (Worker w : ds.getWorkers()){
+				result.put(w.getName(), wqc.getCost(ds, w));
+			}
+			setResult(Quality.fromCosts(ads, result));
 		}
 	}
 }

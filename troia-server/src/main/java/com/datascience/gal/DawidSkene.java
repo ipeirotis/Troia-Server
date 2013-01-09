@@ -119,7 +119,7 @@ public interface DawidSkene {
 
 	public abstract Collection<CorrectLabel> getGoldDatums();
 	
-	public abstract Collection<CorrectLabel> getEvaluationDatums();
+	public abstract Map<String, CorrectLabel> getEvaluationDatums();
 	
 	public abstract Map<String, String> getInfo();
 	

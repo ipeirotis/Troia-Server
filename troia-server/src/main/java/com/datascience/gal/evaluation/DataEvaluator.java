@@ -52,7 +52,7 @@ public class DataEvaluator {
 	}
 	
 	public Map<String, Double> evaluate(DawidSkene ds){
-		Collection<CorrectLabel> evalData = ds.getEvaluationDatums();
+		Collection<CorrectLabel> evalData = ds.getEvaluationDatums().values();
 		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (CorrectLabel cl: evalData) {
