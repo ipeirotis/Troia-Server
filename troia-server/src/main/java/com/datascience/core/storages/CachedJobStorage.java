@@ -102,6 +102,11 @@ public class CachedJobStorage implements IJobStorage {
 		cachedJobStorage.stop();
 	}
 	
+	@Override
+	public String toString() {
+		return "Cached" + cachedJobStorage.toString();
+	}
+	
 	static protected class NotInCachedException extends Exception{
 	}
 }

@@ -152,4 +152,9 @@ public class DBJobStorage implements IJobStorage {
 	public void stop() throws Exception {
 		close();
 	}
+	
+	@Override
+	public String toString(){
+		return "DataBase";
+	}
 }

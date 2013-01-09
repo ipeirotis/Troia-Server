@@ -39,4 +39,9 @@ public class MemoryJobStorage implements IJobStorage{
 	public void stop() throws Exception {
 		storage.clear();
 	}
+	
+	@Override
+	public String toString(){
+		return "InMemory";
+	}
 }
