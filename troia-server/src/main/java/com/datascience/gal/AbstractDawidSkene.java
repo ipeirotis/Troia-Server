@@ -48,11 +48,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 */
 	private boolean computed;
 	
-	private String getAnnotatorCostNaiveStr(Worker w){
-		double cost_naive = this.getAnnotatorCostNaive(w);
-		return (Double.isNaN(cost_naive)) ? "---" : Utils.round(100 * cost_naive, 2) + "%";
-	}
-
 	protected AbstractDawidSkene(String id) {
 		this.id = id;
 		this.evaluationData = new HashMap<String,CorrectLabel>();
@@ -204,64 +199,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 	
 	@Override
-	public LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed) {
-
-		LinkedList<Map<String, Object>> workerScores = new LinkedList<Map<String, Object>>();
-		for (String workername : new TreeSet<String>(this.workers.keySet())) {
-			Worker w = this.workers.get(workername);
-			workerScores.add(getWorkerScore(w, detailed));
-		}
-		return workerScores;
-	}
-	
-	@Override
-	public Map<String, Object> getWorkerScore(Worker w, boolean detailed) {
-		String workerName = w.getName();
-		String s_cost_naive = this.getAnnotatorCostNaiveStr(w);
-//		String s_cost_adj = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED);
-//		String s_cost_min = this.getWorkerCostStr(w, WorkerCostMethod.COST_ADJUSTED_MINIMIZED);
-		int contributions = w.getAssignedLabels().size();
-		int gold_tests = countGoldTests(w.getAssignedLabels());
-
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("Worker", workerName);
-		m.put("Error rate", s_cost_naive);
-//		m.put("Quality (Expected)", s_cost_adj);
-//		m.put("Quality (Optimized)", s_cost_min);
-		m.put("Number of Annotations", contributions);
-		m.put("Number of Gold Tests", gold_tests);
-		if (detailed){
-			LinkedList<Map<String, Object>> matrix = new LinkedList<Map<String, Object>>();
-			for (String correct_name : this.categories.keySet()) {
-				for (String assigned_name : this.categories.keySet()) {
-					Map<String, Object> val = new HashMap<String, Object>();
-					val.put("from", correct_name);
-					val.put("to", assigned_name);
-					double cm_entry = getErrorRateForWorker(w, correct_name, assigned_name);
-					String s_cm_entry = Double.isNaN(cm_entry) ? "---" : Utils.round(100 * cm_entry, 3).toString();
-					val.put("value", s_cm_entry);
-					matrix.add(val);
-				}
-			}
-			m.put("Confusion Matrix", matrix);
-		}
-		return m;
-	}
-
-	private int countGoldTests(Set<AssignedLabel> labels) {
-
-		int result = 0;
-		for (AssignedLabel al : labels) {
-			String name = al.getObjectName();
-			Datum d = this.objects.get(name);
-			if (d.isGold())
-				result++;
-
-		}
-		return result;
-	}
-
-	@Override
 	public int getNumberOfObjects() {
 		return this.objects.size();
 	}
@@ -276,23 +213,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.objectsWithNoLabels.size();
 	}
 	
-	@Override
-	public double getAnnotatorCostNaive(Worker w) {
-
-		double c = 0.0;
-		double s = 0.0;
-		for (Category from : this.categories.values()) {
-			for (Category to : this.categories.values()) {
-				double fromPrior = prior(from.getName());
-				c += fromPrior
-					 * from.getCost(to.getName())
-					 * getErrorRateForWorker(w, from.getName(), to.getName());
-				s += fromPrior * from.getCost(to.getName());
-			}
-		}
-		return (s > 0) ? c / s : 0.0;
-	}
-
 	@Override
 	public boolean fixedPriors() {
 		return fixedPriors;

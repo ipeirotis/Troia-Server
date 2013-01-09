@@ -32,8 +32,12 @@ public abstract class WorkerQualityCalculator {
 		}
 		return cost;
 	}
+
+	protected String getCostStr(double cost, boolean inverse){
+		 return (Double.isNaN(cost)) ? "---" : Math.round(100 * (inverse ? 1. - cost : cost)) + "%";
+	}
 	
-	public Map<String, Double> getSoftLabelForHardCategoryLabel(DawidSkene ds, Worker w, String label) {
+	private Map<String, Double> getSoftLabelForHardCategoryLabel(DawidSkene ds, Worker w, String label) {
 
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 		Map<String, Double> worker_prior = w.getPrior(ds.getCategoryPriors());

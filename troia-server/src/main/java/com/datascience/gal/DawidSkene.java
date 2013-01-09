@@ -67,26 +67,12 @@ public interface DawidSkene {
 	public abstract Map<String, Map<String, Double>> getObjectProbs(
 		Collection<String> objectName);
 
-	/**
-	 * Estimates the cost for annotator k without attempting corrections of
-	 * labels
-	 *
-	 * @param w
-	 *            The worker
-	 * @return The expected cost of misclassifications of worker
-	 */
-	public abstract double getAnnotatorCostNaive(Worker w);
-
 	public abstract int getNumberOfWorkers();
 
 	public abstract int getNumberOfObjects();
 
 	public abstract int getNumberOfUnassignedObjects();
 	
-	public abstract LinkedList<Map<String, Object>> getAllWorkerScores(boolean detailed);
-
-	public abstract Map<String, Object> getWorkerScore(Worker w, boolean detailed);
-
 	/**
 	 *
 	 * @param objectName

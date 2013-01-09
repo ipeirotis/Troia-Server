@@ -49,22 +49,6 @@ public class Worker {
 		return labels;
 	}
 
-	private double quality;
-
-	/**
-	 * @return the quality
-	 */
-	public double getQuality() {
-		return quality;
-	}
-
-	/**
-	 * @param quality the quality to set
-	 */
-	public void setQuality(double quality) {
-		this.quality = quality;
-	}
-
 	private Worker(String name, Collection<AssignedLabel> labels,
 				   ConfusionMatrix cm) {
 		this.name = name;
@@ -149,9 +133,6 @@ public class Worker {
 		return cm.getErrorRateBatch(categoryFrom, categoryTo);
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
@@ -173,6 +154,17 @@ public class Worker {
 	
 	public double getEvalErrorRate(String from, String to){
 		return eval_cm.getErrorRateBatch(from, to);
+	}
+	
+	public int countGoldTests(Map<String, Datum> objects){
+		int result = 0;
+		for (AssignedLabel al : labels) {
+			String name = al.getObjectName();
+			Datum d = objects.get(name);
+			if (d.isGold())
+				result++;
+		}
+		return result;
 	}
 
 	/*

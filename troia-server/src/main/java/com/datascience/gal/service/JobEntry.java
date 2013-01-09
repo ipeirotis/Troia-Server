@@ -283,17 +283,11 @@ public class JobEntry {
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/workers")
+	@Path("prediction/workersScore")
 	@GET
 	public Response getWorkersScore(){
-		ProjectCommand command = new WorkerCommands.GetWorkersScores(job.getDs());
+		ProjectCommand command = new WorkerCommands.GetWorkersScores(job.getDs(), new WorkerEstimator(null));
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/workers/{id}")
-	@GET
-	public Response getWorkerScore(@PathParam("id") String wid){
-		ProjectCommand command = new WorkerCommands.GetWorkerScores(job.getDs(), wid);
-		return buildResponseOnCommand(job, command);
-	}
 }

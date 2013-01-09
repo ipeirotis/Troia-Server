@@ -2,15 +2,14 @@ package com.datascience.gal.commands;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.decision.WorkerQualityCalculator;
-import com.datascience.gal.evaluation.WorkerEvaluator;
 
 /**
  *
@@ -46,27 +45,22 @@ public class WorkerCommands {
 	}
 	
 	static public class GetWorkersScores extends ProjectCommand<Collection<Map<String, Object>>> {
-		public GetWorkersScores(AbstractDawidSkene ads){
+		private AbstractDawidSkene ds;
+		private WorkerEstimator we;
+		
+		public GetWorkersScores(AbstractDawidSkene ads, WorkerEstimator we){
 			super(ads, false);
+			this.we = we;
+			this.ds = ads;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getAllWorkerScores(true));
-		}
-	}
-	
-	static public class GetWorkerScores extends ProjectCommand<Map<String, Object>> {
-		
-		private String workerId;
-		public GetWorkerScores(AbstractDawidSkene ads, String wid){
-			super(ads, false);
-			workerId = wid;
-		}
-		
-		@Override
-		void realExecute() {
-			setResult(ads.getWorkerScore(ads.getWorker(workerId), true));
+			Collection<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
+			for (Worker w : ds.getWorkers()){
+				result.add(we.getScore(ds, w));
+			}
+			setResult(result);
 		}
 	}
 	
