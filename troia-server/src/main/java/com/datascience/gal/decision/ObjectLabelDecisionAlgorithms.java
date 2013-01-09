@@ -16,7 +16,7 @@ public class ObjectLabelDecisionAlgorithms {
 		public String predictLabel(Map<String, Double> labelProbabilities,
 								   CostMatrix<String> costMatrix) {
 			String mostProbableLabel = null;
-			double mostProbableLabelprob = Double.MIN_VALUE;
+			double mostProbableLabelprob = Double.NEGATIVE_INFINITY;
 			for (Map.Entry<String, Double> entry: labelProbabilities.entrySet()) {
 				if (entry.getValue() > mostProbableLabelprob) {
 					mostProbableLabel = entry.getKey();
@@ -33,7 +33,7 @@ public class ObjectLabelDecisionAlgorithms {
 		public String predictLabel(Map<String, Double> labelProbabilities,
 								   CostMatrix<String> costMatrix) {
 			String minCostLabel = null;
-			double minCostLabelCost = Double.MAX_VALUE;
+			double minCostLabelCost = Double.POSITIVE_INFINITY;
 			for (String label: labelProbabilities.keySet()) {
 				double cost = Utils.calculateLabelCost(label, labelProbabilities, costMatrix);
 				if (cost < minCostLabelCost) {
