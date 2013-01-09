@@ -13,6 +13,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 /**
  * @author Konrad
@@ -76,7 +77,7 @@ public class InitializationSupport implements ServletContextListener {
 	public StatusEntry loadStatusEntry(ServletContext scontext){
 		IJobStorage jobStorage = (IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
 		ResponseBuilder responser = (ResponseBuilder) scontext.getAttribute(Constants.RESPONSER);
-		StatusEntry se = new StatusEntry(jobStorage, responser, new Date());
+		StatusEntry se = new StatusEntry(jobStorage, responser, DateTime.now());
 		scontext.setAttribute(Constants.STATUS_ENTRY, se);
 		return se;
 	}
