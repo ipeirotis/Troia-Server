@@ -13,10 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
@@ -705,16 +703,15 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	public void estimate(int maxIterations, double epsilon) {
 		double prevLogLikelihood = Double.POSITIVE_INFINITY;
 		double currLogLikelihood = 0d;
-		int iterations = 0;
-		for (int i = 0; i < maxIterations && Math.abs(currLogLikelihood -
-				prevLogLikelihood) > epsilon; i++, iterations++) {
+		int iteration = 0;
+		for (;iteration < maxIterations && Math.abs(currLogLikelihood -
+				prevLogLikelihood) > epsilon; iteration++) {
 			prevLogLikelihood = currLogLikelihood;
 			estimateInner();
 			currLogLikelihood = getLogLikelihood();
 		}
-		double diffLogLikelihood = Math.abs(currLogLikelihood -
-											prevLogLikelihood);
-		logger.info("Estimated: performed " + iterations  + " / " +
+		double diffLogLikelihood = Math.abs(currLogLikelihood - prevLogLikelihood);
+		logger.info("Estimated: performed " + iteration  + " / " +
 					maxIterations + " with log-likelihood difference " +
 					diffLogLikelihood);
 		markComputed();
