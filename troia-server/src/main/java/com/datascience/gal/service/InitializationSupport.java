@@ -7,7 +7,6 @@ import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
