@@ -1,7 +1,6 @@
 package com.datascience.gal.service;
 
 import com.datascience.core.JobFactory;
-import com.datascience.core.storages.CachedJobStorage;
 import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
 import com.datascience.core.storages.DBJobStorage;
 import com.datascience.core.storages.IJobStorage;
@@ -43,8 +42,7 @@ public class ServiceComponentsFactory {
 		IJobStorage internalJobStorage = new DBJobStorage(user,
 			password, db, url, serializer);
 		IJobStorage jobStorage =
-			new CachedJobStorage(internalJobStorage, cachesize);
-//			new CachedWithRegularDumpJobStorage(internalJobStorage, cachesize, 10, TimeUnit.MINUTES);
+			new CachedWithRegularDumpJobStorage(internalJobStorage, cachesize, 10, TimeUnit.MINUTES);
 		jobStorage = new JobStorageUsingExecutor(jobStorage, executor);
 		logger.info("Job Storage loaded");
 		return jobStorage;
