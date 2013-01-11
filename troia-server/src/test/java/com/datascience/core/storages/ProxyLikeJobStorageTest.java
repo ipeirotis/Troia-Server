@@ -45,9 +45,7 @@ public abstract class ProxyLikeJobStorageTest {
 		assertEmpty(storage, in_to_excluding, jobs.length);
 	}
 	
-	public IJobStorage getProxy(IJobStorage jobStorage){
-		return new CachedJobStorage(jobStorage, 2);
-	}
+	public abstract IJobStorage getProxy(IJobStorage jobStorage);
 	
 	@Before
 	public void setUp() throws Exception{
