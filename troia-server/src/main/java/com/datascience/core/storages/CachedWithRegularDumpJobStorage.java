@@ -1,5 +1,7 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.Job;
+import com.google.common.base.Optional;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import java.util.concurrent.TimeUnit;
 
@@ -11,15 +13,15 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	
 	protected AbstractScheduledService dumpingService;
 	
-	public CachedWithRegularDumpJobStorage(final IJobStorage cachedJobStorage, int cacheSize,
+	public CachedWithRegularDumpJobStorage(IJobStorage cachedJobStorage, int cacheSize,
 			long period, TimeUnit unit){
 		super(cachedJobStorage, cacheSize);
 		dumpingService = new DumpingService(period, unit);
-		start();
+		startService();
 	}
 	
-	private void start(){
-		// TODO
+	private void startService(){
+		dumpingService.startAndWait();
 	}
 	
 	@Override
@@ -43,7 +45,9 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 
 		@Override
 		protected void runOneIteration() throws Exception {
-			// TODO
+			for (Optional<Job> oJob: cache.asMap().values()) {
+				cachedJobStorage.add(oJob.get());
+			}
 		}
 
 		@Override

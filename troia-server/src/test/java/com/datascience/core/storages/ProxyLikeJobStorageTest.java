@@ -11,7 +11,7 @@ import org.junit.Before;
  */
 public abstract class ProxyLikeJobStorageTest {
 	
-	IJobStorage cache;
+	IJobStorage proxy;
 	IJobStorage storage;
 	Job[] jobs = new Job[]{
 		new Job(null, "0"),
@@ -50,7 +50,7 @@ public abstract class ProxyLikeJobStorageTest {
 	@Before
 	public void setUp() throws Exception{
 		storage = new MemoryJobStorage();
-		cache = getProxy(storage);
+		proxy = getProxy(storage);
 		for (int i=0;i<3;i++) {
 			storage.add(jobs[i]);
 		}
@@ -60,36 +60,36 @@ public abstract class ProxyLikeJobStorageTest {
 	@Test
 	public void testGet() throws Exception {
 		for (int i=0;i<3;i++) {
-			assertIn(cache, i);
+			assertIn(proxy, i);
 		}
 		for (int i=3; i<jobs.length;i++) {
-			assertNotIn(cache, i);
+			assertNotIn(proxy, i);
 		}
 		storage.add(jobs[4]);
-		assertIn(cache, 4);
+		assertIn(proxy, 4);
 	}
 	
 	@Test
 	public void testAdd() throws Exception {
-		assertNotIn(cache, 4);
-		cache.add(jobs[4]);
+		assertNotIn(proxy, 4);
+		proxy.add(jobs[4]);
 		Thread.sleep(timeout);
-		assertIn(cache, 4);
+		assertIn(proxy, 4);
 	}	
 
 	@Test
 	public void testRemove() throws Exception {
-		Job job = cache.get("2");
-		cache.remove(job);
+		Job job = proxy.get("2");
+		proxy.remove(job);
 		Thread.sleep(timeout);
 		assertNotIn(storage, 2);
-		assertNotIn(cache, 2);
+		assertNotIn(proxy, 2);
 		
 	}
 
 	@Test
 	public void testStop() throws Exception {
-		cache.stop();
+		proxy.stop();
 		assertEmpty(storage, 0, jobs.length);
 	}
 }
