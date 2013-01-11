@@ -2,12 +2,15 @@ package com.datascience.gal.service;
 
 import com.datascience.core.JobFactory;
 import com.datascience.core.storages.CachedJobStorage;
+import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
 import com.datascience.core.storages.DBJobStorage;
 import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.storages.JobStorageUsingExecutor;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
@@ -25,7 +28,8 @@ public class ServiceComponentsFactory {
 		this.properties = properties;
 	}
 	
-	public IJobStorage loadJobStorage(ISerializer serializer) throws IOException, ClassNotFoundException, SQLException {
+	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor)
+			throws IOException, ClassNotFoundException, SQLException {
 		String user = properties.getProperty("USER");
 		String password = properties.getProperty("PASSWORD");
 		String db = properties.getProperty("DB");
@@ -40,6 +44,8 @@ public class ServiceComponentsFactory {
 			password, db, url, serializer);
 		IJobStorage jobStorage =
 			new CachedJobStorage(internalJobStorage, cachesize);
+//			new CachedWithRegularDumpJobStorage(internalJobStorage, cachesize, 10, TimeUnit.MINUTES);
+		jobStorage = new JobStorageUsingExecutor(jobStorage, executor);
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}

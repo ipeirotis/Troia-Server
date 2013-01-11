@@ -86,9 +86,10 @@ public class CachedJobStorage implements IJobStorage {
 	 * @throws Exception 
 	 */
 	@Override
-	public void remove(String id) throws Exception {
+	public void remove(Job job) throws Exception {
+		String id = job.getId();
 		cache.invalidate(id);
-		cachedJobStorage.remove(id);
+		cachedJobStorage.remove(job);
 	}
 
 	@Override

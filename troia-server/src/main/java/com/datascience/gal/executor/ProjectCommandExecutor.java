@@ -27,9 +27,13 @@ public class ProjectCommandExecutor{
 	private ExecutorService lockExecutor;
 	
 	public ProjectCommandExecutor(){
+		this(10);  // TODO: work on this number
+	}
+	
+	public ProjectCommandExecutor(int numThreads){
 		queue = new LinkedList<IExecutorCommand>();
 		commandExecutor = MoreExecutors.listeningDecorator(
-			Executors.newFixedThreadPool(10)); // TODO: work on this number
+			Executors.newFixedThreadPool(numThreads));
 		lockExecutor = Executors.newSingleThreadExecutor();
 	}
 	

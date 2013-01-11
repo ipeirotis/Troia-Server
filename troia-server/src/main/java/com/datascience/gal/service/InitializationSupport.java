@@ -32,14 +32,14 @@ public class InitializationSupport implements ServletContextListener {
 			ISerializer serializer = factory.loadSerializer();
 			scontext.setAttribute(Constants.SERIALIZER, serializer);
 			
-			IJobStorage jobStorage = factory.loadJobStorage(serializer);
-			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
-			
 			ResponseBuilder responser = factory.loadResponser(serializer);
 			scontext.setAttribute(Constants.RESPONSER, responser);
-
+			
 			ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
 			scontext.setAttribute(Constants.COMMAND_EXECUTOR, responser);
+			
+			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor);
+			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 			
 			JobsEntry je = factory.loadJobsEntry(responser, jobStorage, executor);
 			scontext.setAttribute(Constants.JOBS_ENTRY, je);

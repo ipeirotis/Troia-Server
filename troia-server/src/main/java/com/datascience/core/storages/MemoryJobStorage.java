@@ -27,8 +27,8 @@ public class MemoryJobStorage implements IJobStorage{
 	}
 
 	@Override
-	public void remove(String id) throws Exception {
-		storage.remove(id);
+	public void remove(Job job) throws Exception {
+		storage.remove(job.getId());
 	}
 
 	@Override
