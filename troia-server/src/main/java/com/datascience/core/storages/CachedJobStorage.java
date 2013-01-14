@@ -100,7 +100,14 @@ public class CachedJobStorage implements IJobStorage {
 	@Override
 	public void stop() throws Exception {
 		cache.invalidateAll();
+		cache.cleanUp();
 		cachedJobStorage.stop();
+	}
+	
+	@Override
+	public void finalize() throws Throwable {
+		super.finalize();
+		stop();
 	}
 	
 	@Override
