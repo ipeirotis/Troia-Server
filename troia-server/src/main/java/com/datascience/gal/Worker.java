@@ -74,22 +74,21 @@ public class Worker {
 	 * @param categories
 	 * @return
 	 */
-	public Map<String, Double> getPrior(Map<String, Double> categoryPriors) {
+	public Map<String, Double> getPrior(Collection<String> categories){
+		int sum = labels.size();
 		HashMap<String, Double> worker_prior = new HashMap<String, Double>();
-
-		for (String catName : categoryPriors.keySet()) {
-			worker_prior.put(catName, 0.0);
-		}
-
-		for (String from : categoryPriors.keySet()) {
-			for (String to : categoryPriors.keySet()) {
-				double existing = worker_prior.get(to);
-				double from2to = categoryPriors.get(from)
-								 * cm.getErrorRateBatch(from, to);
-				worker_prior.put(to, existing + from2to);
+		for (String category : categories) {
+			if (sum>0) {
+				double cnt = 0;
+				for (AssignedLabel al : labels)
+					if (al.getCategoryName().equals(category))
+						cnt += 1.;
+				Double prob = cnt / sum;
+				worker_prior.put(category, prob);
+			} else {
+				worker_prior.put(category, 1.0/categories.size());
 			}
 		}
-
 		return worker_prior;
 	}
 	
@@ -138,8 +137,7 @@ public class Worker {
 	}
 	
 	public void computeEvalConfusionMatrix(Map<String, CorrectLabel> evalData, Collection<Category> categories) {
-		eval_cm = new MultinomialConfusionMatrix(categories);
-		eval_cm.empty();
+		eval_cm = new MultinomialConfusionMatrix(categories, new HashMap<CategoryPair, Double>());
 		for (AssignedLabel l : labels) {
 			String objectName = l.getObjectName();
 			CorrectLabel d = evalData.get(objectName);

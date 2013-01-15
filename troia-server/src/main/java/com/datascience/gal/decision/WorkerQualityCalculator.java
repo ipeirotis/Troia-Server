@@ -22,8 +22,7 @@ public abstract class WorkerQualityCalculator {
 	}
 	
 	public double getCost(DawidSkene ds, Worker w){
-		Map<String, Double> categoryPriors = ds.getCategoryPriors();
-		Map<String, Double> workerPriors = w.getPrior(categoryPriors);
+		Map<String, Double> workerPriors = w.getPrior(ds.getCategories().keySet());
 
 		double cost = 0.;
 		for (Category c : ds.getCategories().values()) {
@@ -40,7 +39,7 @@ public abstract class WorkerQualityCalculator {
 	private Map<String, Double> getSoftLabelForHardCategoryLabel(DawidSkene ds, Worker w, String label) {
 
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
-		Map<String, Double> worker_prior = w.getPrior(ds.getCategoryPriors());
+		Map<String, Double> worker_prior = w.getPrior(ds.getCategories().keySet());
 		Map<String, Double> result = new HashMap<String, Double>();
 		for (Category source : ds.getCategories().values()) {
 			double soft = 0.;

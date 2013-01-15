@@ -642,7 +642,7 @@ public class IncrementalDawidSkeneTest {
 			for (Entry<String, Worker> entry : workersList.get(i).entrySet()) {
 				Worker worker = entry.getValue();
 				HashMap<String, Category> categoryMap = categoryMapList.get(i);
-				Map<String, Double> workerPriors = worker.getPrior(incrementalDawidSkene.getCategoryPriors());
+				Map<String, Double> workerPriors = worker.getPrior(incrementalDawidSkene.getCategories().keySet());
 				for (Entry<String, Category> entryCatMap : categoryMap.entrySet()) {
 					assertTrue(workerPriors.containsKey(entryCatMap.getKey()));
 				}

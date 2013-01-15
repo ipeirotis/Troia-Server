@@ -10,8 +10,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -178,13 +178,11 @@ public class WorkerTest {
 		double[] priors = {0.321, 0.4321, 0.54321};
 		for (int i=0; i<names.length; i++) {
 			Worker worker = new Worker(names[i], categoriesList.get(i));
-			Map<String, Double> categoryPriors = new HashMap<String, Double>();
+			LinkedList<String> categoryNames = new LinkedList<String>();
 			for (Category category: categoriesList.get(i)) {
-				Category categoryToSetPrior = new Category(category.getName());
-				categoryToSetPrior.setPrior(priors[i]);
-				categoryPriors.put(categoryToSetPrior.getName(), categoryToSetPrior.getPrior());
+				categoryNames.add(category.getName());
 			}
-			Map<String, Double> testedMap = worker.getPrior(categoryPriors);
+			Map<String, Double> testedMap = worker.getPrior(categoryNames);
 			for (Double priority: testedMap.values()) {
 				assertEquals(new Double(priors[i]), priority, TestDataManager.DELTA_DOUBLE);
 			}

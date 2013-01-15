@@ -42,6 +42,15 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 		this.matrix = matrix;
 		this.rowDenominator = rowDenominator;
 	}
+	
+	public MultinomialConfusionMatrix(Collection<Category> categories, Map<CategoryPair, Double> matrix) {
+		this.categories = new HashSet<String>();
+		this.matrix = matrix;
+		rowDenominator = new HashMap<String, Double>();
+		for (Category c : categories) {
+			this.categories.add(c.getName());
+		}
+	}
 
 	public MultinomialConfusionMatrix(Collection<Category> categories) {
 		this.categories = new HashSet<String>();
