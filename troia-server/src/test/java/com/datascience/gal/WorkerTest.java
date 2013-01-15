@@ -175,7 +175,8 @@ public class WorkerTest {
 	@Test
 	public final void testGetPrior() {
 		String[] names = {"worker1", "", null};
-		double[] priors = {0.321, 0.4321, 0.54321};
+		double[] priors = {0.5, 1./3., 0.5};
+		
 		for (int i=0; i<names.length; i++) {
 			Worker worker = new Worker(names[i], categoriesList.get(i));
 			LinkedList<String> categoryNames = new LinkedList<String>();
@@ -183,7 +184,7 @@ public class WorkerTest {
 				categoryNames.add(category.getName());
 			}
 			Map<String, Double> testedMap = worker.getPrior(categoryNames);
-			for (Double priority: testedMap.values()) {
+			for (Double priority: testedMap.values()) {  
 				assertEquals(new Double(priors[i]), priority, TestDataManager.DELTA_DOUBLE);
 			}
 		}
