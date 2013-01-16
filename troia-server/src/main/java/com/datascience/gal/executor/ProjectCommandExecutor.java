@@ -5,13 +5,15 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -27,10 +29,20 @@ public class ProjectCommandExecutor{
 	private ExecutorService lockExecutor;
 	
 	public ProjectCommandExecutor(){
+		this(10);  // TODO: work on this number
+	}
+	
+	public ProjectCommandExecutor(int numThreads){
 		queue = new LinkedList<IExecutorCommand>();
+		ThreadFactory cetf = new ThreadFactoryBuilder()
+			.setNameFormat("cmdExTh-%d")
+			.build();
+		ThreadFactory ltf = new ThreadFactoryBuilder()
+			.setNameFormat("lockExTh-%d")
+			.build();
 		commandExecutor = MoreExecutors.listeningDecorator(
-			Executors.newFixedThreadPool(10)); // TODO: work on this number
-		lockExecutor = Executors.newSingleThreadExecutor();
+			Executors.newFixedThreadPool(numThreads, cetf));
+		lockExecutor = Executors.newSingleThreadExecutor(ltf);
 	}
 	
 	public void add(final IExecutorCommand eCommand){
@@ -72,6 +84,27 @@ public class ProjectCommandExecutor{
 		});
 	}
 	
+	@Override
+	public void finalize() throws Throwable {
+		super.finalize();
+		stop();
+	}
+	
+	public void stop() throws InterruptedException{
+		log.info("STARTED Shutting down executors");
+		commandExecutor.shutdown();
+		commandExecutor.awaitTermination(1, TimeUnit.MINUTES);
+		if (!commandExecutor.isTerminated()) {
+			log.error("FAILED to shutdown commandExecutor");
+		}
+		lockExecutor.shutdown();
+		lockExecutor.awaitTermination(1, TimeUnit.MINUTES);
+		if (!lockExecutor.isTerminated()) {
+			log.error("FAILED to shutdown lockExecutor");
+		}
+		log.info("DONE Shutting down executors");
+	}
+	
 	class CommandCleaner implements FutureCallback {
 
 		private IExecutorCommand eCommand;
@@ -88,9 +121,7 @@ public class ProjectCommandExecutor{
 		@Override
 		public void onFailure(Throwable thrwbl) {
 			String className = eCommand.getClass().getName();
-			log.log(Level.SEVERE, "Failed executing task: {0} with: {1}",
-				new Object[]{className, thrwbl.getLocalizedMessage()});
-			log.throwing(className, "run", thrwbl);
+			log.error("Failed executing task: " + className, thrwbl);
 			cleanUp();
 		}
 

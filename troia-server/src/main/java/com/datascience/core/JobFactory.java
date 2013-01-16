@@ -51,7 +51,7 @@ public class JobFactory {
 		type = type.toLowerCase();
 		Creator creator = DS_FACTORY.get(type);
 		if (creator == null) {
-			throw new IllegalArgumentException("Uknown Job type: " + type);
+			throw new IllegalArgumentException("Unknown Job type: " + type);
 		}
 		return creator;
 	}

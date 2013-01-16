@@ -281,7 +281,7 @@ public class IncrementalDawidSkeneTest {
 
 			IncrementalDawidSkene incrementalDawidSkene =
 				new IncrementalDawidSkene("id"+i, globalCategoryList);
-			Map<String, Double> computedPriors = incrementalDawidSkene.computePriors();
+			Map<String, Double> computedPriors = incrementalDawidSkene.getCategoryPriors();
 			for (Entry<String, Double> entry :
 					computedPriors.entrySet()) {
 				double actualValue =  (Double) entry.getValue();
@@ -291,7 +291,7 @@ public class IncrementalDawidSkeneTest {
 			IncrementalDawidSkene incrementalDawidSkeneFullConstructionFixedPriors =
 				constructByDeserialization("idfcFixed"+i, objectsList.get(i), workersList.get(i),
 										   categoryMapList.get(i), true, IncrementalDSMethod.ITERATELOCAL, 0.1);
-			computedPriors = incrementalDawidSkeneFullConstructionFixedPriors.computePriors();
+			computedPriors = incrementalDawidSkeneFullConstructionFixedPriors.getCategoryPriors();
 			for (Entry<String, Double> entry :
 					computedPriors.entrySet()) {
 				double actualValue =  (Double) entry.getValue();
@@ -301,7 +301,7 @@ public class IncrementalDawidSkeneTest {
 			IncrementalDawidSkene incrementalDawidSkeneFullConstructionNotFixedPriorsWithZeroValues =
 				constructByDeserialization("idfcNotFixed"+i, objectsList.get(i), workersList.get(i),
 										   categoryMapList.get(i), false, IncrementalDSMethod.ITERATELOCAL, priorDenominator);
-			computedPriors = incrementalDawidSkeneFullConstructionNotFixedPriorsWithZeroValues.computePriors();
+			computedPriors = incrementalDawidSkeneFullConstructionNotFixedPriorsWithZeroValues.getCategoryPriors();
 			for (Entry<String, Double> entry :
 					computedPriors.entrySet()) {
 				double actualValue =  (Double) entry.getValue();
@@ -326,7 +326,7 @@ public class IncrementalDawidSkeneTest {
 			IncrementalDawidSkene incrementalDawidSkeneFullConstructionNotFixedPriors =
 				constructByDeserialization("idfcNotFixed"+i, objectsList.get(i), workersList.get(i),
 										   categoryMapLocal, false, IncrementalDSMethod.ITERATELOCAL, priorDenominator);
-			computedPriors = incrementalDawidSkeneFullConstructionNotFixedPriors.computePriors();
+			computedPriors = incrementalDawidSkeneFullConstructionNotFixedPriors.getCategoryPriors();
 			for (Entry<String, Double> entry :
 					computedPriors.entrySet()) {
 				double actualValue =  (Double) entry.getValue();
@@ -642,7 +642,7 @@ public class IncrementalDawidSkeneTest {
 			for (Entry<String, Worker> entry : workersList.get(i).entrySet()) {
 				Worker worker = entry.getValue();
 				HashMap<String, Category> categoryMap = categoryMapList.get(i);
-				Map<String, Double> workerPriors = incrementalDawidSkene.getWorkerPriors(worker);
+				Map<String, Double> workerPriors = worker.getPrior(incrementalDawidSkene.getCategories().keySet());
 				for (Entry<String, Category> entryCatMap : categoryMap.entrySet()) {
 					assertTrue(workerPriors.containsKey(entryCatMap.getKey()));
 				}

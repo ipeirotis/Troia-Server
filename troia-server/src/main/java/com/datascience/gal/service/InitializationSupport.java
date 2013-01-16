@@ -1,12 +1,11 @@
 package com.datascience.gal.service;
 
-import com.datascience.core.JobFactory;
-import com.datascience.core.storages.CachedJobStorage;
-import com.datascience.core.storages.DBJobStorage;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.executor.ProjectCommandExecutor;
-import java.io.IOException;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -15,88 +14,87 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Konrad
- * 
+ *
  * this initializing commands shouldn't use ServletContext or even be here
  * TODO: ^^^^
- * 
+ *
  */
 public class InitializationSupport implements ServletContextListener {
-	
+
 	private static Logger logger = Logger.getLogger(InitializationSupport.class);
-	
+
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
-			logger.info("Initialization support started.");
+			logger.info("Initialization support started");
 			ServletContext scontext = event.getServletContext();
-			loadResponser(scontext);
-			loadJobStorage(scontext);
-			loadStatusEntry(scontext);
-			loadJobsEntry(scontext);
+			Properties props = new Properties();
+			props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
+
+			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
+			
+			ISerializer serializer = factory.loadSerializer();
+			scontext.setAttribute(Constants.SERIALIZER, serializer);
+			
+			ResponseBuilder responser = factory.loadResponser(serializer);
+			scontext.setAttribute(Constants.RESPONSER, responser);
+			
+			ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
+			scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
+			
+			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor);
+			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
+			
+			JobsEntry je = factory.loadJobsEntry(responser, jobStorage, executor);
+			scontext.setAttribute(Constants.JOBS_ENTRY, je);
+
+			StatusEntry se = factory.loadStatusEntry(responser, jobStorage);
+			scontext.setAttribute(Constants.STATUS_ENTRY, se);
+
+			logger.info("Initialization support ended without complications");
 		} catch (Exception e) {
-			logger.error("In context initialization support : " + e.getMessage());
+			logger.fatal("In context initialization support", e);
 		}
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		logger.info("STARTED Cleaning service");
 		ServletContext scontext = event.getServletContext();
-		IJobStorage jobStorage = (IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
+		IJobStorage jobStorage =
+			(IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
+		ProjectCommandExecutor executor =
+			(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
 		try {
 			jobStorage.stop();
 		} catch (Exception ex) {
-			logger.error("Failed stoping job storage", ex);
+			logger.error("FAILED Cleaning service - jobStorage", ex);
 		}
-	}
-
-	public IJobStorage loadJobStorage(ServletContext scontext) throws IOException, ClassNotFoundException, SQLException {
-		Properties props = new Properties();
-		props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
-		String user = props.getProperty("USER");
-		String password = props.getProperty("PASSWORD");
-		String db = props.getProperty("DB");
-		String url = props.getProperty("URL");
-		int cachesize;
-		if (props.containsKey("cacheSize")) {
-			cachesize = Integer.parseInt(props.getProperty("cacheSize"));
-		} else {
-			cachesize = 15;
+		try {
+			executor.stop();
+		} catch (Exception ex) {
+			logger.error("FAILED Cleaning service - executor", ex);
 		}
-		ResponseBuilder responser = (ResponseBuilder) scontext.getAttribute(Constants.RESPONSER);
-		IJobStorage internalJobStorage = new DBJobStorage(user, password, db, url, responser.getSerializer());
-		IJobStorage jobStorage = new CachedJobStorage(
-			internalJobStorage, cachesize);
-		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
-
-		logger.info("Job Storage loaded");
-		return jobStorage;
-	}
-	
-	public StatusEntry loadStatusEntry(ServletContext scontext){
-		IJobStorage jobStorage = (IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
-		ResponseBuilder responser = (ResponseBuilder) scontext.getAttribute(Constants.RESPONSER);
-		StatusEntry se = new StatusEntry(jobStorage, responser);
-		scontext.setAttribute(Constants.STATUS_ENTRY, se);
-		return se;
-	}
-	
-	public JobsEntry loadJobsEntry(ServletContext scontext){
-		ResponseBuilder responser = (ResponseBuilder) scontext.getAttribute(Constants.RESPONSER);
-		IJobStorage jobStorage = (IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
-		JobsEntry je = new JobsEntry(responser, new JobFactory(),
-			loadProjectCommandExecutor(), jobStorage);
-		scontext.setAttribute(Constants.JOBS_ENTRY, je);
-		return je;
-	}
-	
-	private ProjectCommandExecutor loadProjectCommandExecutor(){
-		return new ProjectCommandExecutor();
+		deregisterDrivers();
+		logger.info("DONE Cleaning service");
 	}
 
-	private ResponseBuilder loadResponser(ServletContext scontext) {
-		// TODO - put in properties what serializer we would like to use as default one
-		ResponseBuilder responser = new ResponseBuilder(new GSONSerializer());
-		scontext.setAttribute(Constants.RESPONSER, responser);
-		return responser;
+		
+	/**
+	 * This manually deregisters JDBC driver, which prevents
+	 * Tomcat 7 from complaining about memory leaks wrto this class
+	 * @see: http://stackoverflow.com/a/5315467/1585082
+	 */
+	public void deregisterDrivers() {
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			try {
+				DriverManager.deregisterDriver(driver);
+				logger.info(String.format("deregistering jdbc driver: %s", driver));
+			} catch (SQLException e) {
+				logger.fatal(String.format("Error deregistering driver %s", driver), e);
+			}
+		}
 	}
 }

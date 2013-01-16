@@ -102,10 +102,10 @@ public class DBJobStorage implements IJobStorage {
 	}
 	
 	@Override
-	public void remove(String id) throws Exception {
+	public void remove(Job job) throws Exception {
 		ensureDBConnection();
 		PreparedStatement dsStatement = connection.prepareStatement(DELETE_DS);
-		dsStatement.setString(1, id);
+		dsStatement.setString(1, job.getId());
 		dsStatement.executeUpdate();
 		dsStatement.close();
 	}
@@ -151,5 +151,10 @@ public class DBJobStorage implements IJobStorage {
 	@Override
 	public void stop() throws Exception {
 		close();
+	}
+	
+	@Override
+	public String toString(){
+		return "DataBase";
 	}
 }

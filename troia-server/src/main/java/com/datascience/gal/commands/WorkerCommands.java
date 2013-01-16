@@ -1,11 +1,15 @@
 package com.datascience.gal.commands;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
-import com.datascience.gal.WorkerCostMethod;
+import com.datascience.gal.decision.WorkerEstimator;
+import com.datascience.gal.decision.WorkerQualityCalculator;
 
 /**
  *
@@ -41,44 +45,42 @@ public class WorkerCommands {
 	}
 	
 	static public class GetWorkersScores extends ProjectCommand<Collection<Map<String, Object>>> {
-		public GetWorkersScores(AbstractDawidSkene ads){
+		private AbstractDawidSkene ds;
+		private WorkerEstimator we;
+		
+		public GetWorkersScores(AbstractDawidSkene ads, WorkerEstimator we){
 			super(ads, false);
+			this.we = we;
+			this.ds = ads;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getAllWorkerScores(true));
+			Collection<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
+			for (Worker w : ds.getWorkers()){
+				result.add(we.getScore(ds, w));
+			}
+			setResult(result);
 		}
 	}
 	
-	static public class GetWorkerScores extends ProjectCommand<Map<String, Object>> {
+	static public class GetWorkersQuality extends ProjectCommand<Map<String, Double>> {
+		private AbstractDawidSkene ds;
+		private WorkerQualityCalculator wqc;
 		
-		private String workerId;
-		public GetWorkerScores(AbstractDawidSkene ads, String wid){
+		public GetWorkersQuality(AbstractDawidSkene ads, WorkerQualityCalculator wqc){
 			super(ads, false);
-			workerId = wid;
+			this.ds = ads;
+			this.wqc = wqc;
 		}
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getWorkerScore(ads.getWorker(workerId), true));
-		}
-	}
-	
-	static public class GetWorkerCost extends ProjectCommand<Double> {
-		
-		private String workerId;
-		private WorkerCostMethod workerCostMethod;
-		
-		public GetWorkerCost(AbstractDawidSkene ads, String wid, WorkerCostMethod wcm){
-			super(ads, false);
-			workerId = wid;
-			workerCostMethod = wcm;
-		}
-		
-		@Override
-		void realExecute() {
-			setResult(ads.getWorkerCost(ads.getWorker(workerId), workerCostMethod));
+			Map<String, Double> result = new HashMap<String, Double>();
+			for (Worker w : ds.getWorkers()){
+				result.put(w.getName(), wqc.getCost(ds, w));
+			}
+			setResult(Quality.fromCosts(ads, result));
 		}
 	}
 }

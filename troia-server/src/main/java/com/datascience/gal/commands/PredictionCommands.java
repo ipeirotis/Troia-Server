@@ -3,6 +3,7 @@ package com.datascience.gal.commands;
 import java.util.Map;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.Quality;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
@@ -78,7 +79,7 @@ public class PredictionCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(decisionEngine.costToQuality(ads,
+			setResult(Quality.fromCosts(ads,
 				decisionEngine.estimateMissclassificationCosts(ads)));
 		}
 	}

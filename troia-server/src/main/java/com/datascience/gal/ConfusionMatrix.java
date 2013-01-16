@@ -48,8 +48,6 @@ public interface ConfusionMatrix {
 
 	public abstract void setErrorRate(String from, String to, Double cost);
 
-	public abstract String toString();
-
 	public abstract Set<String> getCategories();
 
 }

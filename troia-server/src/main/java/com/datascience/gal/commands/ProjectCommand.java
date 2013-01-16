@@ -42,7 +42,7 @@ public abstract class ProjectCommand<T> {
 		}
 	}
 	
-	abstract void realExecute();
+	abstract void realExecute() throws Exception;
 	
 	public boolean wasOk(){
 		return exception == null;

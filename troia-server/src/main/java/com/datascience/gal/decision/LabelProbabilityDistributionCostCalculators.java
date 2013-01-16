@@ -11,6 +11,22 @@ import java.util.Set;
  */
 public class LabelProbabilityDistributionCostCalculators {
 
+	protected static class SelectedLabeBased implements ILabelProbabilityDistributionCostCalculator {
+
+		private IObjectLabelDecisionAlgorithm labelChooser;
+
+		public SelectedLabeBased(IObjectLabelDecisionAlgorithm labelChooser){
+			this.labelChooser = labelChooser;
+		}
+
+		@Override
+		public Double predictedLabelCost(Map<String, Double> labelProbabilities,
+				CostMatrix<String> costMatrix) {
+			String choosenLabel = labelChooser.predictLabel(labelProbabilities, costMatrix);
+			return Utils.calculateLabelCost(choosenLabel, labelProbabilities, costMatrix);
+		}
+	}
+
 	public static class ExpectedCostAlgorithm implements ILabelProbabilityDistributionCostCalculator {
 
 		@Override
@@ -28,34 +44,20 @@ public class LabelProbabilityDistributionCostCalculators {
 		}
 	}
 	
-	public static class MinCostAlgorithm implements ILabelProbabilityDistributionCostCalculator {
-
-		@Override
-		public Double predictedLabelCost(Map<String, Double> labelProbabilities,
-										 CostMatrix<String> costMatrix) {
-			double minCostLabelCost = Double.MAX_VALUE;
-			for (String label: labelProbabilities.keySet()) {
-				double cost = Utils.calculateLabelCost(label, labelProbabilities, costMatrix);
-				if (cost < minCostLabelCost) {
-					minCostLabelCost = cost;
-				}
-			}
-			return minCostLabelCost;
-		}
-	}
-	
 	public static ILabelProbabilityDistributionCostCalculator get(String method){
 		if (Strings.isNullOrEmpty(method)) {
 			method = "ExpectedCost";
 		}
 		method = method.toUpperCase();
-		if ("MINCOST".equals(method)){
-			return new MinCostAlgorithm();
-		}
 		if ("EXPECTEDCOST".equals(method)) {
 			return new ExpectedCostAlgorithm();
 		}
-		throw new IllegalArgumentException(
-			"Unknown cost calculation method: " + method);
+		try {
+			IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(method);
+			return new SelectedLabeBased(olda);
+		} catch (IllegalArgumentException ex) {
+			throw new IllegalArgumentException(
+				"Unknown cost calculation method: " + method);
+		}
 	}
 }

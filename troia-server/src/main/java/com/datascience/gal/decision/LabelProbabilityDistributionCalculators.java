@@ -65,6 +65,27 @@ public class LabelProbabilityDistributionCalculators {
 		}
 	}
 	
+	public static class OnlyOneLabel implements ILabelProbabilityDistributionCalculator {
+		
+		private DecisionEngine decisionEngine;
+		
+		public OnlyOneLabel(DecisionEngine decisionEngine) {
+			this.decisionEngine = decisionEngine;
+		}
+
+		@Override
+		public Map<String, Double> calculateDistribution(Datum datum,
+				DawidSkene ads) {
+			String label = decisionEngine.predictLabel(ads, datum);
+			Map<String, Double> pd = new HashMap<String, Double>();
+			for (Category c: ads.getCategories().values()) {
+				pd.put(c.getName(), 0.);
+			}
+			pd.put(label, 1.);
+			return pd;
+		}
+	}
+	
 	public static ILabelProbabilityDistributionCalculator get(String algorithm){
 		if (Strings.isNullOrEmpty(algorithm)) {
 			algorithm = "DS";
@@ -76,7 +97,7 @@ public class LabelProbabilityDistributionCalculators {
 		if ("MV".equals(algorithm)) {
 			return new MV();
 		}
-		if ("SPAMMER".equals(algorithm)) {
+		if ("SPAMMER".equals(algorithm) || "NOVOTE".equals(algorithm)) {
 			return new PriorBased();
 		}
 		throw new IllegalArgumentException("Not known label probability distrinbution calculator: " + algorithm);

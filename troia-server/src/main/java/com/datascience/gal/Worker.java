@@ -31,6 +31,9 @@ public class Worker {
 
 	// The error matrix for the worker
 	public ConfusionMatrix cm;
+	
+	//The confusion matrix for the worker based on evaluation data
+	private ConfusionMatrix eval_cm;
 
 	// The labels that have been assigned to this object, together with the
 	// workers who
@@ -44,22 +47,6 @@ public class Worker {
 	 */
 	public Set<AssignedLabel> getAssignedLabels() {
 		return labels;
-	}
-
-	private double quality;
-
-	/**
-	 * @return the quality
-	 */
-	public double getQuality() {
-		return quality;
-	}
-
-	/**
-	 * @param quality the quality to set
-	 */
-	public void setQuality(double quality) {
-		this.quality = quality;
 	}
 
 	private Worker(String name, Collection<AssignedLabel> labels,
@@ -87,25 +74,24 @@ public class Worker {
 	 * @param categories
 	 * @return
 	 */
-	public Map<String, Double> getPrior(Map<String, Double> categoryPriors) {
+	public Map<String, Double> getPrior(Collection<String> categories){
+		int sum = labels.size();
 		HashMap<String, Double> worker_prior = new HashMap<String, Double>();
-
-		for (String catName : categoryPriors.keySet()) {
-			worker_prior.put(catName, 0.0);
-		}
-
-		for (String from : categoryPriors.keySet()) {
-			for (String to : categoryPriors.keySet()) {
-				double existing = worker_prior.get(to);
-				double from2to = categoryPriors.get(from)
-								 * cm.getErrorRateBatch(from, to);
-				worker_prior.put(to, existing + from2to);
+		for (String category : categories) {
+			if (sum>0) {
+				double cnt = 0;
+				for (AssignedLabel al : labels)
+					if (al.getCategoryName().equals(category))
+						cnt += 1.;
+				Double prob = cnt / sum;
+				worker_prior.put(category, prob);
+			} else {
+				worker_prior.put(category, 1.0/categories.size());
 			}
 		}
-
 		return worker_prior;
 	}
-
+	
 	public void addError(String source, String destination, double error) {
 		cm.addError(source, destination, error);
 	}
@@ -146,11 +132,37 @@ public class Worker {
 		return cm.getErrorRateBatch(categoryFrom, categoryTo);
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
+	}
+	
+	public void computeEvalConfusionMatrix(Map<String, CorrectLabel> evalData, Collection<Category> categories) {
+		eval_cm = new MultinomialConfusionMatrix(categories, new HashMap<CategoryPair, Double>());
+		for (AssignedLabel l : labels) {
+			String objectName = l.getObjectName();
+			CorrectLabel d = evalData.get(objectName);
+			if (d != null){
+				String assignedCategory = l.getCategoryName();
+				String correctCategory = d.getCorrectCategory();
+				eval_cm.addError(correctCategory, assignedCategory, 1.0);
+			}
+		}
+		eval_cm.normalize();
+	}
+	
+	public double getEvalErrorRate(String from, String to){
+		return eval_cm.getErrorRateBatch(from, to);
+	}
+	
+	public int countGoldTests(Map<String, Datum> objects){
+		int result = 0;
+		for (AssignedLabel al : labels) {
+			String name = al.getObjectName();
+			Datum d = objects.get(name);
+			if (d.isGold())
+				result++;
+		}
+		return result;
 	}
 
 	/*

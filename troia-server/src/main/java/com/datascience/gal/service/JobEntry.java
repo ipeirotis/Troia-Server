@@ -1,6 +1,7 @@
 package com.datascience.gal.service;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -16,7 +17,6 @@ import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
-import com.datascience.gal.WorkerCostMethod;
 import com.datascience.gal.commands.AssignsCommands;
 import com.datascience.gal.commands.CategoriesCommands;
 import com.datascience.gal.commands.CommandStatus;
@@ -33,8 +33,10 @@ import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
+import com.datascience.gal.decision.WorkerEstimator;
+import com.datascience.gal.evaluation.DataEvaluator;
+import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.gal.executor.ProjectCommandExecutor;
-import java.util.NoSuchElementException;
 
 /**
  * @author Konrad Kurdej
@@ -244,14 +246,14 @@ public class JobEntry {
 		ProjectCommand command = new PredictionCommands.GetQuality(job.getDs(), lpdc, lpdcc);
 		return buildResponseOnCommand(job, command);
 	}
-	
+
 	@Path("evaluation/dataCost/")
 	@GET
 	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), lpdc, olda);
+		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
+		ProjectCommand command = new EvaluationCommands.GetCost(job.getDs(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -260,31 +262,32 @@ public class JobEntry {
 	public Response getEvaluatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		ProjectCommand command = new EvaluationCommands.GetQuality(job.getDs(), lpdc, olda);
+		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
+		ProjectCommand command = new EvaluationCommands.GetQuality(job.getDs(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/workers")
+	@Path("evaluation/workersQuality")
+	@GET
+	public Response getEvaluatedWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), new WorkerEvaluator(lpdcc));
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("prediction/workersQuality")
+	@GET
+	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		ProjectCommand command = new WorkerCommands.GetWorkersQuality(job.getDs(), new WorkerEstimator(lpdcc));
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Path("prediction/workersScore")
 	@GET
 	public Response getWorkersScore(){
-		ProjectCommand command = new WorkerCommands.GetWorkersScores(job.getDs());
+		ProjectCommand command = new WorkerCommands.GetWorkersScores(job.getDs(), new WorkerEstimator(null));
 		return buildResponseOnCommand(job, command);
 	}
 	
-	@Path("prediction/workers/{id}")
-	@GET
-	public Response getWorkerScore(@PathParam("id") String wid){
-		ProjectCommand command = new WorkerCommands.GetWorkerScores(job.getDs(), wid);
-		return buildResponseOnCommand(job, command);
-	}
-	
-	@Path("prediction/workers/{id}/cost/")
-	@GET
-	public Response getEvaluatedWorkerCost(@PathParam("id") String wid, 
-			@DefaultValue("CostNaive") @QueryParam("costMethod") String cm){
-		
-		ProjectCommand command = new WorkerCommands.GetWorkerCost(job.getDs(), wid, WorkerCostMethod.get(cm));
-		return buildResponseOnCommand(job, command);
-	}
 }

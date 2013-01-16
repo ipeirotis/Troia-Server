@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
@@ -14,6 +15,8 @@ import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
+import com.datascience.gal.Worker;
+import com.datascience.gal.decision.WorkerEstimator;
 
 /**
  * This class is used to create test data for Troia client tests.
@@ -306,13 +309,19 @@ public class DataGenerator {
 				new com.datascience.gal.BatchDawidSkene("data-generation", tsCategories);
 		dawidSkene.addAssignedLabels(tsLabels);
 		dawidSkene.addCorrectLabels(tsCorrectLabels);
-		dawidSkene.computePriors();
+		dawidSkene.getCategoryPriors();
 		System.out.println("DEBUG >>>");
 		for (Category c : categories) {
 			//com.datascience.gal.Category c = dawidSkene.getCategories().get(name);
 			System.out.println(">>>>>> " + c.getName() + " " + c.getPrior() + " " + c.getMisclassificationCosts());
 		}
-		return dawidSkene.getAllWorkerScores(true);
+		
+		WorkerEstimator we = new WorkerEstimator(null);
+		Collection<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
+		for (Worker w : dawidSkene.getWorkers()){
+			result.add(we.getScore(dawidSkene, w));
+		}
+		return result;
 	}
 
 	public Data generateTestData(String requestId, int objectCount,

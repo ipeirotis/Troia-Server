@@ -86,9 +86,10 @@ public class CachedJobStorage implements IJobStorage {
 	 * @throws Exception 
 	 */
 	@Override
-	public void remove(String id) throws Exception {
+	public void remove(Job job) throws Exception {
+		String id = job.getId();
 		cache.invalidate(id);
-		cachedJobStorage.remove(id);
+		cachedJobStorage.remove(job);
 	}
 
 	@Override
@@ -99,7 +100,19 @@ public class CachedJobStorage implements IJobStorage {
 	@Override
 	public void stop() throws Exception {
 		cache.invalidateAll();
+		cache.cleanUp();
 		cachedJobStorage.stop();
+	}
+	
+	@Override
+	public void finalize() throws Throwable {
+		super.finalize();
+		stop();
+	}
+	
+	@Override
+	public String toString() {
+		return "Cached" + cachedJobStorage.toString();
 	}
 	
 	static protected class NotInCachedException extends Exception{
