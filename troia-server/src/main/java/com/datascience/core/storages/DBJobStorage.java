@@ -73,41 +73,63 @@ public class DBJobStorage implements IJobStorage {
 	
 	@Override
 	public Job get(String id) throws SQLException {
-		ResultSet dsResults;
+		ResultSet dsResults = null;
 		ensureDBConnection();
-		PreparedStatement dsStatement = connection.prepareStatement(GET_DS);
-		dsStatement.setString(1, id);
-		dsResults = dsStatement.executeQuery();
-		if (!dsResults.next()) {
-			return null;
+		PreparedStatement dsStatement = null;
+		try {
+			dsStatement = connection.prepareStatement(GET_DS);
+			dsStatement.setString(1, id);
+			dsResults = dsStatement.executeQuery();
+			if (!dsResults.next()) {
+				return null;
+			}
+			String dsJson = dsResults.getString("data");
+			dsStatement.close();
+			AbstractDawidSkene ads = serializer.parse(dsJson, JSONUtils.dawidSkeneType);
+			return new Job(ads, id);
+		} finally {
+			if (dsStatement != null) {
+				dsStatement.close();
+			}
+			if (dsResults != null) {
+				dsResults.close();
+			}
 		}
-		String dsJson = dsResults.getString("data");
-		dsStatement.close();
-		AbstractDawidSkene ads = serializer.parse(dsJson, JSONUtils.dawidSkeneType);
-		return new Job(ads, id);
 	}
 
 	@Override
 	public void add(Job job) throws SQLException{
 		ensureDBConnection();
-		PreparedStatement dsStatement = connection
-			.prepareStatement(INSERT_DS);
-		dsStatement.setString(1, job.getId());
-		String dsString = serializer.serialize(job.getDs());
-		dsStatement.setString(2, dsString);
-		dsStatement.setString(3, dsString);
+		PreparedStatement dsStatement = null;
+		try {
+			dsStatement = connection.prepareStatement(INSERT_DS);
+			dsStatement.setString(1, job.getId());
+			String dsString = serializer.serialize(job.getDs());
+			dsStatement.setString(2, dsString);
+			dsStatement.setString(3, dsString);
 
-		dsStatement.executeUpdate();
-		dsStatement.close();
+			dsStatement.executeUpdate();
+		} finally {
+			if (dsStatement != null) {
+				dsStatement.close();
+			}
+		}
 	}
 	
 	@Override
 	public void remove(Job job) throws Exception {
 		ensureDBConnection();
-		PreparedStatement dsStatement = connection.prepareStatement(DELETE_DS);
-		dsStatement.setString(1, job.getId());
-		dsStatement.executeUpdate();
-		dsStatement.close();
+		PreparedStatement dsStatement = null;
+		try {
+			dsStatement = connection.prepareStatement(DELETE_DS);
+			dsStatement.setString(1, job.getId());
+			dsStatement.executeUpdate();
+			dsStatement.close();
+		} finally {
+			if (dsStatement != null) {
+				dsStatement.close();
+			}
+		}
 	}
 	
 	/**
@@ -135,17 +157,23 @@ public class DBJobStorage implements IJobStorage {
 		UUID uuid = UUID.randomUUID();
 		String jid = "TEST_CONNECTION_" + uuid.toString();
 		String content = "TEST_CONTENT_" + uuid.toString();
-		PreparedStatement dsStatement = connection.prepareStatement(INSERT_DS);
-		dsStatement.setString(1, jid);
-		dsStatement.setString(2, content);
-		dsStatement.setString(3, content);
-		dsStatement.executeUpdate();
-		dsStatement.close();
+		PreparedStatement dsStatement = null;
+		try {
+			dsStatement = connection.prepareStatement(INSERT_DS);
+			dsStatement.setString(1, jid);
+			dsStatement.setString(2, content);
+			dsStatement.setString(3, content);
+			dsStatement.executeUpdate();
+			dsStatement.close();
 
-		dsStatement = connection.prepareStatement(DELETE_DS);
-		dsStatement.setString(1, jid);
-		dsStatement.executeUpdate();
-		dsStatement.close();
+			dsStatement = connection.prepareStatement(DELETE_DS);
+			dsStatement.setString(1, jid);
+			dsStatement.executeUpdate();
+		} finally {
+			if (dsStatement != null) {
+				dsStatement.close();
+			}
+		}
 	}
 
 	@Override
