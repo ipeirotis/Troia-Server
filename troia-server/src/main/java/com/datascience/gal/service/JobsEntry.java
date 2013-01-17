@@ -70,7 +70,7 @@ public class JobsEntry {
 
 		Job job_old = jobStorage.get(jid);
 		if (job_old != null) {
-			throw new IllegalArgumentException("Job with ID " + jid + " already exist");
+			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
 		}
 
 		Collection<Category> categories = responser.getSerializer().parse(sCategories,
