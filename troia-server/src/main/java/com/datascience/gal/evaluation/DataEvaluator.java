@@ -9,8 +9,6 @@ import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
-import com.datascience.gal.decision.Utils;
-import com.datascience.utils.CostMatrix;
 import com.google.common.base.Strings;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,7 +51,6 @@ public class DataEvaluator {
 	
 	public Map<String, Double> evaluate(DawidSkene ds){
 		Collection<CorrectLabel> evalData = ds.getEvaluationDatums().values();
-		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (CorrectLabel cl: evalData) {
 			ret.put(cl.getObjectName(), evaluate(ds, cl));

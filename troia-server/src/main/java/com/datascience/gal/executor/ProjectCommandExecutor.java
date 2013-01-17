@@ -85,7 +85,7 @@ public class ProjectCommandExecutor{
 	}
 	
 	@Override
-	public void finalize() throws Throwable {
+	protected void finalize() throws Throwable {
 		super.finalize();
 		stop();
 	}
