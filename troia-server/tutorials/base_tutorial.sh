@@ -2,7 +2,7 @@
 
 #URL="http://localhost:8080/troia-server-0.8"
 URL="http://project-troia.com/api"
-JobID="test_1"
+JobID="test_3"
 
 #create the job
 echo "Creating a new job ..."
@@ -109,7 +109,6 @@ if [[ "$status" != "OK" ]]
 fi
 echo "-----------------"
 
-echo $redirect
 
 #get the job status and check that the data is correct
 echo "Checking if the computation has ended - redirect=$redirect..."
@@ -154,5 +153,102 @@ fi
 
 echo "Checking the status of the job with redirect=$redirect ..."
 result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirect")
-echo $result
+status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+workerQualityData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
+echo "Received: $workerQualityData"
+
+if [[ "$status" != "OK" ]]
+  then
+    echo "Get worker quality job status failed with status $status"
+    exit 1
+  else
+    echo "Got workers quality job status"
+fi
+
+if [[ "$workerQualityData" != *"\"worker1\":-1.0"* ]]
+  then
+    echo "Didn't find object \"worker1\":-1.0 into the worker quality data"
+    #exit 1
+fi
+
+if [[ "$workerQualityData" != *"\"worker2\":-0.11111111111111116"* ]]
+  then
+    echo "Didn't find object \"worker2\":-0.11111111111111116 into the worker quality data"
+    #exit 1
+fi
+
+if [[ "$workerQualityData" != *"\"worker3\":1.0"* ]]
+  then
+    echo "Didn't find object \"worker3\":1.0 into the worker quality data"
+    #exit 1
+fi
+
+if [[ "$workerQualityData" != *"\"worker4\":1.0"* ]]
+  then
+    echo "Didn't find object \"worker4\":1.0 into the worker quality data"
+    #exit 1
+fi
+
+if [[ "$workerQualityData" != *"\"worker5\":1.0"* ]]
+  then
+    echo "Didn't find object \"worker5\":1.0 into the worker quality data"
+    #exit 1
+fi
+echo "-----------------"
+
+echo "Getting prediction data ..."
+result=$(curl -s1 -X GET "$URL/jobs/$JobID/prediction/data?algorithm=DS&labelChoosing=MaxLikelihood")
+redirect=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+if [[ "$status" != "OK" ]]
+  then
+    echo "Get workers quality job failed with status $status"
+    exit 1
+  else
+    echo "Get workers quality job finished successfully"
+fi
+
+echo "Checking the status of the job with redirect=$redirect ..."
+result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirect")
+predictionData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
+echo "Received: $predictionData"
+
+if [[ "$status" != "OK" ]]
+  then
+    echo "Get prediction data job status failed with status $status"
+    exit 1
+  else
+    echo "Got prediction data job status"
+fi
+
+if [[ "$predictionData" != *\"http://google.com\":\"notporn\"* ]]
+  then
+    echo "Didn't find object \"http://google.com\":\"notporn\" into the prediction data"
+    exit 1
+fi
+
+if [[ "$predictionData" != *\"http://youporn.com\":\"porn\"* ]]
+  then
+    echo "Didn't find object \"http://youporn.com\":\"porn\" into the prediction data"
+    exit 1
+fi
+
+if [[ "$predictionData" != *\"http://sunnyfun.com\":\"notporn\"* ]]
+  then
+    echo "Didn't find object \"http://sunnyfun.com\":\"notporn\" into the prediction data"
+    exit 1
+fi
+
+if [[ "$predictionData" != *\"http://sex-mission.com\":\"porn\"* ]]
+  then
+    echo "Didn't find object \"http://sex-mission.com\":\"porn\" into the prediction data"
+    exit 1
+fi
+
+if [[ "$predictionData" != *\"http://yahoo.com\":\"notporn\"* ]]
+  then
+    echo "Didn't find object \"http://yahoo.com\":\"notporn\" into the prediction data"
+    exit 1
+fi
+echo "-----------------"
 
