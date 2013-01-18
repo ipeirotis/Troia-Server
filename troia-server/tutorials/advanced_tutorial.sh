@@ -1,8 +1,8 @@
 #!/bin/bash
 
-URL="http://localhost:8080/troia-server-0.8"
-#URL="http://project-troia.com/api"
-JobID="hihihi"
+#URL="http://localhost:8080/troia-server-0.8"
+URL="http://project-troia.com/api"
+JobID="test"
 
 #create the job
 echo "Creating a new job ..."
