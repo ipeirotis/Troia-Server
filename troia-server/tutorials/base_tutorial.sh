@@ -2,7 +2,7 @@
 
 #URL="http://localhost:8080/troia-server-0.8"
 URL="http://project-troia.com/api"
-JobID="test_3"
+JobID="test_5"
 redirectId=0
 noIterations=20
 algorithm=DS
@@ -179,7 +179,7 @@ function getWorkersQualityData {
   do
     if [[ "$workerQualityData" != *"\"$i\":${expectedWorkerQualities[$i]}"* ]]
       then
-	echo "Didn't find object "\"$i\":${expectedWorkerQualities[$i]}" into the worker quality data"
+	echo "ERROR: Could not find object "\"$i\":${expectedWorkerQualities[$i]}" into the worker quality data"
 	#exit 1
     fi
   done
@@ -220,7 +220,7 @@ function getActualPredictionData {
   do
     if [[ "$predictionData" != *"\"$i\":\"${expectedCategories[$i]}\""* ]]
       then
-	echo "Didn't find object "\"$i\":\"${expectedCategories[$i]}\"" into the prediction data"
+	echo "ERROR: Could not find object "\"$i\":\"${expectedCategories[$i]}\"" into the prediction data"
 	#exit 1
     fi
   done
