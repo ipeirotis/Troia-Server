@@ -2,7 +2,7 @@
 
 #URL="http://localhost:8080/troia-server-0.8"
 URL="http://project-troia.com/api"
-JobID="test_5"
+JobID="test_6"
 redirectId=0
 noIterations=20
 algorithm=DS
@@ -11,7 +11,7 @@ labelChoosingMethod=MaxLikelihood
 function createJob 
 {
   echo "Creating a new job ..."
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "id=$JobID&type=incremental&categories=[
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "id=$JobID&type=batch&categories=[
     {"prior":"1","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
     {"prior":"1","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
