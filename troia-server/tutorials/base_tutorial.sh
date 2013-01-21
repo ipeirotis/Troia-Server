@@ -2,11 +2,16 @@
 
 #URL="http://localhost:8080/troia-server-0.8"
 URL="http://project-troia.com/api"
-JobID="test_6"
+JobID=""
 redirectId=0
 noIterations=20
 algorithm=DS
 labelChoosingMethod=MaxLikelihood
+
+function generateRandomJobId {
+  rJobId=$(tr -dc "[:alpha:]" < /dev/urandom | head -c $1)
+  echo "$rJobId"
+}
 
 function createJob 
 {
@@ -228,29 +233,34 @@ function getActualPredictionData {
   echo "-----------------"
 }
 
-createJob
-uploadAssignedLabels
-getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
-loadGoldLabels
-compute
-waitComputationToFinish
-getWorkersScore
+function mainFlow {
+  JobID=$(generateRandomJobId 10)
+  createJob
+  uploadAssignedLabels
+  getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
+  loadGoldLabels
+  compute
+  waitComputationToFinish
+  getWorkersScore
 
-getWorkersQuality
-declare -A expectedWorkerQualities
-expectedWorkerQualities[worker1]=-1.0
-expectedWorkerQualities[worker2]=-0.11111111111111116
-expectedWorkerQualities[worker3]=1.0
-expectedWorkerQualities[worker4]=1.0
-expectedWorkerQualities[worker5]=1.0
-getWorkersQualityData $expectedWorkerQualities
+  getWorkersQuality
+  declare -A expectedWorkerQualities
+  expectedWorkerQualities[worker1]=-1.0
+  expectedWorkerQualities[worker2]=-0.11111111111111116
+  expectedWorkerQualities[worker3]=1.0
+  expectedWorkerQualities[worker4]=1.0
+  expectedWorkerQualities[worker5]=1.0
+  getWorkersQualityData $expectedWorkerQualities
 
-getPredictionData
-declare -A expectedCategories
-expectedCategories[http://google.com]=notporn
-expectedCategories[http://sex-mission.com]=porn
-expectedCategories[http://sunnyfun.com]=notporn
-expectedCategories[http://yahoo.com]=notporn
-expectedCategories[http://youporn.com]=porn
-getActualPredictionData $expectedCategories
+  getPredictionData
+  declare -A expectedCategories
+  expectedCategories[http://google.com]=notporn
+  expectedCategories[http://sex-mission.com]=porn
+  expectedCategories[http://sunnyfun.com]=notporn
+  expectedCategories[http://yahoo.com]=notporn
+  expectedCategories[http://youporn.com]=porn
+  getActualPredictionData $expectedCategories
+}
+
+mainFlow
 
