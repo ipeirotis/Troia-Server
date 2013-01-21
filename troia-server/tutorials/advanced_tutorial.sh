@@ -1,11 +1,15 @@
 #!/bin/bash 
 
-#URL="http://localhost:8080/troia-server-0.8"
-URL="http://project-troia.com/api"
-JobID="test_4"
+URL="http://localhost:8080/troia-server-0.8"
+#URL="http://project-troia.com/api"
+JobID=""
 redirectId=0
 noIterations=20
 
+function generateRandomJobId {
+  rJobId=$(tr -dc "[:alpha:]" < /dev/urandom | head -c $1)
+  echo "$rJobId"
+}
 
 function createJob 
 {
@@ -14,6 +18,8 @@ function createJob
     {"prior":"1","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
     {"prior":"1","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  echo $JobID
+  
   if [[ "$status" != "OK" ]]
     then
       echo "Job with id $JobID already exists"
@@ -114,7 +120,7 @@ function getActualPredictionData {
   do
     if [[ "$predictionData" != *"\"$i\":\"${expectedCategories[$i]}\""* ]]
       then
-	echo "Didn't find object "\"$i\":\"${expectedCategories[$i]}\"" into the prediction data"
+	echo "ERROR: Could not find object "\"$i\":\"${expectedCategories[$i]}\"" into the prediction data"
 	#exit 1
     fi
   done
@@ -161,7 +167,7 @@ function getCategoryProbabilities {
   do
     if [[ "$categProbabilityData" != *"\"$i\":${expectedProbabilities[$i]}"* ]]
       then
-	echo "Didn't find object "\"$i\":${expectedProbabilities[$i]}" into the category probability data"
+	echo "ERROR: Could not find object "\"$i\":${expectedProbabilities[$i]}" into the category probability data"
 	#exit 1
     fi
   done
@@ -205,7 +211,7 @@ function getWorkersQualityData {
   do
     if [[ "$workerQualityData" != *"\"$i\":${expectedWorkerQualities[$i]}"* ]]
       then
-	echo "Didn't find object "\"$i\":${expectedWorkerQualities[$i]}" into the worker quality data"
+	echo "ERROR: Could not find object "\"$i\":${expectedWorkerQualities[$i]}" into the worker quality data"
 	#exit 1
     fi
   done
@@ -228,41 +234,150 @@ function compute {
   echo "-----------------"
 }
 
+function loadGoldLabels {
+  #load gold labels
+  echo "Loading the gold labels ..."
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$JobID/goldData" -d 'labels=
+  [{
+    "correctCategory": "porn",
+    "objectName": "http://sex-mission.com"
+  }]')
+  local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  if [[ "$status" != "OK" ]]
+    then
+      echo "Loading gold labels failed with status $status"
+      exit 1
+    else
+      echo "Loaded successfully the gold labels"
+  fi
+  echo "-----------------"
+}
 
-createJob
-uploadAssignedLabels
-getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
+function getDataCost {
+  echo "Getting data cost for costAlgorithm=$1 ..."
+  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/prediction/dataCost" -d "costAlgorithm=$1")
+  redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  
+  echo "Getting the actual data cost for redirect=$redirectId..."
+  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  local dataCost=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
+  echo "Received: $dataCost"
 
-getPredictionData
-declare -A expectedCategories
-expectedCategories[http://google.com]=notporn
-expectedCategories[http://sex-mission.com]=porn
-expectedCategories[http://sunnyfun.com]=notporn
-expectedCategories[http://yahoo.com]=notporn
-expectedCategories[http://youporn.com]=porn
-getActualPredictionData $expectedCategories
+  if [[ "$status" != "OK" ]]
+    then
+      echo "Get data cost job status failed with status $status"
+      exit 1
+    else
+      echo "Got data cost job status"
+  fi
+  
+  for i in "${!expectedDataCost[@]}"
+  do
+    if [[ "$dataCost" != *"\"$i\":${expectedDataCost[$i]}"* ]]
+      then
+	echo "ERROR: Could not find object "\"$i\":${expectedDataCost[$i]}" into the dataCost data"
+	#exit 1
+    fi
+  done
+  echo "-----------------"
+}
 
-getProbabilityDistribution
-declare -A expectedProbabilities 
-expectedProbabilities[notporn]=0.97945
-expectedProbabilities[porn]=0.02055
-getCategoryProbabilities $expectedProbabilities
+function advancedTutorialPart1 {
+  JobID=$(generateRandomJobId 10)
+  createJob
+  uploadAssignedLabels
+  getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
 
-getPredictedWorkersQuality
-declare -A expectedWorkerQualities
-expectedWorkerQualities[worker1]=0.8516375211366187
-expectedWorkerQualities[worker2]=0.9011184676007533
-expectedWorkerQualities[worker3]=0.9749015350602155
-expectedWorkerQualities[worker4]=0.9749015350602155
-expectedWorkerQualities[worker5]=0.8439714531050402
-getWorkersQualityData $expectedWorkerQualities
+  getPredictionData
+  declare -A expectedCategories
+  expectedCategories[http://google.com]=notporn
+  expectedCategories[http://sex-mission.com]=porn
+  expectedCategories[http://sunnyfun.com]=notporn
+  expectedCategories[http://yahoo.com]=notporn
+  expectedCategories[http://youporn.com]=porn
+  getActualPredictionData $expectedCategories
 
-compute
-getProbabilityDistribution
-declare -A expectedProbabilities 
-expectedProbabilities[notporn]=0.98
-expectedProbabilities[porn]=0.02
-getCategoryProbabilities $expectedProbabilities
+  getProbabilityDistribution
+  declare -A expectedProbabilities 
+  expectedProbabilities[notporn]=0.97945
+  expectedProbabilities[porn]=0.02055
+  getCategoryProbabilities $expectedProbabilities
+
+  getPredictedWorkersQuality
+  declare -A expectedWorkerQualities
+  expectedWorkerQualities[worker1]=0.8516375211366187
+  expectedWorkerQualities[worker2]=0.9011184676007533
+  expectedWorkerQualities[worker3]=0.9749015350602155
+  expectedWorkerQualities[worker4]=0.9749015350602155
+  expectedWorkerQualities[worker5]=0.8439714531050402
+  getWorkersQualityData $expectedWorkerQualities
+
+  compute
+  getProbabilityDistribution
+  declare -A expectedProbabilities 
+  expectedProbabilities[notporn]=0.98
+  expectedProbabilities[porn]=0.02
+  getCategoryProbabilities $expectedProbabilities
+  
+  declare -A expectedDataCost
+  expectedDataCost[http://google.com]=0.0032148158
+  expectedDataCost[http://sex-mission.com]=0.0015388141999999997
+  expectedDataCost[http://sunnyfun.com]=0.00029995499999999997
+  expectedDataCost[http://yahoo.com]=0.00017998380000000002
+  expectedDataCost[http://youporn.com]=0.040255395
+  getDataCost ExpectedCost expectedDataCost
+}
+
+function advancedTutorialPart2 {
+  JobID=$(generateRandomJobId 10)
+  createJob
+  uploadAssignedLabels
+  getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
+
+  getPredictionData
+  declare -A expectedCategories
+  expectedCategories[http://google.com]=notporn
+  expectedCategories[http://sex-mission.com]=porn
+  expectedCategories[http://sunnyfun.com]=notporn
+  expectedCategories[http://yahoo.com]=notporn
+  expectedCategories[http://youporn.com]=porn
+  getActualPredictionData $expectedCategories
+
+  getProbabilityDistribution
+  declare -A expectedProbabilities 
+  expectedProbabilities[notporn]=0.97945
+  expectedProbabilities[porn]=0.02055
+  getCategoryProbabilities $expectedProbabilities
+
+  getPredictedWorkersQuality
+  declare -A expectedWorkerQualities
+  expectedWorkerQualities[worker1]=0.8516375211366187
+  expectedWorkerQualities[worker2]=0.9011184676007533
+  expectedWorkerQualities[worker3]=0.9749015350602155
+  expectedWorkerQualities[worker4]=0.9749015350602155
+  expectedWorkerQualities[worker5]=0.8439714531050402
+  getWorkersQualityData $expectedWorkerQualities
+  
+  loadGoldLabels
+  getPredictedWorkersQuality
+  declare -A expectedWorkerQualities
+  expectedWorkerQualities[worker1]=0.8516375211366187
+  expectedWorkerQualities[worker2]=0.9011184676007533
+  expectedWorkerQualities[worker3]=0.9749015350602155
+  expectedWorkerQualities[worker4]=0.9749015350602155
+  expectedWorkerQualities[worker5]=0.8439714531050402
+  getWorkersQualityData $expectedWorkerQualities
+}
 
 
+echo "###Executing the first part of the tutorial###"
+echo "##############################################"
+advancedTutorialPart1
+echo "##############################################"
+
+echo "###Executing the second part of the tutorial###"
+echo "##############################################"
+advancedTutorialPart2
+echo "##############################################"
 
