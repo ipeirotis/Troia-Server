@@ -4,28 +4,49 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.kohsuke.args4j.Option;
 
-
 public class EngineContext {
 
-	@Option(name="--input", metaVar="<inputfile>", required=true, usage="A tab-separated text file. Each line has the form <workerid><tab><objectid><tab><assigned_label> and records the label that the given worker gave to that object")
+	@Option(
+		name = "--input",
+		metaVar = "<inputfile>",
+		required = true,
+		usage = "A tab-separated text file. Each line has the form <workerid><tab><objectid><tab><assigned_label> and records the label that the given worker gave to that object")
 	private String inputfile = "";
 
-	@Option(name="--evalObjects", metaVar="<trueobjectsfile>", usage="")
+	@Option(
+		name = "--evalObjects",
+		metaVar = "<trueobjectsfile>",
+		usage = "")
 	private String trueobjectsfile = "";
 
-	@Option(name="--evalWorkers", metaVar="<trueworkersfile>", usage="")
+	@Option(
+		name = "--evalWorkers",
+		metaVar = "<trueworkersfile>",
+		usage = "")
 	private String trueworkersfile = "";
-	
-	@Option(name = "--correct", metaVar = "<correctfile>", usage = "A tab-separated text file. Each line has the form <objectid><tab><assigned_label> and records the correct labels for whatever objects we have them.")
-	String correctFile;
 
-	@Option(name = "--synthetic", metaVar = "<syntheticoptionsfile>", usage = "A tab-separated text file. Each line has the form <attribute><tab><value> and records the options for the creation of new synthetic data.")
-	String syntheticOptionsFile = "";
+	@Option(
+		name = "--correct",
+		metaVar = "<correctfile>",
+		usage = "A tab-separated text file. Each line has the form <objectid><tab><assigned_label> and records the correct labels for whatever objects we have them.")
+	private String correctFile = "";
 
-	@Option(name="--output", metaVar="<outputfolder>", usage="An Evaluation Report File")
+	@Option(
+		name = "--synthetic",
+		metaVar = "<syntheticoptionsfile>",
+		usage = "A tab-separated text file. Each line has the form <attribute><tab><value> and records the options for the creation of new synthetic data.")
+	private String syntheticOptionsFile = "";
+
+	@Option(
+		name = "--output",
+		metaVar = "<outputfolder>",
+		usage = "An Evaluation Report File")
 	private String outputfolder = "results";
 
-	@Option(name="--verbose", metaVar="<verbose>", usage="Verbose Mode?")
+	@Option(
+		name = "--verbose",
+		metaVar = "<verbose>",
+		usage = "Verbose Mode?")
 	private boolean verbose;
 
 	public String getInputFile() {
@@ -39,7 +60,6 @@ public class EngineContext {
 	public boolean hasTrueObjectsFile() {
 		return isNotBlank(trueobjectsfile);
 	}
-
 	public String getTrueObjectsFile() {
 		return trueobjectsfile;
 	}
@@ -96,7 +116,4 @@ public class EngineContext {
 		this.verbose = verbose;
 	}
 
-
-
-	
 }
