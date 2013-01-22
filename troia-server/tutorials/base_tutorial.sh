@@ -245,8 +245,8 @@ function mainFlow {
 
   getWorkersQuality
   declare -A expectedWorkerQualities
-  expectedWorkerQualities[worker1]=-1.0
-  expectedWorkerQualities[worker2]=-0.11111111111111116
+  expectedWorkerQualities[worker1]=0.0
+  expectedWorkerQualities[worker2]=0.66666666666666666
   expectedWorkerQualities[worker3]=1.0
   expectedWorkerQualities[worker4]=1.0
   expectedWorkerQualities[worker5]=1.0
