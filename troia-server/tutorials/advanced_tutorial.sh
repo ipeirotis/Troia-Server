@@ -314,19 +314,14 @@ function advancedTutorialPart1 {
   getWorkersQualityData $expectedWorkerQualities
 
   compute
+  
   getProbabilityDistribution
   declare -A expectedProbabilities 
   expectedProbabilities[notporn]=0.98
   expectedProbabilities[porn]=0.02
   getCategoryProbabilities $expectedProbabilities
   
-  declare -A expectedDataCost
-  expectedDataCost[http://google.com]=0.0032148158
-  expectedDataCost[http://sex-mission.com]=0.0015388141999999997
-  expectedDataCost[http://sunnyfun.com]=0.00029995499999999997
-  expectedDataCost[http://yahoo.com]=0.00017998380000000002
-  expectedDataCost[http://youporn.com]=0.040255395
-  getDataCost ExpectedCost expectedDataCost
+ 
 }
 
 function advancedTutorialPart2 {
@@ -370,6 +365,23 @@ function advancedTutorialPart2 {
   getWorkersQualityData $expectedWorkerQualities
 }
 
+function advancedTutorialPart3 {
+  JobID=$(generateRandomJobId 10)
+  createJob
+  uploadAssignedLabels
+  getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
+  
+  compute
+
+  declare -A expectedDataCost
+  expectedDataCost[http://google.com]=0.0032148158
+  expectedDataCost[http://sex-mission.com]=0.0015388141999999997
+  expectedDataCost[http://sunnyfun.com]=0.00029995499999999997
+  expectedDataCost[http://yahoo.com]=0.00017998380000000002
+  expectedDataCost[http://youporn.com]=0.040255395
+  getDataCost ExpectedCost expectedDataCost
+}
+
 
 echo "###Executing the first part of the tutorial###"
 echo "##############################################"
@@ -381,3 +393,7 @@ echo "##############################################"
 advancedTutorialPart2
 echo "##############################################"
 
+echo "###Executing the third part of the tutorial###"
+echo "##############################################"
+advancedTutorialPart3
+echo "##############################################"
