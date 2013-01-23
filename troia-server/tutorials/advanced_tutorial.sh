@@ -15,8 +15,8 @@ function createJob
 {
   echo "Creating a new job ..."
   local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "id=$JobID&type=incremental&categories=[
-    {"prior":"1","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
-    {"prior":"1","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
+    {"prior":"0.5","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
+    {"prior":"0.5","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   echo $JobID
   
@@ -317,8 +317,8 @@ function advancedTutorialPart1 {
   
   getProbabilityDistribution
   declare -A expectedProbabilities 
-  expectedProbabilities[notporn]=0.98
-  expectedProbabilities[porn]=0.02
+  expectedProbabilities[notporn]=0.97998
+  expectedProbabilities[porn]=0.02002
   getCategoryProbabilities $expectedProbabilities
   
  
