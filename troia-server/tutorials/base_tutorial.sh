@@ -17,8 +17,8 @@ function createJob
 {
   echo "Creating a new job ..."
   local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "id=$JobID&type=batch&categories=[
-    {"prior":"1","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
-    {"prior":"1","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
+    {"prior":"0.5","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
+    {"prior":"0.5","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
     then
@@ -245,8 +245,8 @@ function mainFlow {
 
   getWorkersQuality
   declare -A expectedWorkerQualities
-  expectedWorkerQualities[worker1]=0.0
-  expectedWorkerQualities[worker2]=0.66666666666666666
+  expectedWorkerQualities[worker1]=0.5
+  expectedWorkerQualities[worker2]=0.72
   expectedWorkerQualities[worker3]=1.0
   expectedWorkerQualities[worker4]=1.0
   expectedWorkerQualities[worker5]=1.0
