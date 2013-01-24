@@ -1,50 +1,61 @@
 package com.datascience.gal.service;
 
+import java.util.Collection;
+import java.util.logging.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.datascience.core.Job;
 import com.datascience.core.JobFactory;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.Category;
+import com.datascience.gal.commands.CommandStatusesContainer;
 import com.datascience.gal.executor.ProjectCommandExecutor;
-import java.util.Collection;
-import javax.ws.rs.POST;
+import com.sun.jersey.spi.resource.Singleton;
 
 /**
  * @author Konrad Kurdej
  */
+@Path("/jobs/")
+@Singleton
 public class JobsEntry {
 	
 	private static final String RANDOM_PREFIX = "RANDOM__";
+	
+	@Context ServletContext context;
+	@Context UriInfo uriInfo;
 	
 	IJobStorage jobStorage;
 	private IRandomUniqIDGenerator jidGenerator;
 	private JobFactory jobFactory;
 	private ResponseBuilder responser;
 	private ProjectCommandExecutor executor;
+	private CommandStatusesContainer statusesContainer;
 	
-	public JobsEntry(){
+	@PostConstruct
+	public void postConstruct(){
 		jidGenerator = new RandomUniqIDGenerators.PrefixAdderDecorator(RANDOM_PREFIX,
-			new RandomUniqIDGenerators.NumberAndDate());
-	}
-	
-	public JobsEntry(ResponseBuilder responser, JobFactory jobFactory,
-			ProjectCommandExecutor executor, IJobStorage jobStorage){
-		this();
-		this.jobStorage = jobStorage;
-		this.responser = responser;
-		this.jobFactory = jobFactory;
-		this.executor = executor;
+				new RandomUniqIDGenerators.NumberAndDate());
+		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
+		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
+		jobFactory = new JobFactory();
+		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
+		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 	}
 	
 	protected JobEntry jobEntryFactory(Job job){
-		return new JobEntry(job, executor, responser);
+		return new JobEntry(job, executor, responser, statusesContainer, uriInfo.getPath());
 	}
 	
 	@Path("/{id}/")

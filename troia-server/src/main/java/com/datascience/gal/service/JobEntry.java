@@ -1,7 +1,6 @@
 package com.datascience.gal.service;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -12,6 +11,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.core.Job;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
@@ -19,7 +20,7 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.commands.AssignsCommands;
 import com.datascience.gal.commands.CategoriesCommands;
-import com.datascience.gal.commands.CommandStatus;
+import com.datascience.gal.commands.CommandStatusesContainer;
 import com.datascience.gal.commands.CostsCommands;
 import com.datascience.gal.commands.DatumCommands;
 import com.datascience.gal.commands.EvaluationCommands;
@@ -42,25 +43,28 @@ import com.datascience.gal.executor.ProjectCommandExecutor;
  * @author Konrad Kurdej
  */
 public class JobEntry {
-
 	Job job;
 	ResponseBuilder responser;
 	ProjectCommandExecutor commandExecutor;
 	ISerializer serializer;
+	CommandStatusesContainer statusesContainer;
+	String path;
 
-	public JobEntry(Job job, ProjectCommandExecutor commandExecutor, ResponseBuilder responser){
+	public JobEntry(Job job, ProjectCommandExecutor commandExecutor, ResponseBuilder responser, 
+			CommandStatusesContainer statusesContainer, String path){
 		this.job = job;
 		this.commandExecutor = commandExecutor;
 		this.responser = responser;
+		this.statusesContainer = statusesContainer;
 		serializer = responser.getSerializer();
+		this.path = path;
 	}
 	
 	protected Response buildResponseOnCommand(Job job, ProjectCommand command){
-		RequestExecutorCommand rec = new RequestExecutorCommand(
-			job.getCommandStatusesContainer().initNewStatus(), command,
-			job.getRWLock(), job.getCommandStatusesContainer());
+		RequestExecutorCommand rec = new RequestExecutorCommand(statusesContainer.initNewStatus(), 
+				command, job.getRWLock(), statusesContainer);
 		commandExecutor.add(rec);
-		return responser.makeRedirectResponse(rec.commandId);
+		return responser.makeRedirectResponse(String.format("responses/%s/%s", rec.commandId, path));
 	}
 	
 	@Path("")
@@ -188,26 +192,6 @@ public class JobEntry {
 	public Response getWorkers(){
 		ProjectCommand command = new WorkerCommands.GetWorkers(job.getDs());
 		return buildResponseOnCommand(job, command);
-	}
-	
-	@Path("status/{id}")
-	@GET
-	public Response getStatus(@PathParam("id") String sid){
-		CommandStatus status = job.getCommandStatusesContainer()
-			.getCommandResult(sid);
-		if (status == null) {
-			throw new NoSuchElementException("No status with id: " + sid);
-		}
-		switch(status.getStatus()){
-			case OK:
-				return responser.makeOKResponse(status.getData());
-			case ERROR:
-				return responser.makeExceptionResponse(status.getError());
-			case NOT_READY:
-				return responser.makeNotReadyResponse();
-			default:
-				return null;
-		}
 	}
 	
 	@Path("compute/")
