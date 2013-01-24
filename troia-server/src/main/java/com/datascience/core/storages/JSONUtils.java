@@ -96,7 +96,8 @@ public class JSONUtils {
 
 	static {
 
-		GsonBuilder builder = new GsonBuilder();
+//		GsonBuilder builder = new GsonBuilder();
+		GsonBuilder builder = new GsonBuilder().serializeSpecialFloatingPointValues();
 
 		builder.registerTypeAdapter(assignedLabelType,
 									AssignedLabel.deserializer);

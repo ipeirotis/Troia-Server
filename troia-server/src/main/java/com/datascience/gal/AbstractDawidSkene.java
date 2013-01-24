@@ -24,6 +24,7 @@ import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
+import com.google.common.math.DoubleMath;
 
 public abstract class AbstractDawidSkene implements DawidSkene {
 
@@ -58,6 +59,41 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
 	}
+	
+	public AbstractDawidSkene(String id, Collection<Category> categories){
+		this(id);
+		this.fixedPriors = false;
+		this.categories = new HashMap<String, Category>();
+		double priorSum = 0.;
+		int priorCnt = 0;
+		for (Category c : categories) {
+			this.categories.put(c.getName(), c);
+			if (c.hasPrior()) {
+				priorCnt += 1;
+				priorSum += c.getPrior();
+			}
+		}
+		if (!(priorCnt == 0 || (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6)))){
+			throw new IllegalArgumentException(
+					"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
+		}
+		if (priorCnt == 0){
+			initializePriors();
+		}
+		if (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6))
+			fixedPriors = true;
+		
+		//set cost matrix values if not provided
+		for (Category from : categories) {
+			for (Category to : categories) {
+				if (from.getCost(to.getName()) == null){
+					from.setCost(to.getName(), from.getName().equals(to.getName()) ? 0. : 1.);
+				}
+			}
+		}
+		
+		invalidateComputed();
+	}
 
 	protected void invalidateComputed() {
 		this.computed = false;
@@ -65,50 +101,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	protected void markComputed() {
 		this.computed = true;
-	}
-	
-	public void initializeOnCategories(Collection<Category> categories){
-		this.fixedPriors = false;
-		this.categories = new HashMap<String, Category>();
-
-		for (Category c : categories) {
-			this.categories.put(c.getName(), c);
-			if (c.hasPrior()) {
-				this.fixedPriors = true;
-			}
-		}
-
-		// We initialize the priors to be uniform across classes
-		// if the user did not pass any information about the prior values
-
-		if (!fixedPriors)
-			initializePriors();
-		
-		// By default, we initialize the misclassification costs
-		// assuming a 0/1 loss function. The costs can be customized
-		// using the corresponding file
-		initializeCosts();
-	}
-	
-	/**
-	 * We initialize the misclassification costs using the 0/1 loss
-	 *
-	 * @param categories
-	 */
-	protected void initializeCosts() {
-
-		for (String from : categories.keySet()) {
-			for (String to : categories.keySet()) {
-				Category c = categories.get(from);
-				if (from.equals(to)) {
-					c.setCost(to, 0.0);
-				} else {
-					c.setCost(to, 1.0);
-				}
-				categories.put(from, c);
-			}
-		}
-		invalidateComputed();
 	}
 
 	protected void initializePriors() {
@@ -179,13 +171,13 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return JSONUtils.toJson(this);
 	}
 
-	@Override
-	public void setFixedPriors(Map<String, Double> priors) {
-
-		this.fixedPriors = true;
-		setPriors(priors);
-	}
-
+//	@Override
+//	public void setFixedPriors(Map<String, Double> priors) {
+//
+//		this.fixedPriors = true;
+//		setPriors(priors);
+//	}
+//
 	protected void setPriors(Map<String, Double> priors) {
 
 		for (String c : this.categories.keySet()) {
@@ -211,10 +203,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return this.objectsWithNoLabels.size();
 	}
 	
-	@Override
-	public boolean fixedPriors() {
-		return fixedPriors;
-	}
+//	@Override
+//	public boolean fixedPriors() {
+//		return fixedPriors;
+//	}
 
 	@Override
 	public Map<String, Double> getObjectProbs(String objectName) {
@@ -237,12 +229,12 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return out;
 	}
 
-	@Override
-	public void unsetFixedPriors() {
-
-		this.fixedPriors = false;
-		updatePriors();
-	}
+//	@Override
+//	public void unsetFixedPriors() {
+//
+//		this.fixedPriors = false;
+//		updatePriors();
+//	}
 
 	protected void updatePriors() {
 
