@@ -122,7 +122,7 @@ public class Worker {
 
 	@Override
 	public int hashCode() {
-		return com.google.common.base.Objects.hashCode( this.name);
+		return Objects.hashCode( this.name);
 	}
 
 	@Override
