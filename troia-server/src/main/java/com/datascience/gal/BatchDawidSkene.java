@@ -27,23 +27,13 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 	public static final BatchDawidSkeneDeserializer deserializer = new BatchDawidSkeneDeserializer();
 
-	private BatchDawidSkene(String id, Map<String, Datum> objects,
-			Map<String, Worker> workers, Map<String, Category> categories,
-			boolean fixedPriors) {
-		super(id);
-		this.objects = objects;
-		this.workers = workers;
-		this.categories = categories;
-		this.fixedPriors = fixedPriors;
-	}
-
-	public BatchDawidSkene(String id, Collection<Category> categories) {
-		this(id);
-		initializeOnCategories(categories);
-	}
-
 	public BatchDawidSkene(String id) {
 		super(id);
+		super.logger = this.logger;
+	}
+	
+	public BatchDawidSkene(String id, Collection<Category> categories) {
+		super(id, categories);
 		super.logger = this.logger;
 	}
 	

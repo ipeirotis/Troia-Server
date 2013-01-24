@@ -52,7 +52,7 @@ public class Category {
 		misclassification_cost.put(to, cost);
 	}
 
-	public double getCost(String to) {
+	public Double getCost(String to) {
 		return misclassification_cost.get(to);
 	}
 
@@ -142,7 +142,9 @@ public class Category {
 									JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
 			String name = jobject.get("name").getAsString();
-			double prior = jobject.get("prior").getAsDouble();
+			double prior = -1.;
+			if (jobject.has("prior"))
+				prior = jobject.get("prior").getAsDouble();
 			Map<String, Double> misclassification_cost = JSONUtils.gson
 					.fromJson(jobject.get("misclassification_cost"),
 							  JSONUtils.stringDoubleMapType);

@@ -35,8 +35,6 @@ public interface DawidSkene {
 	/**
 	 * @return the fixedPriors
 	 */
-	public abstract boolean fixedPriors();
-
 	public abstract void addMisclassificationCosts(
 		Collection<MisclassificationCost> cls);
 
@@ -92,10 +90,6 @@ public interface DawidSkene {
 	 */
 	public abstract Map<String, Double> objectClassProbabilities(
 		String objectName, double entropyThreshold);
-
-	public abstract void setFixedPriors(Map<String, Double> priors);
-
-	public abstract void unsetFixedPriors();
 
 	public abstract String getId();
 
