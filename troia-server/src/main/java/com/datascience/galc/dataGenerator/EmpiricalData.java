@@ -1,7 +1,12 @@
-package com.datascience.galc;
+package com.datascience.galc.dataGenerator;
 
 import java.util.Map;
 import java.util.HashMap;
+
+import com.datascience.galc.AssignedLabel;
+import com.datascience.galc.DatumCont;
+import com.datascience.galc.Utils;
+import com.datascience.galc.Worker;
 
 public class EmpiricalData extends Data {
 

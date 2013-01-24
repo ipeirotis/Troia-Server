@@ -1,7 +1,11 @@
-package com.datascience.galc;
+package com.datascience.galc.dataGenerator;
 
 import java.util.Set;
 import java.util.HashSet;
+
+import com.datascience.galc.AssignedLabel;
+import com.datascience.galc.DatumCont;
+import com.datascience.galc.Worker;
 
 public abstract class Data {
 
