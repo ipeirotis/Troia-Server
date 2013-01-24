@@ -527,7 +527,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		double c = 0.0;
 		for (String destination : destProbabilities.keySet()) {
 			double p = destProbabilities.get(destination);
-			double cost = this.categories.get(source).getCost(destination);
+			Double cost = this.categories.get(source).getCost(destination);
 			c += p * cost;
 		}
 
@@ -548,7 +548,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			for (String c2 : probabilities.keySet()) {
 				double p1 = probabilities.get(c1);
 				double p2 = probabilities.get(c2);
-				double cost = categories.get(c1).getCost(c2);
+				Double cost = categories.get(c1).getCost(c2);
 				c += p1 * p2 * cost;
 			}
 		}
@@ -576,7 +576,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			for (String c2 : probabilities.keySet()) {
 				// With probability p2 it actually belongs to class c2
 				double p2 = probabilities.get(c2);
-				double cost = categories.get(c1).getCost(c2);
+				Double cost = categories.get(c1).getCost(c2);
 				costfor_c2 += p2 * cost;
 
 			}
