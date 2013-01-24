@@ -33,9 +33,9 @@ public class ResponseBuilder {
 	}
 
 	public Response makeExceptionResponse(Throwable exception){
-		String message = "Internal error: " + exception.getLocalizedMessage();
+		String message = "Internal error: " + exception.getMessage();
 		Map<String, Object> content = initialResponseContent("ERROR", message);
-//		content.put("stacktrace", exception.getStackTrace());
+		content.put("stacktrace", exception.getStackTrace());
 		return Response.status(500).type(serializer.getMediaType())
 				.entity(serializer.serialize(content)).build();
 	}

@@ -140,7 +140,7 @@ public class DatumCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getObject(datumId));
+			setResult(ParamChecking.datum(ads, datumId));
 		}
 	}
 	
@@ -158,7 +158,8 @@ public class DatumCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(labelProbabilityDistributionCalculator.calculateDistribution(ads.getObject(datumId), ads));
+			Datum datum = ParamChecking.datum(ads, datumId);
+			setResult(labelProbabilityDistributionCalculator.calculateDistribution(datum, ads));
 		}
 	}
 }
