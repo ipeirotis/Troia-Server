@@ -1,4 +1,4 @@
-package com.datascience.galc;
+package com.datascience.galc.dataGenerator;
 
 import org.apache.commons.math3.random.RandomData;
 import org.apache.commons.math3.random.RandomDataImpl;

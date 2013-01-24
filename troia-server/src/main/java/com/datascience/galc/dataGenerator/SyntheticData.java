@@ -1,8 +1,14 @@
-package com.datascience.galc;
+package com.datascience.galc.dataGenerator;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+
+import com.datascience.galc.AssignedLabel;
+import com.datascience.galc.Data;
+import com.datascience.galc.DatumCont;
+import com.datascience.galc.Utils;
+import com.datascience.galc.Worker;
 
 public class SyntheticData extends Data {
 
