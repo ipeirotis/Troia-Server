@@ -5,6 +5,10 @@
 	<artifactId>troia-data-generator</artifactId>
 	<version>0.5</version>
 	<packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 	<parent>
 		<groupId>com.ipeirotis</groupId>
 		<artifactId>project-troia</artifactId>
