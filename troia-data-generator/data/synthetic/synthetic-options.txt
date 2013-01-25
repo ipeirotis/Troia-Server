@@ -1,0 +1,12 @@
+data_points=1000
+data_mu=7.0
+data_sigma=11.0
+data_gold=100
+workers=3
+worker_mu_down=-5.0
+worker_mu_up=5.0
+worker_sigma_down=0.5
+worker_sigma_up=1.5
+worker_rho_down=0.5
+worker_rho_up=1.0
+
