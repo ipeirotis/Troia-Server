@@ -107,7 +107,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
 				<executions>
 					<execution>
 						<id>make-a-jar</id>
@@ -120,7 +121,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.4</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
