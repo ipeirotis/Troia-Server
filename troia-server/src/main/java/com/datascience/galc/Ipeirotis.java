@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.galc.dataGenerator.Data;
 import com.datascience.galc.engine.EngineContext;
 
 public class Ipeirotis {
