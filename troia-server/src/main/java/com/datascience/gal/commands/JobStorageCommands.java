@@ -1,57 +1,57 @@
 package com.datascience.gal.commands;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.gal.executor.SynchronizedJobCommand;
-import org.apache.log4j.Logger;
 
 /**
  *
- * @author konrad
+ * @author konrad & artur
  */
 public class JobStorageCommands{
 	
 	static Logger logger = Logger.getLogger(JobStorageCommands.class);
 	
-	public static class Adder extends SynchronizedJobCommand {
+	public static class Adder extends JobStorageCommand {
 		
-		protected IJobStorage jobStorage;
-		protected Job job;
-		
-		public Adder(IJobStorage jobStorage, Job job) {
-			super(job.getRWLock(), false);
-			this.jobStorage = jobStorage;
-			this.job = job;
+		public Adder(IJobStorage jobStorage, Job job, 
+				String commandId, CommandStatusesContainer statusContainer) {
+			super(jobStorage, job, commandId, statusContainer, false);
 		}
 
 		@Override
 		public void run() {
+			CommandStatus status;
 			try {
 				jobStorage.add(job);
+				status = CommandStatus.okCommandStatus("New job created with ID: " + job.getId());
 			} catch (Exception e) {
+				status = CommandStatus.errorCommandStatus(e);
 				logger.fatal("When adding job to storage", e);
 			}
+			statusContainer.addCommandStatus(commandId, status);
 		}
 	}
 	
-	public static class Remover extends SynchronizedJobCommand {
+	public static class Remover extends JobStorageCommand {
 
-		protected IJobStorage jobStorage;
-		protected Job job;
-		
-		public Remover(IJobStorage jobStorage, Job job) {
-			super(job.getRWLock(), true);
-			this.jobStorage = jobStorage;
-			this.job = job;
+		public Remover(IJobStorage jobStorage, Job job, 
+				String commandId, CommandStatusesContainer statusContainer) {
+			super(jobStorage, job, commandId, statusContainer, true);
 		}
 
 		@Override
 		public void run() {
+			CommandStatus status;
 			try {
 				jobStorage.remove(job);
+				status = CommandStatus.okCommandStatus("Removed job with ID: " + job.getId());
 			} catch (Exception e) {
+				status = CommandStatus.errorCommandStatus(e);
 				logger.fatal("When removing job to storage", e);
 			}
+			statusContainer.addCommandStatus(commandId, status);
 		}
 	}
 }

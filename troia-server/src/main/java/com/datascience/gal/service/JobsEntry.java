@@ -11,12 +11,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.datascience.core.Job;
 import com.datascience.core.JobFactory;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.Category;
+import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.gal.commands.JobStorageCommands;
+import com.datascience.gal.executor.ProjectCommandExecutor;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
@@ -29,11 +33,14 @@ public class JobsEntry {
 	private static final String RANDOM_PREFIX = "RANDOM__";
 	
 	@Context ServletContext context;
+	@Context UriInfo uriInfo;
 	
 	IJobStorage jobStorage;
 	private IRandomUniqIDGenerator jidGenerator;
 	private JobFactory jobFactory;
 	private ResponseBuilder responser;
+	private ProjectCommandExecutor executor;
+	private CommandStatusesContainer statusesContainer;
 	
 	@PostConstruct
 	public void postConstruct(){
@@ -42,6 +49,8 @@ public class JobsEntry {
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 		jobFactory = new JobFactory();
+		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
+		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 	}
 	
 	private boolean empty_jid(String jid){
@@ -65,8 +74,10 @@ public class JobsEntry {
 			JSONUtils.categorySetType);
 		Job job = jobFactory.createJob(type, jid, categories);
 
-		jobStorage.add(job);
-		return responser.makeOKResponse("New job created with ID: " + jid);
+		JobStorageCommands.Adder jsc = new JobStorageCommands.Adder(
+				jobStorage, job, statusesContainer.initNewStatus(), statusesContainer);
+		executor.add(jsc);
+		return responser.makeRedirectResponse(jsc.commandId, uriInfo.getPath());
 	}
 	
 	@DELETE
@@ -74,11 +85,15 @@ public class JobsEntry {
 		if (empty_jid(jid)) {
 			throw new IllegalArgumentException("No job ID given");
 		}
+		
 		Job job = jobStorage.get(jid);
 		if (job == null) {
 			throw new IllegalArgumentException("Job with ID " + jid + " does not exist");
 		}
-		jobStorage.remove(job);
-		return responser.makeOKResponse("Removed job with ID: " + jid);
+		
+		JobStorageCommands.Remover jsc = new JobStorageCommands.Remover(
+				jobStorage, job, statusesContainer.initNewStatus(), statusesContainer);
+		executor.add(jsc);
+		return responser.makeRedirectResponse(jsc.commandId, uriInfo.getPath());
 	}
 }
