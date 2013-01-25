@@ -2,6 +2,8 @@ package com.datascience.gal.service;
 
 import java.util.Collection;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -9,11 +11,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import org.apache.log4j.Logger;
+import javax.ws.rs.core.UriInfo;
 
 import com.datascience.core.Job;
+import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
@@ -42,29 +45,39 @@ import com.datascience.gal.executor.ProjectCommandExecutor;
 /**
  * @author Konrad Kurdej
  */
+@Path("/jobs/{id}/")
 public class JobEntry {
+	
+	@Context ServletContext context;
+	@Context UriInfo uriInfo;
+	@PathParam("id") String jid;
+	
 	Job job;
 	ResponseBuilder responser;
-	ProjectCommandExecutor commandExecutor;
+	ProjectCommandExecutor executor;
 	ISerializer serializer;
 	CommandStatusesContainer statusesContainer;
-	String path;
-
-	public JobEntry(Job job, ProjectCommandExecutor commandExecutor, ResponseBuilder responser, 
-			CommandStatusesContainer statusesContainer, String path){
-		this.job = job;
-		this.commandExecutor = commandExecutor;
-		this.responser = responser;
-		this.statusesContainer = statusesContainer;
+	IJobStorage jobStorage;
+	
+	@PostConstruct
+	public void postConstruct() throws Exception{
+		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
+		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
+		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
+		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
-		this.path = path;
+		
+		job = jobStorage.get(jid);
+		if (job == null) {
+			throw new IllegalArgumentException("Job with ID " + jid + " does not exist");
+		}
 	}
 	
 	protected Response buildResponseOnCommand(Job job, ProjectCommand command){
-		RequestExecutorCommand rec = new RequestExecutorCommand(statusesContainer.initNewStatus(), 
-				command, job.getRWLock(), statusesContainer);
-		commandExecutor.add(rec);
-		return responser.makeRedirectResponse(String.format("responses/%s/%s", rec.commandId, path));
+		RequestExecutorCommand rec = new RequestExecutorCommand(
+				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
+		executor.add(rec);
+		return responser.makeRedirectResponse(String.format("responses/%s/%s", rec.commandId, uriInfo.getPath()));
 	}
 	
 	@Path("")
