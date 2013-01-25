@@ -53,7 +53,7 @@ public class InitializationSupport implements ServletContextListener {
 			CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer();
 			scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
 			
-			scontext.setAttribute(Constants.TIME_NOW, DateTime.now());
+			scontext.setAttribute(Constants.DEPLOY_TIME, DateTime.now());
 
 			logger.info("Initialization support ended without complications");
 		} catch (Exception e) {

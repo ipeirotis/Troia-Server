@@ -29,7 +29,7 @@ public class StatusEntry {
 	public void postConstruct(){
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
-		initializationTimestamp = (DateTime) context.getAttribute(Constants.TIME_NOW);
+		initializationTimestamp = (DateTime) context.getAttribute(Constants.DEPLOY_TIME);
 	}
 	
 	@GET @Path("/")
