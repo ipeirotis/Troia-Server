@@ -6,6 +6,7 @@ package com.datascience.gal.service;
  */
 public class Constants {
 	
+	public static final String TIME_NOW = "TIME_NOW";
 	public static final String JOBS_STORAGE = "JOBS_STORAGE";
 	public static final String SERIALIZER = "SERIALIZER";
 	public static final String RESPONSER = "RESPONSER";
