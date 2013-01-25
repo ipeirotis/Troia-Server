@@ -12,6 +12,7 @@ import com.datascience.core.storages.DBJobStorage;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JobStorageUsingExecutor;
 import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.gal.commands.SerializedCommandStatusesContainer;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 
 /**
@@ -49,9 +50,8 @@ public class ServiceComponentsFactory {
 		return jobStorage;
 	}
 
-	//TODO: add serialize option
 	public CommandStatusesContainer loadCommandStatusesContainer(){
-		return new CommandStatusesContainer(new RandomUniqIDGenerators.Numbers());
+		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), new GSONSerializer());
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){
