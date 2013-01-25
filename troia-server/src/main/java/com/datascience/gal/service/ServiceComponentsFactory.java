@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
 import com.datascience.core.storages.DBJobStorage;
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.core.storages.JobStorageUsingExecutor;
 import com.datascience.gal.commands.CommandStatusesContainer;
 import com.datascience.gal.commands.SerializedCommandStatusesContainer;
 import com.datascience.gal.executor.ProjectCommandExecutor;
@@ -45,7 +44,6 @@ public class ServiceComponentsFactory {
 			password, db, url, serializer);
 		IJobStorage jobStorage =
 			new CachedWithRegularDumpJobStorage(internalJobStorage, cachesize, 10, TimeUnit.MINUTES);
-		jobStorage = new JobStorageUsingExecutor(jobStorage, executor);
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}

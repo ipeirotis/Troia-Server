@@ -77,7 +77,7 @@ public class JobEntry {
 		RequestExecutorCommand rec = new RequestExecutorCommand(
 				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
 		executor.add(rec);
-		return responser.makeRedirectResponse(String.format("responses/%s/%s", rec.commandId, uriInfo.getPath()));
+		return responser.makeRedirectResponse(rec.commandId, uriInfo.getPath());
 	}
 	
 	@Path("")

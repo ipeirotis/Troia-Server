@@ -52,9 +52,9 @@ public class ResponseBuilder {
 			.type(serializer.getMediaType()).build();
 	}
 	
-	public Response makeRedirectResponse(String newAddress){
+	public Response makeRedirectResponse(String commandId, String path){
 		Map<String, Object> init_content = initialResponseContent("OK", null);
-		init_content.put("redirect", newAddress);
+		init_content.put("redirect", String.format("responses/%s/%s", commandId, path));
 		return Response.ok(serializer.serialize(init_content))
 			.type(serializer.getMediaType()).build();
 	}
