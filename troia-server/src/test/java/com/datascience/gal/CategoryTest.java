@@ -137,7 +137,7 @@ public class CategoryTest {
 	public final void testGetCost() {
 		Category category = new Category("category name");
 		String ds[] = {"dest1", "dest2", "dest3"};
-		double cs[] = {1234e1, -1, 234e2};
+		Double cs[] = {1234e1, -1., 234e2};
 		category.setCost(ds[0], cs[0]);
 		assertEquals(category.getCost(ds[0]), cs[0], TestDataManager.DELTA_DOUBLE);
 		category.setCost(ds[1], cs[1]);
@@ -153,7 +153,7 @@ public class CategoryTest {
 	@Test
 	public final void testGetPrior() {
 		Category category = new Category("category name");
-		double priors[] = {0.0, 1.0, -1.0, 1e20, -1e20};
+		Double priors[] = {0.0, 1.0, -1.0, 1e20, -1e20};
 		for (int i=0; i<priors.length; i++) {
 			category.setPrior(priors[i]);
 			assertEquals(category.getPrior(), priors[i], TestDataManager.DELTA_DOUBLE);

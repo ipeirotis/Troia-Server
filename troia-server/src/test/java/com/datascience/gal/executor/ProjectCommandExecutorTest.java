@@ -97,7 +97,16 @@ public class ProjectCommandExecutorTest {
 
 		@Override
 		public void run() {
-			throw new AssertionError("Upss ...");
+			throw new ArtificialError(
+				"Don't worry - this is expected one");
 		}
 	}
+	
+	static class ArtificialError extends Error {
+		
+		public ArtificialError(String message) {
+			super(message);
+		}
+	}
+	
 }

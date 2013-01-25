@@ -33,24 +33,43 @@ import com.google.gson.JsonObject;
  */
 public class IncrementalDawidSkeneTest {
 	int testCount = 5;
-	List<String> idList = new ArrayList<String>();
-	List<ArrayList<Category>> categoriesList = new ArrayList<ArrayList<Category>>();
+	List<String> idList;
+	List<ArrayList<Category>> categoriesList;
 	List<HashMap<String, Category>> categoryMapList;
 	List<HashMap<String, Datum>> objectsList;
 	List<HashMap<String, Worker>> workersList;
+
 	/**
-	 *
+	 * @throws java.lang.Exception
 	 */
-	public IncrementalDawidSkeneTest() {
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		idList = new ArrayList<String>();
+		categoriesList = new ArrayList<ArrayList<Category>>();
+		objectsList = new ArrayList<HashMap<String,Datum>>();
+		workersList = new ArrayList<HashMap<String,Worker>>();
+		categoryMapList = new ArrayList<HashMap<String,Category>>();
+
 		idList.add("id1");
 		idList.add("id2");
 		idList.add("id3");
 		idList.add("id4");
 		idList.add("id5");
 		String[] categoryNames = {"cat1", "cat2", "cat3", "cat4", "cat5"};
-		objectsList = new ArrayList<HashMap<String,Datum>>();
-		workersList = new ArrayList<HashMap<String,Worker>>();
-		categoryMapList = new ArrayList<HashMap<String,Category>>();
 
 		for (int i=0; i<testCount; i++) {
 			ArrayList<Category> categoryList = new ArrayList<Category>();
@@ -75,26 +94,6 @@ public class IncrementalDawidSkeneTest {
 			workersList.add(workerMap);
 		}
 	}
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -114,7 +113,6 @@ public class IncrementalDawidSkeneTest {
 
 			for (Category category: categoriesList.get(i)) {
 				Category localCategory = new Category(category.getName());
-				localCategory.setPrior(0.1);
 				localCategoryList.add(localCategory);
 			}
 
@@ -141,13 +139,12 @@ public class IncrementalDawidSkeneTest {
 
 			for (Category category: globalCategoryList) {
 				Category localCategory = new Category(category.getName());
-				localCategory.setPrior(0.4);
 				localCategoryList.add(localCategory);
 			}
 			Set<Category> localCategorySet = new HashSet<Category>(localCategoryList);
 			Worker worker = new Worker("worker", localCategorySet);
 			IncrementalDawidSkene incrementalDawidSkene = new
-			IncrementalDawidSkene("id"+i, localCategoryList);
+					IncrementalDawidSkene("id"+i, localCategoryList);
 			for (int j=0; j<size; j++) {
 				int k = ( j + 1 ) % size;
 				double errorRate = incrementalDawidSkene.getErrorRateForWorker(worker,
@@ -170,7 +167,6 @@ public class IncrementalDawidSkeneTest {
 
 			for (Category category: globalCategoryList) {
 				Category localCategory = new Category(category.getName());
-				localCategory.setPrior(0.2);
 				localCategoryList.add(localCategory);
 			}
 
@@ -310,7 +306,6 @@ public class IncrementalDawidSkeneTest {
 			List<Category> localCategoryList = new ArrayList<Category>();
 			for (Category category: globalCategoryList) {
 				Category localCategory = new Category(category.getName());
-				localCategory.setPrior(0.2);
 				localCategoryList.add(localCategory);
 			}
 
@@ -345,9 +340,7 @@ public class IncrementalDawidSkeneTest {
 		Map<String, Category> categories = new HashMap<String, Category>();
 
 		Category category1 = new Category("category1");
-		category1.setPrior(0.1);
 		Category category2 = new Category("category2");
-		category2.setPrior(0.2);
 		categories.put(category1.getName(), category1);
 		categories.put(category2.getName(), category2);
 		Set<Category> categorySetForWorkerAndDatum = new HashSet<Category>(2);
@@ -375,10 +368,8 @@ public class IncrementalDawidSkeneTest {
 		incrementalDawidSkeneForEmptyDatumMap =
 			constructByDeserialization("id1", objects, workers, categories, false,
 									   IncrementalDSMethod.ITERATELOCAL, 0.7);
-		assertEquals(0.28571, incrementalDawidSkeneForEmptyDatumMap.prior("category2"), TestDataManager.DELTA_DOUBLE);
-		assertEquals(0.14285, incrementalDawidSkeneForEmptyDatumMap.prior("category1"), TestDataManager.DELTA_DOUBLE);
-
-
+//		assertEquals(0.28571, incrementalDawidSkeneForEmptyDatumMap.prior("category2"), TestDataManager.DELTA_DOUBLE);
+//		assertEquals(0.14285, incrementalDawidSkeneForEmptyDatumMap.prior("category1"), TestDataManager.DELTA_DOUBLE);
 	}
 
 	/**
@@ -391,9 +382,7 @@ public class IncrementalDawidSkeneTest {
 		Map<String, Category> categories = new HashMap<String, Category>();
 
 		Category category1 = new Category("category1");
-		category1.setPrior(0.1);
 		Category category2 = new Category("category2");
-		category2.setPrior(0.2);
 		categories.put(category1.getName(), category1);
 		categories.put(category2.getName(), category2);
 		Set<Category> categorySetForWorkerAndDatum = new HashSet<Category>(2);
@@ -489,20 +478,7 @@ public class IncrementalDawidSkeneTest {
 			}
 		}
 	}
-	/**
-	 * Test method for {@link com.datascience.gal.IncrementalDawidSkene#IncrementalDawidSkene(java.lang.String, java.util.Collection, com.datascience.gal.IncrementalDSMethod)}.
-	 */
-	@Test
-	public final void testIncrementalDawidSkeneStringCollectionOfCategoryIncrementalDSMethod() {
-		for (int i=0; i<testCount; i++) {
-			IncrementalDawidSkene incrementalDawidSkeneIterateLocal = new IncrementalDawidSkene(
-				idList.get(i), categoriesList.get(i), IncrementalDSMethod.ITERATELOCAL);
-			IncrementalDawidSkene incrementalDawidSkeneUpdateWorkers = new IncrementalDawidSkene(
-				idList.get(i), categoriesList.get(i), IncrementalDSMethod.UPDATEWORKERS);
-			assertNotSame(incrementalDawidSkeneIterateLocal.hashCode(),
-						  incrementalDawidSkeneUpdateWorkers.hashCode());
-		}
-	}
+
 	/**
 	 * Test method for {@link com.datascience.gal.IncrementalDawidSkene#estimate(int)}.
 	 */
@@ -515,7 +491,6 @@ public class IncrementalDawidSkeneTest {
 
 			for (Category category: categoriesList.get(i)) {
 				Category localCategory = new Category(category.getName());
-				localCategory.setPrior(0.1);
 				localCategoryList.add(localCategory);
 			}
 
@@ -576,9 +551,7 @@ public class IncrementalDawidSkeneTest {
 		Map<String, Category> categories = new HashMap<String, Category>();
 
 		Category category1 = new Category("category1");
-		category1.setPrior(0.1);
 		Category category2 = new Category("category2");
-		category2.setPrior(0.2);
 		categories.put(category1.getName(), category1);
 		categories.put(category2.getName(), category2);
 		Set<Category> categorySetForWorkerAndDatum = new HashSet<Category>(2);
@@ -642,7 +615,7 @@ public class IncrementalDawidSkeneTest {
 			for (Entry<String, Worker> entry : workersList.get(i).entrySet()) {
 				Worker worker = entry.getValue();
 				HashMap<String, Category> categoryMap = categoryMapList.get(i);
-				Map<String, Double> workerPriors = worker.getPrior(incrementalDawidSkene.getCategoryPriors());
+				Map<String, Double> workerPriors = worker.getPrior(incrementalDawidSkene.getCategories().keySet());
 				for (Entry<String, Category> entryCatMap : categoryMap.entrySet()) {
 					assertTrue(workerPriors.containsKey(entryCatMap.getKey()));
 				}

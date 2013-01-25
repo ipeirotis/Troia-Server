@@ -14,6 +14,9 @@ public class Utils {
 
 	static public Double calculateLabelCost(String calcLabel,
 			Map<String, Double> labelProbabilities, CostMatrix<String> costMatrix) {
+		if (calcLabel == null) {
+			return Double.NaN;
+		}
 		double sum = 0.;
 		for (String label: costMatrix.getKnownValues()) {
 			double cost = costMatrix.getCost(label, calcLabel);

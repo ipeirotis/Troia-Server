@@ -48,8 +48,8 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	}
 
 	public IncrementalDawidSkene(String id, Collection<Category> categories) {
-		this(id);
-		initializeOnCategories(categories);
+		super(id, categories);
+		super.logger = this.logger;
 	}
 
 	public IncrementalDawidSkene(String id) {
