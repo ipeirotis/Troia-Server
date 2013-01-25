@@ -11,6 +11,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.commands.CommandStatusesContainer;
@@ -51,6 +52,8 @@ public class InitializationSupport implements ServletContextListener {
 			
 			CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer();
 			scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
+			
+			scontext.setAttribute(Constants.TIME_NOW, DateTime.now());
 
 			logger.info("Initialization support ended without complications");
 		} catch (Exception e) {
