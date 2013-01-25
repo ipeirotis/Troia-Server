@@ -8,7 +8,6 @@ import com.datascience.galc.Data;
 import com.datascience.galc.DatumCont;
 import com.datascience.galc.EmpiricalData;
 import com.datascience.galc.Ipeirotis;
-import com.datascience.galc.dataGenerator.SyntheticData;
 import com.datascience.galc.Worker;
 
 class ReportGenerator {
@@ -227,14 +226,8 @@ public class Engine {
 	public void execute() {
 
 		Data data;
-		if(ctx.isSyntheticDataSet()) {
-			SyntheticData sdata = createSyntheticDataSet(ctx.isVerbose(),ctx.getSyntheticOptionsFile());
-			sdata.writeLabelsToFile(ctx.getInputFile());
-			sdata.writeTrueWorkerDataToFile(ctx.getTrueWorkersFile());
-			sdata.writeTrueObjectDataToFile(ctx.getTrueObjectsFile());
-			sdata.writeGoldObjectDataToFile(ctx.getCorrectFile());
-			data = sdata;
-		} else {
+		//if(ctx.isSyntheticDataSet()) { **delete synthetic from ctx
+
 			EmpiricalData edata = new EmpiricalData();
 			edata.loadLabelFile(ctx.getInputFile());
 			if(ctx.hasTrueWorkersFile()) {
@@ -247,7 +240,7 @@ public class Engine {
 				edata.loadGoldLabelsFile(ctx.getCorrectFile());
 			}
 			data = edata;
-		}
+
 		Ipeirotis ip = new Ipeirotis(data, ctx);
 
 		ReportGenerator rpt = new ReportGenerator(ip, ctx);
@@ -266,39 +259,6 @@ public class Engine {
 
 	}
 
-	/**
-	 * @return
-	 */
-	private static SyntheticData createSyntheticDataSet(boolean verbose, String file) {
-
-		// int data_points = 10000;
-		// Double data_mu = 7.0;
-		// Double data_sigma = 11.0;
-		// int data_gold = 100;
-		//
-		// int workers = 1;
-		// Double worker_mu_down = -5.0;
-		// Double worker_mu_up = 5.0;
-		// Double worker_sigma_down = 0.5;
-		// Double worker_sigma_up = 1.5;
-		// Double worker_rho_down = 0.5;
-		// Double worker_rho_up = 1.0;
-
-		SyntheticData data = createDataSet(verbose,file);
-		return data;
-	}
-
-	private static SyntheticData createDataSet(Boolean verbose, String file) {
-
-		SyntheticData data = new SyntheticData(verbose,file);
-
-		data.initDataParameters();
-
-		data.initWorkerParameters();
-
-		data.build();
-		return data;
-	}
 
 	public void println(String mask, Object... args) {
 		print(mask + "\n", args);
