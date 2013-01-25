@@ -28,7 +28,7 @@ public class ServiceComponentsFactory {
 		this.properties = properties;
 	}
 	
-	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor)
+	public IJobStorage loadJobStorage(ISerializer serializer)
 			throws IOException, ClassNotFoundException, SQLException {
 		String user = properties.getProperty("USER");
 		String password = properties.getProperty("PASSWORD");

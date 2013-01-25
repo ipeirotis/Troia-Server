@@ -47,7 +47,7 @@ public class InitializationSupport implements ServletContextListener {
 			ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
 			scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
 			
-			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor);
+			IJobStorage jobStorage = factory.loadJobStorage(serializer);
 			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 			
 			CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer();
