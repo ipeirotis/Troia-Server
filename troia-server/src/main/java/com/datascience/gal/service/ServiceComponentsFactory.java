@@ -1,17 +1,19 @@
 package com.datascience.gal.service;
 
-import com.datascience.core.JobFactory;
-import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
-import com.datascience.core.storages.DBJobStorage;
-import com.datascience.core.storages.IJobStorage;
-import com.datascience.core.storages.JobStorageUsingExecutor;
-import com.datascience.gal.executor.ProjectCommandExecutor;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
+
+import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
+import com.datascience.core.storages.DBJobStorage;
+import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.storages.JobStorageUsingExecutor;
+import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.gal.commands.SerializedCommandStatusesContainer;
+import com.datascience.gal.executor.ProjectCommandExecutor;
 
 /**
  *
@@ -48,13 +50,8 @@ public class ServiceComponentsFactory {
 		return jobStorage;
 	}
 
-	public StatusEntry loadStatusEntry(ResponseBuilder responser, IJobStorage jobStorage){
-		return new StatusEntry(jobStorage, responser, DateTime.now());
-	}
-
-	public JobsEntry loadJobsEntry(ResponseBuilder responser, IJobStorage jobStorage,
-			ProjectCommandExecutor executor){
-		return new JobsEntry(responser, new JobFactory(), executor, jobStorage);
+	public CommandStatusesContainer loadCommandStatusesContainer(){
+		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), new GSONSerializer());
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){
