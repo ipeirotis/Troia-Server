@@ -32,12 +32,6 @@ public class EngineContext {
 	private String correctFile = "";
 
 	@Option(
-		name = "--synthetic",
-		metaVar = "<syntheticoptionsfile>",
-		usage = "A tab-separated text file. Each line has the form <attribute><tab><value> and records the options for the creation of new synthetic data.")
-	private String syntheticOptionsFile = "";
-
-	@Option(
 		name = "--output",
 		metaVar = "<outputfolder>",
 		usage = "An Evaluation Report File")
@@ -90,14 +84,6 @@ public class EngineContext {
 
 	public void setCorrectFile(String correctfile) {
 		this.correctFile = correctfile;
-	}
-
-	public boolean isSyntheticDataSet() {
-		return isNotBlank(syntheticOptionsFile);
-	}
-
-	public String getSyntheticOptionsFile() {
-		return syntheticOptionsFile;
 	}
 
 	public String getOutputFolder() {

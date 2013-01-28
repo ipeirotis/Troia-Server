@@ -226,20 +226,19 @@ public class Engine {
 	public void execute() {
 
 		Data data;
-		//if(ctx.isSyntheticDataSet()) { **delete synthetic from ctx
 
-			EmpiricalData edata = new EmpiricalData();
-			edata.loadLabelFile(ctx.getInputFile());
-			if(ctx.hasTrueWorkersFile()) {
-				edata.loadTrueWorkerData(ctx.getTrueWorkersFile());
-			}
-			if(ctx.hasTrueObjectsFile()) {
-				edata.loadTrueObjectData(ctx.getTrueObjectsFile());
-			}
-			if(ctx.hasCorrectFile()) {
-				edata.loadGoldLabelsFile(ctx.getCorrectFile());
-			}
-			data = edata;
+		EmpiricalData edata = new EmpiricalData();
+		edata.loadLabelFile(ctx.getInputFile());
+		if(ctx.hasTrueWorkersFile()) {
+			edata.loadTrueWorkerData(ctx.getTrueWorkersFile());
+		}
+		if(ctx.hasTrueObjectsFile()) {
+			edata.loadTrueObjectData(ctx.getTrueObjectsFile());
+		}
+		if(ctx.hasCorrectFile()) {
+			edata.loadGoldLabelsFile(ctx.getCorrectFile());
+		}
+		data = edata;
 
 		Ipeirotis ip = new Ipeirotis(data, ctx);
 

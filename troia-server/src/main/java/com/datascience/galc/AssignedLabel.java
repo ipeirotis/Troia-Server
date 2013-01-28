@@ -23,7 +23,7 @@ public class AssignedLabel {
 	 */
 	@Override
 	public int hashCode() {
-		return com.google.common.base.Objects.hashCode( this.label, this.object_id, this.worker_id); 
+		return Objects.hashCode( this.label, this.object_id, this.worker_id); 
 	}
 
 	/*
