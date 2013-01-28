@@ -82,12 +82,12 @@ public class Worker {
 	}
 
 	public Double getBeta() {
-		Double t = 1 - Math.pow(this.est_rho, 2);
-		Double t1 = Math.pow(this.est_rho, 2);
+		Double t1 = Math.pow(est_rho, 2);
+		Double t = 1 - t1;
 		if (t == 0.0)
-			System.err.print("woops " + "rho^2:" + t1 + ", w.est_rho:" + this.est_rho + " ");
+			System.err.print("woops " + "rho^2:" + t1 + ", w.est_rho:" + est_rho + " ");
 
-		return 1 / (1 - Math.pow(this.est_rho, 2));
+		return 1. / t;
 	}
 
 	public Double getTrueMu() {
