@@ -43,9 +43,8 @@ public class ServiceComponentsFactory {
 		}
 		IJobStorage internalJobStorage = new DBJobStorage(user,
 			password, db, url, serializer);
-		IJobStorage jobStorage =
-			new CachedWithRegularDumpJobStorage(internalJobStorage, cachesize, 10, TimeUnit.MINUTES);
-		jobStorage = new JobStorageUsingExecutor(jobStorage, executor);
+		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor);
+		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cachesize, 10, TimeUnit.MINUTES);
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}
