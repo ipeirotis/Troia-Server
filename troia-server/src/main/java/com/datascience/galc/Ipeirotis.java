@@ -79,7 +79,7 @@ public class Ipeirotis {
 			String workerToIgnore = w.getName();
 			for (AssignedLabel zl : w.getZetaValues()) {
 				HashMap<String, Double> zetas = estimateObjectZetas(workerToIgnore);
-				String oid = zl.getDatum();
+				String oid = zl.getObjectName();
 				Double zeta = zetas.get(oid);
 				double rho = w.getEst_rho();
 				result += 0.5 * Math.pow(zeta, 2) / (1 - Math.pow(rho, 2)) - Math.log(Math.sqrt(1 - Math.pow(rho, 2)));
@@ -111,7 +111,7 @@ public class Ipeirotis {
 			if(!d.isGold()) {
 				oldZeta = d.getEst_zeta();
 				for (AssignedLabel al : d.getAssignedLabels()) {
-					String wid = al.getWorker();
+					String wid = al.getWorkerName();
 					Worker w = this.workers_index.get(wid);
 					Double b = w.getBeta();
 					Double r = w.getEst_rho();
@@ -161,7 +161,7 @@ public class Ipeirotis {
 			Double betasum = 0.0;
 
 			for (AssignedLabel al : d.getAssignedLabels()) {
-				String wid = al.getWorker();
+				String wid = al.getWorkerName();
 				if(wid.equals(workerToIgnore))
 					continue;
 				Worker w = this.workers_index.get(wid);
@@ -202,7 +202,7 @@ public class Ipeirotis {
 
 				HashMap<String, Double> zeta = estimateObjectZetas(workerToIgnore);
 
-				String oid = zl.getDatum();
+				String oid = zl.getObjectName();
 				Double z_i = zeta.get(oid);
 				double z_ij = zl.getLabel();
 

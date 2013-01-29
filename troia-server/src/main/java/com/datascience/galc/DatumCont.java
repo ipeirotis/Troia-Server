@@ -34,7 +34,7 @@ public class DatumCont {
 
 	public void addAssignedLabel(AssignedLabel al) {
 
-		if (al.getDatum().equals(name)) {
+		if (al.getObjectName().equals(name)) {
 			this.labels.add(al);
 		}
 	}

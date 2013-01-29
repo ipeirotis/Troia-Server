@@ -30,7 +30,7 @@ public class Worker {
 
 	public void addAssignedLabel(AssignedLabel al) {
 
-		if (al.getWorker().equals(name)) {
+		if (al.getWorkerName().equals(name)) {
 			this.labels.add(al);
 		}
 	}
@@ -61,7 +61,7 @@ public class Worker {
 		this.zeta = new HashSet<AssignedLabel>();
 		for (AssignedLabel al : labels) {
 			Double z = (al.getLabel() - this.est_mu) / this.est_sigma;
-			AssignedLabel zl = new AssignedLabel(al.getWorker(), al.getDatum(), z);
+			AssignedLabel zl = new AssignedLabel(al.getWorkerName(), al.getObjectName(), z);
 			this.zeta.add(zl);
 		}
 	}
