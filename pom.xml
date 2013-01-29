@@ -13,7 +13,11 @@
 	<groupId>com.ipeirotis</groupId>
 	<artifactId>project-troia</artifactId>
 	<version>0.8</version>
-	<packaging>pom</packaging>
+    <packaging>pom</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 	<modules>
 		<module>troia-server</module>
 		<module>troia-data-generator</module>

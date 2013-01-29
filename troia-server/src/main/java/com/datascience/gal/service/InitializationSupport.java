@@ -1,16 +1,21 @@
 package com.datascience.gal.service;
 
-import com.datascience.core.storages.IJobStorage;
-import com.datascience.gal.executor.ProjectCommandExecutor;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+
+import com.datascience.core.storages.IJobStorage;
+import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.gal.executor.ProjectCommandExecutor;
 
 /**
  * @author Konrad
@@ -45,11 +50,10 @@ public class InitializationSupport implements ServletContextListener {
 			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor);
 			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 			
-			JobsEntry je = factory.loadJobsEntry(responser, jobStorage, executor);
-			scontext.setAttribute(Constants.JOBS_ENTRY, je);
-
-			StatusEntry se = factory.loadStatusEntry(responser, jobStorage);
-			scontext.setAttribute(Constants.STATUS_ENTRY, se);
+			CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer();
+			scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
+			
+			scontext.setAttribute(Constants.DEPLOY_TIME, DateTime.now());
 
 			logger.info("Initialization support ended without complications");
 		} catch (Exception e) {
