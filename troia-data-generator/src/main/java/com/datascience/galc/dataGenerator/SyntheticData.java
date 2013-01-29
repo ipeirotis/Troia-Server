@@ -146,7 +146,7 @@ public class SyntheticData extends Data {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (AssignedLabel al : this.getLabels()) {
-				String line = al.getWorker() + "\t" + al.getDatum() + "\t" + al.getLabel() + "\n";
+				String line = al.getWorkerName() + "\t" + al.getObjectName() + "\t" + al.getLabel() + "\n";
 				bw.write(line);
 			}
 			bw.close();
