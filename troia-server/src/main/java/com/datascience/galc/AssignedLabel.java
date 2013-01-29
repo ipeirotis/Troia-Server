@@ -92,12 +92,5 @@ public class AssignedLabel {
 		this.label = label;
 	}
 
-	public int compareTo(AssignedLabel o) {
-
-		return ComparisonChain.start()
-		         .compare(this.getDatum(), o.getDatum())
-		         .compare(this.getWorker(), o.getWorker())
-		         .result();
-	}
 
 }
