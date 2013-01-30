@@ -9,6 +9,8 @@ import static org.junit.Assert.*;
  */
 public class ProjectCommandExecutorTest {
 
+	protected int timeout = 200;
+
 	@Test
 	public void testAll() throws InterruptedException{
 		final Boolean[] canGo = new Boolean[]{false, true, true, false, false};
@@ -29,7 +31,7 @@ public class ProjectCommandExecutorTest {
 		};
 		for (int i=0;i<canGo.length;i++){
 			executor.add(commands[i]);
-			Thread.sleep(100);
+			Thread.sleep(timeout);
 			assertArrayEquals("Error in " + i + " iteration", expectations[i], canGo);
 		}
 	}
@@ -72,7 +74,7 @@ public class ProjectCommandExecutorTest {
 		ProjectCommandExecutor executor = new ProjectCommandExecutor();
 		IExecutorCommand iec = new FailingCommand(ok);
 		executor.add(iec);
-		Thread.sleep(100);
+		Thread.sleep(timeout);
 		assertEquals("Failing command wasn't cleaned", true, ok[0]);
 	}
 	
