@@ -6,13 +6,13 @@ import com.google.common.base.Objects;
  * In equal, hashcode we ignore evaluation and gold label
  * @Author: konrad
  */
-public class Item<T> {
+public class LObject<T> {
 
 	protected String name;
 	protected Label<T> goldLabel;
 	protected Label<T> evaluationLabel;
 
-	public Item(String name){
+	public LObject(String name){
 		this.name = name;
 	}
 
@@ -55,8 +55,8 @@ public class Item<T> {
 
 	@Override
 	public boolean equals(Object other){
-		if (other instanceof Item) {
-			return Objects.equal(name, ((Item) other).name);
+		if (other instanceof LObject) {
+			return Objects.equal(name, ((LObject) other).name);
 		}
 		return false;
 	}

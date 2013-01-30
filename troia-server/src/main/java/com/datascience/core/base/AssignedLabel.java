@@ -9,17 +9,17 @@ import com.google.common.base.Objects;
  */
 public class AssignedLabel<T> {
 
-	protected Item item;
+	protected LObject lobject;
 	protected Worker<T> worker;
 	protected Label<T> label;
 
 
-	public Item getItem() {
-		return item;
+	public LObject getLobject() {
+		return lobject;
 	}
 
-	public void setItem(Item item) {
-		this.item = item;
+	public void setLobject(LObject lobject) {
+		this.lobject = lobject;
 	}
 
 	public Label getLabel() {
@@ -42,7 +42,7 @@ public class AssignedLabel<T> {
 	public boolean equals(Object o) {
 		if (o instanceof AssignedLabel) {
 			AssignedLabel al = (AssignedLabel) o;
-			return Objects.equal(item, al.item) &&
+			return Objects.equal(lobject, al.lobject) &&
 					Objects.equal(worker, al.worker);
 		}
 		return false;
@@ -50,6 +50,6 @@ public class AssignedLabel<T> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(item, worker);
+		return Objects.hashCode(lobject, worker);
 	}
 }
