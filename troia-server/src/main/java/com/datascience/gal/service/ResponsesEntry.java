@@ -30,7 +30,7 @@ public class ResponsesEntry {
 	}
 
 	@GET
-	@Path("/{id}/{method: \\w*}/{res: .*}")
+	@Path("/{id}/{res: .*}")
 	public Response getResponse(@PathParam("id") String sid) throws Exception {
 		CommandStatus status = statusesContainer.getCommandResult(sid);
 		if (status == null) {
