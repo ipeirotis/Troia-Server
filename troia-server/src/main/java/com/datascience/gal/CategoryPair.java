@@ -9,20 +9,8 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.lang.reflect.Type;
-
-import com.datascience.core.storages.JSONUtils;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 
 public class CategoryPair {
-//	public static final CategoryPairDeserializer deserializer = new CategoryPairDeserializer();
-//	public static final CategoryPairSerializer serializer = new CategoryPairSerializer();
 
 	String from;
 	String to;
