@@ -21,11 +21,11 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 public class CategoryPair {
-	public static final CategoryPairDeserializer deserializer = new CategoryPairDeserializer();
-	public static final CategoryPairSerializer serializer = new CategoryPairSerializer();
+//	public static final CategoryPairDeserializer deserializer = new CategoryPairDeserializer();
+//	public static final CategoryPairSerializer serializer = new CategoryPairSerializer();
 
-	private String from;
-	private String to;
+	String from;
+	String to;
 
 	public CategoryPair(String from, String to) {
 		this.from = from;
@@ -73,49 +73,4 @@ public class CategoryPair {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return JSONUtils.gson.toJson(this);
-	}
-
-	/**
-	 * this is being a pain in the ass hacked together for now, probably need to
-	 * revise the serialization in ConfusionMatrix to really fix
-	 *
-	 * @author josh
-	 *
-	 */
-	public static class CategoryPairDeserializer implements
-		JsonDeserializer<CategoryPair> {
-
-		@Override
-		public CategoryPair deserialize(JsonElement json, Type type,
-										JsonDeserializationContext context) throws JsonParseException {
-			JsonObject jobject;
-			if (json.isJsonPrimitive()) {
-				String str = json.getAsString();
-				return JSONUtils.gson.fromJson(str, JSONUtils.categoryPairType);
-			} else {
-				jobject = (JsonObject) json;
-				return new CategoryPair(jobject.get("from").getAsString(),
-										jobject.get("to").getAsString());
-
-			}
-		}
-
-	}
-
-	public static class CategoryPairSerializer implements
-		JsonSerializer<CategoryPair> {
-
-		@Override
-		public JsonElement serialize(CategoryPair src, Type type,
-									 JsonSerializationContext context) {
-			JsonObject jobject = new JsonObject();
-			jobject.addProperty("to", src.to);
-			jobject.addProperty("from", src.from);
-			return jobject;
-		}
-
-	}
 }
