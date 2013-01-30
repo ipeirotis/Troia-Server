@@ -89,8 +89,8 @@ public class AssignedLabel {
 										 JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
 			return new AssignedLabel(jobject.get("workerName").getAsString(),
-									 jobject.get("objectName").getAsString(), jobject.get(
-										 "label").getAsDouble());
+									 jobject.get("objectName").getAsString(), 
+									 jobject.get("label").getAsDouble());
 		}
 
 	}	

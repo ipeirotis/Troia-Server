@@ -1,14 +1,24 @@
 package com.datascience.galc;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import com.datascience.core.storages.JSONUtils;
 import com.datascience.utils.objects.Worker;
 import com.google.common.base.Objects;
 
 public class WorkerCont extends Worker{
-
-	private WorkerContResults results;
+	
+	public static final WorkerDeserializer deserializer = new WorkerDeserializer();
+	private WorkerContResults 				results;
 	
 	public WorkerCont(String name) {
 
@@ -61,12 +71,26 @@ public class WorkerCont extends Worker{
 		return Objects.toStringHelper(this)
 			       .add("name", getName())
 			       .add("est_rho", results.getEst_rho())
-			       .add("true_rho", results.getTrueRho())
 			       .add("est_mu", results.getEst_mu())
-			       .add("true_mu", results.getTrueMu())
 			       .add("est_sigma", results.getEst_sigma())
-			       .add("true_sigma", results.getTrueSigma())
 			       .toString();
 	}
+	
 
+public static class WorkerDeserializer implements JsonDeserializer<Worker> {
+
+	@Override
+	public Worker deserialize(JsonElement json, Type type,
+							  JsonDeserializationContext context) throws JsonParseException {
+		JsonObject jobject = (JsonObject) json;
+		String name = jobject.get("name").getAsString();
+		Double est_rho = jobject.get("est_rho").getAsDouble();
+		Double est_mu = jobject.get("est_mu").getAsDouble();
+		Double est_sigma = jobject.get("est_sigma").getAsDouble();
+		Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(
+											   jobject.get("labels"), JSONUtils.assignedLabelSetType);
+
+		return new WorkerCont(name);
+		}
+	}
 }
