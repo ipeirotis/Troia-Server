@@ -1,10 +1,7 @@
 package com.datascience.galc;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -13,8 +10,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import com.datascience.core.storages.JSONUtils;
-import com.datascience.utils.objects.Datum;
-import com.google.common.base.Objects;
 
 public class DatumCont extends Datum {
 	public static final DatumDeserializer 	deserializer = new DatumDeserializer();	

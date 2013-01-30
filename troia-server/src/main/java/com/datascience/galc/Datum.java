@@ -1,9 +1,8 @@
-package com.datascience.utils.objects;
+package com.datascience.galc;
 
 import java.util.Set;
 import java.util.HashSet;
 
-import com.datascience.galc.AssignedLabel;
 import com.google.common.base.Objects;
 
 public class Datum {
