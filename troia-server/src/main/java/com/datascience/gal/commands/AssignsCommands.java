@@ -35,7 +35,7 @@ public class AssignsCommands {
 		}
 	}
 	
-	static public class GetAssigns extends ProjectCommand<Map<String, Datum>> {
+	static public class GetAssigns extends ProjectCommand<Collection<AssignedLabel>> {
 		
 		public GetAssigns(AbstractDawidSkene ads){
 			super(ads, false);
@@ -43,7 +43,11 @@ public class AssignsCommands {
 		
 		@Override
 		void realExecute() {
-			setResult(ads.getObjects());
+			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
+			for (Datum d : ads.getObjects().values()){
+				labels.addAll(d.getAssignedLabels());
+			}
+			setResult(labels);
 		}
 	}
 }

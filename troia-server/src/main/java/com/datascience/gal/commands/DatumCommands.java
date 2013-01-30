@@ -2,9 +2,10 @@ package com.datascience.gal.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.CategoryValue;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
@@ -144,7 +145,7 @@ public class DatumCommands {
 		}
 	}
 	
-	static public class GetDatumCategoryProbability extends ProjectCommand<Map<String, Double>> {
+	static public class GetDatumCategoryProbability extends ProjectCommand<Collection<CategoryValue>> {
 		
 		private String datumId;
 		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
@@ -159,7 +160,11 @@ public class DatumCommands {
 		@Override
 		void realExecute() {
 			Datum datum = ParamChecking.datum(ads, datumId);
-			setResult(labelProbabilityDistributionCalculator.calculateDistribution(datum, ads));
+			Collection<CategoryValue> cp = new ArrayList<CategoryValue>();
+			for (Entry<String, Double> e : labelProbabilityDistributionCalculator.calculateDistribution(datum, ads).entrySet()){
+				cp.add(new CategoryValue(e.getKey(), e.getValue()));
+			}
+			setResult(cp);
 		}
 	}
 }
