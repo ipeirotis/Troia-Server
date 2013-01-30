@@ -1,13 +1,17 @@
 package com.datascience.gal.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.DatumValue;
 import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
+import com.datascience.gal.WorkerValue;
 import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.decision.WorkerQualityCalculator;
 
@@ -64,7 +68,7 @@ public class WorkerCommands {
 		}
 	}
 	
-	static public class GetWorkersQuality extends ProjectCommand<Map<String, Double>> {
+	static public class GetWorkersQuality extends ProjectCommand<Collection<WorkerValue>> {
 		private AbstractDawidSkene ds;
 		private WorkerQualityCalculator wqc;
 		
@@ -77,10 +81,14 @@ public class WorkerCommands {
 		@Override
 		void realExecute() {
 			Map<String, Double> result = new HashMap<String, Double>();
+			Collection<WorkerValue> wq = new ArrayList<WorkerValue>();
 			for (Worker w : ds.getWorkers()){
 				result.put(w.getName(), wqc.getCost(ds, w));
 			}
-			setResult(Quality.fromCosts(ads, result));
+			for (Entry<String, Double> e : Quality.fromCosts(ads, result).entrySet()){
+				wq.add(new WorkerValue(e.getKey(), e.getValue()));
+			}
+			setResult(wq);
 		}
 	}
 }
