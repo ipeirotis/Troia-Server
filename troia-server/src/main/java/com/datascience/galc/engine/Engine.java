@@ -6,9 +6,11 @@ import java.io.FileWriter;
 
 import com.datascience.galc.Data;
 import com.datascience.galc.DatumCont;
+import com.datascience.galc.DatumContResults;
 import com.datascience.galc.EmpiricalData;
 import com.datascience.galc.Ipeirotis;
-import com.datascience.galc.Worker;
+import com.datascience.galc.WorkerCont;
+import com.datascience.galc.WorkerContResults;
 
 class ReportGenerator {
 
@@ -27,11 +29,13 @@ class ReportGenerator {
 
 		Double relRhoError = 0.0;
 		int n = 0;
-		for (Worker w : ip.getWorkers()) {
-			if (w.getTrueRho()==null) continue;
+		for (WorkerCont w : ip.getWorkers()) {
+			WorkerContResults wr = w.getResults();
+			if (wr.getTrueRho()==null) 
+				continue;
 			n++;
-			double estRho = w.getEst_rho();
-			double realRho = w.getTrueRho();
+			double estRho = wr.getEst_rho();
+			double realRho = wr.getTrueRho();
 			double absDiff = Math.abs(realRho - estRho);
 			double relDiff = Math.abs(absDiff / realRho);
 			relRhoError += relDiff;
@@ -46,11 +50,13 @@ class ReportGenerator {
 
 		Double avgRhoError = 0.0;
 		int n = 0;
-		for (Worker w : ip.getWorkers()) {
-			if (w.getTrueRho() ==null ) continue;
+		for (WorkerCont w : ip.getWorkers()) {
+			WorkerContResults wr = w.getResults();
+			if (wr.getTrueRho() ==null ) 
+				continue;
 			n++;
-			double estRho = w.getEst_rho();
-			double realRho = w.getTrueRho();
+			double estRho = wr.getEst_rho();
+			double realRho = wr.getTrueRho();
 			double absDiff = Math.abs(realRho - estRho);
 
 			avgRhoError += absDiff;
@@ -65,9 +71,9 @@ class ReportGenerator {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name\tLabels\tEstMean\tEstStDev\tEstCorrelation\tTrueMean\tTrueStDev\tTrueCorrelation\n");
-		for (Worker w : ip.getWorkers()) {
-			
-			sb.append(w.getName() + "\t" + w.getLabels().size() + "\t" + w.getEst_mu() + "\t" + w.getEst_sigma() + "\t" + w.getEst_rho() + "\t" + w.getTrueMu() + "\t" + w.getTrueSigma() + "\t" + w.getTrueRho());
+		for (WorkerCont w : ip.getWorkers()) {
+			WorkerContResults wr = w.getResults();
+			sb.append(w.getName() + "\t" + w.getLabels().size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
 			sb.append("\n");
 		}
 		
@@ -89,10 +95,11 @@ class ReportGenerator {
 
 		Double nominator_sigma = 0.0;
 		Double denominator_sigma = 0.0;
-		for (Worker w : ip.getWorkers()) {
-			Double b = w.getBeta();
+		for (WorkerCont w : ip.getWorkers()) {
+			WorkerContResults wr = w.getResults();
+			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
-			Double s = w.getEst_sigma();
+			Double s = wr.getEst_sigma();
 			nominator_sigma += coef * s;
 			denominator_sigma += b;
 		}
@@ -108,10 +115,11 @@ class ReportGenerator {
 		// Estimate mu and sigma of distribution
 		Double nominator_mu = 0.0;
 		Double denominator_mu = 0.0;
-		for (Worker w : ip.getWorkers()) {
-			Double b = w.getBeta();
+		for (WorkerCont w : ip.getWorkers()) {
+			WorkerContResults wr = w.getResults();
+			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
-			Double m = w.getEst_mu();
+			Double m = wr.getEst_mu();
 			nominator_mu += coef * m;
 			denominator_mu += b;
 		}
@@ -141,10 +149,11 @@ class ReportGenerator {
 		Double avgAbsError = 0.0;
 		int n = 0;
 		for (DatumCont d : ip.getObjects()) {
-			if (  d.getResults().getTrueZeta() == null ) continue;
+			DatumContResults dr = d.getResults();
+			if (  dr.getTrueZeta() == null ) continue;
 			n++;
-			double estZ = d.getResults().getEst_zeta();
-			double realZ = d.getResults().getTrueZeta();
+			double estZ = dr.getEst_zeta();
+			double realZ = dr.getTrueZeta();
 			double absDiff = Math.abs(realZ - estZ);
 			avgAbsError += absDiff;
 		}
@@ -160,10 +169,11 @@ class ReportGenerator {
 		Double avgRelError = 0.0;
 		int n = 0;
 		for (DatumCont d : ip.getObjects()) {
-			if ( d.getResults().getTrueZeta() == null) continue;
+			DatumContResults dr = d.getResults();
+			if ( dr.getTrueZeta() == null) continue;
 			n++;
-			double estZ = d.getResults().getEst_zeta();
-			double realZ = d.getResults().getTrueZeta();
+			double estZ = dr.getEst_zeta();
+			double realZ = dr.getTrueZeta();
 			double absDiff = Math.abs(realZ - estZ);
 			double relDiff = Math.abs(absDiff / realZ);
 
@@ -178,9 +188,10 @@ class ReportGenerator {
 		double sigma = this.estimateDistributionSigma();
 		StringBuffer sb = new StringBuffer(); 
 		for (DatumCont d : ip.getObjects()) {
-			d.getResults().setDistributionMu(mu);
-			d.getResults().setDistributionSigma(sigma);
-			sb.append(d.getName() +"\t" + d.getAverageLabel() + "\t" + d.getResults().getEst_value() + "\t" + d.getResults().getEst_zeta() + "\t" + d.getResults().getTrueValue() + "\t" + d.getResults().getTrueZeta());
+			DatumContResults dr = d.getResults();
+			dr.setDistributionMu(mu);
+			dr.setDistributionSigma(sigma);
+			sb.append(d.getName() +"\t" + d.getAverageLabel() + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta());
 		  sb.append("\n");
 			
 		}

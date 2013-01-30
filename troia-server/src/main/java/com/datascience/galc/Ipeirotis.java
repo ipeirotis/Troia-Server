@@ -10,8 +10,8 @@ public class Ipeirotis {
 
 	private Set<DatumCont>		objects;
 	private Map<String, DatumCont>	objects_index;
-	private Set<Worker>		workers;
-	private Map<String, Worker>	workers_index;
+	private Set<WorkerCont>		workers;
+	private Map<String, WorkerCont>	workers_index;
 
 	private EngineContext ctx;
 
@@ -26,8 +26,8 @@ public class Ipeirotis {
 		}
 	
 		this.workers = data.getWorkers();
-		this.workers_index = new HashMap<String, Worker>();
-		for (Worker w : this.workers) {
+		this.workers_index = new HashMap<String, WorkerCont>();
+		for (WorkerCont w : this.workers) {
 			workers_index.put(w.getName(), w);
 		}
 	
@@ -75,13 +75,14 @@ public class Ipeirotis {
 	private double getLogLikelihood() {
 
 		double result = 0d;
-		for (Worker w : this.workers) {
+		for (WorkerCont w : this.workers) {
 			String workerToIgnore = w.getName();
-			for (AssignedLabel zl : w.getZetaValues()) {
+			WorkerContResults wr = w.getResults();
+			for (AssignedLabel zl : wr.getZetaValues()) {
 				HashMap<String, Double> zetas = estimateObjectZetas(workerToIgnore);
 				String oid = zl.getObjectName();
 				Double zeta = zetas.get(oid);
-				double rho = w.getEst_rho();
+				double rho = wr.getEst_rho();
 				result += 0.5 * Math.pow(zeta, 2) / (1 - Math.pow(rho, 2)) - Math.log(Math.sqrt(1 - Math.pow(rho, 2)));
 			}
 		}
@@ -92,8 +93,9 @@ public class Ipeirotis {
 	private void initWorkers() {
 
 		double initial_rho = 0.9;
-		for (Worker w : this.workers) {
-			w.setEst_rho(initial_rho);
+		for (WorkerCont w : this.workers) {
+			WorkerContResults wr = w.getResults();
+			wr.setEst_rho(initial_rho);
 			w.computeZetaValues();
 		}
 
@@ -113,10 +115,11 @@ public class Ipeirotis {
 				oldZeta = dr.getEst_zeta();
 				for (AssignedLabel al : d.getAssignedLabels()) {
 					String wid = al.getWorkerName();
-					Worker w = this.workers_index.get(wid);
-					Double b = w.getBeta();
-					Double r = w.getEst_rho();
-					Double z = w.getZeta(al.getLabel());
+					WorkerCont w = this.workers_index.get(wid);
+					WorkerContResults wr = w.getResults();
+					Double b = wr.getBeta();
+					Double r = wr.getEst_rho();
+					Double z = wr.getZeta(al.getLabel());
 					
 					zeta += b * r * z;
 					betasum += b;
@@ -124,7 +127,7 @@ public class Ipeirotis {
 					//Single Label Worker gives a z=NaN, due to its current est_sigma which is equal to 0
 					if (Double.isNaN(zeta)) 
 						if (!ctx.isVerbose())
-							System.out.print("["+ z + "," + al.getLabel() + "," + w.getEst_mu() + "," + w.getEst_sigma() + "," + w.getName()+"], ");
+							System.out.print("["+ z + "," + al.getLabel() + "," + wr.getEst_mu() + "," + wr.getEst_sigma() + "," + w.getName()+"], ");
 
 				}
 
@@ -165,10 +168,11 @@ public class Ipeirotis {
 				String wid = al.getWorkerName();
 				if(wid.equals(workerToIgnore))
 					continue;
-				Worker w = this.workers_index.get(wid);
-				Double b = w.getBeta();
-				Double r = w.getEst_rho();
-				Double z = w.getZeta(al.getLabel());
+				WorkerCont w = this.workers_index.get(wid);
+				WorkerContResults wr = w.getResults();
+				Double b = wr.getBeta();
+				Double r = wr.getEst_rho();
+				Double z = wr.getZeta(al.getLabel());
 				zeta += b * r * z;
 				betasum += b;
 			}
@@ -190,16 +194,17 @@ public class Ipeirotis {
 		// See equation 10
 
 		double diff = 0.0;
-		for (Worker w : this.workers) {
+		for (WorkerCont w : this.workers) {
+			WorkerContResults wr = w.getResults();
 
 			String workerToIgnore = w.getName();
 
 			Double sum_prod = 0.0;
 			Double sum_zi = 0.0;
 			Double sum_zij = 0.0;
-
-			double oldrho = w.getEst_rho();
-			for (AssignedLabel zl : w.getZetaValues()) {
+			
+			double oldrho = wr.getEst_rho();
+			for (AssignedLabel zl : wr.getZetaValues()) {
 
 				HashMap<String, Double> zeta = estimateObjectZetas(workerToIgnore);
 
@@ -219,10 +224,10 @@ public class Ipeirotis {
 				rho = 0.0;
 			}
 
-			w.setEst_rho(rho);
+			wr.setEst_rho(rho);
 			this.workers_index.put(w.getName(), w);
 
-			diff += Math.abs(w.getEst_rho() - oldrho);
+			diff += Math.abs(wr.getEst_rho() - oldrho);
 		}
 		return diff;
 	}
@@ -240,7 +245,7 @@ public class Ipeirotis {
 	/**
 	 * @return the workers
 	 */
-	public Set<Worker> getWorkers() {
+	public Set<WorkerCont> getWorkers() {
 
 		return workers;
 	}
@@ -248,7 +253,7 @@ public class Ipeirotis {
 	/**
 	 * @param workers the workers to set
 	 */
-	public void setWorkers(Set<Worker> workers) {
+	public void setWorkers(Set<WorkerCont> workers) {
 
 		this.workers = workers;
 	}

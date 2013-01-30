@@ -7,7 +7,7 @@ import java.util.HashSet;
 public abstract class Data {
 
 	Set<DatumCont>			objects	= new HashSet<DatumCont>();
-	Set<Worker>					workers	= new HashSet<Worker>();
+	Set<WorkerCont>					workers	= new HashSet<WorkerCont>();
 	Set<AssignedLabel>	labels	= new HashSet<AssignedLabel>();
 
 	public Set<DatumCont> getObjects() {
@@ -15,7 +15,7 @@ public abstract class Data {
 		return objects;
 	}
 
-	public Set<Worker> getWorkers() {
+	public Set<WorkerCont> getWorkers() {
 
 		return workers;
 	}

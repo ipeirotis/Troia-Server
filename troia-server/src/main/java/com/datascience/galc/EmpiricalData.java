@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class EmpiricalData extends Data {
 
 	private Map<String, DatumCont>	objects_index = new HashMap<String, DatumCont>();
-	private Map<String, Worker>	workers_index = new HashMap<String, Worker>();
+	private Map<String, WorkerCont>	workers_index = new HashMap<String, WorkerCont>();
 	public EmpiricalData() {
 		super();
 	}
@@ -28,9 +28,9 @@ public class EmpiricalData extends Data {
 
 			AssignedLabel al = new AssignedLabel(workername, objectname, value);
 
-			Worker w = this.workers_index.get(workername);
+			WorkerCont w = this.workers_index.get(workername);
 			if (w == null) {
-				w = new Worker(workername);
+				w = new WorkerCont(workername);
 				this.workers.add(w);
 				this.workers_index.put(workername,w);
 			}
@@ -92,15 +92,16 @@ public class EmpiricalData extends Data {
 			Double mu = Double.parseDouble(entries[2]);
 			Double sigma = Double.parseDouble(entries[3]);
 
-			Worker w = this.workers_index.get(workername);
+			WorkerCont w = this.workers_index.get(workername);
 			if (w == null) {
-				w = new Worker(workername);
+				w = new WorkerCont(workername);
 				this.workers.add(w);
 				this.workers_index.put(workername,w);
 			}
-			w.setTrueMu(mu);
-			w.setTrueSigma(sigma);
-			w.setTrueRho(rho);
+			WorkerContResults wr = w.getResults();
+			wr.setTrueMu(mu);
+			wr.setTrueSigma(sigma);
+			wr.setTrueRho(rho);
 		}
 
 	}

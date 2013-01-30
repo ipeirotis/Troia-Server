@@ -9,7 +9,8 @@ import com.datascience.galc.Data;
 import com.datascience.galc.DatumCont;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.Utils;
-import com.datascience.galc.Worker;
+import com.datascience.galc.WorkerCont;
+import com.datascience.galc.WorkerContResults;
 
 public class SyntheticData extends Data {
 
@@ -91,12 +92,13 @@ public class SyntheticData extends Data {
 		// Generate Observation Values y_ij
 
 		for (DatumCont d : this.getObjects()) {
-			for (Worker w : this.getWorkers()) {
+			for (WorkerCont w : this.getWorkers()) {
 				
 				DatumContResults dr = d.getResults();
 				Double datum_z = (dr.getTrueValue() - this.data_mu) / this.data_sigma;
-				Double label_mu = w.getTrueMu() + w.getTrueRho() * w.getTrueSigma() * datum_z;
-				Double label_sigma = Math.sqrt(1 - Math.pow(w.getTrueRho(), 2)) * w.getTrueSigma();
+				WorkerContResults wr = w.getResults();
+				Double label_mu = wr.getTrueMu() + wr.getTrueRho() * wr.getTrueSigma() * datum_z;
+				Double label_sigma = Math.sqrt(1 - Math.pow(wr.getTrueRho(), 2)) * wr.getTrueSigma();
 
 				Generator labelGenerator = new Generator(Generator.Distribution.GAUSSIAN);
 				labelGenerator.setGaussianParameters(label_mu, label_sigma);
@@ -128,10 +130,11 @@ public class SyntheticData extends Data {
 
 		// Generate Worker Characteristics
 		for (int i = 0; i < l_workers; i++) {
-			Worker w = new Worker("Worker" + (i + 1));
-			w.setTrueMu(muGenerator.nextData());
-			w.setTrueSigma(sigmaGenerator.nextData());
-			w.setTrueRho(rhoGenerator.nextData());
+			WorkerCont w = new WorkerCont("Worker" + (i + 1));
+			WorkerContResults wr = w.getResults();
+			wr.setTrueMu(muGenerator.nextData());
+			wr.setTrueSigma(sigmaGenerator.nextData());
+			wr.setTrueRho(rhoGenerator.nextData());
 			this.getWorkers().add(w);
 		}
 
@@ -197,8 +200,9 @@ public class SyntheticData extends Data {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (Worker w : this.getWorkers()) {
-				String line = w.getName() + "\t" + w.getTrueRho() + "\t" + w.getTrueMu() + "\t" + w.getTrueSigma() + "\t"
+			for (WorkerCont w : this.getWorkers()) {
+				WorkerContResults wr = w.getResults();
+				String line = w.getName() + "\t" + wr.getTrueRho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t"
 						+ "\n";
 				bw.write(line);
 			}
