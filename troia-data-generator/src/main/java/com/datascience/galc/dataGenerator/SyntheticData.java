@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import com.datascience.galc.AssignedLabel;
 import com.datascience.galc.Data;
 import com.datascience.galc.DatumCont;
+import com.datascience.galc.DatumContResults;
 import com.datascience.galc.Utils;
 import com.datascience.galc.Worker;
 
@@ -76,9 +77,11 @@ public class SyntheticData extends Data {
 
 		for (DatumCont d : this.getObjects()) {
 			if(i++ < g_gold_objects) {
-				d.setGold(true);
-				d.setGoldValue(d.getTrueValue());
-				d.setGoldZeta(d.getTrueZeta());
+				DatumContResults dr = d.getResults();
+				dr.setGold(true);
+				dr.setGoldValue(dr.getTrueValue());
+				dr.setGoldZeta(dr.getTrueZeta());
+				d.setResults(dr);
 			}
 		}
 	}
@@ -89,8 +92,9 @@ public class SyntheticData extends Data {
 
 		for (DatumCont d : this.getObjects()) {
 			for (Worker w : this.getWorkers()) {
-
-				Double datum_z = (d.getTrueValue() - this.data_mu) / this.data_sigma;
+				
+				DatumContResults dr = d.getResults();
+				Double datum_z = (dr.getTrueValue() - this.data_mu) / this.data_sigma;
 				Double label_mu = w.getTrueMu() + w.getTrueRho() * w.getTrueSigma() * datum_z;
 				Double label_sigma = Math.sqrt(1 - Math.pow(w.getTrueRho(), 2)) * w.getTrueSigma();
 
@@ -111,10 +115,11 @@ public class SyntheticData extends Data {
 		// Generate Object Real Values x_i
 		for (int i = 0; i < k_objects; i++) {
 			DatumCont d = new DatumCont("Object" + (i + 1));
+			DatumContResults dr = d.getResults();
 			Double v = datumGenerator.nextData();
 			Double z = (v-this.data_mu)/this.data_sigma;
-			d.setTrueValue(v);
-			d.setTrueZeta(z);
+			dr.setTrueValue(v);
+			dr.setTrueZeta(z);
 			this.getObjects().add(d);
 		}
 	}
@@ -169,7 +174,8 @@ public class SyntheticData extends Data {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (DatumCont d: this.getObjects()) {
-				String line = d.getName() + "\t" + d.getTrueValue() + "\t" + d.getTrueZeta() + "\n";
+				DatumContResults dr = d.getResults();
+				String line = d.getName() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta() + "\n";
 				bw.write(line);
 			}
 			bw.close();
@@ -216,8 +222,9 @@ public class SyntheticData extends Data {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (DatumCont d: this.getObjects()) {
-				if(d.isGold()) {
-					String line = d.getName() + "\t" + d.getTrueValue() + "\t" + d.getTrueZeta() + "\n";
+				DatumContResults dr = d.getResults();
+				if(dr.isGold()) {
+					String line = d.getName() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta() + "\n";
 					bw.write(line);
 				}
 			}

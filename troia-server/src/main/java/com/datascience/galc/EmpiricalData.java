@@ -70,9 +70,9 @@ public class EmpiricalData extends Data {
 				this.objects.add(d);
 				this.objects_index.put(objectname,d);
 			}
-			d.setGold(true);
-			d.setGoldValue(correctValue);
-			d.setGoldZeta(correctZeta);
+			d.getResults().setGold(true);
+			d.getResults().setGoldValue(correctValue);
+			d.getResults().setGoldZeta(correctZeta);
 		}
 
 	}
@@ -125,8 +125,8 @@ public class EmpiricalData extends Data {
 				this.objects.add(d);
 				this.objects_index.put(objectname,d);
 			}
-			d.setTrueValue(value);
-			d.setTrueZeta(zeta);
+			d.getResults().setTrueValue(value);
+			d.getResults().setTrueZeta(zeta);
 		}
 	}
 

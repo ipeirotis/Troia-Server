@@ -104,12 +104,13 @@ public class Ipeirotis {
 		// See equation 9
 		double diff = 0.0;
 		for (DatumCont d : this.objects) {
+			DatumContResults dr = d.getResults();
 			Double oldZeta = 0.0;
 			Double newZeta = 0.0;
 			Double zeta = 0.0;
 			Double betasum = 0.0;
-			if(!d.isGold()) {
-				oldZeta = d.getEst_zeta();
+			if(!dr.isGold()) {
+				oldZeta = dr.getEst_zeta();
 				for (AssignedLabel al : d.getAssignedLabels()) {
 					String wid = al.getWorkerName();
 					Worker w = this.workers_index.get(wid);
@@ -130,21 +131,21 @@ public class Ipeirotis {
 				//d.setEst_zeta(zeta / betasum);
 				newZeta = zeta/ betasum;
 			} else {
-				oldZeta = d.getGoldZeta();
-				newZeta = d.getGoldZeta();
+				oldZeta = dr.getGoldZeta();
+				newZeta = dr.getGoldZeta();
 			}
 
-			d.setEst_zeta(newZeta);
+			dr.setEst_zeta(newZeta);
 			this.objects_index.put(d.getName(), d);
 
-			if (d.isGold())
+			if (dr.isGold())
 				continue;
 			else if (oldZeta == null) {
 				diff += 1;
 				continue;
 			}
 
-			diff += Math.abs(d.getEst_zeta() - oldZeta);
+			diff += Math.abs(dr.getEst_zeta() - oldZeta);
 		}
 		return diff;
 

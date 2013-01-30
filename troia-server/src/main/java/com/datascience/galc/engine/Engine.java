@@ -141,10 +141,10 @@ class ReportGenerator {
 		Double avgAbsError = 0.0;
 		int n = 0;
 		for (DatumCont d : ip.getObjects()) {
-			if (  d.getTrueZeta() == null ) continue;
+			if (  d.getResults().getTrueZeta() == null ) continue;
 			n++;
-			double estZ = d.getEst_zeta();
-			double realZ = d.getTrueZeta();
+			double estZ = d.getResults().getEst_zeta();
+			double realZ = d.getResults().getTrueZeta();
 			double absDiff = Math.abs(realZ - estZ);
 			avgAbsError += absDiff;
 		}
@@ -160,10 +160,10 @@ class ReportGenerator {
 		Double avgRelError = 0.0;
 		int n = 0;
 		for (DatumCont d : ip.getObjects()) {
-			if ( d.getTrueZeta() == null) continue;
+			if ( d.getResults().getTrueZeta() == null) continue;
 			n++;
-			double estZ = d.getEst_zeta();
-			double realZ = d.getTrueZeta();
+			double estZ = d.getResults().getEst_zeta();
+			double realZ = d.getResults().getTrueZeta();
 			double absDiff = Math.abs(realZ - estZ);
 			double relDiff = Math.abs(absDiff / realZ);
 
@@ -178,9 +178,9 @@ class ReportGenerator {
 		double sigma = this.estimateDistributionSigma();
 		StringBuffer sb = new StringBuffer(); 
 		for (DatumCont d : ip.getObjects()) {
-			d.setDistributionMu(mu);
-			d.setDistributionSigma(sigma);
-			sb.append(d.getName() +"\t" + d.getAverageLabel() + "\t" + d.getEst_value() + "\t" + d.getEst_zeta() + "\t" + d.getTrueValue() + "\t" + d.getTrueZeta());
+			d.getResults().setDistributionMu(mu);
+			d.getResults().setDistributionSigma(sigma);
+			sb.append(d.getName() +"\t" + d.getAverageLabel() + "\t" + d.getResults().getEst_value() + "\t" + d.getResults().getEst_zeta() + "\t" + d.getResults().getTrueValue() + "\t" + d.getResults().getTrueZeta());
 		  sb.append("\n");
 			
 		}
