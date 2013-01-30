@@ -30,8 +30,8 @@ public class ResponsesEntry {
 	}
 
 	@GET
-	@Path("/{id}/{res: .*}")
-	public Response getResponse(@PathParam("id") String sid) throws Exception{
+	@Path("/{id}/{method: \\w*}/{res: .*}")
+	public Response getResponse(@PathParam("id") String sid) throws Exception {
 		CommandStatus status = statusesContainer.getCommandResult(sid);
 		if (status == null) {
 			throw new NoSuchElementException("No status with id: " + sid);

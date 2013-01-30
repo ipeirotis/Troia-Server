@@ -1,20 +1,5 @@
 package com.datascience.gal.service;
 
-import java.util.Collection;
-
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JSONUtils;
@@ -42,12 +27,29 @@ import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.gal.executor.ProjectCommandExecutor;
 
+import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+
 /**
  * @author Konrad Kurdej
  */
 @Path("/jobs/{id}/")
 public class JobEntry {
-	
+
+	@Context Request request;
 	@Context ServletContext context;
 	@Context UriInfo uriInfo;
 	@PathParam("id") String jid;
@@ -77,7 +79,7 @@ public class JobEntry {
 		RequestExecutorCommand rec = new RequestExecutorCommand(
 				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
 		executor.add(rec);
-		return responser.makeRedirectResponse(String.format("responses/%s/%s", rec.commandId, uriInfo.getPath()));
+		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
 	}
 	
 	@Path("")
