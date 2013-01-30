@@ -12,6 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -49,6 +50,7 @@ import com.datascience.gal.executor.ProjectCommandExecutor;
 public class JobEntry {
 	
 	@Context ServletContext context;
+	@Context Request request;
 	@Context UriInfo uriInfo;
 	@PathParam("id") String jid;
 	
@@ -77,7 +79,7 @@ public class JobEntry {
 		RequestExecutorCommand rec = new RequestExecutorCommand(
 				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
 		executor.add(rec);
-		return responser.makeRedirectResponse(String.format("responses/%s/%s", rec.commandId, uriInfo.getPath()));
+		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
 	}
 	
 	@Path("")
