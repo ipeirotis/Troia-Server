@@ -60,4 +60,13 @@ public class LObject<T> {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("name", name)
+				.add("goldLabel", goldLabel)
+				.add("evaluationLabel", evaluationLabel)
+				.toString();
+	}
 }

@@ -50,4 +50,12 @@ public class Worker<T> {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("name", name)
+				.add("assigns", assigns)
+				.toString();
+	}
 }

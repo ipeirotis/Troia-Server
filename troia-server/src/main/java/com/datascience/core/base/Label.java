@@ -35,4 +35,11 @@ public class Label<T> {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("value", value)
+				.toString();
+	}
 }

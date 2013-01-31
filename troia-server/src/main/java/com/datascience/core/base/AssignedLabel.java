@@ -52,4 +52,13 @@ public class AssignedLabel<T> {
 	public int hashCode() {
 		return Objects.hashCode(lobject, worker);
 	}
+	
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("lobject", lobject)
+				.add("worker", worker)
+				.add("label", label)
+				.toString();
+	}
 }
