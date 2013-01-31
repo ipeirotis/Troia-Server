@@ -255,20 +255,20 @@ public class Engine {
 		}
 		data = edata;
 
-		Ipeirotis ip = new Ipeirotis(data, ctx);
+		Ipeirotis ip = new Ipeirotis(data);
 
 		ReportGenerator rpt = new ReportGenerator(ip, ctx);
 
 		// Report about distributional estimates
 		rpt.writeReportToFile(ctx.getOutputFolder(), "results-distribution.txt", rpt.generateDistributionReport());
 
-			// Give report for objects
-			rpt.writeReportToFile(ctx.getOutputFolder(), "results-objects.txt", rpt.generateObjectReport());
+		// Give report for objects
+		rpt.writeReportToFile(ctx.getOutputFolder(), "results-objects.txt", rpt.generateObjectReport());
 
-			// Give report for workers
-			rpt.writeReportToFile(ctx.getOutputFolder(), "results-workers.txt", rpt.generateWorkerReport());
+		// Give report for workers
+		rpt.writeReportToFile(ctx.getOutputFolder(), "results-workers.txt", rpt.generateWorkerReport());
 
-			logger.info("Results in folder: " + ctx.getOutputFolder());
+		logger.info("Results in folder: " + ctx.getOutputFolder());
 	}
 
 

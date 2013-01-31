@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.galc.engine.EngineContext;
 
 public class Ipeirotis {
 
@@ -15,13 +14,9 @@ public class Ipeirotis {
 	private Set<WorkerCont>		workers;
 	private Map<String, WorkerCont>	workers_index;
 
-	private EngineContext ctx;
-
 	private static Logger logger = Logger.getLogger(Ipeirotis.class);
 	
-	public Ipeirotis(Data data, EngineContext ctx) {
-	
-		this.ctx = ctx;
+	public Ipeirotis(Data data) {
 		
 		this.objects = data.getObjects();
 		this.objects_index = new HashMap<String, DatumCont>();
