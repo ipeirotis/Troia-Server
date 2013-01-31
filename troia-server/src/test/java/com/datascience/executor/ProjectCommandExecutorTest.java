@@ -1,7 +1,5 @@
 package com.datascience.executor;
 
-import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.executor.IExecutorCommand;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
