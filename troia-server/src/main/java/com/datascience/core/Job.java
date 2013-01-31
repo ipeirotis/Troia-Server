@@ -3,21 +3,19 @@ package com.datascience.core;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import com.datascience.gal.AbstractDawidSkene;
 import com.google.common.base.Objects;
 
 
 /**
- * Make it generic on AbstractDawidSkene
  * @author konrad
  */
-public class Job {
+public class Job<T> {
 	
-	AbstractDawidSkene ds;
+	T ds;
 	String id;
 	ReadWriteLock rwLock;
 	
-	public AbstractDawidSkene getDs() {
+	public T getDs() {
 		return ds;
 	}
 
@@ -29,7 +27,7 @@ public class Job {
 		return rwLock;
 	}
 	
-	public Job(AbstractDawidSkene ads, String id){
+	public Job(T ads, String id){
 		this.id = id;
 		this.ds = ads;
 		rwLock = new ReentrantReadWriteLock();

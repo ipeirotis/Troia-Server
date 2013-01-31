@@ -2,8 +2,6 @@ package com.datascience.service;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -11,20 +9,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import com.datascience.core.Job;
-import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.commands.AssignsCommands;
 import com.datascience.gal.commands.CategoriesCommands;
-import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.gal.commands.CostsCommands;
 import com.datascience.gal.commands.DatumCommands;
 import com.datascience.gal.commands.EvaluationCommands;
@@ -41,46 +32,13 @@ import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
-import com.datascience.executor.ProjectCommandExecutor;
+import com.datascience.gal.AbstractDawidSkene;
 
 /**
  * @author Konrad Kurdej
  */
 @Path("/jobs/{id}/")
-public class JobEntry {
-	
-	@Context ServletContext context;
-	@Context Request request;
-	@Context UriInfo uriInfo;
-	@PathParam("id") String jid;
-	
-	Job job;
-	ResponseBuilder responser;
-	ProjectCommandExecutor executor;
-	ISerializer serializer;
-	CommandStatusesContainer statusesContainer;
-	IJobStorage jobStorage;
-	
-	@PostConstruct
-	public void postConstruct() throws Exception{
-		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
-		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
-		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
-		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
-		serializer = responser.getSerializer();
-		
-		job = jobStorage.get(jid);
-		if (job == null) {
-			throw new IllegalArgumentException("Job with ID " + jid + " does not exist");
-		}
-	}
-	
-	protected Response buildResponseOnCommand(Job job, DSCommandBase command){
-		RequestExecutorCommand rec = new RequestExecutorCommand(
-				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
-		executor.add(rec);
-		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
-	}
+public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	
 	@Path("")
 	@GET
