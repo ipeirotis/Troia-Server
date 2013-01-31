@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.service.ISerializer;
+import com.datascience.service.ISerializer;
 
 /**
  * From old class DawidSkeneCache.
