@@ -272,24 +272,4 @@ public class Engine {
 	}
 
 
-	public void println(String mask, Object... args) {
-		print(mask + "\n", args);
-	}
-
-	public void print(String mask, Object... args) {
-//		if (!ctx.isVerbose())
-//			return;
-
-		String message;
-
-		if (args.length > 0) {
-			message = String.format(mask, args);
-		} else {
-			// without format arguments, print the mask/string as-is
-			message = mask;
-		}
-
-		logger.info(message);
-	}
-
 }
