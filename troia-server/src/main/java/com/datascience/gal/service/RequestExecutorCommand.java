@@ -3,7 +3,7 @@ package com.datascience.gal.service;
 import com.datascience.gal.commands.CommandStatusesContainer;
 import com.datascience.gal.commands.CommandStatus;
 import com.datascience.gal.commands.ProjectCommand;
-import com.datascience.gal.executor.SynchronizedJobCommand;
+import com.datascience.executor.SynchronizedJobCommand;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**

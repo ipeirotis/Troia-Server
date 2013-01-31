@@ -2,7 +2,7 @@ package com.datascience.gal.commands;
 
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.gal.executor.SynchronizedJobCommand;
+import com.datascience.executor.SynchronizedJobCommand;
 import org.apache.log4j.Logger;
 
 /**

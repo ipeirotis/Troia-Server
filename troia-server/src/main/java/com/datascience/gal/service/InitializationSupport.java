@@ -15,7 +15,7 @@ import org.joda.time.DateTime;
 
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.commands.CommandStatusesContainer;
-import com.datascience.gal.executor.ProjectCommandExecutor;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  * @author Konrad

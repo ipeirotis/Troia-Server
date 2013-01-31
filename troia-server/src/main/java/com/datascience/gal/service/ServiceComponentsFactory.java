@@ -13,7 +13,7 @@ import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JobStorageUsingExecutor;
 import com.datascience.gal.commands.CommandStatusesContainer;
 import com.datascience.gal.commands.SerializedCommandStatusesContainer;
-import com.datascience.gal.executor.ProjectCommandExecutor;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  *

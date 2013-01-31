@@ -41,7 +41,7 @@ import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
-import com.datascience.gal.executor.ProjectCommandExecutor;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  * @author Konrad Kurdej
