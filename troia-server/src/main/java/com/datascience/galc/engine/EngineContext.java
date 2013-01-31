@@ -37,12 +37,6 @@ public class EngineContext {
 		usage = "An Evaluation Report File")
 	private String outputfolder = "results";
 
-	@Option(
-		name = "--verbose",
-		metaVar = "<verbose>",
-		usage = "Verbose Mode?")
-	private boolean verbose;
-
 	public String getInputFile() {
 		return inputfile;
 	}
@@ -93,13 +87,4 @@ public class EngineContext {
 	public void setOutputFolder(String outputfolder) {
 		this.outputfolder = outputfolder;
 	}
-
-	public boolean isVerbose() {
-		return verbose;
-	}
-
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
-	}
-
 }

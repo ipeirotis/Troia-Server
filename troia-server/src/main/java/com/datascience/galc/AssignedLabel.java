@@ -1,21 +1,10 @@
 package com.datascience.galc;
 
-import java.lang.reflect.Type;
-
-import com.datascience.core.storages.JSONUtils;
-import com.datascience.gal.AssignedLabel.AssignedLabelDeserializer;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
 public class AssignedLabel {
 
-	public static final AssignedLabelDeserializer deserializer = new AssignedLabelDeserializer();
 	private String	worker_name;
 	private String	object_name;
 	private Double	label;
@@ -78,21 +67,10 @@ public class AssignedLabel {
 
 	@Override
 	public String toString() {
-		return JSONUtils.gson.toJson(this);
-	}
-
-	public static class AssignedLabelDeserializer implements
-		JsonDeserializer<AssignedLabel> {
-
-		@Override
-		public AssignedLabel deserialize(JsonElement json, Type type,
-										 JsonDeserializationContext context) throws JsonParseException {
-			JsonObject jobject = (JsonObject) json;
-			return new AssignedLabel(jobject.get("workerName").getAsString(),
-									 jobject.get("objectName").getAsString(), 
-									 jobject.get("label").getAsDouble());
+		return Objects.toStringHelper(this)
+			       .add("worker_name", worker_name)
+			       .add("object_name", object_name)
+			       .add("label_value", label)
+			       .toString();	
 		}
-
-	}	
-	
 }

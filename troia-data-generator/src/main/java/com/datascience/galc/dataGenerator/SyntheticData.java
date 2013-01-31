@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.galc.AssignedLabel;
 import com.datascience.galc.Data;
 import com.datascience.galc.DatumCont;
@@ -31,17 +33,18 @@ public class SyntheticData extends Data {
 	private Generator	rhoGenerator;
 
 	private Generator	datumGenerator;
+	
+	private static Logger logger = Logger.getLogger(SyntheticData.class);
 
 	public SyntheticData(Boolean verbose, String file) {
 
 		loadSyntheticOptions(file);
-		if(!verbose) {
-			System.out.println("Data points: " + this.data_points);
-			System.out.println("Data gold: " + this.data_gold);
-			System.out.println("Workers: " + this.workers_points);
-			System.out.println("Low rho: " + this.worker_rho_down);
-			System.out.println("High rho: " + this.worker_rho_up);
-		}
+		logger.info("Data points: " + this.data_points);
+		logger.info("Data gold: " + this.data_gold);
+		logger.info("Workers: " + this.workers_points);
+		logger.info("Low rho: " + this.worker_rho_down);
+		logger.info("High rho: " + this.worker_rho_up);
+
 
 	}
 

@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.galc.Data;
 import com.datascience.galc.DatumCont;
 import com.datascience.galc.DatumContResults;
@@ -15,11 +17,11 @@ import com.datascience.galc.WorkerContResults;
 class ReportGenerator {
 
 	private Ipeirotis	ip;
-	private boolean		verbose;
+	
+	private static Logger logger = Logger.getLogger(ReportGenerator.class);
 
 	public ReportGenerator(Ipeirotis ip, EngineContext ctx) {
 		this.ip = ip;
-		this.verbose = ctx.isVerbose();
 	}
 
 	/**
@@ -77,12 +79,11 @@ class ReportGenerator {
 			sb.append("\n");
 		}
 		
-		String out = "Average absolute estimation error for correlation values: " + getCorrelationAbsoluteError() + "\n"
+		String out = "\nAverage absolute estimation error for correlation values: " + getCorrelationAbsoluteError() + "\n"
 				+ "Average relative estimation error for correlation values: " + getCorrelationRelativeError();
 		
 		
-		if (!this.verbose)
-			System.out.println(out);
+		logger.info(out);
 		
 		sb.append(out);
 		return sb.toString();
@@ -135,8 +136,7 @@ class ReportGenerator {
 
 		String out = "Estimated mu = " + estimateDistributionMu() + "\n" + "Estimated sigma = "
 				+ estimateDistributionSigma();
-		if (!this.verbose)
-			System.out.println(out);
+		logger.info(out);
 		return out;
 	}
 
@@ -197,10 +197,9 @@ class ReportGenerator {
 		}
 		
 		
-		String out = "Average absolute estimation error for z-values: " + getZetaAbsoluteErrorObject() + "\n"
+		String out = "\nAverage absolute estimation error for z-values: " + getZetaAbsoluteErrorObject() + "\n"
 				+ "Average relative estimation error for z-values: " + getZetaRelativeErrorObject();
-		if (!this.verbose)
-			System.out.println(out);
+		logger.info(out);
 		
 		sb.append(out);
 		return sb.toString();
@@ -229,6 +228,11 @@ class ReportGenerator {
 public class Engine {
 
 	private EngineContext	ctx;
+
+	/**
+	 * Logger for this class
+	 */
+	private static Logger logger = Logger.getLogger(Engine.class);
 
 	public Engine(EngineContext ctx) {
 		this.ctx = ctx;
@@ -264,9 +268,7 @@ public class Engine {
 			// Give report for workers
 			rpt.writeReportToFile(ctx.getOutputFolder(), "results-workers.txt", rpt.generateWorkerReport());
 
-		if (ctx.isVerbose())
-			System.out.println("Results in folder: " + ctx.getOutputFolder());
-
+			logger.info("Results in folder: " + ctx.getOutputFolder());
 	}
 
 
@@ -275,8 +277,8 @@ public class Engine {
 	}
 
 	public void print(String mask, Object... args) {
-		if (!ctx.isVerbose())
-			return;
+//		if (!ctx.isVerbose())
+//			return;
 
 		String message;
 
@@ -287,6 +289,7 @@ public class Engine {
 			message = mask;
 		}
 
-		System.out.println(message);
+		logger.info(message);
 	}
+
 }

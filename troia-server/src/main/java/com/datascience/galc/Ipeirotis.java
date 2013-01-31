@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.galc.engine.EngineContext;
 
 public class Ipeirotis {
@@ -15,6 +17,8 @@ public class Ipeirotis {
 
 	private EngineContext ctx;
 
+	private static Logger logger = Logger.getLogger(Ipeirotis.class);
+	
 	public Ipeirotis(Data data, EngineContext ctx) {
 	
 		this.ctx = ctx;
@@ -32,17 +36,16 @@ public class Ipeirotis {
 		}
 	
 		initWorkers();
-		//System.out.println("=======");
+		//logger.info("=======");
 		estimateObjectZetas();
 		//generateObjectReport(data_mu, data_sigma);
 		//generateWorkerReport();
-		//System.out.println("=======");
+		//logger.info("=======");
 	
 		// Run until convergence.
 		double epsilon = 0.00001;
 		double logLikelihood = estimate(epsilon);
-		if (!this.ctx.isVerbose())
-			System.out.println("Done! (logLikelihood= " + logLikelihood + ")\n----");
+		logger.info("Done! (logLikelihood= " + logLikelihood + ")\n----");
 	
 	}
 
@@ -55,15 +58,13 @@ public class Ipeirotis {
 		while (Math.abs(logLikelihood - pastLogLikelihood) > epsilon) {
 			pastLogLikelihood = logLikelihood;
 
-			if (!this.ctx.isVerbose())
-					System.out.print(round + "... ");
+			logger.info(round + "... ");
 			Double diffZetas = estimateObjectZetas();
 			Double diffWorkers = estimateWorkerRho();
 			round++;
-			if (!this.ctx.isVerbose())
-				System.out.println("");
+			logger.info("\n");
 			if (Double.isNaN(diffZetas + diffWorkers)) {
-				System.err.println("ERROR: Check for division by 0");
+				logger.error("ERROR: Check for division by 0");
 				break;
 			}
 			logLikelihood = getLogLikelihood();
@@ -126,8 +127,7 @@ public class Ipeirotis {
 					
 					//Single Label Worker gives a z=NaN, due to its current est_sigma which is equal to 0
 					if (Double.isNaN(zeta)) 
-						if (!ctx.isVerbose())
-							System.out.print("["+ z + "," + al.getLabel() + "," + wr.getEst_mu() + "," + wr.getEst_sigma() + "," + w.getName()+"], ");
+						logger.warn("["+ z + "," + al.getLabel() + "," + wr.getEst_mu() + "," + wr.getEst_sigma() + "," + w.getName()+"], ");
 
 				}
 
@@ -181,7 +181,7 @@ public class Ipeirotis {
 			newZeta = zeta / betasum;
 			result.put(d.getName(), newZeta);
 
-			//if (Double.isNaN(newZeta)) System.out.println("estimateObjectZetas NaNbug@: " + zeta +","+ betasum + "," +d.getName());
+			//if (Double.isNaN(newZeta)) logger.info("estimateObjectZetas NaNbug@: " + zeta +","+ betasum + "," +d.getName());
 
 		}
 
@@ -219,8 +219,7 @@ public class Ipeirotis {
 			double rho = sum_prod / Math.sqrt(sum_zi * sum_zij);
 
 			if (Double.isNaN(rho)) {
-				if (!this.ctx.isVerbose())
-					System.out.println("estimateWorkerRho NaNbug@: " + sum_zi +","+ sum_zij + "," +w.getName());
+				logger.warn("estimateWorkerRho NaNbug@: " + sum_zi +","+ sum_zij + "," +w.getName());
 				rho = 0.0;
 			}
 

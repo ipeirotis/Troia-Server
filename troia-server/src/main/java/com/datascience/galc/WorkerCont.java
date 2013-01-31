@@ -10,6 +10,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.core.storages.JSONUtils;
 import com.google.common.base.Objects;
 
@@ -17,6 +19,8 @@ public class WorkerCont extends Worker{
 	
 	public static final WorkerDeserializer deserializer = new WorkerDeserializer();
 	private WorkerContResults 				results;
+
+	private static Logger logger = Logger.getLogger(WorkerCont.class);
 	
 	public WorkerCont(String name) {
 
@@ -45,10 +49,10 @@ public class WorkerCont extends Worker{
 
 		results.setEst_mu(mu_worker/n);
 		results.setEst_sigma(Math.sqrt((1.0 / n) * (mu_square - Math.pow(mu_worker, 2) / n)));
-		//System.out.println(this.toString());
+		//logger.info(this.toString());
 		if(results.getEst_sigma()==0.0) {
 			results.setEst_sigma(0.00000000001);
-			System.out.println("[Single Label Worker: " +this.getName()+"]");
+			logger.warn("[Single Label Worker: " +this.getName()+"]");
 		}
 
 		for (AssignedLabel al : labels) {
