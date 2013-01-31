@@ -1,4 +1,4 @@
-package com.datascience.gal.commands;
+package com.datascience.executor;
 
 import java.util.concurrent.TimeUnit;
 

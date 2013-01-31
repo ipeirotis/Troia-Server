@@ -24,7 +24,7 @@ import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.commands.AssignsCommands;
 import com.datascience.gal.commands.CategoriesCommands;
-import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.gal.commands.CostsCommands;
 import com.datascience.gal.commands.DatumCommands;
 import com.datascience.gal.commands.EvaluationCommands;

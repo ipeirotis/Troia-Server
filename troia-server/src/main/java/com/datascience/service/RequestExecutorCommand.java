@@ -1,7 +1,7 @@
 package com.datascience.service;
 
-import com.datascience.gal.commands.CommandStatusesContainer;
-import com.datascience.gal.commands.CommandStatus;
+import com.datascience.executor.CommandStatusesContainer;
+import com.datascience.executor.CommandStatus;
 import com.datascience.gal.commands.DSCommandBase;
 import com.datascience.executor.SynchronizedCommand;
 import java.util.concurrent.locks.ReadWriteLock;

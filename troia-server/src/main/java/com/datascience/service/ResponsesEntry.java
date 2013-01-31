@@ -10,8 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import com.datascience.gal.commands.CommandStatus;
-import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.executor.CommandStatus;
+import com.datascience.executor.CommandStatusesContainer;
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/responses/")
