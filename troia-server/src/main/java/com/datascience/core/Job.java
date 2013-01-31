@@ -11,12 +11,12 @@ import com.google.common.base.Objects;
  */
 public class Job<T> {
 	
-	T ds;
+	T project;
 	String id;
 	ReadWriteLock rwLock;
 	
-	public T getDs() {
-		return ds;
+	public T getProject() {
+		return project;
 	}
 
 	public String getId() {
@@ -27,9 +27,9 @@ public class Job<T> {
 		return rwLock;
 	}
 	
-	public Job(T ads, String id){
+	public Job(T project, String id){
 		this.id = id;
-		this.ds = ads;
+		this.project = project;
 		rwLock = new ReentrantReadWriteLock();
 	}
 

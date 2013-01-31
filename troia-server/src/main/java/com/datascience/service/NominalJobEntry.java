@@ -43,14 +43,14 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@Path("")
 	@GET
 	public Response getJobInfo(){
-		DSCommandBase command = new JobCommands.GetJobInfo(job.getDs());
+		DSCommandBase command = new JobCommands.GetJobInfo(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("categories/")
 	@GET
 	public Response getCategories(){
-		DSCommandBase command = new CategoriesCommands.GetCategories(job.getDs());
+		DSCommandBase command = new CategoriesCommands.GetCategories(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
@@ -58,14 +58,14 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@POST
 	public Response setCosts(@FormParam("costs") String sCosts){
 		Collection<MisclassificationCost> costs = serializer.parse(sCosts, JSONUtils.misclassificationCostSetType);
-		DSCommandBase command = new CostsCommands.SetCosts(job.getDs(), costs);
+		DSCommandBase command = new CostsCommands.SetCosts(job.getProject(), costs);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("costs/")
 	@GET
 	public Response getCosts(){
-		DSCommandBase command = new CostsCommands.GetCosts(job.getDs());
+		DSCommandBase command = new CostsCommands.GetCosts(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -73,7 +73,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@POST
 	public Response markAsGold(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		DSCommandBase command = new DatumCommands.MarkDataAsGold(job.getDs(), labels);
+		DSCommandBase command = new DatumCommands.MarkDataAsGold(job.getProject(), labels);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -81,14 +81,14 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@POST
 	public Response addAssigns(@FormParam("labels") String labelsString){
 		Collection<AssignedLabel> labels = serializer.parse(labelsString, JSONUtils.assignedLabelSetType);
-		DSCommandBase command = new AssignsCommands.AddAssigns(job.getDs(), labels);
+		DSCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), labels);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("assignedLabels/")
 	@GET
 	public Response getAssigns(){
-		DSCommandBase command = new AssignsCommands.GetAssigns(job.getDs());
+		DSCommandBase command = new AssignsCommands.GetAssigns(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -96,14 +96,14 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@POST
 	public Response addGoldData(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		DSCommandBase command = new DatumCommands.AddGoldData(job.getDs(), labels);
+		DSCommandBase command = new DatumCommands.AddGoldData(job.getProject(), labels);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("goldData/")
 	@GET
 	public Response getGoldData(){
-		DSCommandBase command = new DatumCommands.GetGoldData(job.getDs());
+		DSCommandBase command = new DatumCommands.GetGoldData(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -111,14 +111,14 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@POST
 	public Response addEvaluationData(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		DSCommandBase command = new DatumCommands.AddEvaluationData(job.getDs(), labels);
+		DSCommandBase command = new DatumCommands.AddEvaluationData(job.getProject(), labels);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("evaluationData/")
 	@GET
 	public Response getEvaluationData(){
-		DSCommandBase command = new DatumCommands.GetEvaluationData(job.getDs());
+		DSCommandBase command = new DatumCommands.GetEvaluationData(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -126,21 +126,21 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@POST
 	public Response addData(@FormParam("objects") String objectsString){
 		Collection<String> objects = serializer.parse(objectsString, JSONUtils.stringSetType);
-		DSCommandBase command = new DatumCommands.AddData(job.getDs(), objects);
+		DSCommandBase command = new DatumCommands.AddData(job.getProject(), objects);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("data/")
 	@GET
 	public Response getData(@DefaultValue("all") @QueryParam("type") String type){
-		DSCommandBase command = new DatumCommands.GetData(job.getDs(), type);
+		DSCommandBase command = new DatumCommands.GetData(job.getProject(), type);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("data/{id: [a-zA-Z_0-9/:.-]+}")
 	@GET
 	public Response getDatum(@PathParam("id") String did){
-		DSCommandBase command = new DatumCommands.GetDatum(job.getDs(), did);
+		DSCommandBase command = new DatumCommands.GetDatum(job.getProject(), did);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -149,28 +149,28 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	public Response getDatumCategoryProbability(@PathParam("id") String did, 
 			@DefaultValue("DS") @QueryParam("type") String type){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(type);
-		DSCommandBase command = new DatumCommands.GetDatumCategoryProbability(job.getDs(), did, lpdc);
+		DSCommandBase command = new DatumCommands.GetDatumCategoryProbability(job.getProject(), did, lpdc);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("workers/{id}")
 	@GET
 	public Response getWorker(@PathParam("id") String wid){
-		DSCommandBase command = new WorkerCommands.GetWorker(job.getDs(), wid);
+		DSCommandBase command = new WorkerCommands.GetWorker(job.getProject(), wid);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("workers/")
 	@GET
 	public Response getWorkers(){
-		DSCommandBase command = new WorkerCommands.GetWorkers(job.getDs());
+		DSCommandBase command = new WorkerCommands.GetWorkers(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("compute/")
 	@POST
 	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
-		DSCommandBase command = new PredictionCommands.Compute(job.getDs(), iterations);
+		DSCommandBase command = new PredictionCommands.Compute(job.getProject(), iterations);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -180,7 +180,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		DSCommandBase command = new PredictionCommands.GetPredictedCategory(job.getDs(), lpdc, olda);
+		DSCommandBase command = new PredictionCommands.GetPredictedCategory(job.getProject(), lpdc, olda);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -190,7 +190,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new PredictionCommands.GetCost(job.getDs(), lpdc, lpdcc);
+		DSCommandBase command = new PredictionCommands.GetCost(job.getProject(), lpdc, lpdcc);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -200,7 +200,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new PredictionCommands.GetQuality(job.getDs(), lpdc, lpdcc);
+		DSCommandBase command = new PredictionCommands.GetQuality(job.getProject(), lpdc, lpdcc);
 		return buildResponseOnCommand(job, command);
 	}
 
@@ -210,7 +210,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		DSCommandBase command = new EvaluationCommands.GetCost(job.getDs(), dataEvaluator);
+		DSCommandBase command = new EvaluationCommands.GetCost(job.getProject(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -220,7 +220,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		DSCommandBase command = new EvaluationCommands.GetQuality(job.getDs(), dataEvaluator);
+		DSCommandBase command = new EvaluationCommands.GetQuality(job.getProject(), dataEvaluator);
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -228,7 +228,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@GET
 	public Response getEvaluatedWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getDs(), new WorkerEvaluator(lpdcc));
+		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getProject(), new WorkerEvaluator(lpdcc));
 		return buildResponseOnCommand(job, command);
 	}
 	
@@ -236,14 +236,14 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@GET
 	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getDs(), new WorkerEstimator(lpdcc));
+		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getProject(), new WorkerEstimator(lpdcc));
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("prediction/workersScore")
 	@GET
 	public Response getWorkersScore(){
-		DSCommandBase command = new WorkerCommands.GetWorkersScores(job.getDs(), new WorkerEstimator(null));
+		DSCommandBase command = new WorkerCommands.GetWorkersScores(job.getProject(), new WorkerEstimator(null));
 		return buildResponseOnCommand(job, command);
 	}
 	

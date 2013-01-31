@@ -106,7 +106,7 @@ public class DBJobStorage implements IJobStorage {
 		try {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
-			String dsString = serializer.serialize(job.getDs());
+			String dsString = serializer.serialize(job.getProject());
 			dsStatement.setString(2, dsString);
 			dsStatement.setString(3, dsString);
 
