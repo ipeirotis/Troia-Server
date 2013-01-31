@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.DatumValue;
 import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
 import com.datascience.gal.WorkerValue;
@@ -21,7 +20,7 @@ import com.datascience.gal.decision.WorkerQualityCalculator;
  */
 public class WorkerCommands {
 	
-	static public class GetWorker extends ProjectCommand<Object> {
+	static public class GetWorker extends DSCommandBase<Object> {
 
 		private String workerId;
 		
@@ -31,24 +30,24 @@ public class WorkerCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ads.getWorker(workerId));
 		}
 	}
 	
-	static public class GetWorkers extends ProjectCommand<Collection<Worker>> {
+	static public class GetWorkers extends DSCommandBase<Collection<Worker>> {
 		
 		public GetWorkers(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ads.getWorkers());
 		}
 	}
 	
-	static public class GetWorkersScores extends ProjectCommand<Collection<Map<String, Object>>> {
+	static public class GetWorkersScores extends DSCommandBase<Collection<Map<String, Object>>> {
 		private AbstractDawidSkene ds;
 		private WorkerEstimator we;
 		
@@ -59,7 +58,7 @@ public class WorkerCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			Collection<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
 			for (Worker w : ds.getWorkers()){
 				result.add(we.getScore(ds, w));
@@ -68,7 +67,7 @@ public class WorkerCommands {
 		}
 	}
 	
-	static public class GetWorkersQuality extends ProjectCommand<Collection<WorkerValue>> {
+	static public class GetWorkersQuality extends DSCommandBase<Collection<WorkerValue>> {
 		private AbstractDawidSkene ds;
 		private WorkerQualityCalculator wqc;
 		
@@ -79,7 +78,7 @@ public class WorkerCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			Map<String, Double> result = new HashMap<String, Double>();
 			Collection<WorkerValue> wq = new ArrayList<WorkerValue>();
 			for (Worker w : ds.getWorkers()){

@@ -16,7 +16,7 @@ import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
  */
 public class DatumCommands {
 	
-	static public class MarkDataAsGold extends ProjectCommand<Object> {
+	static public class MarkDataAsGold extends DSCommandBase<Object> {
 
 		private Collection<CorrectLabel> labels;
 		
@@ -26,13 +26,13 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.markObjectsAsGold(labels);
 			setResult("Data marked as gold");
 		}
 	}
 	
-	static public class AddGoldData extends ProjectCommand<Object> {
+	static public class AddGoldData extends DSCommandBase<Object> {
 
 		private Collection<CorrectLabel> labels;
 		
@@ -42,25 +42,25 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.addCorrectLabels(labels);
 			setResult("Correct data added");
 		}
 	}
 	
-	static public class GetGoldData extends ProjectCommand<Collection<CorrectLabel>> {
+	static public class GetGoldData extends DSCommandBase<Collection<CorrectLabel>> {
 		
 		public GetGoldData(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ads.getGoldDatums());
 		}
 	}
 	
-	static public class AddEvaluationData extends ProjectCommand<Object> {
+	static public class AddEvaluationData extends DSCommandBase<Object> {
 
 		private Collection<CorrectLabel> labels;
 		
@@ -70,25 +70,25 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.addEvaluationDatums(labels);
 			setResult("Evaluation datums added");
 		}
 	}
 	
-	static public class GetEvaluationData extends ProjectCommand<Collection<CorrectLabel>> {
+	static public class GetEvaluationData extends DSCommandBase<Collection<CorrectLabel>> {
 		
 		public GetEvaluationData(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ads.getEvaluationDatums().values());
 		}
 	}
 	
-	static public class AddData extends ProjectCommand<Object> {
+	static public class AddData extends DSCommandBase<Object> {
 
 		private Collection<String> objects;
 		
@@ -98,13 +98,13 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.addObjects(objects);
 			setResult("Object without labels added");
 		}
 	}
 	
-	static public class GetData extends ProjectCommand<Collection<Datum>> {
+	static public class GetData extends DSCommandBase<Collection<Datum>> {
 		
 		private String type;
 		
@@ -114,7 +114,7 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			if (type.equals("assigned")) {
 				setResult(ads.getObjects().values());
 			}
@@ -130,7 +130,7 @@ public class DatumCommands {
 		}
 	}
 	
-	static public class GetDatum extends ProjectCommand<Datum> {
+	static public class GetDatum extends DSCommandBase<Datum> {
 		
 		private String datumId;
 		
@@ -140,12 +140,12 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ParamChecking.datum(ads, datumId));
 		}
 	}
 	
-	static public class GetDatumCategoryProbability extends ProjectCommand<Collection<CategoryValue>> {
+	static public class GetDatumCategoryProbability extends DSCommandBase<Collection<CategoryValue>> {
 		
 		private String datumId;
 		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
@@ -158,7 +158,7 @@ public class DatumCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			Datum datum = ParamChecking.datum(ads, datumId);
 			Collection<CategoryValue> cp = new ArrayList<CategoryValue>();
 			for (Entry<String, Double> e : labelProbabilityDistributionCalculator.calculateDistribution(datum, ads).entrySet()){

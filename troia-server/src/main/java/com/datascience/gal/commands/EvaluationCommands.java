@@ -2,7 +2,6 @@ package com.datascience.gal.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.datascience.gal.AbstractDawidSkene;
@@ -16,7 +15,7 @@ import com.datascience.gal.evaluation.DataEvaluator;
  */
 public class EvaluationCommands {
 	
-	static public class GetCost extends ProjectCommand<Collection<DatumValue>> {
+	static public class GetCost extends DSCommandBase<Collection<DatumValue>> {
 
 		private DataEvaluator dataEvaluator;
 		
@@ -27,7 +26,7 @@ public class EvaluationCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
 			for (Entry<String, Double> e : dataEvaluator.evaluate(ads).entrySet()){
 				cp.add(new DatumValue(e.getKey(), e.getValue()));
@@ -36,7 +35,7 @@ public class EvaluationCommands {
 		}
 	}
 	
-	static public class GetQuality extends ProjectCommand<Collection<DatumValue>> {
+	static public class GetQuality extends DSCommandBase<Collection<DatumValue>> {
 		
 		private DataEvaluator dataEvaluator;
 		
@@ -47,7 +46,7 @@ public class EvaluationCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
 			for (Entry<String, Double> e : Quality.fromCosts(ads, dataEvaluator.evaluate(ads)).entrySet()){
 				cp.add(new DatumValue(e.getKey(), e.getValue()));

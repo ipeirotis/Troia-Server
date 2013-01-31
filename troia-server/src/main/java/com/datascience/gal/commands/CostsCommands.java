@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class CostsCommands {
 	
-	static public class SetCosts extends ProjectCommand<Object> {
+	static public class SetCosts extends DSCommandBase<Object> {
 
 		private Collection<MisclassificationCost> costs;
 		
@@ -21,7 +21,7 @@ public class CostsCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.addMisclassificationCosts(costs);
 			setResult("Costs set");
 		}
@@ -29,14 +29,14 @@ public class CostsCommands {
 	
 	/** This is not a bug - we are using categories here as they gsoned gives us costs
 	 * */
-	static public class GetCosts extends ProjectCommand<Collection<Category>> {
+	static public class GetCosts extends DSCommandBase<Collection<Category>> {
 		
 		public GetCosts(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ads.getCategories().values());
 		}
 	}
