@@ -1,23 +1,11 @@
 package com.datascience.galc;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Set;
-
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import org.apache.log4j.Logger;
-
-import com.datascience.core.storages.JSONUtils;
 import com.google.common.base.Objects;
+import java.util.Set;
+import org.apache.log4j.Logger;
 
 public class WorkerCont extends Worker{
 	
-	public static final WorkerDeserializer deserializer = new WorkerDeserializer();
 	private WorkerContResults 				results;
 
 	private static Logger logger = Logger.getLogger(WorkerCont.class);
@@ -78,21 +66,4 @@ public class WorkerCont extends Worker{
 			       .toString();
 	}
 	
-
-public static class WorkerDeserializer implements JsonDeserializer<Worker> {
-
-	@Override
-	public Worker deserialize(JsonElement json, Type type,
-							  JsonDeserializationContext context) throws JsonParseException {
-		JsonObject jobject = (JsonObject) json;
-		String name = jobject.get("name").getAsString();
-		Double est_rho = jobject.get("est_rho").getAsDouble();
-		Double est_mu = jobject.get("est_mu").getAsDouble();
-		Double est_sigma = jobject.get("est_sigma").getAsDouble();
-		Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(
-											   jobject.get("labels"), JSONUtils.assignedLabelSetType);
-
-		return new WorkerCont(name);
-		}
-	}
 }
