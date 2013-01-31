@@ -3,14 +3,14 @@ package com.datascience.gal.service;
 import com.datascience.gal.commands.CommandStatusesContainer;
 import com.datascience.gal.commands.CommandStatus;
 import com.datascience.gal.commands.ProjectCommand;
-import com.datascience.executor.SynchronizedJobCommand;
+import com.datascience.executor.SynchronizedCommand;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  *
  * @author konrad
  */
-public class RequestExecutorCommand extends SynchronizedJobCommand{
+public class RequestExecutorCommand extends SynchronizedCommand{
 
 	String commandId;
 	ProjectCommand<Object> command;
