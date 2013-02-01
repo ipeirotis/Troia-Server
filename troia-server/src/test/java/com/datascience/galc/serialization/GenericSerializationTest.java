@@ -3,10 +3,12 @@ package com.datascience.galc.serialization;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
+import com.datascience.core.base.LObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -21,6 +23,7 @@ import org.junit.Test;
 public class GenericSerializationTest {
 	
 	private Gson gson = new Gson();
+	private Random random = new Random();
 	
 	public GenericSerializationTest() {
 	}
@@ -57,6 +60,36 @@ public class GenericSerializationTest {
 		Label<Double> deserialized = gson.fromJson(json, new TypeToken<Label<Double>>(){}.getType());
 		System.out.println(label + " = " + deserialized);
 		assertEquals(label, deserialized);
+	}
+	
+	@Test
+	public void workerDoubleJsonTest() {
+		ArrayList<Label<Double>> labels = new ArrayList<Label<Double>>();
+		for (int i = 0; i < 5; i++) {
+			labels.add(new Label<Double>(1.0 * i));
+		}
+		ArrayList<LObject<Double>> lobjects = new ArrayList<LObject<Double>>();
+		for (int i = 0; i < 5; i++) {
+			LObject<Double> lObject = new LObject<Double>("object" + i);
+			lObject.setGoldLabel(labels.get(i));
+			lobjects.add(lObject);
+		}
+		ArrayList<Worker<Double>> workers = new ArrayList<Worker<Double>>();
+		for (int i = 0; i < 20; i++) {
+			Worker<Double> worker = new Worker<Double>("worker" + i);
+			for (LObject<Double> lObject : lobjects) {
+				AssignedLabel assignedLabel = new AssignedLabel<Double>();
+				assignedLabel.setLobject(lObject);
+				assignedLabel.setLabel(labels.get(random.nextInt(labels.size())));
+				assignedLabel.setWorker(worker);
+				worker.addAssign(assignedLabel);
+			}
+			workers.add(worker);
+		}
+		String json = gson.toJson(workers);
+		Collection<Worker<Double>> deserialized = gson.fromJson(json, new TypeToken<Collection<Worker<Double>>>(){}.getType());
+		System.out.println("workers = " + workers);
+		System.out.println("deserialized = " + deserialized);
 	}
 	
 	@Test
