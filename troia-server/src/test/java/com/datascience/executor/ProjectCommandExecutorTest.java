@@ -1,4 +1,4 @@
-package com.datascience.gal.executor;
+package com.datascience.executor;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
  * @author konrad
  */
 public class ProjectCommandExecutorTest {
+
+	protected int timeout = 200;
 
 	@Test
 	public void testAll() throws InterruptedException{
@@ -29,7 +31,7 @@ public class ProjectCommandExecutorTest {
 		};
 		for (int i=0;i<canGo.length;i++){
 			executor.add(commands[i]);
-			Thread.sleep(100);
+			Thread.sleep(timeout);
 			assertArrayEquals("Error in " + i + " iteration", expectations[i], canGo);
 		}
 	}
@@ -72,7 +74,7 @@ public class ProjectCommandExecutorTest {
 		ProjectCommandExecutor executor = new ProjectCommandExecutor();
 		IExecutorCommand iec = new FailingCommand(ok);
 		executor.add(iec);
-		Thread.sleep(100);
+		Thread.sleep(timeout);
 		assertEquals("Failing command wasn't cleaned", true, ok[0]);
 	}
 	

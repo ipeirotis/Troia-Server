@@ -72,7 +72,7 @@ function uploadAssignedLabels
 }
 
 function getJobStatus {
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$1")
+  local result=$(curl -s1 -X GET "$URL/$1")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
 
   if [[ "$status" != "$2" ]]
@@ -103,7 +103,7 @@ function getPredictionData {
 function getActualPredictionData {
   #get the job status and check that the returned data is correct
   echo "Getting prediction data job status for redirect=$redirectId ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local predictionData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
   echo "Received: $predictionData"
@@ -150,7 +150,7 @@ function getProbabilityDistribution {
 function getCategoryProbabilities {
   #get the job status and check that the data is correct
   echo "Getting category probability job status for redirect=$redirectId..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d ',' -f 4 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local categProbabilityData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
   echo "Received:  $categProbabilityData"
@@ -194,7 +194,7 @@ function getPredictedWorkersQuality {
 function getWorkersQualityData {
   #get the job status and check that the data is correct
   echo "Getting workers quality job status for redirect=$redirectId..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local workerQualityData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
   echo "Received: $workerQualityData"
@@ -259,7 +259,7 @@ function getDataCost {
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   
   echo "Getting the actual data cost for redirect=$redirectId..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local dataCost=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
   echo "Received: $dataCost"

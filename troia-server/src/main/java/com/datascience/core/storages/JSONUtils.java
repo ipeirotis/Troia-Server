@@ -20,10 +20,12 @@ import org.apache.log4j.Logger;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CategoryPair;
+import com.datascience.gal.CategoryValue;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
 import com.datascience.gal.DawidSkene;
 import com.datascience.gal.DawidSkeneDeserializer;
+import com.datascience.gal.MatrixValue;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.MultinomialConfusionMatrix;
 import com.datascience.gal.Worker;
@@ -43,6 +45,8 @@ public class JSONUtils {
 
 	public static final Gson gson;
 
+	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {
+	} .getType();
 	public static final Type assignedLabelSetType = new TypeToken<Collection<AssignedLabel>>() {
 	} .getType();
 	public static final Type correctLabelSetType = new TypeToken<Collection<CorrectLabel>>() {
@@ -73,7 +77,7 @@ public class JSONUtils {
 	} .getType();
 	public static final Type categoryPairType = new TypeToken<CategoryPair>() {
 	} .getType();
-	public static final Type categoryPairDoubleMapType = new TypeToken<Map<CategoryPair, Double>>() {
+	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
 	} .getType();
 	public static final Type confusionMatrixType = new TypeToken<MultinomialConfusionMatrix>() {
 	} .getType();
@@ -99,20 +103,17 @@ public class JSONUtils {
 //		GsonBuilder builder = new GsonBuilder();
 		GsonBuilder builder = new GsonBuilder().serializeSpecialFloatingPointValues();
 
-		builder.registerTypeAdapter(assignedLabelType,
-									AssignedLabel.deserializer);
+		builder.registerTypeAdapter(assignedLabelType,AssignedLabel.deserializer);
 		builder.registerTypeAdapter(correctLabelType, CorrectLabel.deserializer);
 		builder.registerTypeAdapter(categoryType, Category.deserializer);
-		builder.registerTypeAdapter(misclassificationCostType,
-									MisclassificationCost.deserializer);
+		builder.registerTypeAdapter(categoryType, Category.serializer);
+		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
 		builder.registerTypeAdapter(datumType, Datum.deserializer);
-		builder.registerTypeAdapter(categoryPairType, CategoryPair.deserializer);
-		builder.registerTypeAdapter(categoryPairType, CategoryPair.serializer);
-		builder.registerTypeAdapter(confusionMatrixType,
-									MultinomialConfusionMatrix.deserializer);
+		builder.registerTypeAdapter(datumType, Datum.serializer);
+		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
+		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);
 		builder.registerTypeAdapter(workerType, Worker.deserializer);
-		builder.registerTypeAdapter(dawidSkeneType,
-									DawidSkeneDeserializer.deserializer);
+		builder.registerTypeAdapter(dawidSkeneType, DawidSkeneDeserializer.deserializer);
 
 		gson = builder.create();
 

@@ -1,8 +1,12 @@
 package com.datascience.gal.commands;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.DatumClassification;
+import com.datascience.gal.DatumValue;
 import com.datascience.gal.Quality;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
@@ -15,7 +19,7 @@ import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
  */
 public class PredictionCommands {
 	
-	static public class Compute extends ProjectCommand<Object> {
+	static public class Compute extends DSCommandBase<Object> {
 
 		private int iterations;
 		
@@ -25,13 +29,13 @@ public class PredictionCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.estimate(iterations);
 			setResult("Computation done");
 		}
 	}
 	
-	static public class GetPredictedCategory extends ProjectCommand<Map<String, String>> {
+	static public class GetPredictedCategory extends DSCommandBase<Collection<DatumClassification>> {
 		
 		private DecisionEngine decisionEngine;
 
@@ -43,13 +47,17 @@ public class PredictionCommands {
 		}
 		
 		@Override
-		void realExecute() {
-			setResult(decisionEngine.predictLabels(ads));
+		protected void realExecute() {
+			Collection<DatumClassification> dc = new ArrayList<DatumClassification>();
+			for (Entry<String, String> e : decisionEngine.predictLabels(ads).entrySet()){
+				dc.add(new DatumClassification(e.getKey(), e.getValue()));
+			}
+			setResult(dc);
 		}
 	}
 	
 	
-	static public class GetCost extends ProjectCommand<Map<String, Double>> {
+	static public class GetCost extends DSCommandBase<Collection<DatumValue>> {
 		
 		private DecisionEngine decisionEngine;
 		
@@ -61,12 +69,16 @@ public class PredictionCommands {
 		}
 		
 		@Override
-		void realExecute() {
-			setResult(decisionEngine.estimateMissclassificationCosts(ads));
+		protected void realExecute() {
+			Collection<DatumValue> cp = new ArrayList<DatumValue>();
+			for (Entry<String, Double> e : decisionEngine.estimateMissclassificationCosts(ads).entrySet()){
+				cp.add(new DatumValue(e.getKey(), e.getValue()));
+			}
+			setResult(cp);
 		}
 	}
 	
-	static public class GetQuality extends ProjectCommand<Map<String, Double>> {
+	static public class GetQuality extends DSCommandBase<Collection<DatumValue>> {
 		
 		private DecisionEngine decisionEngine;
 		
@@ -78,9 +90,12 @@ public class PredictionCommands {
 		}
 		
 		@Override
-		void realExecute() {
-			setResult(Quality.fromCosts(ads,
-				decisionEngine.estimateMissclassificationCosts(ads)));
+		protected void realExecute() {
+			Collection<DatumValue> cp = new ArrayList<DatumValue>();
+			for (Entry<String, Double> e : Quality.fromCosts(ads, decisionEngine.estimateMissclassificationCosts(ads)).entrySet()){
+				cp.add(new DatumValue(e.getKey(), e.getValue()));
+			}
+			setResult(cp);
 		}
 	}
 }

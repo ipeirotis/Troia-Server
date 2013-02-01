@@ -1,6 +1,6 @@
 package com.datascience.core.storages;
 
-import com.datascience.gal.executor.ProjectCommandExecutor;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  *
