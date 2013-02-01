@@ -2,7 +2,7 @@ package com.datascience.gal.commands;
 
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.gal.executor.SynchronizedJobCommand;
+import com.datascience.executor.SynchronizedCommand;
 import org.apache.log4j.Logger;
 
 /**
@@ -13,7 +13,7 @@ public class JobStorageCommands{
 	
 	static Logger logger = Logger.getLogger(JobStorageCommands.class);
 	
-	public static class Adder extends SynchronizedJobCommand {
+	public static class Adder extends SynchronizedCommand {
 		
 		protected IJobStorage jobStorage;
 		protected Job job;
@@ -34,7 +34,7 @@ public class JobStorageCommands{
 		}
 	}
 	
-	public static class Remover extends SynchronizedJobCommand {
+	public static class Remover extends SynchronizedCommand {
 
 		protected IJobStorage jobStorage;
 		protected Job job;

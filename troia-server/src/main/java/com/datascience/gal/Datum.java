@@ -10,10 +10,12 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.datascience.core.storages.JSONUtils;
@@ -24,9 +26,12 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 public class Datum {
 	public static final DatumDeserializer deserializer = new DatumDeserializer();
+	public static final DatumSerializer serializer = new DatumSerializer();
 	String name;
 
 	// Defines if we have the correct category for this object
@@ -189,23 +194,21 @@ public class Datum {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return JSONUtils.gson.toJson(this);
-	}
-
 	public static class DatumDeserializer implements JsonDeserializer<Datum> {
 
 		@Override
 		public Datum deserialize(JsonElement json, Type type,
 								 JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
-			Map<String, Double> catMap = JSONUtils.gson.fromJson(
+			Collection<CategoryValue> catProb = JSONUtils.gson.fromJson(
 											 jobject.get("categoryProbability"),
-											 JSONUtils.stringDoubleMapType);
+											 JSONUtils.categoryValuesCollectionType);
+			Map<String, Double> catMap = new HashMap<String, Double>();
+			for (CategoryValue cp : catProb){
+				catMap.put(cp.categoryName, cp.value);
+			}
 			boolean isGold = jobject.get("isGold").getAsBoolean();
-			Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(
-												   jobject.get("labels"), JSONUtils.assignedLabelSetType);
+			Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(jobject.get("labels"), JSONUtils.assignedLabelSetType);
 			String name = jobject.get("name").getAsString();
 
 			if (jobject.has("correctCategory")) {
@@ -216,5 +219,24 @@ public class Datum {
 			}
 		}
 	}
+	
+	public static class DatumSerializer implements JsonSerializer<Datum> {
 
+		@Override
+		public JsonElement serialize(Datum arg0, Type arg1,
+				JsonSerializationContext arg2) {
+			JsonObject ret = new JsonObject();
+			ret.addProperty("isGold", arg0.isGold());
+			if (arg0.isGold())
+				ret.addProperty("correctCategory", arg0.getCorrectCategory());
+			ret.addProperty("name", arg0.getName());
+			Collection<CategoryValue> cp = new ArrayList<CategoryValue>(arg0.categoryProbability.size());
+			for (Entry<String, Double> e : arg0.categoryProbability.entrySet()){
+				cp.add(new CategoryValue(e.getKey(), e.getValue()));
+			}
+			ret.add("categoryProbability", JSONUtils.gson.toJsonTree(cp));
+			ret.add("labels", JSONUtils.gson.toJsonTree(arg0.labels));
+			return ret;
+		}
+	}
 }

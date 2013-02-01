@@ -43,7 +43,7 @@ public class DataEvaluator {
 		Category fromCostVector = ds.getCategories().get(correctLabel);
 		double cost = 0.0;
 		for (Map.Entry<String, Double> e : dest_probabilities.entrySet()) {
-			double misclassification_cost = fromCostVector.getCost(e.getKey());
+			Double misclassification_cost = fromCostVector.getCost(e.getKey());
 			cost += e.getValue() * misclassification_cost;
 		}
 		return cost;

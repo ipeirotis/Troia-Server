@@ -1,4 +1,4 @@
-package com.datascience.gal.service;
+package com.datascience.service;
 
 import com.datascience.core.storages.JSONUtils;
 import com.google.gson.stream.JsonReader;

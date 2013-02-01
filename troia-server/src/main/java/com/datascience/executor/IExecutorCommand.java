@@ -1,4 +1,4 @@
-package com.datascience.gal.executor;
+package com.datascience.executor;
 
 /**
  *

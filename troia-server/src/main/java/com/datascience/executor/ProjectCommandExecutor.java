@@ -1,4 +1,4 @@
-package com.datascience.gal.executor;
+package com.datascience.executor;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;

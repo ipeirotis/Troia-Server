@@ -1,8 +1,8 @@
-package com.datascience.gal.commands;
+package com.datascience.executor;
 
-import com.datascience.gal.service.IRandomUniqIDGenerator;
 import java.util.concurrent.TimeUnit;
 
+import com.datascience.service.IRandomUniqIDGenerator;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 

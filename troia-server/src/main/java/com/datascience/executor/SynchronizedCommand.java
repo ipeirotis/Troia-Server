@@ -1,4 +1,4 @@
-package com.datascience.gal.executor;
+package com.datascience.executor;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -7,11 +7,11 @@ import java.util.concurrent.locks.ReadWriteLock;
  *
  * @author konrad
  */
-public abstract class SynchronizedJobCommand implements IExecutorCommand{
+public abstract class SynchronizedCommand implements IExecutorCommand{
 
 	private Lock lock;
 	
-	public SynchronizedJobCommand(ReadWriteLock rwLock, boolean modifies){
+	public SynchronizedCommand(ReadWriteLock rwLock, boolean modifies){
 		adjustLock(rwLock, modifies);
 	}
 	

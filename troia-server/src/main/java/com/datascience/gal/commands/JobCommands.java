@@ -10,14 +10,14 @@ import com.datascience.gal.AbstractDawidSkene;
  */
 public class JobCommands {
 	
-	static public class GetJobInfo extends ProjectCommand<Map<String, String>> {
+	static public class GetJobInfo extends DSCommandBase<Map<String, String>> {
 
 		public GetJobInfo(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			setResult(ads.getInfo());
 		}
 	}

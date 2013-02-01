@@ -1,20 +1,16 @@
-package com.datascience.gal.commands;
-
-import com.datascience.gal.AbstractDawidSkene;
+package com.datascience.executor;
 
 /**
  * T is result type
  * @author konrad
  */
 public abstract class ProjectCommand<T> {
-	
+
 	final boolean modifies;
-	protected AbstractDawidSkene ads;
 	private T result;
 	private Exception exception;
 	
-	public ProjectCommand(AbstractDawidSkene ads, boolean modifies){
-		this.ads = ads;
+	public ProjectCommand(boolean modifies){
 		this.modifies = modifies;
 	}
 	
@@ -26,7 +22,7 @@ public abstract class ProjectCommand<T> {
 		return exception;
 	}
 	
-	void setResult(T result){
+	protected void setResult(T result){
 		this.result = result;
 	}
 	
@@ -42,9 +38,10 @@ public abstract class ProjectCommand<T> {
 		}
 	}
 	
-	abstract void realExecute() throws Exception;
+	protected abstract void realExecute() throws Exception;
 	
 	public boolean wasOk(){
 		return exception == null;
 	}
 }
+

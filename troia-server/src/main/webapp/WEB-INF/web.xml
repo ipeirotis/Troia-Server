@@ -15,7 +15,7 @@
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>com.datascience.gal.service</param-value>
+			<param-value>com.datascience.service</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.JSPTemplatesBasePath</param-name>
@@ -24,7 +24,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<listener> 
-		<listener-class>com.datascience.gal.service.InitializationSupport</listener-class> 
+		<listener-class>com.datascience.service.InitializationSupport</listener-class> 
 	</listener> 
 	<servlet-mapping>
 		<servlet-name>get another label</servlet-name>
