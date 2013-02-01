@@ -36,7 +36,7 @@ For data upload:
 
     POST /cjobs/{job_id}/objects/{new_object_id} -> creates new object
     POST /cjobs/{job_id}/goldObjects/{object_id} params: "label": value
-    POST /cjobs/{job_id}/assigns/ params: "worker": worker_id, "object": object_id, "value": value
+    POST /cjobs/{job_id}/assigns/ params: "worker": worker_id, "object": object_id, "label": value
 
 Starting calculations:
 
