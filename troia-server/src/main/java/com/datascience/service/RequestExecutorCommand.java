@@ -2,6 +2,7 @@ package com.datascience.service;
 
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
+import com.datascience.executor.ProjectCommand;
 import com.datascience.gal.commands.DSCommandBase;
 import com.datascience.executor.SynchronizedCommand;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -13,10 +14,10 @@ import java.util.concurrent.locks.ReadWriteLock;
 public class RequestExecutorCommand extends SynchronizedCommand{
 
 	String commandId;
-	DSCommandBase<Object> command;
+	ProjectCommand command;
 	CommandStatusesContainer statusContainer;
 	
-	public RequestExecutorCommand(String commandId, DSCommandBase<Object> command,
+	public RequestExecutorCommand(String commandId, ProjectCommand command,
 			ReadWriteLock rwLock, CommandStatusesContainer statusContainer){
 		super(rwLock, command.modifies());
 		this.commandId = commandId;
