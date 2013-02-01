@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
@@ -33,6 +34,7 @@ import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.gal.AbstractDawidSkene;
+
 
 /**
  * @author Konrad Kurdej
