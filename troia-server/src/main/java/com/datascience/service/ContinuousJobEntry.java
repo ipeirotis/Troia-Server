@@ -1,6 +1,7 @@
 package com.datascience.service;
 
 import com.datascience.core.base.Data;
+import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.GALCommandBase;
 
 import javax.ws.rs.*;
@@ -10,7 +11,7 @@ import javax.ws.rs.core.Response;
  * @Author: konrad
  */
 @Path("/cjobs/{id}/")
-public class ContinuousJobEntry extends JobEntryBase<Data<Double>> {
+public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
 	@Path("")
 	@GET
