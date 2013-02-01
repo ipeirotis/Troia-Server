@@ -28,7 +28,7 @@ Job creation/deletion is similar to previous solution.
     GET /cjobs/{job_id}/assigns/ -> list all assigns
     GET /cjobs/{job_id}/workers/ -> list all workers
     GET /cjobs/{job_id}/workers/{worker_id} -> base info about given worker
-    GET /cjobs/{job_id}/workers/{worker_id}/assignedLabels
+    GET /cjobs/{job_id}/workers/{worker_id}/assigns
 
 For data upload:
 
