@@ -12,7 +12,12 @@ public class AssignedLabel<T> {
 	protected LObject lobject;
 	protected Worker<T> worker;
 	protected Label<T> label;
-
+	
+	public AssignedLabel(String worker, String object, T label){
+		this.label = new Label<T>(label);
+		this.lobject = new LObject<T>(object);
+		this.worker = new Worker<T>(worker);
+	}
 
 	public LObject getLobject() {
 		return lobject;
