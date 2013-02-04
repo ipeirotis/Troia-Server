@@ -1,16 +1,8 @@
 package com.datascience.galc.dataGenerator;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.log4j.Logger;
-import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
+import org.junit.Ignore;
 import org.junit.Test;
-
-import com.datascience.galc.dataGenerator.SyntheticDataGenerator;
 
 /**
  * The class <code>TestDataGeneratorTest</code> contains tests for the class
@@ -24,26 +16,16 @@ import com.datascience.galc.dataGenerator.SyntheticDataGenerator;
  *
  * @version $Revision$
  */
-public class SyntheticDataGeneratorTest extends TestCase {
+public class SyntheticDataGeneratorTest {
 
-
-	/**
-	 * Construct new test instance
-	 *
-	 * @param name
-	 *            the test name
-	 */
-	public SyntheticDataGeneratorTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Run the ArrayList<String> generateCategoryNames(int) method test
 	 */
+	@Ignore
 	@Test
 	public void testGeneratedSyntheticData() {
 		final SyntheticDataGenerator dataGenerator = new SyntheticDataGenerator();
-
 	}
 }
 
