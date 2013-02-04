@@ -1,10 +1,9 @@
 package com.datascience.galc;
 
-public class DatumContResults {
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.LObject;
 
-	private Boolean							isGold;
-	private Double							goldValue;
-	private Double							goldZeta;
+public class DatumContResults {
 
 	private Double							est_value;
 	private Double							est_zeta;
@@ -15,41 +14,15 @@ public class DatumContResults {
 	
 	private Double 							distributionMu;
 	private Double 							distributionSigma;
+
+	protected LObject<ContValue> object;
 	
-	public DatumContResults() {
-		
-		this.isGold = false;
-
+	public DatumContResults(LObject<ContValue> object) {
+		this.object = object;
 	}
 
-	public Boolean isGold() {
-
-		return isGold;
-	}
-
-	public void setGold(Boolean isGold) {
-
-		this.isGold = isGold;
-	}
-
-	public Double getGoldValue() {
-
-		return goldValue;
-	}
-
-	public void setGoldValue(Double goldValue) {
-
-		this.goldValue = goldValue;
-	}
-
-	public Double getGoldZeta() {
-
-		return goldZeta;
-	}
-
-	public void setGoldZeta(Double goldZeta) {
-
-		this.goldZeta = goldZeta;
+	public LObject<ContValue> getObject(){
+		return object;
 	}
 
 	/**

@@ -3,30 +3,44 @@ package com.datascience.galc;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Label;
+import com.datascience.core.base.Worker;
+import org.apache.log4j.Logger;
+
 public class WorkerContResults {
-	private Double							est_rho;
-	private Double							est_mu;
-	private Double							est_sigma;
+
+	private static Logger logger = Logger.getLogger(WorkerContResults.class);
+
+	private Double est_rho;
+	private Double est_mu;
+	private Double est_sigma;
 
 	// The labels normalized into empirical z-values (subtracted empirical mean, divided by stdev)
-	private Set<AssignedLabel>	zeta = new HashSet<AssignedLabel>();
+	private Set<AssignedLabel<ContValue>> zeta;
 
 	// True values
-	private Double							true_mu;
-	private Double							true_sigma;
-	private Double							true_rho;
+	private Double true_mu;
+	private Double true_sigma;
+	private Double true_rho;
 
-	public WorkerContResults() {
-		
+	protected Worker<ContValue> worker;
+
+	public WorkerContResults(Worker<ContValue> worker) {
+		this.worker = worker;
+		zeta = new HashSet<AssignedLabel<ContValue>>();
+	}
+
+	public Worker<ContValue> getWorker(){
+		return worker;
 	}
 	
-	public Set<AssignedLabel> getZetaValues() {
-
+	public Set<AssignedLabel<ContValue>> getZetaValues() {
 		return zeta;
 	}
 
 	public Double getZeta(Double label) {
-
 		return (label - this.est_mu) / this.est_sigma;
 	}
 
@@ -37,6 +51,34 @@ public class WorkerContResults {
 			System.err.print("woops " + "rho^2:" + t1 + ", w.est_rho:" + est_rho + " ");
 
 		return 1. / t;
+	}
+
+
+	public void computeZetaValues() {
+		Set<AssignedLabel<ContValue>> labels = worker.getAssigns();
+		int n = labels.size();
+		double mu_worker = 0.0;
+		double mu_square = 0.0;
+		for (AssignedLabel<ContValue> al : labels) {
+			double label = al.getLabel().getValue().getValue();
+			mu_worker += label;
+			mu_square += Math.pow(label, 2);
+		}
+
+		setEst_mu(mu_worker / n);
+		setEst_sigma(Math.sqrt((1.0 / n) * (mu_square - Math.pow(mu_worker, 2) / n)));
+		//logger.info(this.toString());
+		if(getEst_sigma()==0.0) {
+			setEst_sigma(0.00000000001);
+			logger.warn("[Single Label Worker: " + worker.getName()+"]");
+		}
+
+		for (AssignedLabel<ContValue> al : labels) {
+			double label = al.getLabel().getValue().getValue();
+			Double z = (label - getEst_mu()) / getEst_sigma();
+			AssignedLabel zl = new AssignedLabel<ContValue>(worker, al.getLobject(), new Label<ContValue>(new ContValue(z)));
+			getZetaValues().add(zl);
+		}
 	}
 
 	public Double getTrueMu() {

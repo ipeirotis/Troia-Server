@@ -6,21 +6,24 @@ import java.io.FileWriter;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.galc.Data;
-import com.datascience.galc.DatumCont;
+import com.datascience.galc.ContinuousIpeirotis;
+
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.EmpiricalData;
-import com.datascience.galc.Ipeirotis;
-import com.datascience.galc.WorkerCont;
 import com.datascience.galc.WorkerContResults;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
+
 
 class ReportGenerator {
 
-	private Ipeirotis	ip;
+	private ContinuousIpeirotis	ip;
 	
 	private static Logger logger = Logger.getLogger(ReportGenerator.class);
 
-	public ReportGenerator(Ipeirotis ip, EngineContext ctx) {
+	public ReportGenerator(ContinuousIpeirotis ip, EngineContext ctx) {
 		this.ip = ip;
 	}
 
@@ -31,9 +34,8 @@ class ReportGenerator {
 
 		Double relRhoError = 0.0;
 		int n = 0;
-		for (WorkerCont w : ip.getWorkers()) {
-			WorkerContResults wr = w.getResults();
-			if (wr.getTrueRho()==null) 
+		for (WorkerContResults wr: ip.getWorkersResults().values()) {
+			if (wr.getTrueRho()==null)
 				continue;
 			n++;
 			double estRho = wr.getEst_rho();
@@ -52,9 +54,8 @@ class ReportGenerator {
 
 		Double avgRhoError = 0.0;
 		int n = 0;
-		for (WorkerCont w : ip.getWorkers()) {
-			WorkerContResults wr = w.getResults();
-			if (wr.getTrueRho() ==null ) 
+		for (WorkerContResults wr: ip.getWorkersResults().values()) {
+			if (wr.getTrueRho() ==null )
 				continue;
 			n++;
 			double estRho = wr.getEst_rho();
@@ -73,9 +74,9 @@ class ReportGenerator {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name\tLabels\tEstMean\tEstStDev\tEstCorrelation\tTrueMean\tTrueStDev\tTrueCorrelation\n");
-		for (WorkerCont w : ip.getWorkers()) {
-			WorkerContResults wr = w.getResults();
-			sb.append(w.getName() + "\t" + w.getLabels().size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
+		for (WorkerContResults wr : ip.getWorkersResults().values()) {
+			Worker<ContValue> w = wr.getWorker();
+			sb.append(w.getName() + "\t" + w.getAssigns().size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
 			sb.append("\n");
 		}
 		
@@ -96,8 +97,7 @@ class ReportGenerator {
 
 		Double nominator_sigma = 0.0;
 		Double denominator_sigma = 0.0;
-		for (WorkerCont w : ip.getWorkers()) {
-			WorkerContResults wr = w.getResults();
+		for (WorkerContResults wr : ip.getWorkersResults().values()) {
 			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double s = wr.getEst_sigma();
@@ -116,8 +116,7 @@ class ReportGenerator {
 		// Estimate mu and sigma of distribution
 		Double nominator_mu = 0.0;
 		Double denominator_mu = 0.0;
-		for (WorkerCont w : ip.getWorkers()) {
-			WorkerContResults wr = w.getResults();
+		for (WorkerContResults wr : ip.getWorkersResults().values()) {
 			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double m = wr.getEst_mu();
@@ -128,10 +127,6 @@ class ReportGenerator {
 		return est_mu;
 	}
 
-	/**
-	 * @param data_mu
-	 * @param data_sigma
-	 */
 	public String generateDistributionReport() {
 
 		String out = "Estimated mu = " + estimateDistributionMu() + "\n" + "Estimated sigma = "
@@ -140,16 +135,11 @@ class ReportGenerator {
 		return out;
 	}
 
-	/**
-	 * @param data_mu
-	 * @param data_sigma
-	 */
 	double getZetaAbsoluteErrorObject() {
 
 		Double avgAbsError = 0.0;
 		int n = 0;
-		for (DatumCont d : ip.getObjects()) {
-			DatumContResults dr = d.getResults();
+		for (DatumContResults dr : ip.getObjectsResults().values()) {
 			if (  dr.getTrueZeta() == null ) continue;
 			n++;
 			double estZ = dr.getEst_zeta();
@@ -160,16 +150,11 @@ class ReportGenerator {
 		return avgAbsError/n;
 	}
 
-	/**
-	 * @param data_mu
-	 * @param data_sigma
-	 */
 	double getZetaRelativeErrorObject() {
 
 		Double avgRelError = 0.0;
 		int n = 0;
-		for (DatumCont d : ip.getObjects()) {
-			DatumContResults dr = d.getResults();
+		for (DatumContResults dr : ip.getObjectsResults().values()) {
 			if ( dr.getTrueZeta() == null) continue;
 			n++;
 			double estZ = dr.getEst_zeta();
@@ -186,12 +171,12 @@ class ReportGenerator {
 
 		double mu = this.estimateDistributionMu();
 		double sigma = this.estimateDistributionSigma();
-		StringBuffer sb = new StringBuffer(); 
-		for (DatumCont d : ip.getObjects()) {
-			DatumContResults dr = d.getResults();
+		StringBuffer sb = new StringBuffer();
+		for (DatumContResults dr : ip.getObjectsResults().values()) {
+			LObject<ContValue> d = dr.getObject();
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);
-			sb.append(d.getName() +"\t" + d.getAverageLabel() + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta());
+			sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta());
 		  sb.append("\n");
 			
 		}
@@ -240,7 +225,7 @@ public class Engine {
 
 	public void execute() {
 
-		Data data;
+		Data<ContValue> data;
 
 		EmpiricalData edata = new EmpiricalData();
 		edata.loadLabelFile(ctx.getInputFile());
@@ -253,9 +238,10 @@ public class Engine {
 		if(ctx.hasCorrectFile()) {
 			edata.loadGoldLabelsFile(ctx.getCorrectFile());
 		}
-		data = edata;
+//		data = edata; TODO: FIX THIS
+		data = null;
 
-		Ipeirotis ip = new Ipeirotis(data);
+		ContinuousIpeirotis ip = new ContinuousIpeirotis(data);
 
 		ReportGenerator rpt = new ReportGenerator(ip, ctx);
 
