@@ -18,6 +18,7 @@ import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
 import com.datascience.galc.commands.GoldObjectsCommands;
+import com.datascience.galc.commands.WorkerCommands;
 
 /**
  * @Author: konrad
@@ -95,14 +96,14 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("workers")
 	@GET
 	public Response getWorkers(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new WorkerCommands.GetWorkers(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("workers/{wid}")
 	@GET
 	public Response getWorker(@PathParam("wid") String worker){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new WorkerCommands.GetWorker(job.getProject(), worker);
 		return buildResponseOnCommand(job, command);
 	}
 

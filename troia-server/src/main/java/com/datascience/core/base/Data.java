@@ -30,6 +30,10 @@ public class Data <T>{
 	public void addWorker(Worker<T> worker){
 		workers.add(worker);
 	}
+
+	public Set<Worker<T>> getWorkers(){
+		return workers;
+	}
 	
 	public Worker<T> getWorker(String workerId){
 		for(Worker<T> w : workers){
