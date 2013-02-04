@@ -34,15 +34,35 @@ public class Data <T>{
 	public void addObject(LObject<T> object){
 		objects.add(object);
 	}
+	
+	public Set<LObject<T>> getObjects(){
+		return objects;
+	}
 
 	public void addGoldObject(LObject<T> object){
 		goldObjects.add(object);
 		addObject(object);
 	}
+	
+	public Set<LObject<T>> getGoldObjects(){
+		return goldObjects;
+	}
+	
+	public LObject<T> getGoldObject(String objectId){
+		for (LObject<T> obj : goldObjects){
+			if (obj.getName().equals(objectId))
+				return obj;
+		}
+		return null;
+	}
 
 	public void addEvaluationObject(LObject<T> object){
 		evaluationObjects.add(object);
 		addObject(object);
+	}
+	
+	public Set<LObject<T>> getEvaluationObjects(){
+		return evaluationObjects;
 	}
 
 	public void addAssign(AssignedLabel<T> assign){
