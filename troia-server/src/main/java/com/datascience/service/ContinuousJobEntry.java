@@ -19,6 +19,7 @@ import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
 import com.datascience.galc.commands.GoldObjectsCommands;
+import com.datascience.galc.commands.ObjectCommands;
 import com.datascience.galc.commands.ProjectCommands;
 import com.datascience.galc.commands.WorkerCommands;
 
@@ -38,21 +39,21 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("objects")
 	@GET
 	public Response getObjects(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ObjectCommands.GetObjects(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("objects/{oid}")
 	@GET
 	public Response getObject(@QueryParam("oid") String objectId){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ObjectCommands.GetObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("objects/{oid}")
 	@POST
 	public Response addObject(@QueryParam("oid") String objectId){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ObjectCommands.AddObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
 

@@ -34,7 +34,7 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(project.getData().getWorker(workerId));
+			setResult(ParamChecking.worker(project.getData(), workerId));
 		}
 	}
 }
