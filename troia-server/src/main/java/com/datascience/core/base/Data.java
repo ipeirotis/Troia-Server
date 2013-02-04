@@ -1,9 +1,6 @@
 package com.datascience.core.base;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: konrad
@@ -41,6 +38,10 @@ public class Data <T>{
 				return w;
 		}
 		return null;
+	}
+
+	public Collection<Worker<T>> getWorkers(){
+		return workers;
 	}
 
 	public void addObject(LObject<T> object){

@@ -19,7 +19,7 @@ public class AssignedLabel<T> {
 		this.worker = worker;
 	}
 
-	public LObject getLobject() {
+	public LObject<T> getLobject() {
 		return lobject;
 	}
 
@@ -27,7 +27,7 @@ public class AssignedLabel<T> {
 		this.lobject = lobject;
 	}
 
-	public Label getLabel() {
+	public Label<T> getLabel() {
 		return label;
 	}
 

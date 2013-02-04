@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 
-public class EmpiricalData extends Data {
+public class EmpiricalData {
 
 	private Map<String, DatumCont>	objects_index = new HashMap<String, DatumCont>();
 	private Map<String, WorkerCont>	workers_index = new HashMap<String, WorkerCont>();
