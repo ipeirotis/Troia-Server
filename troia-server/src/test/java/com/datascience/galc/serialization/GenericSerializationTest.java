@@ -86,11 +86,7 @@ public class GenericSerializationTest {
 		for (int i = 0; i < 20; i++) {
 			Worker<Double> worker = new Worker<Double>("worker" + i);
 			for (LObject<Double> lObject : lobjects) {
-				AssignedLabel assignedLabel = new AssignedLabel<Double>();
-				assignedLabel.setLobject(lObject);
-				assignedLabel.setLabel(labels.get(random.nextInt(labels.size())));
-				assignedLabel.setWorker(worker);
-				worker.addAssign(assignedLabel);
+				worker.addAssign(new AssignedLabel<Double>(worker, lObject, labels.get(random.nextInt(labels.size()))));
 			}
 			workers.add(worker);
 		}
@@ -104,9 +100,7 @@ public class GenericSerializationTest {
 	public void assignedLabelStringJsonTest() {
 		Label<String> label = new Label<String>("label");
 		Worker<String> worker = new Worker<String>("Worker");
-		AssignedLabel<String> assignedLabel = new AssignedLabel<String>();
-		assignedLabel.setLabel(label);
-		assignedLabel.setWorker(worker);
+		AssignedLabel<String> assignedLabel = new AssignedLabel<String>(worker, null, label);
 		String json = gson.toJson(assignedLabel);
 		AssignedLabel<String> deserialized = gson.fromJson(json, new TypeToken<AssignedLabel<String>>(){}.getType());
 		System.out.println(assignedLabel + " = " + deserialized);
@@ -117,10 +111,7 @@ public class GenericSerializationTest {
 	public void assignedLabelStringCollectionJsonTest() {
 		Collection<AssignedLabel<String>> assignedLabels = new ArrayList<AssignedLabel<String>>();
 		for (int i = 0; i < 10; i++) {
-			AssignedLabel<String> assignedLabel = new AssignedLabel<String>();
-			assignedLabel.setLabel(new Label<String>("label" + i));
-			assignedLabel.setWorker(new Worker<String>("worker" + i));
-			assignedLabels.add(assignedLabel);
+			assignedLabels.add(new AssignedLabel<String>(new Worker<String>("worker" + i), null, new Label<String>("label" + i)));
 		}
 		String json = gson.toJson(assignedLabels);
 		Collection<AssignedLabel<String>> deserialized = gson.fromJson(json, new TypeToken<Collection<AssignedLabel<String>>>(){}.getType());

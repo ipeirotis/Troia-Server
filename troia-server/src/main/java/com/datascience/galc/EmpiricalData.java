@@ -1,19 +1,19 @@
 package com.datascience.galc;
 
-import com.datascience.core.base.ContValue;
+
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
-
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 
-public class EmpiricalData {
+public class EmpiricalData extends Data<Double> {
 
-	private Map<String, LObject<ContValue>>	objects_index = new HashMap<String, LObject<ContValue>>();
-	private Map<String, Worker<ContValue>>	workers_index = new HashMap<String, Worker<ContValue>>();
-
+	private Map<String, LObject<Double>> objectsMap = new HashMap<String, LObject<Double>>();
+	private Map<String, Worker<Double>>	workersMap = new HashMap<String, Worker<Double>>();
 
 
 	public EmpiricalData() {
@@ -34,25 +34,29 @@ public class EmpiricalData {
 			String objectname = entries[1];
 			Double value = Double.parseDouble(entries[2]);
 
-			AssignedLabel al = new AssignedLabel(workername, objectname, value);
+			LObject<Double> lObject = new LObject<Double>(objectname);
+			Label<Double> label = new Label<Double>(value);
 
-//			TODO: FIX
-//			WorkerCont w = this.workers_index.get(workername);
-//			if (w == null) {
-//				w = new WorkerCont(workername);
-//				this.workers.add(w);
-//				this.workers_index.put(workername,w);
-//			}
-//			w.addAssignedLabel(al);
-//
-//			DatumCont d = this.objects_index.get(objectname);
-//			if (d == null) {
-//				d = new DatumCont(objectname);
-//				this.objects.add(d);
-//				this.objects_index.put(objectname,d);
-//			}
-//			d.addAssignedLabel(al);
-//			this.labels.add(al);
+
+			Worker<Double> w = this.workersMap.get(workername);
+			if (w == null) {
+				w = new Worker<Double>(workername);
+				this.workers.add(w);
+				this.workersMap.put(workername, w);
+			}
+			AssignedLabel<Double> al = new AssignedLabel<Double>(w, lObject, label);
+			w.addAssign(al);
+
+			LObject d = this.objectsMap.get(objectname);
+			if (d == null) {
+				d = new LObject<Double>(objectname);
+				this.objects.add(d);
+				this.objectsMap.put(objectname,d);
+			}
+			assigns.add(al);
+			// TODO: FIX
+			// datums.put(d, assigns);
+
 		}
 	}
 
@@ -60,7 +64,7 @@ public class EmpiricalData {
 
 		if(filename==null)
 			return;
-		
+
 		String[] lines = Utils.getFile(filename).split("\n");
 
 		for (String line : lines) {
@@ -68,21 +72,20 @@ public class EmpiricalData {
 			if (entries.length != 3) {
 				throw new IllegalArgumentException("Error while loading from gold labels file");
 			}
-
 			String objectname = entries[0];
 			Double correctValue = Double.parseDouble(entries[1]);
 			Double correctZeta = Double.parseDouble(entries[2]);
 
-//			TODO: FIX
-//			DatumCont d = this.objects_index.get(objectname);
-//			if (d == null) {
-//				d = new DatumCont(objectname);
-//				this.objects.add(d);
-//				this.objects_index.put(objectname,d);
-//			}
-//			d.getResults().setGold(true);
-//			d.getResults().setGoldValue(correctValue);
-//			d.getResults().setGoldZeta(correctZeta);
+			LObject d = this.objectsMap.get(objectname);
+			if (d == null) {
+				d = new LObject<Double>(objectname);
+				this.objects.add(d);
+				this.objectsMap.put(objectname,d);
+			}
+			d.setGoldLabel(new Label(correctValue));
+			// TODO: FIX
+			// d.getResults().setGoldZeta(correctZeta);
+
 		}
 
 	}
@@ -102,17 +105,20 @@ public class EmpiricalData {
 			Double mu = Double.parseDouble(entries[2]);
 			Double sigma = Double.parseDouble(entries[3]);
 
-//			TODO: FIX
-//			WorkerCont w = this.workers_index.get(workername);
-//			if (w == null) {
-//				w = new WorkerCont(workername);
-//				this.workers.add(w);
-//				this.workers_index.put(workername,w);
-//			}
-//			WorkerContResults wr = w.getResults();
-//			wr.setTrueMu(mu);
-//			wr.setTrueSigma(sigma);
-//			wr.setTrueRho(rho);
+
+			Worker<Double> w = this.workersMap.get(workername);
+			if (w == null) {
+				w = new Worker<Double>(workername);
+				this.workers.add(w);
+				this.workersMap.put(workername,w);
+			}
+			// TODO: FIX
+			// WorkerResults wr = w.getResults()
+			WorkerContResults wr = new WorkerContResults(null);
+			wr.setTrueMu(mu);
+			wr.setTrueSigma(sigma);
+			wr.setTrueRho(rho);
+
 		}
 
 	}
@@ -131,15 +137,17 @@ public class EmpiricalData {
 			Double value = Double.parseDouble(entries[1]);
 			Double zeta = Double.parseDouble(entries[2]);
 
-//			TODO: FIX
-//			DatumCont d = this.objects_index.get(objectname);
-//			if (d == null) {
-//				d = new DatumCont(objectname);
-//				this.objects.add(d);
-//				this.objects_index.put(objectname,d);
-//			}
-//			d.getResults().setTrueValue(value);
-//			d.getResults().setTrueZeta(zeta);
+
+			LObject<Double> d = this.objectsMap.get(objectname);
+			if (d == null) {
+				d = new LObject<Double>(objectname);
+				this.objects.add(d);
+				this.objectsMap.put(objectname,d);
+			}
+			// TODO: FIX
+			// d.getResults().setTrueValue(value);
+			// d.getResults().setTrueZeta(zeta);
+
 		}
 	}
 

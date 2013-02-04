@@ -28,10 +28,6 @@ public class Data <T>{
 		workers.add(worker);
 	}
 
-	public Set<Worker<T>> getWorkers(){
-		return workers;
-	}
-	
 	public Worker<T> getWorker(String workerId){
 		for(Worker<T> w : workers){
 			if (w.getName().equals(workerId))
@@ -43,7 +39,7 @@ public class Data <T>{
 	public void addObject(LObject<T> object){
 		objects.add(object);
 	}
-	
+
 	public LObject<T> getObject(String objectId){
 		for (LObject<T> obj : objects){
 			if (obj.getName().equals(objectId))
@@ -51,7 +47,7 @@ public class Data <T>{
 		}
 		return null;
 	}
-	
+
 	public Set<LObject<T>> getObjects(){
 		return objects;
 	}
@@ -60,11 +56,11 @@ public class Data <T>{
 		goldObjects.add(object);
 		addObject(object);
 	}
-	
+
 	public Set<LObject<T>> getGoldObjects(){
 		return goldObjects;
 	}
-	
+
 	public LObject<T> getGoldObject(String objectId){
 		for (LObject<T> obj : goldObjects){
 			if (obj.getName().equals(objectId))
@@ -77,7 +73,7 @@ public class Data <T>{
 		evaluationObjects.add(object);
 		addObject(object);
 	}
-	
+
 	public Set<LObject<T>> getEvaluationObjects(){
 		return evaluationObjects;
 	}
@@ -96,7 +92,7 @@ public class Data <T>{
 	public Set<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject){
 		return datums.get(lObject);
 	}
-	
+
 	public Set<AssignedLabel<T>> getAssigns(){
 		return assigns;
 	}

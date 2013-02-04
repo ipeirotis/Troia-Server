@@ -27,13 +27,9 @@ public class GenericWorkerDeserializer<T> implements JsonDeserializer<Worker<T>>
 		JsonArray jsonAssigns = jsonObject.get("assigns").getAsJsonArray();
 		for (int i = 0; i < jsonAssigns.size(); i++) {
 			JsonObject jsonAssign = jsonAssigns.get(i).getAsJsonObject();
-			AssignedLabel<T> workerAssign = new AssignedLabel<T>();
 			Label<T> label = context.deserialize(jsonAssign.get("label"), new TypeToken<Label<T>>(){}.getType());
 			LObject<T> lObject = context.deserialize(jsonAssign.get("lObject"), new TypeToken<LObject<T>>(){}.getType());
-			workerAssign.setLabel(label);
-			workerAssign.setLobject(lObject);
-			workerAssign.setWorker(worker);
-			worker.addAssign(workerAssign);
+			worker.addAssign(new AssignedLabel<T>(worker, lObject, label));
 		}
 		return worker;
 	}

@@ -1,9 +1,8 @@
 package com.datascience.galc.serialization;
 
+import com.datascience.core.base.Worker;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.galc.AssignedLabel;
-import com.datascience.galc.Worker;
-import com.datascience.galc.WorkerCont;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -24,7 +23,6 @@ public class WorkerDeserializer implements JsonDeserializer<Worker> {
 		Double est_sigma = jobject.get("est_sigma").getAsDouble();
 		Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(
 											   jobject.get("labels"), JSONUtils.assignedLabelSetType);
-
-		return new WorkerCont(name);
-		}
+		return new Worker(name);
 	}
+}
