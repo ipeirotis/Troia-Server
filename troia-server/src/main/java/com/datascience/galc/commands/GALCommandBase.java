@@ -1,6 +1,5 @@
 package com.datascience.galc.commands;
 
-import com.datascience.core.base.Data;
 import com.datascience.executor.ProjectCommand;
 import com.datascience.galc.ContinuousProject;
 

@@ -59,6 +59,9 @@ public class Data <T>{
 	public Set<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject){
 		return datums.get(lObject);
 	}
-
+	
+	public Set<AssignedLabel<T>> getAssigns(){
+		return assigns;
+	}
 
 }

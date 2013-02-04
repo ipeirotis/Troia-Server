@@ -1,11 +1,22 @@
 package com.datascience.service;
 
-import com.datascience.core.base.Data;
-import com.datascience.galc.ContinuousProject;
-import com.datascience.galc.commands.GALCommandBase;
-
-import javax.ws.rs.*;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Label;
+import com.datascience.core.base.Worker;
+import com.datascience.galc.ContinuousProject;
+import com.datascience.galc.commands.AssignsCommands;
+import com.datascience.galc.commands.GALCommandBase;
 
 /**
  * @Author: konrad
@@ -58,7 +69,8 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("goldObjects/{oid}")
 	@POST
 	public Response addGoldObject(@QueryParam("oid") String objectId,
-								  @FormParam("label") Double label){
+								  @FormParam("label") Double label,
+								  @FormParam("zeta") Double zeta){
 		GALCommandBase command = null; // TODO
 		return buildResponseOnCommand(job, command);
 	}
@@ -66,7 +78,7 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("assigns")
 	@GET
 	public Response getAssigns(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new AssignsCommands.GetAssigns(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
@@ -75,7 +87,8 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	public Response addAssign(@FormParam("label") Double label,
 							  @FormParam("worker") String worker,
 							  @FormParam("object") String object){
-		GALCommandBase command = null; // TODO
+		AssignedLabel<ContValue> al = new AssignedLabel<ContValue>(worker, object, new ContValue(label));
+		GALCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), al);
 		return buildResponseOnCommand(job, command);
 	}
 
