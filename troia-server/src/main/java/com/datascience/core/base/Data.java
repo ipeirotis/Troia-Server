@@ -61,16 +61,16 @@ public class Data <T>{
 		addObject(object);
 	}
 
-	public Set<LObject<T>> getGoldObjects(){
-		return goldObjects;
-	}
-
 	public LObject<T> getGoldObject(String objectId){
 		for (LObject<T> obj : goldObjects){
 			if (obj.getName().equals(objectId))
 				return obj;
 		}
 		return null;
+	}
+
+	public Set<LObject<T>> getGoldObjects(){
+		return goldObjects;
 	}
 
 	public void addEvaluationObject(LObject<T> object){
