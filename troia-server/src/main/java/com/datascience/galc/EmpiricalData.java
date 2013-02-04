@@ -1,13 +1,21 @@
 package com.datascience.galc;
 
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
+
+
 import java.util.Map;
 import java.util.HashMap;
 
 
 public class EmpiricalData {
 
-	private Map<String, DatumCont>	objects_index = new HashMap<String, DatumCont>();
-	private Map<String, WorkerCont>	workers_index = new HashMap<String, WorkerCont>();
+	private Map<String, LObject<ContValue>>	objects_index = new HashMap<String, LObject<ContValue>>();
+	private Map<String, Worker<ContValue>>	workers_index = new HashMap<String, Worker<ContValue>>();
+
+
+
 	public EmpiricalData() {
 		super();
 	}
@@ -28,22 +36,23 @@ public class EmpiricalData {
 
 			AssignedLabel al = new AssignedLabel(workername, objectname, value);
 
-			WorkerCont w = this.workers_index.get(workername);
-			if (w == null) {
-				w = new WorkerCont(workername);
-				this.workers.add(w);
-				this.workers_index.put(workername,w);
-			}
-			w.addAssignedLabel(al);
-
-			DatumCont d = this.objects_index.get(objectname);
-			if (d == null) {
-				d = new DatumCont(objectname);
-				this.objects.add(d);
-				this.objects_index.put(objectname,d);
-			}
-			d.addAssignedLabel(al);
-			this.labels.add(al);
+//			TODO: FIX
+//			WorkerCont w = this.workers_index.get(workername);
+//			if (w == null) {
+//				w = new WorkerCont(workername);
+//				this.workers.add(w);
+//				this.workers_index.put(workername,w);
+//			}
+//			w.addAssignedLabel(al);
+//
+//			DatumCont d = this.objects_index.get(objectname);
+//			if (d == null) {
+//				d = new DatumCont(objectname);
+//				this.objects.add(d);
+//				this.objects_index.put(objectname,d);
+//			}
+//			d.addAssignedLabel(al);
+//			this.labels.add(al);
 		}
 	}
 
@@ -64,15 +73,16 @@ public class EmpiricalData {
 			Double correctValue = Double.parseDouble(entries[1]);
 			Double correctZeta = Double.parseDouble(entries[2]);
 
-			DatumCont d = this.objects_index.get(objectname);
-			if (d == null) {
-				d = new DatumCont(objectname);
-				this.objects.add(d);
-				this.objects_index.put(objectname,d);
-			}
-			d.getResults().setGold(true);
-			d.getResults().setGoldValue(correctValue);
-			d.getResults().setGoldZeta(correctZeta);
+//			TODO: FIX
+//			DatumCont d = this.objects_index.get(objectname);
+//			if (d == null) {
+//				d = new DatumCont(objectname);
+//				this.objects.add(d);
+//				this.objects_index.put(objectname,d);
+//			}
+//			d.getResults().setGold(true);
+//			d.getResults().setGoldValue(correctValue);
+//			d.getResults().setGoldZeta(correctZeta);
 		}
 
 	}
@@ -92,16 +102,17 @@ public class EmpiricalData {
 			Double mu = Double.parseDouble(entries[2]);
 			Double sigma = Double.parseDouble(entries[3]);
 
-			WorkerCont w = this.workers_index.get(workername);
-			if (w == null) {
-				w = new WorkerCont(workername);
-				this.workers.add(w);
-				this.workers_index.put(workername,w);
-			}
-			WorkerContResults wr = w.getResults();
-			wr.setTrueMu(mu);
-			wr.setTrueSigma(sigma);
-			wr.setTrueRho(rho);
+//			TODO: FIX
+//			WorkerCont w = this.workers_index.get(workername);
+//			if (w == null) {
+//				w = new WorkerCont(workername);
+//				this.workers.add(w);
+//				this.workers_index.put(workername,w);
+//			}
+//			WorkerContResults wr = w.getResults();
+//			wr.setTrueMu(mu);
+//			wr.setTrueSigma(sigma);
+//			wr.setTrueRho(rho);
 		}
 
 	}
@@ -120,14 +131,15 @@ public class EmpiricalData {
 			Double value = Double.parseDouble(entries[1]);
 			Double zeta = Double.parseDouble(entries[2]);
 
-			DatumCont d = this.objects_index.get(objectname);
-			if (d == null) {
-				d = new DatumCont(objectname);
-				this.objects.add(d);
-				this.objects_index.put(objectname,d);
-			}
-			d.getResults().setTrueValue(value);
-			d.getResults().setTrueZeta(zeta);
+//			TODO: FIX
+//			DatumCont d = this.objects_index.get(objectname);
+//			if (d == null) {
+//				d = new DatumCont(objectname);
+//				this.objects.add(d);
+//				this.objects_index.put(objectname,d);
+//			}
+//			d.getResults().setTrueValue(value);
+//			d.getResults().setTrueZeta(zeta);
 		}
 	}
 
