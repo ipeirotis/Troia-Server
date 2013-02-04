@@ -13,10 +13,10 @@ public class AssignedLabel<T> {
 	protected Worker<T> worker;
 	protected Label<T> label;
 	
-	public AssignedLabel(String worker, String object, T label){
-		this.label = new Label<T>(label);
-		this.lobject = new LObject<T>(object);
-		this.worker = new Worker<T>(worker);
+	public AssignedLabel(Worker<T> worker, LObject<T> object, Label<T> label){
+		this.label = label;
+		this.lobject = object;
+		this.worker = worker;
 	}
 
 	public LObject getLobject() {

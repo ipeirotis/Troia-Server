@@ -4,6 +4,10 @@ import java.util.Collection;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Label;
+import com.datascience.core.base.Worker;
 import com.datascience.galc.ContinuousProject;
 
 
@@ -15,15 +19,27 @@ public class AssignsCommands {
 	
 	static public class AddAssigns extends GALCommandBase<Object> {
 
-		private AssignedLabel<ContValue> assignedLabel;
-		public AddAssigns(ContinuousProject cp, AssignedLabel<ContValue> al){
+		String workerId;
+		String objectId;
+		ContValue label;
+		
+		public AddAssigns(ContinuousProject cp, String worker, String object, ContValue label){
 			super(cp, true);
-			this.assignedLabel = al;
+			this.workerId = worker;
+			this.objectId = object;
+			this.label = label;
 		}
 		
 		@Override
 		protected void realExecute() {
-			project.getData().addAssign(assignedLabel);
+			Data<ContValue> data = project.getData();
+			Worker<ContValue> worker = data.getWorker(workerId);
+			if (worker == null)
+				worker = new Worker<ContValue>(workerId);
+			LObject<ContValue> object = data.getObject(objectId);
+			if (object == null)
+				object = new LObject<ContValue>(objectId);
+			data.addAssign(new AssignedLabel<ContValue>(worker, object, new Label<ContValue>(label)));
 			setResult("Assigns added");
 		}
 	}
