@@ -7,16 +7,17 @@ import org.kohsuke.args4j.CmdLineParser;
 
 import com.datascience.galc.engine.Engine;
 import com.datascience.galc.engine.EngineContext;
+import org.junit.Ignore;
 
 /**
  * Just in case: When developing, and you <b>**REALLY**</b> need to run from
  * CLI, use mvn exec:java as shown below:
- * 
+ *
  * <p>
  * <code>mvn exec:java -Dexec.mainClass=com.andreou.galc.Main -Dexec.args="--input assignedlabels.txt --evalObjects evaluationObjects.txt --evalWorkers evaluationWorkers.txt --correct goldObjects.txt
 --synthetic synthetic-options.txt --output results --verbose"</code>
  * </p>
- * 
+ *
  */
 public class EngineTest {
 	private EngineContext ctx;
@@ -42,7 +43,7 @@ public class EngineTest {
 
 		parser.parseArgument(args);
 	}
-	
+
 	@Test(expected=CmdLineException.class)
 	public void testInvalidOption() throws Exception {
 		parseArgs("--foo");
@@ -90,14 +91,19 @@ public class EngineTest {
 //		executeOn("--input data/adcounting/assignedlabels.txt --evalObjects data/adcounting/evaluationObjects.txt --output results/adcounting");
 	}
 
+	@Ignore
 	@Test
 	public void testAdcountingData_labels1() throws Exception {
 		executeOn("--input data/adcounting/assignedlabels1.txt --output results/adcounting");
 	}
+
+	@Ignore
 	@Test
 	public void testAdcountingData_labels() throws Exception {
 		executeOn("--input data/adcounting/assignedlabels.txt --output results/adcounting");
 	}
+	
+	@Ignore
 	@Test
 	public void testAdcountingData_labelsOld() throws Exception {
 		executeOn("--input data/adcounting/assignedlabels.old.txt --output results/adcounting");
