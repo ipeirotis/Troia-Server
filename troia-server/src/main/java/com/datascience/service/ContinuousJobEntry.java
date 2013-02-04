@@ -14,10 +14,12 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
+import com.datascience.executor.ProjectCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
 import com.datascience.galc.commands.GoldObjectsCommands;
+import com.datascience.galc.commands.ProjectCommands;
 import com.datascience.galc.commands.WorkerCommands;
 
 /**
@@ -110,28 +112,28 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("workers/{wid}/assigns")
 	@GET
 	public Response getWorkerAssigns(@PathParam("wid") String worker){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new AssignsCommands.GetWorkerAssigns(job.getProject(), worker);
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("compute/")
 	@POST
 	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ProjectCommands.Compute(job.getProject(), iterations, 1e-6);
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("prediction/objects/")
 	@GET
 	public Response getObjectsPrediction(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ProjectCommands.ObjectsPrediction(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("prediction/workers/")
 	@GET
 	public Response getWorkerQuality(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ProjectCommands.WorkersPrediction(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
