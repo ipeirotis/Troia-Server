@@ -1,6 +1,10 @@
 package com.datascience.galc.commands;
 
+import java.util.Collection;
+
 import com.datascience.galc.ContinuousProject;
+import com.datascience.galc.DatumContResults;
+import com.datascience.galc.WorkerContResults;
 
 /**
  *
@@ -26,7 +30,7 @@ public class ProjectCommands {
 		}
 	}
 	
-	static public class ObjectsPrediction extends GALCommandBase<Object> {
+	static public class ObjectsPrediction extends GALCommandBase<Collection<DatumContResults>> {
 
 		public ObjectsPrediction(ContinuousProject cp){
 			super(cp, true);
@@ -34,12 +38,11 @@ public class ProjectCommands {
 		
 		@Override
 		protected void realExecute() {
-			project.getDataPrediction();
-			setResult("TODO");
+			setResult(project.getDataPrediction().values());
 		}
 	}
 
-	static public class WorkersPrediction extends GALCommandBase<Object> {
+	static public class WorkersPrediction extends GALCommandBase<Collection<WorkerContResults>> {
 
 		public WorkersPrediction(ContinuousProject cp){
 			super(cp, true);
@@ -47,8 +50,7 @@ public class ProjectCommands {
 		
 		@Override
 		protected void realExecute() {
-			project.getWorkerPrediction();
-			setResult("TODO");
+			setResult(project.getWorkerPrediction().values());
 		}
 	}
 	
