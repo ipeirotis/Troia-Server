@@ -30,9 +30,25 @@ public class Data <T>{
 	public void addWorker(Worker<T> worker){
 		workers.add(worker);
 	}
+	
+	public Worker<T> getWorker(String workerId){
+		for(Worker<T> w : workers){
+			if (w.getName().equals(workerId))
+				return w;
+		}
+		return null;
+	}
 
 	public void addObject(LObject<T> object){
 		objects.add(object);
+	}
+	
+	public LObject<T> getObject(String objectId){
+		for (LObject<T> obj : objects){
+			if (obj.getName().equals(objectId))
+				return obj;
+		}
+		return null;
 	}
 	
 	public Set<LObject<T>> getObjects(){
