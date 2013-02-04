@@ -1,7 +1,11 @@
 package com.datascience.galc;
 
+import java.util.Map;
+
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 
 /**
  * @Author: konrad
@@ -9,7 +13,8 @@ import com.datascience.core.base.Data;
 public class ContinuousProject {
 
 	protected Data<ContValue> data;
-
+	protected ContinuousIpeirotis algorithm;
+	
 	public ContinuousProject(){
 		data = new Data<ContValue>();
 	}
@@ -19,14 +24,14 @@ public class ContinuousProject {
 	}
 	
 	public void compute(int iterations, double epsilon){
-		//TODO
+		algorithm.estimate(epsilon, iterations);
 	}
 	
-	public void getDataPrediction(){
-		//TODO
+	public Map<LObject<ContValue>, DatumContResults> getDataPrediction(){
+		return algorithm.getObjectsResults();
 	}
 
-	public void getWorkerPrediction(){
-		//TODO
+	public Map<Worker<ContValue>, WorkerContResults> getWorkerPrediction(){
+		return algorithm.getWorkersResults();
 	}
 }
