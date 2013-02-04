@@ -1,20 +1,20 @@
 package com.datascience.galc.dataGenerator;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Label;
+import com.datascience.core.base.Worker;
+import com.datascience.galc.DatumContResults;
+import com.datascience.galc.Utils;
+import com.datascience.galc.WorkerContResults;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-
 import org.apache.log4j.Logger;
 
-import com.datascience.galc.AssignedLabel;
-import com.datascience.galc.Data;
-import com.datascience.galc.DatumCont;
-import com.datascience.galc.DatumContResults;
-import com.datascience.galc.Utils;
-import com.datascience.galc.WorkerCont;
-import com.datascience.galc.WorkerContResults;
-
-public class SyntheticData extends Data {
+public class SyntheticData extends Data<ContValue> {
 
 	private int				data_points;
 	private Double		data_mu;
@@ -33,7 +33,7 @@ public class SyntheticData extends Data {
 	private Generator	rhoGenerator;
 
 	private Generator	datumGenerator;
-	
+
 	private static Logger logger = Logger.getLogger(SyntheticData.class);
 
 	public SyntheticData(Boolean verbose, String file) {
@@ -78,14 +78,12 @@ public class SyntheticData extends Data {
 
 		//first g_gold_objects will be gold
 		int i = 0;
-
-		for (DatumCont d : this.getObjects()) {
+		for (LObject<ContValue> lo : getObjects()) {
 			if(i++ < g_gold_objects) {
-				DatumContResults dr = d.getResults();
-				dr.setGold(true);
-				dr.setGoldValue(dr.getTrueValue());
-				dr.setGoldZeta(dr.getTrueZeta());
-				d.setResults(dr);
+				DatumContResults dcr = new DatumContResults(lo);
+				lo.setGoldLabel(new Label<ContValue>(new ContValue(dcr.getTrueValue(), dcr.getTrueZeta())));
+				// TODO: FIX
+				// d.setResults(dr);
 			}
 		}
 	}
@@ -94,23 +92,25 @@ public class SyntheticData extends Data {
 
 		// Generate Observation Values y_ij
 
-		for (DatumCont d : this.getObjects()) {
-			for (WorkerCont w : this.getWorkers()) {
-				
-				DatumContResults dr = d.getResults();
-				Double datum_z = (dr.getTrueValue() - this.data_mu) / this.data_sigma;
-				WorkerContResults wr = w.getResults();
-				Double label_mu = wr.getTrueMu() + wr.getTrueRho() * wr.getTrueSigma() * datum_z;
-				Double label_sigma = Math.sqrt(1 - Math.pow(wr.getTrueRho(), 2)) * wr.getTrueSigma();
+		for (LObject<ContValue> lo : getObjects()) {
+			for (Worker<ContValue> w : getWorkers()) {
+
+				DatumContResults dcr = new DatumContResults(lo);
+				Double datum_z = (dcr.getTrueValue() - this.data_mu) / this.data_sigma;
+				WorkerContResults wcr = new WorkerContResults(w);
+				Double label_mu = wcr.getTrueMu() + wcr.getTrueRho() * wcr.getTrueSigma() * datum_z;
+				Double label_sigma = Math.sqrt(1 - Math.pow(wcr.getTrueRho(), 2)) * wcr.getTrueSigma();
 
 				Generator labelGenerator = new Generator(Generator.Distribution.GAUSSIAN);
 				labelGenerator.setGaussianParameters(label_mu, label_sigma);
+				// TODO: FIX
+				// It should be ContValue -- not Double.
 				Double label = labelGenerator.nextData();
-
-				AssignedLabel al = new AssignedLabel(w.getName(), d.getName(), label);
-				this.getLabels().add(al);
-				w.addAssignedLabel(al);
-				d.addAssignedLabel(al);
+				w.addAssign(new AssignedLabel<ContValue>(w, lo, null));
+				// TODO: FIX
+				// this.getLabels().add(al);
+				// w.addAssignedLabel(al);
+				// d.addAssignedLabel(al);
 			}
 		}
 	}
@@ -119,13 +119,13 @@ public class SyntheticData extends Data {
 
 		// Generate Object Real Values x_i
 		for (int i = 0; i < k_objects; i++) {
-			DatumCont d = new DatumCont("Object" + (i + 1));
-			DatumContResults dr = d.getResults();
+			LObject<ContValue> lo = new LObject<ContValue>("Object" + (i + 1));
+			DatumContResults dcr = new DatumContResults(lo);
 			Double v = datumGenerator.nextData();
 			Double z = (v-this.data_mu)/this.data_sigma;
-			dr.setTrueValue(v);
-			dr.setTrueZeta(z);
-			this.getObjects().add(d);
+			dcr.setTrueValue(v);
+			dcr.setTrueZeta(z);
+			this.getObjects().add(lo);
 		}
 	}
 
@@ -133,11 +133,11 @@ public class SyntheticData extends Data {
 
 		// Generate Worker Characteristics
 		for (int i = 0; i < l_workers; i++) {
-			WorkerCont w = new WorkerCont("Worker" + (i + 1));
-			WorkerContResults wr = w.getResults();
-			wr.setTrueMu(muGenerator.nextData());
-			wr.setTrueSigma(sigmaGenerator.nextData());
-			wr.setTrueRho(rhoGenerator.nextData());
+			Worker<ContValue> w = new Worker<ContValue>("Worker" + (i + 1));
+			WorkerContResults wcr = new WorkerContResults(w);
+			wcr.setTrueMu(muGenerator.nextData());
+			wcr.setTrueSigma(sigmaGenerator.nextData());
+			wcr.setTrueRho(rhoGenerator.nextData());
 			this.getWorkers().add(w);
 		}
 
@@ -156,8 +156,8 @@ public class SyntheticData extends Data {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (AssignedLabel al : this.getLabels()) {
-				String line = al.getWorkerName() + "\t" + al.getObjectName() + "\t" + al.getLabel() + "\n";
+			for (AssignedLabel<ContValue> al : assigns) {
+				String line = al.getWorker() + "\t" + al.getLobject() + "\t" + al.getLabel() + "\n";
 				bw.write(line);
 			}
 			bw.close();
@@ -179,9 +179,9 @@ public class SyntheticData extends Data {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (DatumCont d: this.getObjects()) {
-				DatumContResults dr = d.getResults();
-				String line = d.getName() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta() + "\n";
+			for (LObject<ContValue> lo : getObjects()) {
+				DatumContResults dcr = new DatumContResults(lo);
+				String line = lo.getName() + "\t" + dcr.getTrueValue() + "\t" + dcr.getTrueZeta() + "\n";
 				bw.write(line);
 			}
 			bw.close();
@@ -203,9 +203,12 @@ public class SyntheticData extends Data {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (WorkerCont w : this.getWorkers()) {
-				WorkerContResults wr = w.getResults();
-				String line = w.getName() + "\t" + wr.getTrueRho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t"
+			for (Worker<ContValue> w : getWorkers()) {
+				WorkerContResults wcr = new WorkerContResults(w);
+				String line = w.getName() + "\t" +
+						wcr.getTrueRho() + "\t" +
+						wcr.getTrueMu() + "\t" +
+						wcr.getTrueSigma() + "\t"
 						+ "\n";
 				bw.write(line);
 			}
@@ -228,10 +231,12 @@ public class SyntheticData extends Data {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (DatumCont d: this.getObjects()) {
-				DatumContResults dr = d.getResults();
-				if(dr.isGold()) {
-					String line = d.getName() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta() + "\n";
+			for (LObject<ContValue> lo : getObjects()) {
+				DatumContResults dcr = new DatumContResults(lo);
+				if (dcr.getObject().isGold()) {
+					String line = lo.getName() + "\t" +
+							dcr.getTrueValue() + "\t" +
+							dcr.getTrueZeta() + "\n";
 					bw.write(line);
 				}
 			}
