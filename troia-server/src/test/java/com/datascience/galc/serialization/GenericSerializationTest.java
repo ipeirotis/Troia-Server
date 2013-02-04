@@ -1,11 +1,13 @@
 package com.datascience.galc.serialization;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
-import com.datascience.core.base.LObject;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
@@ -18,32 +20,37 @@ import org.junit.Test;
 
 /**
  *
- * @author Micha? Borysiak
+ * @author Michal Borysiak
  */
 public class GenericSerializationTest {
-	
-	private Gson gson = new Gson();
+
+	private Gson gson;
 	private Random random = new Random();
-	
+	private Type workerType = new TypeToken<Worker>(){}.getType();
+
 	public GenericSerializationTest() {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(workerType, new GenericWorkerDeserializer());
+		builder.registerTypeAdapter(workerType, new GenericWorkerSerializer());
+		gson = builder.create();
 	}
-	
+
 	@BeforeClass
 	public static void setUpClass() {
 	}
-	
+
 	@AfterClass
 	public static void tearDownClass() {
 	}
-	
+
 	@Before
 	public void setUp() {
 	}
-	
+
 	@After
 	public void tearDown() {
 	}
-	
+
 	@Test
 	public void labelStringJsonTest() {
 		Label<String> label = new Label<String>("label");
@@ -52,7 +59,7 @@ public class GenericSerializationTest {
 		System.out.println(label + " = " + deserialized);
 		assertEquals(label, deserialized);
 	}
-	
+
 	@Test
 	public void labelDoubleJsonTest() {
 		Label<Double> label = new Label<Double>(12.0);
@@ -61,9 +68,10 @@ public class GenericSerializationTest {
 		System.out.println(label + " = " + deserialized);
 		assertEquals(label, deserialized);
 	}
-	
+
 	@Test
 	public void workerDoubleJsonTest() {
+		System.out.println("serialization test");
 		ArrayList<Label<Double>> labels = new ArrayList<Label<Double>>();
 		for (int i = 0; i < 5; i++) {
 			labels.add(new Label<Double>(1.0 * i));
@@ -88,10 +96,10 @@ public class GenericSerializationTest {
 		}
 		String json = gson.toJson(workers);
 		Collection<Worker<Double>> deserialized = gson.fromJson(json, new TypeToken<Collection<Worker<Double>>>(){}.getType());
-		System.out.println("workers = " + workers);
-		System.out.println("deserialized = " + deserialized);
+		assertTrue(deserialized.containsAll(workers));
+		assertTrue(workers.containsAll(deserialized));
 	}
-	
+
 	@Test
 	public void assignedLabelStringJsonTest() {
 		Label<String> label = new Label<String>("label");
@@ -104,7 +112,7 @@ public class GenericSerializationTest {
 		System.out.println(assignedLabel + " = " + deserialized);
 		assertEquals(assignedLabel, deserialized);
 	}
-	
+
 	@Test
 	public void assignedLabelStringCollectionJsonTest() {
 		Collection<AssignedLabel<String>> assignedLabels = new ArrayList<AssignedLabel<String>>();
