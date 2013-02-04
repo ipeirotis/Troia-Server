@@ -1,5 +1,6 @@
 package com.datascience.galc;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 
 /**
@@ -7,13 +8,13 @@ import com.datascience.core.base.Data;
  */
 public class ContinuousProject {
 
-	protected Data<Double> data;
+	protected Data<ContValue> data;
 
 	public ContinuousProject(){
-		data = new Data<Double>();
+		data = new Data<ContValue>();
 	}
 
-	public Data<Double> getData(){
+	public Data<ContValue> getData(){
 		return data;
 	}
 
