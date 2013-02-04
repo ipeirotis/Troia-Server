@@ -17,5 +17,16 @@ public class ContinuousProject {
 	public Data<ContValue> getData(){
 		return data;
 	}
+	
+	public void compute(int iterations, double epsilon){
+		//TODO
+	}
+	
+	public void getDataPrediction(){
+		//TODO
+	}
 
+	public void getWorkerPrediction(){
+		//TODO
+	}
 }
