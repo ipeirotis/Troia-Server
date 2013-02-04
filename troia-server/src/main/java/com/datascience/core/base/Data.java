@@ -40,10 +40,6 @@ public class Data <T>{
 		return null;
 	}
 
-	public Collection<Worker<T>> getWorkers(){
-		return workers;
-	}
-
 	public void addObject(LObject<T> object){
 		objects.add(object);
 	}
