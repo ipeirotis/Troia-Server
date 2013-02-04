@@ -17,6 +17,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
+import com.datascience.galc.commands.GoldObjectsCommands;
 
 /**
  * @Author: konrad
@@ -55,14 +56,14 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("goldObjects")
 	@GET
 	public Response getGoldObjects(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new GoldObjectsCommands.GetGoldObjects(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
 	@Path("goldObjects/{oid}")
 	@GET
 	public Response getGoldObject(@QueryParam("oid") String objectId){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new GoldObjectsCommands.GetGoldObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
 
@@ -71,7 +72,9 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	public Response addGoldObject(@QueryParam("oid") String objectId,
 								  @FormParam("label") Double label,
 								  @FormParam("zeta") Double zeta){
-		GALCommandBase command = null; // TODO
+		LObject<ContValue> lobject = new LObject<ContValue>(objectId);
+		lobject.setGoldLabel(new Label<ContValue>(new ContValue(label, zeta)));
+		GALCommandBase command = new GoldObjectsCommands.AddGoldObjects(job.getProject(), lobject);
 		return buildResponseOnCommand(job, command);
 	}
 
