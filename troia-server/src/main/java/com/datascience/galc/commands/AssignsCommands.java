@@ -55,4 +55,19 @@ public class AssignsCommands {
 			setResult(project.getData().getAssigns());
 		}
 	}
+	
+	static public class GetWorkerAssigns extends GALCommandBase<Collection<AssignedLabel<ContValue>>> {
+		
+		String workerId;
+		public GetWorkerAssigns(ContinuousProject cp, String workerId){
+			super(cp, false);
+			this.workerId = workerId;
+		}
+		
+		@Override
+		protected void realExecute() {
+			Worker w = ParamChecking.worker(project.getData(), workerId);
+			setResult(w.getAssigns());
+		}
+	}
 }
