@@ -2,14 +2,10 @@ package com.datascience.galc.commands;
 
 import java.util.Collection;
 
-import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
-import com.datascience.core.base.Worker;
 import com.datascience.galc.ContinuousProject;
-
 
 /**
  *
