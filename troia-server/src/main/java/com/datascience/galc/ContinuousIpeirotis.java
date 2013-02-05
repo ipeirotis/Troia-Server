@@ -10,9 +10,6 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Worker;
 
-/**
- * @Author: konrad
- */
 public class ContinuousIpeirotis {
 
 	private static Logger logger = Logger.getLogger(ContinuousIpeirotis.class);
@@ -21,7 +18,8 @@ public class ContinuousIpeirotis {
 	private Map<LObject<ContValue>, DatumContResults> objectsResults;
 	private Map<Worker<ContValue>, WorkerContResults> workersResults;
 
-	public ContinuousIpeirotis(Data<ContValue> data) {
+
+	public void setData(Data<ContValue> data){
 		this.data = data;
 
 		objectsResults = new HashMap<LObject<ContValue>, DatumContResults>();

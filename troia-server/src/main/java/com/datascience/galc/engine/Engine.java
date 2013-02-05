@@ -241,7 +241,8 @@ public class Engine {
 //		data = edata; TODO: FIX THIS
 		data = null;
 
-		ContinuousIpeirotis ip = new ContinuousIpeirotis(data);
+		ContinuousIpeirotis ip = new ContinuousIpeirotis();
+		ip.setData(data);
 
 		ReportGenerator rpt = new ReportGenerator(ip, ctx);
 

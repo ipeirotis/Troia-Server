@@ -24,14 +24,24 @@ public class ContinuousProject {
 	}
 	
 	public void compute(int iterations, double epsilon){
+		algorithm = new ContinuousIpeirotis();
+		algorithm.setData(data);
 		algorithm.estimate(epsilon, iterations);
 	}
-	
+
+	protected void checkComputed(){
+		if (algorithm == null) {
+			throw new IllegalStateException("Run compute first!");
+		}
+	}
+
 	public Map<LObject<ContValue>, DatumContResults> getDataPrediction(){
+		checkComputed();
 		return algorithm.getObjectsResults();
 	}
 
 	public Map<Worker<ContValue>, WorkerContResults> getWorkerPrediction(){
+		checkComputed();
 		return algorithm.getWorkersResults();
 	}
 }
