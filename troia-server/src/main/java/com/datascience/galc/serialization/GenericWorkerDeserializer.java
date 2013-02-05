@@ -1,8 +1,6 @@
 
 package com.datascience.galc.serialization;
 
-import java.lang.reflect.Type;
-
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
@@ -14,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 /**
  *

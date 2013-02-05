@@ -1,6 +1,7 @@
 package com.datascience.galc.serialization;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
@@ -27,11 +28,13 @@ public class GenericSerializationTest {
 	private Gson gson;
 	private Random random = new Random();
 	private Type workerType = new TypeToken<Worker>(){}.getType();
+	private Type dataType = new TypeToken<Data>(){}.getType();
 
 	public GenericSerializationTest() {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(workerType, new GenericWorkerDeserializer());
 		builder.registerTypeAdapter(workerType, new GenericWorkerSerializer());
+		builder.registerTypeAdapter(dataType, new GenericDataSerializer());
 		gson = builder.create();
 	}
 
@@ -70,30 +73,36 @@ public class GenericSerializationTest {
 	}
 
 	@Test
-	public void workerDoubleJsonTest() {
-		System.out.println("serialization test");
+	public void dataDoubleJsonTest() {
+		Data<Double> data = new Data<Double>();
 		ArrayList<Label<Double>> labels = new ArrayList<Label<Double>>();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 2; i++) {
 			labels.add(new Label<Double>(1.0 * i));
 		}
-		ArrayList<LObject<Double>> lobjects = new ArrayList<LObject<Double>>();
-		for (int i = 0; i < 5; i++) {
+		ArrayList<LObject<Double>> lObjects = new ArrayList<LObject<Double>>();
+		for (int i = 0; i < 2; i++) {
 			LObject<Double> lObject = new LObject<Double>("object" + i);
 			lObject.setGoldLabel(labels.get(i));
-			lobjects.add(lObject);
+			lObjects.add(lObject);
+			data.addObject(lObject);
 		}
-		ArrayList<Worker<Double>> workers = new ArrayList<Worker<Double>>();
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 4; i++) {
 			Worker<Double> worker = new Worker<Double>("worker" + i);
-			for (LObject<Double> lObject : lobjects) {
-				worker.addAssign(new AssignedLabel<Double>(worker, lObject, labels.get(random.nextInt(labels.size()))));
+			for (LObject<Double> lObject : lObjects) {
+				AssignedLabel<Double> assign = new AssignedLabel<Double>(worker, lObject, labels.get(random.nextInt(labels.size())));
+				worker.addAssign(assign);
+				data.addAssign(assign);
 			}
-			workers.add(worker);
+			data.addWorker(worker);
 		}
-		String json = gson.toJson(workers);
-		Collection<Worker<Double>> deserialized = gson.fromJson(json, new TypeToken<Collection<Worker<Double>>>(){}.getType());
-		assertTrue(deserialized.containsAll(workers));
-		assertTrue(workers.containsAll(deserialized));
+		String json = gson.toJson(data);
+		System.out.println(json);
+		Data deserialized = gson.fromJson(json, new TypeToken<Data>(){}.getType());
+		
+		assertTrue(deserialized.getAssigns().containsAll(data.getAssigns()));
+		assertTrue(deserialized.getObjects().containsAll(data.getObjects()));
+		assertTrue(deserialized.getWorkers().containsAll(data.getWorkers()));
+		assertTrue(deserialized.getGoldObjects().containsAll(data.getGoldObjects()));
 	}
 
 	@Test
