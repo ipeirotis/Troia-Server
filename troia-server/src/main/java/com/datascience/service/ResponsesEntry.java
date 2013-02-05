@@ -1,4 +1,4 @@
-package com.datascience.gal.service;
+package com.datascience.service;
 
 import java.util.NoSuchElementException;
 
@@ -10,8 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import com.datascience.gal.commands.CommandStatus;
-import com.datascience.gal.commands.CommandStatusesContainer;
+import com.datascience.executor.CommandStatus;
+import com.datascience.executor.CommandStatusesContainer;
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/responses/")
@@ -31,7 +31,7 @@ public class ResponsesEntry {
 
 	@GET
 	@Path("/{id}/{res: .*}")
-	public Response getResponse(@PathParam("id") String sid) throws Exception{
+	public Response getResponse(@PathParam("id") String sid) throws Exception {
 		CommandStatus status = statusesContainer.getCommandResult(sid);
 		if (status == null) {
 			throw new NoSuchElementException("No status with id: " + sid);

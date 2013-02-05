@@ -1,8 +1,5 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
-import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.service.ISerializer;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
+
 import org.apache.log4j.Logger;
+
+import com.datascience.core.Job;
+import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.service.ISerializer;
 
 /**
  * From old class DawidSkeneCache.
@@ -104,7 +106,7 @@ public class DBJobStorage implements IJobStorage {
 		try {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
-			String dsString = serializer.serialize(job.getDs());
+			String dsString = serializer.serialize(job.getProject());
 			dsStatement.setString(2, dsString);
 			dsStatement.setString(3, dsString);
 

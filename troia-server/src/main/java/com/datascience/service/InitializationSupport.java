@@ -1,4 +1,4 @@
-package com.datascience.gal.service;
+package com.datascience.service;
 
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.gal.commands.CommandStatusesContainer;
-import com.datascience.gal.executor.ProjectCommandExecutor;
+import com.datascience.executor.CommandStatusesContainer;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  * @author Konrad

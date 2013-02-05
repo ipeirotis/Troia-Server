@@ -1,4 +1,4 @@
-package com.datascience.gal.service;
+package com.datascience.service;
 
 import java.util.Collection;
 

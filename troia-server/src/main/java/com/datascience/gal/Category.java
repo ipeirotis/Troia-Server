@@ -10,8 +10,11 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.datascience.core.storages.JSONUtils;
 import com.google.common.base.Objects;
@@ -20,10 +23,13 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 public class Category {
 	public static final CategoryDeserializer deserializer = new CategoryDeserializer();
-
+	public static final CategorySerializer serializer = new CategorySerializer();
+	
 	private String name;
 
 	// The prior probability for this category
@@ -122,11 +128,6 @@ public class Category {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return JSONUtils.gson.toJson(this);
-	}
-
 	/**
 	 * TODO: also allow to accept misclassification costs - at the moment this
 	 * seems to come from the DS class
@@ -145,12 +146,33 @@ public class Category {
 			double prior = -1.;
 			if (jobject.has("prior"))
 				prior = jobject.get("prior").getAsDouble();
-			Map<String, Double> misclassification_cost = JSONUtils.gson
-					.fromJson(jobject.get("misclassification_cost"),
-							  JSONUtils.stringDoubleMapType);
+			Collection<CategoryValue> misclassificationValues = JSONUtils.gson
+					.fromJson(jobject.get("misclassificationCost"),
+							  JSONUtils.categoryValuesCollectionType);
+			Map<String, Double> misclassification_cost = new HashMap<String, Double>();
+			for (CategoryValue cv : misclassificationValues){
+				misclassification_cost.put(cv.categoryName, cv.value);
+			}
 			return new Category(name, prior, misclassification_cost);
 		}
+	}
+	
+	public static class CategorySerializer implements JsonSerializer<Category> {
 
+		@Override
+		public JsonElement serialize(Category arg0, Type arg1,
+				JsonSerializationContext arg2) {
+			JsonObject ret = new JsonObject();
+			if (arg0.hasPrior())
+				ret.addProperty("prior", arg0.getPrior());
+			ret.addProperty("name", arg0.getName());
+			Collection<CategoryValue> cp = new ArrayList<CategoryValue>(arg0.misclassification_cost.size());
+			for (Entry<String, Double> e : arg0.misclassification_cost.entrySet()){
+				cp.add(new CategoryValue(e.getKey(), e.getValue()));
+			}
+			ret.add("misclassificationCost", JSONUtils.gson.toJsonTree(cp));
+			return ret;
+		}
 	}
 
 }

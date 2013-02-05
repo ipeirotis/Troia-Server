@@ -72,7 +72,7 @@ function uploadAssignedLabels
 }
 
 function getJobStatus {
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$1")
+  local result=$(curl -s1 -X GET "$URL/$1")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
 
   if [[ "$status" != "$2" ]]
@@ -122,7 +122,7 @@ function compute {
 function waitComputationToFinish {
   #get the job status and check that the data is correct
   echo "Checking if the computation has ended - redirect=$redirectId..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   while [[ $status != "Computation done" ]]
     do
@@ -167,7 +167,7 @@ function getWorkersQuality {
 function getWorkersQualityData {
   #get the job status and check that the data is correct
   echo "Getting workers quality job status for redirect=$redirectId..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local workerQualityData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
   echo "Received: $workerQualityData"
@@ -198,17 +198,17 @@ function getPredictionData {
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
     then
-      echo "Get workers quality job failed with status $status"
+      echo "Get prediction data job failed with status $status"
       exit 1
     else
-      echo "Get workers quality job finished successfully"
+      echo "Get prediction data job finished successfully"
   fi
 }
 
 function getActualPredictionData {
   #get the job status and check that the returned data is correct
   echo "Getting prediction data job status for redirect=$redirectId ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/status/$redirectId")
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
   local status=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local predictionData=$(echo $result| cut -d '{' -f 3 | cut -d '}' -f 1)
   echo "Received: $predictionData"

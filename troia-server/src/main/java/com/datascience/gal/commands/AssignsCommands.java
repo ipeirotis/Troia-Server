@@ -5,7 +5,6 @@ import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Datum;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  *
@@ -13,7 +12,7 @@ import java.util.Map;
  */
 public class AssignsCommands {
 	
-	static public class AddAssigns extends ProjectCommand<Object> {
+	static public class AddAssigns extends DSCommandBase<Object> {
 
 		private Collection<AssignedLabel> labels;
 		
@@ -29,21 +28,25 @@ public class AssignsCommands {
 		}
 		
 		@Override
-		void realExecute() {
+		protected void realExecute() {
 			ads.addAssignedLabels(labels);
 			setResult("Assigns added");
 		}
 	}
 	
-	static public class GetAssigns extends ProjectCommand<Map<String, Datum>> {
+	static public class GetAssigns extends DSCommandBase<Collection<AssignedLabel>> {
 		
 		public GetAssigns(AbstractDawidSkene ads){
 			super(ads, false);
 		}
 		
 		@Override
-		void realExecute() {
-			setResult(ads.getObjects());
+		protected void realExecute() {
+			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
+			for (Datum d : ads.getObjects().values()){
+				labels.addAll(d.getAssignedLabels());
+			}
+			setResult(labels);
 		}
 	}
 }

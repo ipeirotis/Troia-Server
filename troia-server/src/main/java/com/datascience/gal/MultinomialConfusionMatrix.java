@@ -10,11 +10,13 @@
 package com.datascience.gal;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import com.datascience.core.storages.JSONUtils;
 import com.google.common.base.Objects;
@@ -23,6 +25,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * TODO: implement with logistic regression TODO: bayesian multinomial
@@ -33,6 +37,8 @@ import com.google.gson.JsonParseException;
 public class MultinomialConfusionMatrix implements ConfusionMatrix {
 
 	public static final ConfusionMatrixDeserializer deserializer = new ConfusionMatrixDeserializer();
+	public static final ConfusionMatrixSerializer serializer = new ConfusionMatrixSerializer();
+	
 	private Set<String> categories;
 	private Map<CategoryPair, Double> matrix;
 	public Map<String, Double> rowDenominator;
@@ -316,13 +322,50 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 			JsonObject jobject = (JsonObject) json;
 			Collection<String> categories =
 				JSONUtils.gson.fromJson(jobject.get("categories"), JSONUtils.stringSetType);
-			Map<CategoryPair, Double> matrix =
-				JSONUtils.gson.fromJson(jobject.get("matrix"), JSONUtils.categoryPairDoubleMapType);
-			Map<String, Double> rowDenominator =
-				JSONUtils.gson.fromJson(jobject.get("rowDenominator"), JSONUtils.stringDoubleMapType);
-
+			
+			
+			Collection<MatrixValue> matrixValues =
+				JSONUtils.gson.fromJson(jobject.get("matrix"), JSONUtils.matrixValuesCollectionType);
+			Map<CategoryPair, Double> matrix = new HashMap<CategoryPair, Double>();
+			for (MatrixValue mv : matrixValues){
+				matrix.put(new CategoryPair(mv.from, mv.to), mv.value);
+			}
+			
+			
+			Collection<CategoryValue> rowDenominatorValues =
+				JSONUtils.gson.fromJson(jobject.get("rowDenominator"), JSONUtils.categoryValuesCollectionType);
+			Map<String, Double> rowDenominator = new HashMap<String, Double>();
+			for (CategoryValue cv : rowDenominatorValues) {
+				rowDenominator.put(cv.categoryName, cv.value);
+			}
+			
 			return new MultinomialConfusionMatrix(categories, matrix, rowDenominator);
 		}
+	}
+	
+	public static class ConfusionMatrixSerializer implements JsonSerializer<MultinomialConfusionMatrix> {
+
+		@Override
+		public JsonElement serialize(MultinomialConfusionMatrix arg0,
+				Type arg1, JsonSerializationContext arg2) {
+			JsonObject ret = new JsonObject();
+
+			Collection<CategoryValue> cp = new ArrayList<CategoryValue>(arg0.rowDenominator.size());
+			for (Entry<String, Double> e : arg0.rowDenominator.entrySet()){
+				cp.add(new CategoryValue(e.getKey(), e.getValue()));
+			}
+			ret.add("rowDenominator", JSONUtils.gson.toJsonTree(cp));
+			
+			Collection<MatrixValue> mv = new ArrayList<MatrixValue>(arg0.matrix.size());
+			for (Entry<CategoryPair, Double> e : arg0.matrix.entrySet()){
+				mv.add(new MatrixValue(e.getKey().from, e.getKey().to, e.getValue()));
+			}
+			ret.add("matrix", JSONUtils.gson.toJsonTree(mv));
+			
+			ret.add("categories", JSONUtils.gson.toJsonTree(arg0.getCategories()));
+			return ret;
+		}
+		
 	}
 
 }

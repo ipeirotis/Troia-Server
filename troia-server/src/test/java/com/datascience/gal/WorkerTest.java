@@ -157,8 +157,8 @@ public class WorkerTest {
 	@Test
 	public final void testEmpty() {
 		String[] names = {"worker1", "", null};
-		String matrixIsEmpty = "\"matrix\":{}";
-		String rowDenominatorIsEmpty = "\"rowDenominator\":{}";
+		String matrixIsEmpty = "\"matrix\":[]";
+		String rowDenominatorIsEmpty = "\"rowDenominator\":[]";
 		for (int i=0; i<names.length; i++) {
 			Worker worker = new Worker(names[i], categoriesList.get(i));
 			assertFalse(worker.cm.toString().contains(matrixIsEmpty));

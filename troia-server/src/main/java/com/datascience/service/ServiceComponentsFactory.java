@@ -1,4 +1,4 @@
-package com.datascience.gal.service;
+package com.datascience.service;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -11,9 +11,9 @@ import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
 import com.datascience.core.storages.DBJobStorage;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.core.storages.JobStorageUsingExecutor;
-import com.datascience.gal.commands.CommandStatusesContainer;
-import com.datascience.gal.commands.SerializedCommandStatusesContainer;
-import com.datascience.gal.executor.ProjectCommandExecutor;
+import com.datascience.executor.CommandStatusesContainer;
+import com.datascience.executor.SerializedCommandStatusesContainer;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  *
