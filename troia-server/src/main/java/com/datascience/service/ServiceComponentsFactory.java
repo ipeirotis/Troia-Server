@@ -50,7 +50,7 @@ public class ServiceComponentsFactory {
 	}
 
 	public CommandStatusesContainer loadCommandStatusesContainer(){
-		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), new GSONSerializer());
+		return new CommandStatusesContainer(new RandomUniqIDGenerators.Numbers()); //new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), new GSONSerializer());
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){

@@ -1,16 +1,16 @@
 package com.datascience.galc.serialization;
 
+import java.lang.reflect.Type;
+import java.util.Set;
+
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Worker;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
-import java.util.Set;
 
 /**
  *
