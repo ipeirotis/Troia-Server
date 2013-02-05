@@ -117,7 +117,7 @@ public class JSONUtils {
 		builder.registerTypeAdapter(datumType, Datum.serializer);
 		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
 		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);
-//		builder.registerTypeAdapter(workerType, com.datascience.gal.Worker.deserializer);
+		builder.registerTypeAdapter(workerType, com.datascience.gal.Worker.deserializer);
 		builder.registerTypeAdapter(dawidSkeneType, DawidSkeneDeserializer.deserializer);
 		
 		builder.registerTypeAdapter(workerContValueType, new GenericWorkerDeserializer());
