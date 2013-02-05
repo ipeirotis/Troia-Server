@@ -49,8 +49,8 @@ public class ServiceComponentsFactory {
 		return jobStorage;
 	}
 
-	public CommandStatusesContainer loadCommandStatusesContainer(){
-		return new CommandStatusesContainer(new RandomUniqIDGenerators.Numbers()); //new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), new GSONSerializer());
+	public CommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
+		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer);
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){
