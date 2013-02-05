@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.service.Serialized;
+import com.google.gson.*;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
@@ -31,8 +33,7 @@ import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.MultinomialConfusionMatrix;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.datascience.gal.Worker;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -122,6 +123,7 @@ public class JSONUtils {
 		builder.registerTypeAdapter(workerContValueType, new GenericWorkerDeserializer());
 		builder.registerTypeAdapter(workerContValueType, new GenericWorkerSerializer());
 		
+		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
 
 		gson = builder.create();
 
@@ -142,5 +144,11 @@ public class JSONUtils {
 		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (stopwatch.getTime() / 1000.) +
 					"s len: " + ret.length() + " size: " + heapSize);
 		return ret;
+	}
+
+	public static class SerializedSerializer  implements JsonSerializer<Serialized> {
+		public JsonElement serialize(Serialized src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonParser().parse(src.getObject());
+		}
 	}
 }
