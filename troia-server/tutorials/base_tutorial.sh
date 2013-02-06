@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#URL="http://localhost:8080/troia-server-0.8"
-URL="http://project-troia.com/api"
+URL="http://localhost:8080/troia-server-0.8"
+#URL="http://project-troia.com/api"
 JobID=""
 redirectId=0
 noIterations=20
@@ -257,6 +257,36 @@ function getActualPredictionData {
   echo "-----------------"
 }
 
+function getLabelProbabilityDistribution {
+  echo "Getting label probability distributions for object $1 ..."
+  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/data/$1/categoryProbability")
+  redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
+  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2| cut -d ':' -f 2 | cut -d '"' -f 2)
+  while [[ $status != "OK" ]]
+    do
+      echo The status is $status - waiting 5 seconds
+      sleep 5 
+      result=$(curl -s1 -X GET "$URL/$redirectId")
+      status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+      echo $status
+    done
+  local probDistributionData=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 1)
+  echo "Received: $probDistributionData"
+  
+  for i in "${!expectedCategoryDistributions[@]}"
+  do
+    if [[ "$probDistributionData" != *\"categoryName\":"\"$i\",\"value\":${expectedCategoryDistributions[$i]}"* ]]
+      then
+	echo "ERROR: Could not find object "\"categoryName\":\"$i\",\"value\":${expectedCategoryDistributions[$i]}" into the worker quality data"
+	#exit 1
+    fi
+  done
+  
+  echo "-----------------"
+}
+
 function mainFlow {
   JobID=$(generateRandomJobId 10)
   createJob
@@ -285,7 +315,11 @@ function mainFlow {
   expectedCategories[http://youporn.com]=porn
   getActualPredictionData $expectedCategories
   
-  deleteJob $JobID
+  datumObject=http://sunnyfun.com
+  declare -A expectedCategoryDistributions
+  expectedCategoryDistributions[porn]=0.0
+  expectedCategoryDistributions[notporn]=1.0
+  getLabelProbabilityDistribution $datumObject
 }
 
 mainFlow
