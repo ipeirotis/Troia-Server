@@ -22,7 +22,7 @@ public class SyntheticDataGeneratorTest {
 	/**
 	 * Run the ArrayList<String> generateCategoryNames(int) method test
 	 */
-	@Ignore
+	//@Ignore
 	@Test
 	public void testGeneratedSyntheticData() {
 		final SyntheticDataGenerator dataGenerator = new SyntheticDataGenerator();

@@ -8,10 +8,6 @@ public class DatumContResults {
 	private Double							est_value;
 	private Double							est_zeta;
 
-	// Data generation characteristics
-	private Double							trueValue;
-	private Double							trueZeta;
-	
 	private Double 							distributionMu;
 	private Double 							distributionSigma;
 
@@ -57,32 +53,6 @@ public class DatumContResults {
 	public void setEst_zeta(Double est_zeta) {
 
 		this.est_zeta = est_zeta;
-	}
-
-	/**
-	 * @return the trueZeta
-	 */
-	public Double getTrueZeta() {
-
-		return trueZeta;
-	}
-
-	/**
-	 * @param trueZeta the trueZeta to set
-	 */
-	public void setTrueZeta(Double trueZeta) {
-
-		this.trueZeta = trueZeta;
-	}
-
-	public Double getTrueValue() {
-
-		return trueValue;
-	}
-
-	public void setTrueValue(Double trueValue) {
-
-		this.trueValue = trueValue;
 	}
 
 	public Double getDistributionMu() {

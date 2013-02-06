@@ -137,34 +137,36 @@ class ReportGenerator {
 
 	double getZetaAbsoluteErrorObject() {
 
-		Double avgAbsError = 0.0;
-		int n = 0;
-		for (DatumContResults dr : ip.getObjectsResults().values()) {
-			if (  dr.getTrueZeta() == null ) continue;
-			n++;
-			double estZ = dr.getEst_zeta();
-			double realZ = dr.getTrueZeta();
-			double absDiff = Math.abs(realZ - estZ);
-			avgAbsError += absDiff;
-		}
-		return avgAbsError/n;
+//		Double avgAbsError = 0.0;
+//		int n = 0;
+//		for (DatumContResults dr : ip.getObjectsResults().values()) {
+//			if (  dr.getTrueZeta() == null ) continue;
+//			n++;
+//			double estZ = dr.getEst_zeta();
+//			double realZ = dr.getTrueZeta();
+//			double absDiff = Math.abs(realZ - estZ);
+//			avgAbsError += absDiff;
+//		}
+//		return avgAbsError/n;
+		return 0;
 	}
 
 	double getZetaRelativeErrorObject() {
 
-		Double avgRelError = 0.0;
-		int n = 0;
-		for (DatumContResults dr : ip.getObjectsResults().values()) {
-			if ( dr.getTrueZeta() == null) continue;
-			n++;
-			double estZ = dr.getEst_zeta();
-			double realZ = dr.getTrueZeta();
-			double absDiff = Math.abs(realZ - estZ);
-			double relDiff = Math.abs(absDiff / realZ);
-
-			avgRelError += relDiff/n;
-		}
-		return avgRelError;
+//		Double avgRelError = 0.0;
+//		int n = 0;
+//		for (DatumContResults dr : ip.getObjectsResults().values()) {
+//			if ( dr.getTrueZeta() == null) continue;
+//			n++;
+//			double estZ = dr.getEst_zeta();
+//			double realZ = dr.getTrueZeta();
+//			double absDiff = Math.abs(realZ - estZ);
+//			double relDiff = Math.abs(absDiff / realZ);
+//
+//			avgRelError += relDiff/n;
+//		}
+//		return avgRelError;
+		return 0;
 	}
 
 	public String generateObjectReport() {
@@ -176,7 +178,7 @@ class ReportGenerator {
 			LObject<ContValue> d = dr.getObject();
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);
-			sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta());
+			//sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta());
 		  sb.append("\n");
 			
 		}

@@ -55,7 +55,7 @@ public class Worker<T> {
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.add("name", name)
-				.add("assigns", assigns)
+				//.add("assigns", assigns)
 				.toString();
 	}
 }

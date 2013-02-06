@@ -12,6 +12,8 @@ import com.datascience.galc.WorkerContResults;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.log4j.Logger;
 
 public class SyntheticData extends Data<ContValue> {
@@ -35,9 +37,13 @@ public class SyntheticData extends Data<ContValue> {
 	private Generator	datumGenerator;
 
 	private static Logger logger = Logger.getLogger(SyntheticData.class);
+	
+	private Set<WorkerContResults> workerContResults = new HashSet<WorkerContResults>();
+	private Set<DatumContResults> objectContResults = new HashSet<DatumContResults>();
+	
 
 	public SyntheticData(Boolean verbose, String file) {
-
+		super();
 		loadSyntheticOptions(file);
 		logger.info("Data points: " + this.data_points);
 		logger.info("Data gold: " + this.data_gold);
@@ -81,7 +87,7 @@ public class SyntheticData extends Data<ContValue> {
 		for (LObject<ContValue> lo : getObjects()) {
 			if(i++ < g_gold_objects) {
 				DatumContResults dcr = new DatumContResults(lo);
-				lo.setGoldLabel(new Label<ContValue>(new ContValue(dcr.getTrueValue(), dcr.getTrueZeta())));
+				//lo.setGoldLabel(new Label<ContValue>(new ContValue(lo.getGoldLabel().getValue(), dcr.getTrueZeta())));
 				// TODO: FIX
 				// d.setResults(dr);
 			}
@@ -91,24 +97,18 @@ public class SyntheticData extends Data<ContValue> {
 	private void createLabels() {
 
 		// Generate Observation Values y_ij
-
-		for (LObject<ContValue> lo : getObjects()) {
-			for (Worker<ContValue> w : getWorkers()) {
-
-				DatumContResults dcr = new DatumContResults(lo);
-				Double datum_z = (dcr.getTrueValue() - this.data_mu) / this.data_sigma;
-				WorkerContResults wcr = new WorkerContResults(w);
+		for (DatumContResults dcr : objectContResults) {
+			for (WorkerContResults wcr : workerContResults) {
+				LObject<ContValue> lo = dcr.getObject();
+				Worker<ContValue> w = wcr.getWorker();
+				Double datum_z = (lo.getGoldLabel().getValue().getValue() - this.data_mu) / this.data_sigma;
 				Double label_mu = wcr.getTrueMu() + wcr.getTrueRho() * wcr.getTrueSigma() * datum_z;
 				Double label_sigma = Math.sqrt(1 - Math.pow(wcr.getTrueRho(), 2)) * wcr.getTrueSigma();
-
 				Generator labelGenerator = new Generator(Generator.Distribution.GAUSSIAN);
 				labelGenerator.setGaussianParameters(label_mu, label_sigma);
-				// TODO: FIX
-				// It should be ContValue -- not Double.
-				Double label = labelGenerator.nextData();
-				w.addAssign(new AssignedLabel<ContValue>(w, lo, null));
-				// TODO: FIX
+				this.addAssign(new AssignedLabel<ContValue>(w, lo, new Label<ContValue>(new ContValue(labelGenerator.nextData()))));
 				// this.getLabels().add(al);
+				//w.addAssign(new AssignedLabel<ContValue>(w, lo, null));
 				// w.addAssignedLabel(al);
 				// d.addAssignedLabel(al);
 			}
@@ -123,9 +123,9 @@ public class SyntheticData extends Data<ContValue> {
 			DatumContResults dcr = new DatumContResults(lo);
 			Double v = datumGenerator.nextData();
 			Double z = (v-this.data_mu)/this.data_sigma;
-			dcr.setTrueValue(v);
-			dcr.setTrueZeta(z);
-			this.getObjects().add(lo);
+			lo.setGoldLabel(new Label<ContValue>(new ContValue(v, z)));
+			objects.add(lo);
+			objectContResults.add(dcr);
 		}
 	}
 
@@ -138,7 +138,8 @@ public class SyntheticData extends Data<ContValue> {
 			wcr.setTrueMu(muGenerator.nextData());
 			wcr.setTrueSigma(sigmaGenerator.nextData());
 			wcr.setTrueRho(rhoGenerator.nextData());
-			this.getWorkers().add(w);
+			workers.add(w);
+			workerContResults.add(wcr);
 		}
 
 	}
@@ -181,7 +182,7 @@ public class SyntheticData extends Data<ContValue> {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (LObject<ContValue> lo : getObjects()) {
 				DatumContResults dcr = new DatumContResults(lo);
-				String line = lo.getName() + "\t" + dcr.getTrueValue() + "\t" + dcr.getTrueZeta() + "\n";
+				String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
 				bw.write(line);
 			}
 			bw.close();
@@ -234,9 +235,10 @@ public class SyntheticData extends Data<ContValue> {
 			for (LObject<ContValue> lo : getObjects()) {
 				DatumContResults dcr = new DatumContResults(lo);
 				if (dcr.getObject().isGold()) {
-					String line = lo.getName() + "\t" +
-							dcr.getTrueValue() + "\t" +
-							dcr.getTrueZeta() + "\n";
+//					String line = lo.getName() + "\t" +
+//							dcr.getTrueValue() + "\t" +
+//							dcr.getTrueZeta() + "\n";
+					String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
 					bw.write(line);
 				}
 			}
