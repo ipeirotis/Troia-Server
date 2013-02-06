@@ -55,6 +55,7 @@ public class Worker<T> {
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.add("name", name)
+				// TODO: FIX -- tt causes an infinite loop.
 				//.add("assigns", assigns)
 				.toString();
 	}
