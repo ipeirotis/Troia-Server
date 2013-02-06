@@ -148,7 +148,8 @@ public class JSONUtils {
 
 	public static class SerializedSerializer  implements JsonSerializer<Serialized> {
 		public JsonElement serialize(Serialized src, Type typeOfSrc, JsonSerializationContext context) {
-			return new JsonParser().parse(src.getObject());
+			// If we use the same instance of serializer everywhere than this should be safe
+			return (JsonElement) src.getObject();
 		}
 	}
 }
