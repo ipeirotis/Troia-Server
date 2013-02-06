@@ -86,7 +86,6 @@ public class SyntheticData extends Data<ContValue> {
 		int i = 0;
 		for (LObject<ContValue> lo : getObjects()) {
 			if(i++ < g_gold_objects) {
-				DatumContResults dcr = new DatumContResults(lo);
 				//lo.setGoldLabel(new Label<ContValue>(new ContValue(lo.getGoldLabel().getValue(), dcr.getTrueZeta())));
 				// TODO: FIX
 				// d.setResults(dr);
@@ -158,7 +157,10 @@ public class SyntheticData extends Data<ContValue> {
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (AssignedLabel<ContValue> al : assigns) {
-				String line = al.getWorker() + "\t" + al.getLobject() + "\t" + al.getLabel() + "\n";
+				String line = al.getWorker().getName() + "\t" + 
+						al.getLobject().getName() + "\t" + 
+						// TODO: is it correct?
+						al.getLabel().getValue().getValue() + "\n";
 				bw.write(line);
 			}
 			bw.close();
@@ -180,10 +182,16 @@ public class SyntheticData extends Data<ContValue> {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (LObject<ContValue> lo : getObjects()) {
-				DatumContResults dcr = new DatumContResults(lo);
-				String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
-				bw.write(line);
+			for (LObject<ContValue> lo : objects) {
+				//DatumContResults dcr = new DatumContResults(lo);
+				if (lo.isEvaluation()) {
+				ContValue contValue = lo.getEvaluationLabel().getValue();
+					String line = lo.getName() + "\t" +
+							contValue.getValue() + "\t" +
+							contValue.getZeta() + "\n";
+					bw.write(line);
+					//String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
+				}
 			}
 			bw.close();
 		} catch (Exception e) {
@@ -204,8 +212,8 @@ public class SyntheticData extends Data<ContValue> {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (Worker<ContValue> w : getWorkers()) {
-				WorkerContResults wcr = new WorkerContResults(w);
+			for (WorkerContResults wcr : workerContResults) {
+				Worker<ContValue> w = wcr.getWorker();
 				String line = w.getName() + "\t" +
 						wcr.getTrueRho() + "\t" +
 						wcr.getTrueMu() + "\t" +
@@ -232,13 +240,13 @@ public class SyntheticData extends Data<ContValue> {
 			}
 
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (LObject<ContValue> lo : getObjects()) {
-				DatumContResults dcr = new DatumContResults(lo);
-				if (dcr.getObject().isGold()) {
-//					String line = lo.getName() + "\t" +
-//							dcr.getTrueValue() + "\t" +
-//							dcr.getTrueZeta() + "\n";
-					String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
+			for (LObject<ContValue> lo : objects) {
+				if (lo.isGold()) {
+					ContValue contValue = lo.getGoldLabel().getValue();
+					String line = lo.getName() + "\t" +
+							contValue.getValue() + "\t" +
+							contValue.getZeta() + "\n";
+					//String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
 					bw.write(line);
 				}
 			}
