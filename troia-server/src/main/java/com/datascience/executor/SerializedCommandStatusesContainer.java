@@ -17,7 +17,7 @@ public class SerializedCommandStatusesContainer extends
 	@Override
 	public void addCommandStatus(String id, CommandStatus result){
 		if (result.getData() != null) {
-			String serializedData = serializer.serialize(result.getData());
+			Object serializedData = serializer.getRaw(result.getData());
 			result = new CommandStatus(result.getStatus(), new Serialized(serializedData),
 					result.getError());
 		}

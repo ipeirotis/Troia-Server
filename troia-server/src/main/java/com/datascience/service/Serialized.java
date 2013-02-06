@@ -5,13 +5,13 @@ package com.datascience.service;
  */
 public class Serialized {
 
-	protected String object;
+	protected Object object;
 
-	public Serialized(String object){
+	public Serialized(Object object){
 		this.object = object;
 	}
 
-	public String getObject(){
+	public Object getObject(){
 		return object;
 	}
 }
