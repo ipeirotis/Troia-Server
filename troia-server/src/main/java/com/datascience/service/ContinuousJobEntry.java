@@ -49,10 +49,17 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 		GALCommandBase command = new ObjectCommands.GetObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
+	
+	@Path("objects/{oid}/assigns")
+	@GET
+	public Response getObjectAssigns(@QueryParam("oid") String objectId){
+		GALCommandBase command = new ObjectCommands.GetObjectAssigns(job.getProject(), objectId);
+		return buildResponseOnCommand(job, command);
+	}
 
-	@Path("objects/{oid}")
+	@Path("objects")
 	@POST
-	public Response addObject(@QueryParam("oid") String objectId){
+	public Response addObject(@FormParam("objectId") String objectId){
 		GALCommandBase command = new ObjectCommands.AddObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
@@ -71,9 +78,9 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 		return buildResponseOnCommand(job, command);
 	}
 
-	@Path("goldObjects/{oid}")
+	@Path("goldObjects")
 	@POST
-	public Response addGoldObject(@QueryParam("oid") String objectId,
+	public Response addGoldObject(@FormParam("objectId") String objectId,
 								  @FormParam("label") Double label,
 								  @FormParam("zeta") Double zeta){
 		GALCommandBase command = new GoldObjectsCommands.AddGoldObjects(job.getProject(), objectId, new ContValue(label, zeta));

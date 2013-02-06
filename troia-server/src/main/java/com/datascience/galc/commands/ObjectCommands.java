@@ -2,6 +2,7 @@ package com.datascience.galc.commands;
 
 import java.util.Collection;
 
+import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
@@ -27,7 +28,7 @@ public class ObjectCommands {
 			if (null == data.getObject(objectId)){
 				data.addObject(new LObject<ContValue>(objectId));
 			}
-			setResult("Assigns added");
+			setResult("Object without labels added");
 		}
 	}
 	
@@ -54,6 +55,21 @@ public class ObjectCommands {
 		@Override
 		protected void realExecute(){
 			setResult(ParamChecking.object(project.getData(), objectId));
+		}
+	}
+	
+	static public class GetObjectAssigns extends GALCommandBase<Collection<AssignedLabel<ContValue>>> {
+		
+		String objectId;
+		public GetObjectAssigns(ContinuousProject cp, String objectId){
+			super(cp, false);
+			this.objectId = objectId;
+		}
+		
+		@Override
+		protected void realExecute(){
+			LObject<ContValue> obj = ParamChecking.object(project.getData(), objectId);
+			setResult(project.getData().getAssignsForObject(obj));
 		}
 	}
 }
