@@ -2,7 +2,6 @@ package com.datascience.galc.serialization;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Worker;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,14 +17,8 @@ import java.util.Set;
  */
 public class GenericWorkerSerializer<T> implements JsonSerializer<Worker<T>> {
 
-	public GenericWorkerSerializer() {
-		super();
-		System.out.println("Generic worker serializer");
-	}
-
 	@Override
 	public JsonElement serialize(Worker<T> worker, Type type, JsonSerializationContext context) {
-		System.out.println("serialize " + worker.getName());
 		Set<AssignedLabel<T>> assignedLabels = worker.getAssigns();
 		JsonArray jsonAssigns = new JsonArray();
 		for (AssignedLabel<T> assignedLabel : assignedLabels) {

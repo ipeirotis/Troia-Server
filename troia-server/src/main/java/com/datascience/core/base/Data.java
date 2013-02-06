@@ -89,6 +89,10 @@ public class Data <T>{
 			datums.put(object, new HashSet<AssignedLabel<T>>());
 		}
 		datums.get(object).add(assign);
+		Worker<T> worker = assign.getWorker();
+		if (!workers.contains(worker)) {
+			workers.add(worker);
+		}
 		assign.getWorker().addAssign(assign);
 	}
 

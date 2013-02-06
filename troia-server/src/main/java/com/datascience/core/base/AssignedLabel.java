@@ -9,7 +9,7 @@ import com.google.common.base.Objects;
  */
 public class AssignedLabel<T> {
 
-	protected LObject lobject;
+	protected LObject<T> lobject;
 	protected Worker<T> worker;
 	protected Label<T> label;
 	
