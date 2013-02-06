@@ -1,7 +1,7 @@
 #!/bin/bash
 
-URL="http://localhost:8080/troia-server-0.8"
-#URL="http://project-troia.com/api"
+#URL="http://localhost:8080/troia-server-0.8"
+URL="http://project-troia.com/api"
 JobID=""
 redirectId=0
 noIterations=20
