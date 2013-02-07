@@ -2,37 +2,32 @@
 
 #URL="http://localhost:8080/troia-server-0.8"
 URL="http://project-troia.com/api"
-JobID=""
 redirectId=0
 noIterations=20
 
-function generateRandomJobId {
-  rJobId=$(tr -dc "[:alpha:]" < /dev/urandom | head -c $1)
-  echo "$rJobId"
-}
-
 function createJob 
 {
-  echo "Creating a new job ..."
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "id=$JobID&type=incremental&categories=[
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "type=incremental&categories=[
     {"prior":"0.5", "name":"porn", "misclassificationCost": [{'categoryName': 'porn', 'value': 0}, {'categoryName': 'notporn', 'value': 1}]}, 
     {"prior":"0.5", "name":"notporn", "misclassificationCost":[{'categoryName': 'porn', 'value': 1}, {'categoryName': 'notporn', 'value': 0}]}]")
+ 
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
-  echo $JobID
-  
-  if [[ "$status" != "OK" ]]
-    then
-      echo "Job with id $JobID already exists"
-    else
-      echo "Created new job with id $JobID"
-  fi
-  echo "-----------------"
+  while [[ $status != "OK" ]]
+    do
+      sleep 5 
+      result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "type=batch&categories=[
+      {"prior":"0.5","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
+      {"prior":"0.5","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
+      status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+    done
+  local jid=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 3 | cut -d '"' -f 1)
+  echo "$jid"
 }
 
 function deleteJob 
 {
   echo "Deleting job with ID $1 ..."
-  local result=$(curl -s1 -X DELETE -H "Content-Type: application/json" "$URL/jobs" -d "id=$JobID")
+  local result=$(curl -s1 -X DELETE -H "Content-Type: application/json" "$URL/jobs" -d "id=$1")
   echo $result
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" == "OK" ]]
@@ -48,7 +43,7 @@ function uploadAssignedLabels
 {
   #upload assigned labels
   echo "Uploading assignedLabels ..."
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$JobID/assignedLabels" -d 'labels=[
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$1/assignedLabels" -d 'labels=[
     {"workerName":"worker1","objectName":"http://sunnyfun.com","categoryName":"porn"},
     {"workerName":"worker1","objectName":"http://sex-mission.com","categoryName":"porn"},
     {"workerName":"worker1","objectName":"http://google.com","categoryName":"porn"},
@@ -102,7 +97,7 @@ function getJobStatus {
 function getPredictionData {
   #get the prediction data
   echo "Getting the prediction data ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/prediction/data")
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/prediction/data")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
 
@@ -148,7 +143,7 @@ function getProbabilityDistribution {
 
   #get the category probability distribution
   echo "Getting the category probability distribution data ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/data/http://yahoo.com/categoryProbability")
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/data/http://yahoo.com/categoryProbability")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
 
@@ -193,7 +188,7 @@ function getCategoryProbabilities {
 function getPredictedWorkersQuality {
   #get the workers quality
   echo "Getting predicted workers quality ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/prediction/workersQuality")
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/prediction/workersQuality")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
 
@@ -236,7 +231,7 @@ function getWorkersQualityData {
 function compute {
   #compute 
   echo "Computing - using $noIterations iterations ..."
-  local result=$(curl -s1 -X POST -d "iterations=$noIterations" "$URL/jobs/$JobID/compute")
+  local result=$(curl -s1 -X POST -d "iterations=$noIterations" "$URL/jobs/$1/compute")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
@@ -252,7 +247,7 @@ function compute {
 function loadGoldLabels {
   #load gold labels
   echo "Loading the gold labels ..."
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$JobID/goldData" -d 'labels=
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$1/goldData" -d 'labels=
   [{
     "correctCategory": "porn",
     "objectName": "http://sex-mission.com"
@@ -269,8 +264,8 @@ function loadGoldLabels {
 }
 
 function getDataCost {
-  echo "Getting data cost for costAlgorithm=$1 ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$JobID/prediction/dataCost" -d "costAlgorithm=$1")
+  echo "Getting data cost for costAlgorithm=$2 ..."
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/prediction/dataCost" -d "costAlgorithm=$2")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   
   echo "Getting the actual data cost for redirect=$redirectId..."
@@ -299,12 +294,11 @@ function getDataCost {
 }
 
 function advancedTutorialPart1 {
-  JobID=$(generateRandomJobId 10)
-  createJob
-  uploadAssignedLabels
+  JobID=$(createJob)
+  uploadAssignedLabels $JobID
   getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
 
-  getPredictionData
+  getPredictionData $JobID
   declare -A expectedCategories
   expectedCategories[http://google.com]=notporn
   expectedCategories[http://sex-mission.com]=porn
@@ -313,13 +307,13 @@ function advancedTutorialPart1 {
   expectedCategories[http://youporn.com]=porn
   getActualPredictionData $expectedCategories
 
-  getProbabilityDistribution
+  getProbabilityDistribution $JobID
   declare -A expectedProbabilities 
   expectedProbabilities[notporn]=0.97945
   expectedProbabilities[porn]=0.02055
   getCategoryProbabilities $expectedProbabilities
 
-  getPredictedWorkersQuality
+  getPredictedWorkersQuality $JobID
   declare -A expectedWorkerQualities
   expectedWorkerQualities[worker1]=0.8516375211366187
   expectedWorkerQualities[worker2]=0.9011184676007533
@@ -328,9 +322,9 @@ function advancedTutorialPart1 {
   expectedWorkerQualities[worker5]=0.8439714531050402
   getWorkersQualityData $expectedWorkerQualities
 
-  compute
+  compute $JobID
   
-  getProbabilityDistribution
+  getProbabilityDistribution $JobID
   declare -A expectedProbabilities 
   expectedProbabilities[notporn]=0.97998
   expectedProbabilities[porn]=0.02002
@@ -340,12 +334,11 @@ function advancedTutorialPart1 {
 }
 
 function advancedTutorialPart2 {
-  JobID=$(generateRandomJobId 10)
-  createJob
-  uploadAssignedLabels
+  JobID=$(createJob)
+  uploadAssignedLabels $JobID
   getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
 
-  getPredictionData
+  getPredictionData $JobID
   declare -A expectedCategories
   expectedCategories[http://google.com]=notporn
   expectedCategories[http://sex-mission.com]=porn
@@ -354,13 +347,13 @@ function advancedTutorialPart2 {
   expectedCategories[http://youporn.com]=porn
   getActualPredictionData $expectedCategories
 
-  getProbabilityDistribution
+  getProbabilityDistribution $JobID
   declare -A expectedProbabilities 
   expectedProbabilities[notporn]=0.97945
   expectedProbabilities[porn]=0.02055
   getCategoryProbabilities $expectedProbabilities
 
-  getPredictedWorkersQuality
+  getPredictedWorkersQuality $JobID
   declare -A expectedWorkerQualities
   expectedWorkerQualities[worker1]=0.8516375211366187
   expectedWorkerQualities[worker2]=0.9011184676007533
@@ -369,8 +362,8 @@ function advancedTutorialPart2 {
   expectedWorkerQualities[worker5]=0.8439714531050402
   getWorkersQualityData $expectedWorkerQualities
   
-  loadGoldLabels
-  getPredictedWorkersQuality
+  loadGoldLabels $JobID
+  getPredictedWorkersQuality $JobID
   declare -A expectedWorkerQualities
   expectedWorkerQualities[worker1]=0.8516899142110332
   expectedWorkerQualities[worker2]=0.9011936513308119
@@ -383,12 +376,11 @@ function advancedTutorialPart2 {
 }
 
 function advancedTutorialPart3 {
-  JobID=$(generateRandomJobId 10)
-  createJob
-  uploadAssignedLabels
+  JobID=$(createJob)
+  uploadAssignedLabels $JobID
   getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
   
-  compute
+  compute $JobID
 
   declare -A expectedDataCost
   expectedDataCost[http://google.com]=9.999500000000001E-5
@@ -396,7 +388,7 @@ function advancedTutorialPart3 {
   expectedDataCost[http://sunnyfun.com]=9.999500000000001E-5
   expectedDataCost[http://yahoo.com]=0.039238399199999996
   expectedDataCost[http://youporn.com]=1.3999019999999998E-4
-  getDataCost ExpectedCost expectedDataCost
+  getDataCost $JobID ExpectedCost expectedDataCost
   
   deleteJob $JobID
 }
