@@ -1,6 +1,7 @@
 package com.datascience.galc.dataGenerator.engine;
 
 import com.datascience.galc.dataGenerator.SyntheticData;
+import java.io.IOException;
 
 public class Engine {
 	
@@ -11,7 +12,7 @@ public class Engine {
 		this.ctx = ctx;
 		
 	}
-	public void execute() {
+	public void execute() throws IOException {
 
 		SyntheticData data = createSyntheticDataSet(ctx.isVerbose(),ctx.getSyntheticOptionsFile());
 		data.writeLabelsToFile(ctx.getLabelsFile());

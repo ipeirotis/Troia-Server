@@ -1,14 +1,20 @@
 package com.datascience.galc.dataGenerator;
 
-import com.datascience.galc.dataGenerator.SyntheticData;
+import java.io.IOException;
 
 public class SyntheticDataGenerator {
 
+	String optionsPath;
+	
 	public SyntheticDataGenerator() {
-		execute();
+	
 	}
 	
-	public void execute() {
+	public SyntheticDataGenerator(String optionsPath) {
+		this.optionsPath = optionsPath;
+	}
+	
+	public void execute() throws IOException {
 		SyntheticData data = createSyntheticDataSet(false,"data/synthetic/synthetic-options.txt");
 		data.writeLabelsToFile("data/synthetic/assignedlabels.txt");
 		data.writeGoldObjectDataToFile("data/synthetic/goldObjects.txt");

@@ -25,11 +25,11 @@ public class LObject<T> {
 	}
 
 	public boolean isGold(){
-		return goldLabel == null;
+		return goldLabel != null;
 	}
 
 	public boolean isEvaluation(){
-		return evaluationLabel == null;
+		return evaluationLabel != null;
 	}
 
 	public Label<T> getGoldLabel(){

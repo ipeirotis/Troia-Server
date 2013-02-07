@@ -12,29 +12,31 @@ import com.datascience.galc.WorkerContResults;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
 public class SyntheticData extends Data<ContValue> {
 
-	private int				data_points;
-	private Double		data_mu;
-	private Double		data_sigma;
-	private int				data_gold;
-	private int				workers_points;
-	private Double		worker_mu_down;
-	private Double		worker_mu_up;
-	private Double		worker_sigma_down;
-	private Double		worker_sigma_up;
-	private Double		worker_rho_down;
-	private Double		worker_rho_up;
+	private int	pointsCount;
+	private int	goldCount;
+	private int	workersCount;
+	
+	private Double dataMu;
+	private Double dataSigma;
+	
+	private Double workerMuLower;
+	private Double workerMuUpper;
+	private Double workerSigmaLower;
+	private Double workerSigmaUpper;
+	private Double workerRhoLower;
+	private Double workerRhoUpper;
 
-	private Generator	muGenerator;
-	private Generator	sigmaGenerator;
-	private Generator	rhoGenerator;
-
-	private Generator	datumGenerator;
+	private Generator muGenerator;
+	private Generator sigmaGenerator;
+	private Generator rhoGenerator;
+	private Generator datumGenerator;
 
 	private static Logger logger = Logger.getLogger(SyntheticData.class);
 	
@@ -45,37 +47,37 @@ public class SyntheticData extends Data<ContValue> {
 	public SyntheticData(Boolean verbose, String file) {
 		super();
 		loadSyntheticOptions(file);
-		logger.info("Data points: " + this.data_points);
-		logger.info("Data gold: " + this.data_gold);
-		logger.info("Workers: " + this.workers_points);
-		logger.info("Low rho: " + this.worker_rho_down);
-		logger.info("High rho: " + this.worker_rho_up);
+		logger.info("Data points: " + this.pointsCount);
+		logger.info("Data gold: " + this.goldCount);
+		logger.info("Workers: " + this.workersCount);
+		logger.info("Low rho: " + this.workerRhoLower);
+		logger.info("High rho: " + this.workerRhoUpper);
 
 
 	}
 
 	public void initDataParameters() {
 		datumGenerator = new Generator(Generator.Distribution.GAUSSIAN);
-		datumGenerator.setGaussianParameters(this.data_mu, this.data_sigma);
+		datumGenerator.setGaussianParameters(this.dataMu, this.dataSigma);
 	}
 
 	public void initWorkerParameters() {
 
 		muGenerator = new Generator(Generator.Distribution.UNIFORM);
-		muGenerator.setUniformParameters(this.worker_mu_down, this.worker_mu_up);
+		muGenerator.setUniformParameters(this.workerMuLower, this.workerMuUpper);
 
 		sigmaGenerator = new Generator(Generator.Distribution.UNIFORM);
-		sigmaGenerator.setUniformParameters(this.worker_sigma_down, this.worker_sigma_up);
+		sigmaGenerator.setUniformParameters(this.workerSigmaLower, this.workerSigmaUpper);
 
 		rhoGenerator = new Generator(Generator.Distribution.UNIFORM);
-		rhoGenerator.setUniformParameters(this.worker_rho_down, this.worker_rho_up);
+		rhoGenerator.setUniformParameters(this.workerRhoLower, this.workerRhoUpper);
 	}
 
 	public void build() {
 
-		createObjects(this.data_points);
-		createGold(this.data_gold);
-		createWorkers(this.workers_points);
+		createObjects(this.pointsCount);
+		createGold(this.goldCount);
+		createWorkers(this.workersCount);
 		createLabels();
 
 	}
@@ -86,11 +88,8 @@ public class SyntheticData extends Data<ContValue> {
 		int i = 0;
 		for (LObject<ContValue> lo : getObjects()) {
 			if(i++ < g_gold_objects) {
-				//lo.setGoldLabel(new Label<ContValue>(new ContValue(lo.getGoldLabel().getValue(), dcr.getTrueZeta())));
 				ContValue cv = lo.getEvaluationLabel().getValue();
 				lo.setGoldLabel(new Label<ContValue>(new ContValue(cv.getValue(),cv.getZeta())));
-				// TODO: FIX
-				// d.setResults(dr);
 			}
 		}
 	}
@@ -102,16 +101,13 @@ public class SyntheticData extends Data<ContValue> {
 			for (WorkerContResults wcr : workerContResults) {
 				LObject<ContValue> lo = dcr.getObject();
 				Worker<ContValue> w = wcr.getWorker();
-				Double datum_z = (lo.getGoldLabel().getValue().getValue() - this.data_mu) / this.data_sigma;
+				Label<ContValue> label = lo.isGold() ? lo.getGoldLabel() : lo.getEvaluationLabel();
+				Double datum_z = (label.getValue().getValue() - this.dataMu) / this.dataSigma;
 				Double label_mu = wcr.getTrueMu() + wcr.getTrueRho() * wcr.getTrueSigma() * datum_z;
 				Double label_sigma = Math.sqrt(1 - Math.pow(wcr.getTrueRho(), 2)) * wcr.getTrueSigma();
 				Generator labelGenerator = new Generator(Generator.Distribution.GAUSSIAN);
 				labelGenerator.setGaussianParameters(label_mu, label_sigma);
-				this.addAssign(new AssignedLabel<ContValue>(w, lo, new Label<ContValue>(new ContValue(labelGenerator.nextData()))));
-				// this.getLabels().add(al);
-				//w.addAssign(new AssignedLabel<ContValue>(w, lo, null));
-				// w.addAssignedLabel(al);
-				// d.addAssignedLabel(al);
+				addAssign(new AssignedLabel<ContValue>(w, lo, new Label<ContValue>(new ContValue(labelGenerator.nextData()))));
 			}
 		}
 	}
@@ -123,10 +119,11 @@ public class SyntheticData extends Data<ContValue> {
 			LObject<ContValue> lo = new LObject<ContValue>("Object" + (i + 1));
 			DatumContResults dcr = new DatumContResults(lo);
 			Double v = datumGenerator.nextData();
-			Double z = (v-this.data_mu)/this.data_sigma;
-			lo.setGoldLabel(new Label<ContValue>(new ContValue(v, z)));
+			Double z = (v-this.dataMu)/this.dataSigma;
+			lo.setEvaluationLabel(new Label<ContValue>(new ContValue(v, z)));
 			objects.add(lo);
 			objectContResults.add(dcr);
+			//System.out.println("lo = " + lo + " isEvaluation " + lo.isEvaluation());
 		}
 	}
 
@@ -142,22 +139,23 @@ public class SyntheticData extends Data<ContValue> {
 			workers.add(w);
 			workerContResults.add(wcr);
 		}
-
+	}
+	
+	private BufferedWriter openFile(String filename) throws IOException {
+		File outfile = new File(filename);
+		if (outfile.getParent() != null) {
+			File parentDir = new File(outfile.getParent());
+			if (!parentDir.exists()) {
+				parentDir.mkdirs();
+			}
+		}
+		return new BufferedWriter(new FileWriter(outfile));
 	}
 
-	public void writeLabelsToFile(String filename) {
+	public void writeLabelsToFile(String filename) throws IOException {
 
+		BufferedWriter bw = openFile(filename);
 		try {
-			File outfile = new File(filename);
-
-			if (outfile.getParent() != null) {
-				File parentDir = new File(outfile.getParent());
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-			}
-
-			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (AssignedLabel<ContValue> al : assigns) {
 				String line = al.getWorker().getName() + "\t" + 
 						al.getLobject().getName() + "\t" + 
@@ -165,55 +163,15 @@ public class SyntheticData extends Data<ContValue> {
 						al.getLabel().getValue().getValue() + "\n";
 				bw.write(line);
 			}
+		} finally {
 			bw.close();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
-	public void writeTrueObjectDataToFile(String filename) {
+	public void writeTrueWorkerDataToFile(String filename) throws IOException {
 
+		BufferedWriter bw = openFile(filename);
 		try {
-			File outfile = new File(filename);
-
-			if (outfile.getParent() != null) {
-				File parentDir = new File(outfile.getParent());
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-			}
-
-			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
-			for (LObject<ContValue> lo : objects) {
-				//DatumContResults dcr = new DatumContResults(lo);
-				if (lo.isEvaluation()) {
-				ContValue contValue = lo.getEvaluationLabel().getValue();
-					String line = lo.getName() + "\t" +
-							contValue.getValue() + "\t" +
-							contValue.getZeta() + "\n";
-					bw.write(line);
-					//String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
-				}
-			}
-			bw.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void writeTrueWorkerDataToFile(String filename) {
-
-		try {
-			File outfile = new File(filename);
-
-			if (outfile.getParent() != null) {
-				File parentDir = new File(outfile.getParent());
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-			}
-
-			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (WorkerContResults wcr : workerContResults) {
 				Worker<ContValue> w = wcr.getWorker();
 				String line = w.getName() + "\t" +
@@ -223,38 +181,44 @@ public class SyntheticData extends Data<ContValue> {
 						+ "\n";
 				bw.write(line);
 			}
+		} finally {
 			bw.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+	}
+	
+	public void writeTrueObjectDataToFile(String filename) throws IOException {
+
+		BufferedWriter bw = openFile(filename);
+		try {
+			for (LObject<ContValue> lo : objects) {
+				if (lo.isEvaluation()) {
+					ContValue contValue = lo.getEvaluationLabel().getValue();
+					String line = lo.getName() + "\t" +
+							contValue.getValue() + "\t" +
+							contValue.getZeta() + "\n";
+					bw.write(line);
+				}
+			}
+		} finally {
+			bw.close();
 		}
 	}
 
-	public void writeGoldObjectDataToFile(String filename) {
+	public void writeGoldObjectDataToFile(String filename) throws IOException {
 
+		BufferedWriter bw = openFile(filename);
 		try {
-			File outfile = new File(filename);
-
-			if (outfile.getParent() != null) {
-				File parentDir = new File(outfile.getParent());
-				if (!parentDir.exists()) {
-					parentDir.mkdirs();
-				}
-			}
-
-			BufferedWriter bw = new BufferedWriter(new FileWriter(outfile));
 			for (LObject<ContValue> lo : objects) {
 				if (lo.isGold()) {
 					ContValue contValue = lo.getGoldLabel().getValue();
 					String line = lo.getName() + "\t" +
 							contValue.getValue() + "\t" +
 							contValue.getZeta() + "\n";
-					//String line = lo.getName() + "\t" + lo.getGoldLabel().getValue().getValue() + "\t" + lo.getGoldLabel().getValue().getZeta() + "\n";
 					bw.write(line);
 				}
 			}
+		} finally {
 			bw.close();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -265,27 +229,27 @@ public class SyntheticData extends Data<ContValue> {
 			if (entries.length != 2) {
 				throw new IllegalArgumentException("Error while loading from synthetic sptions file");
 			} else if(entries[0].equals("data_points")) {
-				this.data_points = (int)Integer.parseInt(entries[1]);
+				this.pointsCount = (int)Integer.parseInt(entries[1]);
 			} else if (entries[0].equals("data_mu")) {
-				this.data_mu = Double.parseDouble(entries[1]);
+				this.dataMu = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("data_sigma")) {
-				this.data_sigma = Double.parseDouble(entries[1]);
+				this.dataSigma = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("data_gold")) {
-				this.data_gold = (int)Integer.parseInt(entries[1]);
+				this.goldCount = (int)Integer.parseInt(entries[1]);
 			} else if (entries[0].equals("workers")) {
-				this.workers_points = (int)Integer.parseInt(entries[1]);
+				this.workersCount = (int)Integer.parseInt(entries[1]);
 			} else if (entries[0].equals("worker_mu_down")) {
-				this.worker_mu_down = Double.parseDouble(entries[1]);
+				this.workerMuLower = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("worker_mu_up")) {
-				this.worker_mu_up = Double.parseDouble(entries[1]);
+				this.workerMuUpper = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("worker_sigma_down")) {
-				this.worker_sigma_down = Double.parseDouble(entries[1]);
+				this.workerSigmaLower = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("worker_sigma_up")) {
-				this.worker_sigma_up = Double.parseDouble(entries[1]);
+				this.workerSigmaUpper = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("worker_rho_down")) {
-				this.worker_rho_down = Double.parseDouble(entries[1]);
+				this.workerRhoLower = Double.parseDouble(entries[1]);
 			} else if (entries[0].equals("worker_rho_up")) {
-				this.worker_rho_up = Double.parseDouble(entries[1]);
+				this.workerRhoUpper = Double.parseDouble(entries[1]);
 			} else {
 				System.err.println("Error in synthetic options file variables");
 			}
