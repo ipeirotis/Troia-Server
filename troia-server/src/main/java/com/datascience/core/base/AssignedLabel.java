@@ -61,8 +61,8 @@ public class AssignedLabel<T> {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
-				.add("lobject", lobject)
-				.add("worker", worker)
+				.add("lobject", (lobject != null)?lobject.getName():"-")
+				.add("worker", (worker != null)?worker.getName():"-")
 				.add("label", label)
 				.toString();
 	}

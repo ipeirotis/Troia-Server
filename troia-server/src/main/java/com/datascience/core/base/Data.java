@@ -85,6 +85,7 @@ public class Data <T>{
 	public void addAssign(AssignedLabel<T> assign){
 		assigns.add(assign);
 		LObject<T> object = assign.getLobject();
+		addObject(object);
 		if (!datums.containsKey(object)) {
 			datums.put(object, new HashSet<AssignedLabel<T>>());
 		}

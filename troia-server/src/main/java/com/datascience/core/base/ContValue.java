@@ -1,5 +1,7 @@
 package com.datascience.core.base;
 
+import com.google.common.base.Objects;
+
 public class ContValue {
 
 	protected Double value;
@@ -20,5 +22,14 @@ public class ContValue {
 
 	public Double getZeta(){
 		return zeta;
+	}
+
+	public boolean equals(Object other){
+		if (other instanceof ContValue) {
+			ContValue ot = (ContValue) other;
+			return Objects.equal(value, ot.value) &&
+					Objects.equal(zeta, ot.zeta);
+		}
+		return false;
 	}
 }

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.core.base.Data;
 import com.datascience.service.Serialized;
 import com.google.gson.*;
 import org.apache.commons.lang.time.StopWatch;
@@ -76,7 +77,7 @@ public class JSONUtils {
 	} .getType();
 	public static final Type workerType = new TypeToken<com.datascience.gal.Worker>() {
 	} .getType();
-	public static final Type workerContValueType = new TypeToken<com.datascience.core.base.Worker>() {
+	public static final Type workerGenericType = new TypeToken<com.datascience.core.base.Worker>() {
 	} .getType();
 	public static final Type dawidSkeneType = new TypeToken<DawidSkene>() {
 	} .getType();
@@ -120,10 +121,12 @@ public class JSONUtils {
 		builder.registerTypeAdapter(workerType, com.datascience.gal.Worker.deserializer);
 		builder.registerTypeAdapter(dawidSkeneType, DawidSkeneDeserializer.deserializer);
 		
-		builder.registerTypeAdapter(workerContValueType, new GenericWorkerDeserializer());
-		builder.registerTypeAdapter(workerContValueType, new GenericWorkerSerializer());
+		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
+		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
 		
-		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
+		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
+		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
+		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
 
 		gson = builder.create();
 
