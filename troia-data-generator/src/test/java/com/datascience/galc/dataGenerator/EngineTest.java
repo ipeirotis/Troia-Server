@@ -1,13 +1,12 @@
 package com.datascience.galc.dataGenerator;
 
+import com.datascience.galc.dataGenerator.engine.Engine;
+import com.datascience.galc.dataGenerator.engine.EngineContext;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-
-import com.datascience.galc.dataGenerator.engine.Engine;
-import com.datascience.galc.dataGenerator.engine.EngineContext;
 
 public class EngineTest {
 	private EngineContext ctx;
