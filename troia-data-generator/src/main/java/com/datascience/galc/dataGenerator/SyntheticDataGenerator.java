@@ -8,11 +8,6 @@ import com.datascience.core.base.Worker;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.Utils;
 import com.datascience.galc.WorkerContResults;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Set;
 import org.apache.log4j.Logger;
 
 public class SyntheticDataGenerator {

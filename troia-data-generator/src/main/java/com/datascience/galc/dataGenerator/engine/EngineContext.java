@@ -2,7 +2,6 @@ package com.datascience.galc.dataGenerator.engine;
 
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import org.kohsuke.args4j.Option;
 
 public class EngineContext {
