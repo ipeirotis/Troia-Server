@@ -127,6 +127,7 @@ public class JSONUtils {
 		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
 		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
+		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
 
 		gson = builder.create();
 
