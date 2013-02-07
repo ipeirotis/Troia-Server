@@ -98,7 +98,10 @@ public class Data <T>{
 
 
 	public Set<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject){
-		return datums.get(lObject);
+		Set<AssignedLabel<T>> ret = datums.get(lObject);
+		if (ret != null)
+			return ret;
+		return new HashSet<AssignedLabel<T>>();
 	}
 
 	public Set<AssignedLabel<T>> getAssigns(){

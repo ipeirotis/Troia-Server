@@ -6,15 +6,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
-import com.datascience.core.base.Worker;
-import com.datascience.executor.ProjectCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
@@ -45,14 +39,14 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
 	@Path("objects/{oid}")
 	@GET
-	public Response getObject(@QueryParam("oid") String objectId){
+	public Response getObject(@PathParam("oid") String objectId){
 		GALCommandBase command = new ObjectCommands.GetObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
 	
 	@Path("objects/{oid}/assigns")
 	@GET
-	public Response getObjectAssigns(@QueryParam("oid") String objectId){
+	public Response getObjectAssigns(@PathParam("oid") String objectId){
 		GALCommandBase command = new ObjectCommands.GetObjectAssigns(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
@@ -73,7 +67,7 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
 	@Path("goldObjects/{oid}")
 	@GET
-	public Response getGoldObject(@QueryParam("oid") String objectId){
+	public Response getGoldObject(@PathParam("oid") String objectId){
 		GALCommandBase command = new GoldObjectsCommands.GetGoldObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
