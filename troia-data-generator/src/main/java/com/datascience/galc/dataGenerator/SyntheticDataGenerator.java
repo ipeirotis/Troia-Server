@@ -11,8 +11,6 @@ public class SyntheticDataGenerator {
 	public void execute() {
 		SyntheticData data = createSyntheticDataSet(false,"data/synthetic/synthetic-options.txt");
 		data.writeLabelsToFile("data/synthetic/assignedlabels.txt");
-		data.writeTrueWorkerDataToFile("data/synthetic/evaluationWorkers.txt");
-		data.writeTrueObjectDataToFile("data/synthetic/evaluationObjects.txt");
 		data.writeGoldObjectDataToFile("data/synthetic/goldObjects.txt");
 	}	
 	
