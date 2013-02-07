@@ -87,8 +87,8 @@ public class SyntheticData extends Data<ContValue> {
 		for (LObject<ContValue> lo : getObjects()) {
 			if(i++ < g_gold_objects) {
 				//lo.setGoldLabel(new Label<ContValue>(new ContValue(lo.getGoldLabel().getValue(), dcr.getTrueZeta())));
-				ContValue cv = lo.getEvaluationLabel().getValue();
-				lo.setGoldLabel(new Label<ContValue>(new ContValue(cv.getValue(),cv.getZeta())));
+//				ContValue cv = lo.getEvaluationLabel().getValue();
+//				lo.setGoldLabel(new Label<ContValue>(new ContValue(cv.getValue(),cv.getZeta())));
 				// TODO: FIX
 				// d.setResults(dr);
 			}
