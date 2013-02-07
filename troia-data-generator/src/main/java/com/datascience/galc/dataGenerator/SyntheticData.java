@@ -2,8 +2,6 @@ package com.datascience.galc.dataGenerator;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.WorkerContResults;
 import java.util.HashSet;
@@ -14,20 +12,18 @@ public class SyntheticData extends Data<ContValue> {
 	private Set<WorkerContResults> workerContResults = new HashSet<WorkerContResults>();
 	private Set<DatumContResults> objectContResults = new HashSet<DatumContResults>();
 
-	@Override
-	public void addWorker(Worker<ContValue> worker) {
-		super.addWorker(worker);
-		workerContResults.add(new WorkerContResults(worker));
+	public void addWorkerContResults(WorkerContResults wcr) {
+		addWorker(wcr.getWorker());
+		workerContResults.add(wcr);
 	}
 	
 	public Set<WorkerContResults> getWorkerContResults() {
 		return workerContResults;
 	}
 	
-	@Override
-	public void addObject(LObject<ContValue> lObject) {
-		super.addObject(lObject);
-		objectContResults.add(new DatumContResults(lObject));
+	public void addObjectContResults(DatumContResults dcr) {
+		super.addObject(dcr.getObject());
+		objectContResults.add(dcr);
 	}
 	
 	public Set<DatumContResults> getObjectContResults() {

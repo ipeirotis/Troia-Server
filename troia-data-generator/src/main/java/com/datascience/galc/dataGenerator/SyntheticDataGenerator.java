@@ -55,6 +55,7 @@ public class SyntheticDataGenerator {
 
 	
 	public SyntheticData generate() {
+		
 		SyntheticData data = new SyntheticData();
 		
 		// Generate objects (real values x_i).
@@ -84,7 +85,6 @@ public class SyntheticDataGenerator {
 			wcr.setTrueSigma(sigmaGenerator.nextData());
 			wcr.setTrueRho(rhoGenerator.nextData());
 			data.addWorker(w);
-			//workerContResults.add(wcr);
 		}
 		
 		// Generate assigned labels (observation values y_ij).

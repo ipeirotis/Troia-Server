@@ -7,7 +7,7 @@ public class SyntheticDataGeneratorTest {
 
 	@Test
 	public void testGeneratedSyntheticData() {
-		final SyntheticDataGenerator dataGenerator = new SyntheticDataGenerator();
+		new SyntheticDataGenerator().generate();
 	}
 
 }
