@@ -60,8 +60,7 @@ public class SyntheticDataGenerator {
 			Double v = datumGenerator.nextData();
 			Double z = (v-this.dataMu)/this.dataSigma;
 			lo.setEvaluationLabel(new Label<ContValue>(new ContValue(v, z)));
-			data.addObject(lo);
-			//objectContResults.add(dcr);
+			data.addObjectContResults(dcr);
 		}
 		
 		// First n objects mark as gold.
@@ -79,7 +78,7 @@ public class SyntheticDataGenerator {
 			wcr.setTrueMu(muGenerator.nextData());
 			wcr.setTrueSigma(sigmaGenerator.nextData());
 			wcr.setTrueRho(rhoGenerator.nextData());
-			data.addWorker(w);
+			data.addWorkerContResults(wcr);
 		}
 		
 		// Generate assigned labels (observation values y_ij).

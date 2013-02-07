@@ -1,10 +1,9 @@
 package com.datascience.galc;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-
 import com.datascience.galc.engine.Engine;
 import com.datascience.galc.engine.EngineContext;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 public class Main {
 	public static void main(String[] args) {

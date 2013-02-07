@@ -1,8 +1,5 @@
-package com.datascience.galc.dataGenerator.engine;
+package com.datascience.galc.dataGenerator;
 
-import com.datascience.galc.dataGenerator.SyntheticData;
-import com.datascience.galc.dataGenerator.SyntheticDataGenerator;
-import com.datascience.galc.dataGenerator.SyntheticDataWriter;
 import java.io.IOException;
 
 public class Engine {

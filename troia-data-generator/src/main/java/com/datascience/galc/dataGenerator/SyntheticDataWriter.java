@@ -19,7 +19,7 @@ public class SyntheticDataWriter {
 		this.data = data;
 	}
 	
-	public void writeToFile(SyntheticData data) throws IOException {
+	public void writeToFile() throws IOException {
 		writeAssignedLabelsToFile(data.getAssigns(), null);
 		writeTrueWorkerDataToFile(data.getWorkerContResults(), null);
 		writeTrueObjectDataToFile(data.getObjects(), null);

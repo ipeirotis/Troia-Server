@@ -1,4 +1,4 @@
-package com.datascience.galc.dataGenerator.engine;
+package com.datascience.galc.dataGenerator;
 
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;

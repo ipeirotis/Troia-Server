@@ -1,7 +1,5 @@
 package com.datascience.galc.dataGenerator;
 
-import com.datascience.galc.dataGenerator.engine.Engine;
-import com.datascience.galc.dataGenerator.engine.EngineContext;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
