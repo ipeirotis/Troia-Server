@@ -26,7 +26,7 @@ public class ContinuousIpeirotis {
 		workersResults = new HashMap<Worker<ContValue>, WorkerContResults>();
 
 		initWorkers();
-		estimateObjectZetas();
+		initObjectZetas();
 	}
 
 	protected Double getLabel(AssignedLabel<ContValue> assign){
@@ -83,10 +83,6 @@ public class ContinuousIpeirotis {
 		return logLikelihood;
 	}
 
-	protected double estimate(){
-		return estimate(0.00001, 50);
-	}
-
 	private double getLogLikelihood() {
 
 		double result = 0d;
@@ -102,6 +98,14 @@ public class ContinuousIpeirotis {
 		}
 		return result;
 
+	}
+	
+	private void initObjectZetas() {
+		for (LObject<ContValue> obj : data.getObjects()){
+			DatumContResults dr = new DatumContResults(obj);
+			objectsResults.put(obj, dr);
+		}
+		estimateObjectZetas();
 	}
 
 	private Double estimateObjectZetas() {
@@ -152,7 +156,6 @@ public class ContinuousIpeirotis {
 			diff += Math.abs(dr.getEst_zeta() - oldZeta);
 		}
 		return diff;
-
 	}
 
 	private HashMap<LObject<ContValue>, Double> estimateObjectZetas(Worker<ContValue> workerToIgnore) {

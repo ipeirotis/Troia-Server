@@ -1,16 +1,15 @@
 package com.datascience.galc;
 
 
-import com.datascience.core.base.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Label;
+import com.datascience.core.base.Worker;
 
 
 public class EmpiricalData extends Data<ContValue> {
-
-	private Map<String, DatumContResults> objectsMap = new HashMap<String, DatumContResults>();
-	private Map<String, WorkerContResults>	workersMap = new HashMap<String, WorkerContResults>();
 
 	public EmpiricalData() {
 		super();

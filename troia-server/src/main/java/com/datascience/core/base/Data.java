@@ -29,8 +29,10 @@ public class Data <T>{
 	}
 
 	public void addWorker(Worker<T> worker){
-		workers.add(worker);
-		mapWorkers.put(worker.getName(), worker);
+		if (!workers.contains(worker)){
+			workers.add(worker);
+			mapWorkers.put(worker.getName(), worker);
+		}
 	}
 
 	public Worker<T> getWorker(String workerId){
@@ -50,9 +52,9 @@ public class Data <T>{
 	}
 
 	public void addObject(LObject<T> object){
-		objects.add(object);
-		mapObjects.put(object.getName(), object);
 		if (!datums.containsKey(object)) {
+			objects.add(object);
+			mapObjects.put(object.getName(), object);
 			datums.put(object, new HashSet<AssignedLabel<T>>());
 		}
 	}
@@ -105,10 +107,8 @@ public class Data <T>{
 		addObject(object);
 		datums.get(object).add(assign);
 		Worker<T> worker = assign.getWorker();
-		if (!workers.contains(worker)) {
-			workers.add(worker);
-		}
-		assign.getWorker().addAssign(assign);
+		addWorker(worker);
+		worker.addAssign(assign);
 	}
 
 

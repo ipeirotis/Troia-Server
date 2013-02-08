@@ -4,7 +4,7 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 
 public class DatumContResults {
-
+	
 	private Double							est_value;
 	private Double							est_zeta;
 
@@ -74,5 +74,4 @@ public class DatumContResults {
 
 		this.distributionSigma = distributionSigma;
 	}	
-	
 }
