@@ -9,12 +9,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-	<parent>
-		<groupId>com.ipeirotis</groupId>
-		<artifactId>project-troia</artifactId>
-		<version>0.8</version>
-	</parent>
-	<name>Troia Test Data Generator</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -36,10 +30,9 @@
 			<groupId>com.ipeirotis</groupId>
 			<artifactId>troia-server</artifactId>
 			<version>0.8</version>
-		</dependency>
+		</dependency>	
 	</dependencies>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -79,7 +72,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>main.com.troiaTester.TroiaDataGenerator</mainClass>
+                                    <mainClass>com.datascience.galc.dataGenerator.Main</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>

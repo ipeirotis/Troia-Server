@@ -4,11 +4,6 @@
  */
 package com.datascience.service;
 
-import com.datascience.core.Job;
-import com.datascience.core.storages.IJobStorage;
-import com.datascience.executor.CommandStatusesContainer;
-import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.gal.commands.DSCommandBase;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.PathParam;
@@ -16,6 +11,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import com.datascience.core.Job;
+import com.datascience.core.storages.IJobStorage;
+import com.datascience.executor.CommandStatusesContainer;
+import com.datascience.executor.ProjectCommand;
+import com.datascience.executor.ProjectCommandExecutor;
 
 /**
  *
@@ -49,7 +50,7 @@ public abstract class JobEntryBase<T> {
 		}
 	}
 	
-	protected Response buildResponseOnCommand(Job job, DSCommandBase command){
+	protected Response buildResponseOnCommand(Job job, ProjectCommand command){
 		RequestExecutorCommand rec = new RequestExecutorCommand(
 				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
 		executor.add(rec);
