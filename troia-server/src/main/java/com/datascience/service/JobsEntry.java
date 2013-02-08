@@ -32,7 +32,10 @@ public class JobsEntry extends AbstractJobsEntry{
 		if (job_old != null) {
 			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
 		}
-
+		
+		if (sCategories == null){
+			throw new IllegalArgumentException("You should provide categories list");
+		}
 		Collection<Category> categories = responser.getSerializer().parse(sCategories,
 			JSONUtils.categorySetType);
 		Job job = jobFactory.createJob(type, jid, categories);

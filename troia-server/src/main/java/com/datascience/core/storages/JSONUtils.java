@@ -14,13 +14,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.core.base.Data;
-import com.datascience.service.Serialized;
-import com.google.gson.*;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
-import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CategoryPair;
@@ -34,7 +31,12 @@ import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.MultinomialConfusionMatrix;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
-import com.datascience.gal.Worker;
+import com.datascience.service.Serialized;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 /**
