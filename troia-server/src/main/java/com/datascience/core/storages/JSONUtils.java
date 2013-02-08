@@ -14,9 +14,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.core.base.Data;
+import com.datascience.service.Serialized;
+import com.google.gson.*;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CategoryPair;
@@ -28,9 +32,9 @@ import com.datascience.gal.DawidSkeneDeserializer;
 import com.datascience.gal.MatrixValue;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.MultinomialConfusionMatrix;
+import com.datascience.galc.serialization.GenericWorkerDeserializer;
+import com.datascience.galc.serialization.GenericWorkerSerializer;
 import com.datascience.gal.Worker;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -71,7 +75,9 @@ public class JSONUtils {
 	} .getType();
 	public static final Type datumType = new TypeToken<Datum>() {
 	} .getType();
-	public static final Type workerType = new TypeToken<Worker>() {
+	public static final Type workerType = new TypeToken<com.datascience.gal.Worker>() {
+	} .getType();
+	public static final Type workerGenericType = new TypeToken<com.datascience.core.base.Worker>() {
 	} .getType();
 	public static final Type dawidSkeneType = new TypeToken<DawidSkene>() {
 	} .getType();
@@ -87,7 +93,7 @@ public class JSONUtils {
 	} .getType();
 	public static final Type stringDatumMapType = new TypeToken<Map<String, Datum>>() {
 	} .getType();
-	public static final Type strinWorkerMapType = new TypeToken<Map<String, Worker>>() {
+	public static final Type strinWorkerMapType = new TypeToken<Map<String, com.datascience.gal.Worker>>() {
 	} .getType();
 	public static final Type stringStringMapType = new TypeToken<Map<String, String>>() {
 	} .getType();
@@ -112,8 +118,16 @@ public class JSONUtils {
 		builder.registerTypeAdapter(datumType, Datum.serializer);
 		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
 		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);
-		builder.registerTypeAdapter(workerType, Worker.deserializer);
+		builder.registerTypeAdapter(workerType, com.datascience.gal.Worker.deserializer);
 		builder.registerTypeAdapter(dawidSkeneType, DawidSkeneDeserializer.deserializer);
+		
+		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
+		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
+		
+		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
+		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
+		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
+		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
 
 		gson = builder.create();
 
@@ -134,5 +148,12 @@ public class JSONUtils {
 		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (stopwatch.getTime() / 1000.) +
 					"s len: " + ret.length() + " size: " + heapSize);
 		return ret;
+	}
+
+	public static class SerializedSerializer  implements JsonSerializer<Serialized> {
+		public JsonElement serialize(Serialized src, Type typeOfSrc, JsonSerializationContext context) {
+			// If we use the same instance of serializer everywhere than this should be safe
+			return (JsonElement) src.getObject();
+		}
 	}
 }
