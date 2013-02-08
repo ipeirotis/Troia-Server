@@ -178,7 +178,9 @@ class ReportGenerator {
 			LObject<ContValue> d = dr.getObject();
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);
-			//sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t" + dr.getTrueValue() + "\t" + dr.getTrueZeta());
+			sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t"); 
+			sb.append(d.getEvaluationLabel() != null ? d.getEvaluationLabel().getValue().getValue() : "null" + "\t"); 
+			sb.append(d.getEvaluationLabel() != null ? d.getEvaluationLabel().getValue().getZeta() : "null");
 		  sb.append("\n");
 			
 		}
