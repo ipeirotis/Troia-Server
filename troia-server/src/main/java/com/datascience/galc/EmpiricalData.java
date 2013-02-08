@@ -1,19 +1,16 @@
 package com.datascience.galc;
 
 
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Data;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
-import com.datascience.core.base.Worker;
+import com.datascience.core.base.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class EmpiricalData extends Data<Double> {
+public class EmpiricalData extends Data<ContValue> {
 
-	private Map<String, LObject<Double>> objectsMap = new HashMap<String, LObject<Double>>();
-	private Map<String, Worker<Double>>	workersMap = new HashMap<String, Worker<Double>>();
+	private Map<String, DatumContResults> objectsMap = new HashMap<String, DatumContResults>();
+	private Map<String, WorkerContResults>	workersMap = new HashMap<String, WorkerContResults>();
 
 	public EmpiricalData() {
 		super();
@@ -33,27 +30,12 @@ public class EmpiricalData extends Data<Double> {
 			String objectname = entries[1];
 			Double value = Double.parseDouble(entries[2]);
 
-			LObject<Double> lObject = new LObject<Double>(objectname);
-			Label<Double> label = new Label<Double>(value);
+			LObject<ContValue> lObject = getOrCreateObject(objectname);
+			Label<ContValue> label = new Label<ContValue>(new ContValue(value));
 
-			Worker<Double> w = this.workersMap.get(workername);
-			if (w == null) {
-				w = new Worker<Double>(workername);
-				this.workers.add(w);
-				this.workersMap.put(workername, w);
-			}
-			AssignedLabel<Double> al = new AssignedLabel<Double>(w, lObject, label);
-			w.addAssign(al);
-
-			LObject d = this.objectsMap.get(objectname);
-			if (d == null) {
-				d = new LObject<Double>(objectname);
-				this.objects.add(d);
-				this.objectsMap.put(objectname,d);
-			}
-			assigns.add(al);
-			// TODO: FIX
-			// datums.put(d, assigns);
+			Worker<ContValue> worker = getOrCreateWorker(workername);
+			AssignedLabel<ContValue> al = new AssignedLabel<ContValue>(worker, lObject, label);
+			addAssign(al);
 		}
 	}
 
@@ -73,16 +55,9 @@ public class EmpiricalData extends Data<Double> {
 			Double correctValue = Double.parseDouble(entries[1]);
 			Double correctZeta = Double.parseDouble(entries[2]);
 
-			LObject d = this.objectsMap.get(objectname);
-			if (d == null) {
-				d = new LObject<Double>(objectname);
-				this.objects.add(d);
-				this.objectsMap.put(objectname,d);
-			}
-			d.setGoldLabel(new Label(correctValue));
-			// TODO: FIX
-			// d.getResults().setGoldZeta(correctZeta);
-
+			LObject<ContValue> d = getOrCreateObject(objectname);
+			d.setGoldLabel(new Label<ContValue>(new ContValue(correctValue, correctZeta)));
+			addGoldObject(d);
 		}
 	}
 
@@ -101,15 +76,8 @@ public class EmpiricalData extends Data<Double> {
 			Double mu = Double.parseDouble(entries[2]);
 			Double sigma = Double.parseDouble(entries[3]);
 
-			Worker<Double> w = this.workersMap.get(workername);
-			if (w == null) {
-				w = new Worker<Double>(workername);
-				this.workers.add(w);
-				this.workersMap.put(workername,w);
-			}
-			// TODO: FIX
-			// WorkerResults wr = w.getResults()
-			WorkerContResults wr = new WorkerContResults(null);
+			Worker<ContValue> w = getOrCreateWorker(workername);
+			WorkerContResults wr = new WorkerContResults(w);
 			wr.setTrueMu(mu);
 			wr.setTrueSigma(sigma);
 			wr.setTrueRho(rho);
@@ -130,16 +98,9 @@ public class EmpiricalData extends Data<Double> {
 			Double value = Double.parseDouble(entries[1]);
 			Double zeta = Double.parseDouble(entries[2]);
 
-
-			LObject<Double> d = this.objectsMap.get(objectname);
-			if (d == null) {
-				d = new LObject<Double>(objectname);
-				this.objects.add(d);
-				this.objectsMap.put(objectname,d);
-			}
-			// TODO: FIX
-			// d.getResults().setTrueValue(value);
-			// d.getResults().setTrueZeta(zeta);
+			LObject<ContValue> d = getOrCreateObject(objectname);
+			d.setEvaluationLabel(new Label<ContValue>(new ContValue(value, zeta)));
+			addEvaluationObject(d);
 		}
 	}
 }

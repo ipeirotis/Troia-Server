@@ -240,8 +240,7 @@ public class Engine {
 		if(ctx.hasCorrectFile()) {
 			edata.loadGoldLabelsFile(ctx.getCorrectFile());
 		}
-//		data = edata; TODO: FIX THIS
-		data = null;
+		data = edata;
 
 		ContinuousIpeirotis ip = new ContinuousIpeirotis();
 		ip.setData(data);
