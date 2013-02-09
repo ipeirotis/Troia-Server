@@ -18,23 +18,18 @@ public class EngineTest {
 	}
 
 	private void executeOn(String unparsedArgs) throws Exception {
-//		parseArgs(unparsedArgs);
 
      try {
-            // parse the arguments.
     	 	parseArgs(unparsedArgs);
-
         } catch( CmdLineException e ) {
-            // if there's a problem in the command line,
-            // you'll get this exception. this will report
-            // an error message.
             System.err.println(e.getMessage());
+
+            //TODO: main class to work with args4g
             System.err.println("java SampleMain [options...] arguments...");
-            // print the list of available options
+
             parser.printUsage(System.err);
             System.err.println();
 
-            // print option sample. This is useful some time
             System.err.println("  Example: java SampleMain"+parser.printExample(ALL));
 
     		System.err.println();
@@ -50,15 +45,10 @@ public class EngineTest {
 
 		parser.parseArgument(args);
 	}
-	
-	
-
-
+		
 	@Test
 	public void testBasicExecution() throws Exception {
 		executeOn("--labels data/synthetic/assignedlabels.txt --evalObjects data/synthetic/evaluationObjects.txt --evalWorkers data/synthetic/evaluationWorkers.txt --gold data/synthetic/goldObjects.txt --synthetic data/synthetic/synthetic-options.txt");
 	}
-
-	
 
 }
