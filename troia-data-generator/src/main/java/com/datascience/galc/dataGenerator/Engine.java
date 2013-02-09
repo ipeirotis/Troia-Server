@@ -1,6 +1,8 @@
 package com.datascience.galc.dataGenerator;
 
 import java.io.IOException;
+
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 
@@ -14,6 +16,9 @@ public class Engine {
 	}
 	
 	public void execute() throws IOException {
+		
+		//TODO: it will be integrated with troia-server 
+		if(ctx.isVerbose())logger.setLevel(Level.ERROR);
 
 		SyntheticDataGenerator dataGenerator = new SyntheticDataGenerator(ctx.getSyntheticOptionsFile());
 		SyntheticData data = dataGenerator.generate();
