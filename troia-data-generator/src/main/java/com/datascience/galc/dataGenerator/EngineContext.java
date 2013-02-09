@@ -9,25 +9,25 @@ public class EngineContext {
 	@Option(
 		name = "--labels",
 		metaVar = "<labelsfile>",
-		usage = "A tab-separated text file. Each line has the form <workerid><tab><objectid><tab><assigned_label> and records the label that the given worker gave to that object")
+		usage = "A filename for labels.")
 	private String labelsfile = "";
 
 	@Option(
 		name = "--gold",
 		metaVar = "<goldfile>",
-		usage = "A tab-separated text file. Each line has the form <objectid><tab><assigned_label> and records the correct labels for whatever objects we have them.")
+		usage = "A filename for gold objects.")
 	private String goldFile = "";
 
 	@Option(
 			name = "--evalObjects",
 			metaVar = "<evalobjectsfile>",
-			usage = "")
+			usage = "A filename for eval objects")
 		private String evalobjectsfile = "";
 
 		@Option(
 			name = "--evalWorkers",
 			metaVar = "<evalworkersfile>",
-			usage = "")
+			usage = "A filename for eval workers")
 		private String evalworkersfile = "";
 	
 	@Option(
