@@ -20,8 +20,10 @@ public class EngineTest {
 	private void executeOn(String unparsedArgs) throws Exception {
 
      try {
-    	 	parseArgs(unparsedArgs);
-        } catch( CmdLineException e ) {
+
+    	 parseArgs(unparsedArgs);
+
+     } catch( CmdLineException e ) {
             System.err.println(e.getMessage());
 
             //TODO: main class to work with args4g
