@@ -9,39 +9,33 @@ public class EngineContext {
 	@Option(
 		name = "--labels",
 		metaVar = "<labelsfile>",
-		required = true,
-		usage = "A tab-separated text file. Each line has the form <workerid><tab><objectid><tab><assigned_label> and records the label that the given worker gave to that object")
+		usage = "A filename for labels.")
 	private String labelsfile = "";
 
 	@Option(
 		name = "--gold",
 		metaVar = "<goldfile>",
-		usage = "A tab-separated text file. Each line has the form <objectid><tab><assigned_label> and records the correct labels for whatever objects we have them.")
+		usage = "A filename for gold objects.")
 	private String goldFile = "";
 
 	@Option(
 			name = "--evalObjects",
 			metaVar = "<evalobjectsfile>",
-			usage = "")
+			usage = "A filename for eval objects")
 		private String evalobjectsfile = "";
 
 		@Option(
 			name = "--evalWorkers",
 			metaVar = "<evalworkersfile>",
-			usage = "")
+			usage = "A filename for eval workers")
 		private String evalworkersfile = "";
 	
 	@Option(
 		name = "--synthetic",
+		required = true,
 		metaVar = "<syntheticoptionsfile>",
 		usage = "A tab-separated text file. Each line has the form <attribute><tab><value> and records the options for the creation of new synthetic data.")
-	private String syntheticOptionsFile = "";
-
-	@Option(
-		name = "--output",
-		metaVar = "<outputfolder>",
-		usage = "An Evaluation Report File")
-	private String outputfolder = "results";
+	private String syntheticoptionsfile = "";
 
 	@Option(
 		name = "--verbose",
@@ -50,6 +44,10 @@ public class EngineContext {
 	private boolean verbose;
 
 	
+	public boolean hasLabelFile() {
+		return isNotBlank(labelsfile);
+	}
+
 	public String getLabelsFile() {
 		return labelsfile;
 	}
@@ -87,19 +85,11 @@ public class EngineContext {
 	}
 
 	public boolean isSyntheticDataSet() {
-		return isNotBlank(syntheticOptionsFile);
+		return isNotBlank(syntheticoptionsfile);
 	}
 
 	public String getSyntheticOptionsFile() {
-		return syntheticOptionsFile;
-	}
-
-	public String getOutputFolder() {
-		return outputfolder;
-	}
-
-	public void setOutputFolder(String s) {
-		this.outputfolder = s;
+		return syntheticoptionsfile;
 	}
 
 	public boolean isVerbose() {
