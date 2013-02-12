@@ -241,12 +241,4 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getProject(), new WorkerEstimator(lpdcc));
 		return buildResponseOnCommand(job, command);
 	}
-	
-	@Path("prediction/workersScore")
-	@GET
-	public Response getWorkersScore(){
-		DSCommandBase command = new WorkerCommands.GetWorkersScores(job.getProject(), new WorkerEstimator(null));
-		return buildResponseOnCommand(job, command);
-	}
-	
 }

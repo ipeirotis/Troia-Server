@@ -3,15 +3,14 @@ package com.datascience.gal.commands;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.Datum;
 import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
 import com.datascience.gal.WorkerValue;
-import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.decision.WorkerQualityCalculator;
 
 /**
@@ -20,7 +19,7 @@ import com.datascience.gal.decision.WorkerQualityCalculator;
  */
 public class WorkerCommands {
 	
-	static public class GetWorker extends DSCommandBase<Object> {
+	static public class GetWorker extends DSCommandBase<Map<String, Object>> {
 
 		private String workerId;
 		
@@ -31,11 +30,13 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(ads.getWorker(workerId));
-		}
+			Worker w = ads.getWorker(workerId);
+			setResult(w.getInfo(ads.getObjects(), ads.getCategories().keySet()));
+		}	
 	}
 	
-	static public class GetWorkers extends DSCommandBase<Collection<Worker>> {
+	
+	static public class GetWorkers extends DSCommandBase<Map<String, Map<String, Object>>> {
 		
 		public GetWorkers(AbstractDawidSkene ads){
 			super(ads, false);
@@ -43,37 +44,21 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(ads.getWorkers());
-		}
-	}
-	
-	static public class GetWorkersScores extends DSCommandBase<Collection<Map<String, Object>>> {
-		private AbstractDawidSkene ds;
-		private WorkerEstimator we;
-		
-		public GetWorkersScores(AbstractDawidSkene ads, WorkerEstimator we){
-			super(ads, false);
-			this.we = we;
-			this.ds = ads;
-		}
-		
-		@Override
-		protected void realExecute() {
-			Collection<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
-			for (Worker w : ds.getWorkers()){
-				result.add(we.getScore(ds, w));
+			Map<String, Map<String, Object>> workerInfos = new HashMap<String, Map<String,Object>>();
+			Map<String, Datum> objects = ads.getObjects();
+			Collection<String> categories = ads.getCategories().keySet();
+			for (Worker w : ads.getWorkers()){
+				workerInfos.put(w.getName(), w.getInfo(objects, categories));
 			}
-			setResult(result);
+			setResult(workerInfos);
 		}
 	}
 	
 	static public class GetWorkersQuality extends DSCommandBase<Collection<WorkerValue>> {
-		private AbstractDawidSkene ds;
 		private WorkerQualityCalculator wqc;
 		
 		public GetWorkersQuality(AbstractDawidSkene ads, WorkerQualityCalculator wqc){
 			super(ads, false);
-			this.ds = ads;
 			this.wqc = wqc;
 		}
 		
@@ -81,8 +66,8 @@ public class WorkerCommands {
 		protected void realExecute() {
 			Map<String, Double> result = new HashMap<String, Double>();
 			Collection<WorkerValue> wq = new ArrayList<WorkerValue>();
-			for (Worker w : ds.getWorkers()){
-				result.put(w.getName(), wqc.getCost(ds, w));
+			for (Worker w : ads.getWorkers()){
+				result.put(w.getName(), wqc.getCost(ads, w));
 			}
 			for (Entry<String, Double> e : Quality.fromCosts(ads, result).entrySet()){
 				wq.add(new WorkerValue(e.getKey(), e.getValue()));
