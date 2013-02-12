@@ -3,11 +3,12 @@ package com.datascience.galc;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
-import org.apache.log4j.Logger;
 
 public class WorkerContResults {
 
@@ -111,18 +112,11 @@ public class WorkerContResults {
 		this.true_rho = rho;
 	}
 
-/*************************************************************/
-	/**
-	 * @return the est_rho
-	 */
 	public Double getEst_rho() {
 
 		return est_rho;
 	}
 
-	/**
-	 * @param est_rho the est_rho to set
-	 */
 	public void setEst_rho(Double est_rho) {
 
 		if (est_rho > 0.9999)
@@ -133,33 +127,21 @@ public class WorkerContResults {
 			this.est_rho = est_rho;
 	}
 
-	/**
-	 * @return the est_mu
-	 */
 	public Double getEst_mu() {
 
 		return est_mu;
 	}
 
-	/**
-	 * @param est_mu the est_mu to set
-	 */
 	public void setEst_mu(Double est_mu) {
 
 		this.est_mu = est_mu;
 	}
 
-	/**
-	 * @return the est_sigma
-	 */
 	public Double getEst_sigma() {
 
 		return est_sigma;
 	}
 
-	/**
-	 * @param est_sigma the est_sigma to set
-	 */
 	public void setEst_sigma(Double est_sigma) {
 
 		//double epsilon = 0.0001;
