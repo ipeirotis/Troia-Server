@@ -13,10 +13,12 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.storages.JSONUtils;
+import com.datascience.utils.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -154,7 +156,7 @@ public class Worker {
 		return eval_cm.getErrorRateBatch(from, to);
 	}
 	
-	public int countGoldTests(Map<String, Datum> objects){
+	private int countGoldTests(Map<String, Datum> objects){
 		int result = 0;
 		for (AssignedLabel al : labels) {
 			String name = al.getObjectName();
@@ -163,6 +165,26 @@ public class Worker {
 				result++;
 		}
 		return result;
+	}
+	
+	public Map<String, Object> getInfo(Map<String, Datum> objects, Collection<String> categories){
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("Number of annotations", getAssignedLabels().size());
+		ret.put("Gold tests", countGoldTests(objects));
+		LinkedList<Map<String, Object>> matrix = new LinkedList<Map<String, Object>>();
+		for (String correct_name : categories) {
+			for (String assigned_name : categories) {
+				Map<String, Object> val = new HashMap<String, Object>();
+				val.put("from", correct_name);
+				val.put("to", assigned_name);
+				double cm_entry = getErrorRateBatch(correct_name, assigned_name);
+				String s_cm_entry = Double.isNaN(cm_entry) ? "---" : Utils.round(100 * cm_entry, 3).toString();
+				val.put("value", s_cm_entry);
+				matrix.add(val);
+			}
+		}
+		ret.put("Confusion matrix", matrix);
+		return ret;
 	}
 
 	/*

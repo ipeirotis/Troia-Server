@@ -1,6 +1,7 @@
 package com.datascience.service;
 
 import com.datascience.core.storages.JSONUtils;
+import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 import java.lang.reflect.Type;
@@ -27,5 +28,10 @@ public class GSONSerializer implements ISerializer{
 		JsonReader jr = new JsonReader(new StringReader(input));
 		jr.setLenient(true);
 		return JSONUtils.gson.fromJson(jr, type);
+	}
+
+	@Override
+	public JsonElement getRaw(Object object){
+		return JSONUtils.gson.toJsonTree(object);
 	}
 }

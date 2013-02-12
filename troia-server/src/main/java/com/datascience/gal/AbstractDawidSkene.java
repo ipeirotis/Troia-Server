@@ -66,6 +66,10 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		this.categories = new HashMap<String, Category>();
 		double priorSum = 0.;
 		int priorCnt = 0;
+		
+		if (categories.size() < 2){
+			throw new IllegalArgumentException("There should be at least two categories");
+		}
 		for (Category c : categories) {
 			this.categories.put(c.getName(), c);
 			if (c.hasPrior()) {
@@ -84,8 +88,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			fixedPriors = true;
 		
 		//set cost matrix values if not provided
-		for (Category from : categories) {
-			for (Category to : categories) {
+		for (Category from : this.categories.values()) {
+			for (Category to : this.categories.values()) {
 				if (from.getCost(to.getName()) == null){
 					from.setCost(to.getName(), from.getName().equals(to.getName()) ? 0. : 1.);
 				}

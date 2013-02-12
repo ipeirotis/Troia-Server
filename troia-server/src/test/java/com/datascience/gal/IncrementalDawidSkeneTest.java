@@ -71,11 +71,12 @@ public class IncrementalDawidSkeneTest {
 		idList.add("id5");
 		String[] categoryNames = {"cat1", "cat2", "cat3", "cat4", "cat5"};
 
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			ArrayList<Category> categoryList = new ArrayList<Category>();
 			HashMap<String, Datum> objectMap = new HashMap<String, Datum>();
 			HashMap<String, Worker> workerMap = new HashMap<String, Worker>();
 			HashMap<String,Category> categoryMap = new HashMap<String, Category>();
+			
 			for (int j=i; j<testCount; j++) {
 				Category category = new Category(categoryNames[j]);
 				categoryList.add(category);
@@ -108,7 +109,7 @@ public class IncrementalDawidSkeneTest {
 	 */
 	@Test
 	public final void testInitializePriors() {
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			List<Category> localCategoryList = new ArrayList<Category>();
 
 			for (Category category: categoriesList.get(i)) {
@@ -132,7 +133,7 @@ public class IncrementalDawidSkeneTest {
 	 */
 	@Test
 	public final void testGetErrorRateForWorker() {
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			List<Category> localCategoryList = new ArrayList<Category>();
 			List<Category> globalCategoryList = categoriesList.get(i);
 			int size = globalCategoryList.size();
@@ -161,7 +162,7 @@ public class IncrementalDawidSkeneTest {
 	 */
 	@Test
 	public final void testGetObjectClassProbabilitiesStringString() {
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			List<Category> localCategoryList = new ArrayList<Category>();
 			List<Category> globalCategoryList = categoriesList.get(i);
 
@@ -269,7 +270,7 @@ public class IncrementalDawidSkeneTest {
 	 */
 	@Test
 	public final void testComputePriors() {
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			List<Category> globalCategoryList = categoriesList.get(i);
 
 			double priorDenominator = 0.15;
@@ -484,7 +485,7 @@ public class IncrementalDawidSkeneTest {
 	 */
 	@Test
 	public final void testEstimateGoldDatumAndWithoutObjectListAtAll() {
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			List<Category> localCategoryList = new ArrayList<Category>();
 			HashMap<String, Datum> objectMapEmpty = new HashMap<String, Datum>();;
 			HashMap<String, Datum> objectMapNotEmpty = new HashMap<String, Datum>();;
@@ -608,7 +609,7 @@ public class IncrementalDawidSkeneTest {
 	 */
 	@Test
 	public final void testGetWorkerPriors() {
-		for (int i=0; i<testCount; i++) {
+		for (int i=0; i<testCount-1; i++) {
 			IncrementalDawidSkene incrementalDawidSkene  = constructByDeserialization("id"+i,
 					objectsList.get(i), workersList.get(i), categoryMapList.get(i),
 					true, IncrementalDSMethod.ITERATELOCAL, 0.3);

@@ -316,12 +316,7 @@ public class DataGenerator {
 			System.out.println(">>>>>> " + c.getName() + " " + c.getPrior() + " " + c.getMisclassificationCosts());
 		}
 		
-		WorkerEstimator we = new WorkerEstimator(null);
-		Collection<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
-		for (Worker w : dawidSkene.getWorkers()){
-			result.add(we.getScore(dawidSkene, w));
-		}
-		return result;
+		return null;
 	}
 
 	public Data generateTestData(String requestId, int objectCount,

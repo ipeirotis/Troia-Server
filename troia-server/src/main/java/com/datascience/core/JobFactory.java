@@ -4,6 +4,8 @@ import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.IncrementalDawidSkene;
+import com.datascience.galc.ContinuousProject;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,5 +68,9 @@ public class JobFactory {
 		Creator creator = getCreator(type);
 		AbstractDawidSkene ads = creator.create(id, categories);
 		return new Job(ads, id);
+	}
+	
+	public Job createContinuousJob(String id){
+		return new Job(new ContinuousProject(), id);
 	}
 }
