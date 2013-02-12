@@ -1,12 +1,25 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.base.*;
-import com.google.gson.*;
-
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Label;
+import com.datascience.core.base.Worker;
+import com.datascience.galc.WorkerContResults;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * @Author: konrad
@@ -73,19 +86,6 @@ public class DataJSON {
 		}
 	}
 
-	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {
-
-		@Override
-		public JsonElement serialize(AssignedLabel<T> tAssignedLabel, Type type, JsonSerializationContext jsonSerializationContext) {
-//			JsonObject jo = new JsonObject();
-//			jo.add("worker", new JsonPrimitive(tAssignedLabel.getWorker().getName()));
-//			jo.add("object", new JsonPrimitive(tAssignedLabel.getLobject().getName()));
-//			jo.add("label", jsonSerializationContext.serialize(tAssignedLabel.getLabel()));
-//			return jo;
-			return jsonSerializationContext.serialize(new ShallowAssign<T>(tAssignedLabel));
-		}
-	}
-
 	public static class ShallowAssign<T>{
 		protected String worker;
 		protected String object;
@@ -95,6 +95,52 @@ public class DataJSON {
 			worker = assign.getWorker().getName();
 			object = assign.getLobject().getName();
 			label = assign.getLabel().getValue();
+		}
+	}
+
+	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {
+
+		@Override
+		public JsonElement serialize(AssignedLabel<T> tAssignedLabel, Type type, JsonSerializationContext jsonSerializationContext) {
+			return jsonSerializationContext.serialize(new ShallowAssign<T>(tAssignedLabel));
+		}
+	}
+
+	public static class WorkerContResultsSerializer implements JsonSerializer<WorkerContResults> {
+
+		private static final Gson serializer;
+		
+		static {
+			GsonBuilder builder = JSONUtils.getDefaultGsonBuilder();
+			builder.registerTypeAdapter(Worker.class, new SimpleWorkerSerializer());
+			builder.registerTypeAdapter(AssignedLabel.class, new AssignSerializer());
+			serializer = builder.create();
+		}
+		
+		@Override
+		public JsonElement serialize(WorkerContResults wcr, Type type, JsonSerializationContext jsonSerializationContext) {
+			return serializer.toJsonTree(wcr);
+		}
+	}
+	
+	private static class SimpleWorkerSerializer<T> implements JsonSerializer<Worker<T>> {
+		@Override
+		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
+			return new JsonPrimitive(w.getName());
+		}
+	}
+	
+	private static class SimpleObjectSerializer<T> implements JsonSerializer<LObject<T>> {
+		@Override
+		public JsonElement serialize(LObject<T> obj, Type type, JsonSerializationContext ctx) {
+			return new JsonPrimitive(obj.getName());
+		}
+	}
+	
+	public static class SimpleLabelSerializer<T> implements JsonSerializer<Label<T>> {
+		@Override
+		public JsonElement serialize(Label<T> label, Type type, JsonSerializationContext ctx) {
+			return ctx.serialize(label.getValue());
 		}
 	}
 }

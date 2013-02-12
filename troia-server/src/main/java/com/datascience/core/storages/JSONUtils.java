@@ -18,6 +18,7 @@ import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.base.Data;
+import com.datascience.core.base.Label;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CategoryPair;
@@ -29,6 +30,7 @@ import com.datascience.gal.DawidSkeneDeserializer;
 import com.datascience.gal.MatrixValue;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.MultinomialConfusionMatrix;
+import com.datascience.galc.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
 import com.datascience.service.Serialized;
@@ -81,6 +83,8 @@ public class JSONUtils {
 	} .getType();
 	public static final Type workerGenericType = new TypeToken<com.datascience.core.base.Worker>() {
 	} .getType();
+	public static final Type workerContResultsType = new TypeToken<WorkerContResults>() {
+	} .getType();
 	public static final Type dawidSkeneType = new TypeToken<DawidSkene>() {
 	} .getType();
 	public static final Type categoryPairType = new TypeToken<CategoryPair>() {
@@ -108,8 +112,7 @@ public class JSONUtils {
 
 	static {
 
-//		GsonBuilder builder = new GsonBuilder();
-		GsonBuilder builder = new GsonBuilder().serializeSpecialFloatingPointValues();
+		GsonBuilder builder = getDefaultGsonBuilder();
 
 		builder.registerTypeAdapter(assignedLabelType,AssignedLabel.deserializer);
 		builder.registerTypeAdapter(correctLabelType, CorrectLabel.deserializer);
@@ -130,7 +133,7 @@ public class JSONUtils {
 		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
 		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
-
+		builder.registerTypeAdapter(workerContResultsType, new DataJSON.WorkerContResultsSerializer());
 		gson = builder.create();
 
 	}
@@ -157,5 +160,9 @@ public class JSONUtils {
 			// If we use the same instance of serializer everywhere than this should be safe
 			return (JsonElement) src.getObject();
 		}
+	}
+	
+	public static GsonBuilder getDefaultGsonBuilder() {
+		return new GsonBuilder().serializeSpecialFloatingPointValues();
 	}
 }
