@@ -17,7 +17,7 @@ public class MemoryJobStorage implements IJobStorage{
 	}
 	
 	@Override
-	public Job get(String id) throws Exception {
+	public <T> Job<T> get(String id) throws Exception {
 		return storage.get(id);
 	}
 

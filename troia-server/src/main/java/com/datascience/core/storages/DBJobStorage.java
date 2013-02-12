@@ -1,18 +1,23 @@
 package com.datascience.core.storages;
 
+import java.lang.reflect.Type;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.service.ISerializer;
 
 /**
@@ -24,14 +29,26 @@ import com.datascience.service.ISerializer;
 public class DBJobStorage implements IJobStorage {
 
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
+	protected static Map<String, Type> typesMap = new HashMap<String, Type>();
+	static {
+		typesMap.put("CONTINUOUS", JSONUtils.continuousProject);
+		typesMap.put("NOMINAL", JSONUtils.dawidSkeneType);
+	}
+
+	protected static Map<Class, String> revTypesMap = new HashMap<Class, String>();
+	static {
+		revTypesMap.put(ContinuousProject.class, "CONTINUOUS");
+		revTypesMap.put(AbstractDawidSkene.class, "NOMINAL");
+	}
+
 	private int VALIDATION_TIMEOUT = 2;
 
 	private Connection connection;
 	private Properties connectionProperties;
 	private String databaseUrl;
 	
-	private static final String GET_DS = "SELECT data FROM projects WHERE id IN (?);";
-	private static final String INSERT_DS = "INSERT INTO projects (id, data) VALUES (?, ?) ON DUPLICATE KEY UPDATE data = (?);";
+	private static final String GET_DS = "SELECT kind, data FROM projects WHERE id IN (?);";
+	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data) VALUES (?, ?, ?);";
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 
 	private ISerializer serializer;
@@ -74,7 +91,7 @@ public class DBJobStorage implements IJobStorage {
 	}
 	
 	@Override
-	public Job get(String id) throws SQLException {
+	public <T> Job<T>  get(String id) throws SQLException {
 		ResultSet dsResults = null;
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
@@ -86,9 +103,10 @@ public class DBJobStorage implements IJobStorage {
 				return null;
 			}
 			String dsJson = dsResults.getString("data");
+			String kind = dsResults.getString("kind");
 			dsStatement.close();
-			AbstractDawidSkene ads = serializer.parse(dsJson, JSONUtils.dawidSkeneType);
-			return new Job(ads, id);
+			T project = serializer.parse(dsJson, typesMap.get(kind));
+			return new Job<T>(project, id);
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -107,7 +125,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
 			String dsString = serializer.serialize(job.getProject());
-			dsStatement.setString(2, dsString);
+			dsStatement.setString(2, revTypesMap.get(job.getProject().getClass()));
 			dsStatement.setString(3, dsString);
 
 			dsStatement.executeUpdate();
@@ -163,7 +181,7 @@ public class DBJobStorage implements IJobStorage {
 		try {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, jid);
-			dsStatement.setString(2, content);
+			dsStatement.setString(2, "TEST_KIND");
 			dsStatement.setString(3, content);
 			dsStatement.executeUpdate();
 			dsStatement.close();
