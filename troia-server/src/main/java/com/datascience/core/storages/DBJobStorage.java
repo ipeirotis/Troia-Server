@@ -123,6 +123,7 @@ public class DBJobStorage implements IJobStorage {
 
 	@Override
 	public void add(Job job) throws SQLException{
+		logger.info("Adding job to DB: " + job.getId());
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
 		try {
@@ -142,6 +143,7 @@ public class DBJobStorage implements IJobStorage {
 	
 	@Override
 	public void remove(Job job) throws Exception {
+		logger.info("Removing job from DB: " + job.getId());
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
 		try {
