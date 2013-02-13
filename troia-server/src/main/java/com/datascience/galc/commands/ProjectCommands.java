@@ -1,5 +1,7 @@
 package com.datascience.galc.commands;
 
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
 import java.util.Collection;
 
 import com.datascience.galc.ContinuousProject;
@@ -27,6 +29,18 @@ public class ProjectCommands {
 		protected void realExecute() {
 			project.compute(iterations, epsilon);
 			setResult("Computation done");
+		}
+	}
+	
+	static public class GetProjectInfo extends GALCommandBase<Data<ContValue>> {
+
+		public GetProjectInfo(ContinuousProject cp){
+			super(cp, false);
+		}
+		
+		@Override
+		protected void realExecute() {
+			setResult(project.getData());
 		}
 	}
 	

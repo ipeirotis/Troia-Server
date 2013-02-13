@@ -26,7 +26,7 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("")
 	@GET
 	public Response getJobInfo(){
-		GALCommandBase command = null; // TODO
+		GALCommandBase command = new ProjectCommands.GetProjectInfo(job.getProject());
 		return buildResponseOnCommand(job, command);
 	}
 
