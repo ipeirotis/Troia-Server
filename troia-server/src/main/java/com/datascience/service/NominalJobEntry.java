@@ -41,7 +41,11 @@ import com.datascience.gal.AbstractDawidSkene;
  */
 @Path("/jobs/{id}/")
 public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
-	
+
+	public NominalJobEntry(){
+		expectedClass = AbstractDawidSkene.class;
+	}
+
 	@Path("")
 	@GET
 	public Response getJobInfo(){

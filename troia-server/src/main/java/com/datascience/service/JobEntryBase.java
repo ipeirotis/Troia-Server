@@ -30,6 +30,7 @@ public abstract class JobEntryBase<T> {
 	@PathParam("id") String jid;
 	
 	Job<T> job;
+	protected Class expectedClass;
 	ResponseBuilder responser;
 	ProjectCommandExecutor executor;
 	ISerializer serializer;
@@ -44,10 +45,11 @@ public abstract class JobEntryBase<T> {
 		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
 		
-		job = jobStorage.get(jid);
-		if (job == null) {
-			throw new IllegalArgumentException("Job with ID " + jid + " does not exist");
+		Job tmp_job = jobStorage.get(jid);
+		if (tmp_job == null || !expectedClass.isAssignableFrom(tmp_job.getProject().getClass())) {
+			throw new IllegalArgumentException("Job with ID " + jid + " does not exist or is of different kind");
 		}
+		job = tmp_job;
 	}
 	
 	protected Response buildResponseOnCommand(Job job, ProjectCommand command){

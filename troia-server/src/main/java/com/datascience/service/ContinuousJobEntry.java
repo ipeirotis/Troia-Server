@@ -23,6 +23,10 @@ import com.datascience.galc.commands.WorkerCommands;
 @Path("/cjobs/{id}/")
 public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
+	public ContinuousJobEntry(){
+		expectedClass = ContinuousProject.class;
+	}
+
 	@Path("")
 	@GET
 	public Response getJobInfo(){
