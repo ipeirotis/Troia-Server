@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.DawidSkene;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
@@ -35,10 +35,14 @@ public class DBJobStorage implements IJobStorage {
 		typesMap.put("NOMINAL", JSONUtils.dawidSkeneType);
 	}
 
-	protected static Map<Class, String> revTypesMap = new HashMap<Class, String>();
-	static {
-		revTypesMap.put(ContinuousProject.class, "CONTINUOUS");
-		revTypesMap.put(AbstractDawidSkene.class, "NOMINAL");
+	protected <T> String getKind(T object) {
+		if (object instanceof ContinuousProject){
+			return "CONTINUOUS";
+		}
+		if (object instanceof DawidSkene){
+			return "NOMINAL";
+		}
+		throw new IllegalArgumentException("Unknown job kind for class: " + object.getClass());
 	}
 
 	private int VALIDATION_TIMEOUT = 2;
@@ -125,7 +129,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
 			String dsString = serializer.serialize(job.getProject());
-			dsStatement.setString(2, revTypesMap.get(job.getProject().getClass()));
+			dsStatement.setString(2, getKind(job.getProject()));
 			dsStatement.setString(3, dsString);
 
 			dsStatement.executeUpdate();
