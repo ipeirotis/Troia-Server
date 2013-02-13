@@ -19,7 +19,7 @@ public class JobStorageUsingExecutor implements IJobStorage{
 	}
 	
 	@Override
-	public Job get(String id) throws Exception {
+	public <T> Job<T> get(String id) throws Exception {
 		// I think we don't need to sync it
 		return internalStorage.get(id);
 	}

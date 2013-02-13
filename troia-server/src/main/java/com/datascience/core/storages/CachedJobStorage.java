@@ -59,7 +59,7 @@ public class CachedJobStorage implements IJobStorage {
 	}
 	
 	@Override
-	public Job get(String id) throws Exception {
+	public <T> Job<T> get(String id) throws Exception {
 		try {
 			return cache.get(id).get();
 		} catch (ExecutionException ex){

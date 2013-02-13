@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.galc.ContinuousProject;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
@@ -86,6 +87,8 @@ public class JSONUtils {
 	public static final Type workerContResultsType = new TypeToken<WorkerContResults>() {
 	} .getType();
 	public static final Type dawidSkeneType = new TypeToken<DawidSkene>() {
+	} .getType();
+	public static final Type continuousProject = new TypeToken<ContinuousProject>() {
 	} .getType();
 	public static final Type categoryPairType = new TypeToken<CategoryPair>() {
 	} .getType();
