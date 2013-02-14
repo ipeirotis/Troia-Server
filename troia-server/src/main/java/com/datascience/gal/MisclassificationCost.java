@@ -11,7 +11,6 @@ package com.datascience.gal;
 
 import java.lang.reflect.Type;
 
-import com.datascience.core.storages.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -93,11 +92,6 @@ public class MisclassificationCost {
 		} else if (!categoryTo.equals(other.categoryTo))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return JSONUtils.toJson(this);
 	}
 
 	public static class MisclassificationCostDeserializer implements

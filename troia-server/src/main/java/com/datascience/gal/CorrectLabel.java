@@ -11,7 +11,6 @@ package com.datascience.gal;
 
 import java.lang.reflect.Type;
 
-import com.datascience.core.storages.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -70,11 +69,6 @@ public class CorrectLabel {
 		CorrectLabel other = (CorrectLabel) obj;
 		return Objects.equal(correctCategory, other.correctCategory) &&
 			   Objects.equal(objectName, other.objectName);
-	}
-
-	@Override
-	public String toString() {
-		return JSONUtils.gson.toJson(this);
 	}
 
 	public static class CorrectLabelDeserializer implements

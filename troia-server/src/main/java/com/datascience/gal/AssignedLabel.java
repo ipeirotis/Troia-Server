@@ -11,7 +11,6 @@ package com.datascience.gal;
 
 import java.lang.reflect.Type;
 
-import com.datascience.core.storages.JSONUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -93,11 +92,6 @@ public class AssignedLabel {
 		this.workerName = w;
 		this.objectName = d;
 		this.categoryName = c;
-	}
-
-	@Override
-	public String toString() {
-		return JSONUtils.gson.toJson(this);
 	}
 
 	public static class AssignedLabelDeserializer implements
