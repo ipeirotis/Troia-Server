@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import com.datascience.core.storages.JSONUtils;
 import org.junit.Test;
 
 import com.datascience.gal.BatchDawidSkene.BatchDawidSkeneDeserializer;
@@ -49,7 +50,7 @@ public class BatchDawidSkeneTest {
 		BatchDawidSkene ds = new BatchDawidSkene("id",categories);
 		ds.addAssignedLabel(new AssignedLabel("worker","object1","category1"));
 		assertEquals(ds.getNumberOfObjects(),1);
-		String j1 = ds.toString();
+		String j1 = JSONUtils.getOldGson().toJson(ds);
 		
 		//add 3 unassigned objects
 		ArrayList<String> unassignedObjects = new ArrayList<String>();
@@ -59,7 +60,7 @@ public class BatchDawidSkeneTest {
 		ds.addObjects(unassignedObjects);
 		assertEquals(ds.getNumberOfObjects(), 1);
 		assertEquals(ds.getNumberOfUnassignedObjects(), 3);
-		String j2 = ds.toString();
+		String j2 = JSONUtils.getOldGson().toJson(ds);
 		
 		//check serialization
 		assertNotSame(j1, j2);
@@ -67,7 +68,7 @@ public class BatchDawidSkeneTest {
 		//check deserialization
 		BatchDawidSkeneDeserializer dsd = new BatchDawidSkeneDeserializer();
 		JsonParser jp = new JsonParser();
-		BatchDawidSkene dds = (BatchDawidSkene)dsd.deserialize(jp.parse(j2), null, null);
+		BatchDawidSkene dds = (BatchDawidSkene) JSONUtils.getOldGson().fromJson(j2, DawidSkene.class);
 		assertEquals(dds.getNumberOfUnassignedObjects(), 3);
 		
 		//check objects quality for each category. it should be 1./categories_size

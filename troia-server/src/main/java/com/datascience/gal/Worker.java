@@ -239,9 +239,10 @@ public class Worker {
 								  JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
 			String name = jobject.get("name").getAsString();
-			ConfusionMatrix conf = JSONUtils.gson.fromJson(jobject.get("cm"),
+			System.out.println(context);
+			ConfusionMatrix conf = context.deserialize(jobject.get("cm"),
 								   JSONUtils.confusionMatrixType);
-			Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(
+			Collection<AssignedLabel> labels = context.deserialize(
 												   jobject.get("labels"), JSONUtils.assignedLabelSetType);
 
 			return new Worker(name, labels, conf);

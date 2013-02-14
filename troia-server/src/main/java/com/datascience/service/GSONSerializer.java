@@ -13,9 +13,15 @@ import javax.ws.rs.core.MediaType;
  */
 public class GSONSerializer implements ISerializer{
 
+	protected JSONUtils ju;
+
+	public GSONSerializer(){
+		ju = new JSONUtils();
+	}
+
 	@Override
 	public String serialize(Object object) {
-		return JSONUtils.gson.toJson(object);
+		return ju.gson.toJson(object);
 	}
 
 	@Override
@@ -27,11 +33,11 @@ public class GSONSerializer implements ISerializer{
 	public <T> T parse(String input, Type type) {
 		JsonReader jr = new JsonReader(new StringReader(input));
 		jr.setLenient(true);
-		return JSONUtils.gson.fromJson(jr, type);
+		return ju.gson.fromJson(jr, type);
 	}
 
 	@Override
 	public JsonElement getRaw(Object object){
-		return JSONUtils.gson.toJsonTree(object);
+		return ju.gson.toJsonTree(object);
 	}
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.core.storages.JSONUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -161,11 +162,13 @@ public class WorkerTest {
 		String rowDenominatorIsEmpty = "\"rowDenominator\":[]";
 		for (int i=0; i<names.length; i++) {
 			Worker worker = new Worker(names[i], categoriesList.get(i));
-			assertFalse(worker.cm.toString().contains(matrixIsEmpty));
-			assertFalse(worker.cm.toString().contains(rowDenominatorIsEmpty));
+			String cms = JSONUtils.getOldGson().toJson(worker.cm);
+			assertFalse(cms.contains(matrixIsEmpty));
+			assertFalse(cms.contains(rowDenominatorIsEmpty));
 			worker.empty();
-			assertTrue(worker.cm.toString().contains(matrixIsEmpty));
-			assertTrue(worker.cm.toString().contains(rowDenominatorIsEmpty));
+			cms = JSONUtils.getOldGson().toJson(worker.cm);
+			assertTrue(cms.contains(matrixIsEmpty));
+			assertTrue(cms.contains(rowDenominatorIsEmpty));
 		}
 	}
 

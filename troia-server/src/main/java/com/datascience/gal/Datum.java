@@ -200,7 +200,7 @@ public class Datum {
 		public Datum deserialize(JsonElement json, Type type,
 								 JsonDeserializationContext context) throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
-			Collection<CategoryValue> catProb = JSONUtils.gson.fromJson(
+			Collection<CategoryValue> catProb = context.deserialize(
 											 jobject.get("categoryProbability"),
 											 JSONUtils.categoryValuesCollectionType);
 			Map<String, Double> catMap = new HashMap<String, Double>();
@@ -208,7 +208,7 @@ public class Datum {
 				catMap.put(cp.categoryName, cp.value);
 			}
 			boolean isGold = jobject.get("isGold").getAsBoolean();
-			Collection<AssignedLabel> labels = JSONUtils.gson.fromJson(jobject.get("labels"), JSONUtils.assignedLabelSetType);
+			Collection<AssignedLabel> labels = context.deserialize(jobject.get("labels"), JSONUtils.assignedLabelSetType);
 			String name = jobject.get("name").getAsString();
 
 			if (jobject.has("correctCategory")) {
@@ -234,8 +234,8 @@ public class Datum {
 			for (Entry<String, Double> e : arg0.categoryProbability.entrySet()){
 				cp.add(new CategoryValue(e.getKey(), e.getValue()));
 			}
-			ret.add("categoryProbability", JSONUtils.gson.toJsonTree(cp));
-			ret.add("labels", JSONUtils.gson.toJsonTree(arg0.labels));
+			ret.add("categoryProbability", arg2.serialize(cp));
+			ret.add("labels", arg2.serialize(arg0.labels));
 			return ret;
 		}
 	}

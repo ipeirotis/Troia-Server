@@ -14,13 +14,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.galc.ContinuousProject;
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
-import com.datascience.core.base.Label;
 import com.datascience.core.storages.DataJSON.ShallowAssign;
 import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.gal.AssignedLabel;
@@ -34,6 +31,8 @@ import com.datascience.gal.DawidSkeneDeserializer;
 import com.datascience.gal.MatrixValue;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.MultinomialConfusionMatrix;
+import com.datascience.gal.Worker;
+import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
@@ -55,7 +54,7 @@ import com.google.gson.reflect.TypeToken;
 public class JSONUtils {
 	private static final Logger logger = Logger.getLogger("troia.performance");
 
-	public static final Gson gson;
+	public final Gson gson;
 
 	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {
 	} .getType();
@@ -120,49 +119,9 @@ public class JSONUtils {
 	public static final Type stringStringDoubleMapType = new TypeToken<Map<String, Map<String, Double>>>() {
 	} .getType();
 
-	static {
-
-		GsonBuilder builder = getDefaultGsonBuilder();
-
-		builder.registerTypeAdapter(assignedLabelType,AssignedLabel.deserializer);
-		builder.registerTypeAdapter(correctLabelType, CorrectLabel.deserializer);
-		builder.registerTypeAdapter(categoryType, Category.deserializer);
-		builder.registerTypeAdapter(categoryType, Category.serializer);
-		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
-		builder.registerTypeAdapter(datumType, Datum.deserializer);
-		builder.registerTypeAdapter(datumType, Datum.serializer);
-		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
-		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);
-		builder.registerTypeAdapter(workerType, com.datascience.gal.Worker.deserializer);
-		builder.registerTypeAdapter(dawidSkeneType, DawidSkeneDeserializer.deserializer);
-		
-		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
-		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
-		
-		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
-		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
-		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
-		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
-		builder.registerTypeAdapter(workerContResultsType, new DataJSON.WorkerContResultsSerializer());
+	public JSONUtils() {
+		GsonBuilder builder = getFilledDefaultGsonBuilder();
 		gson = builder.create();
-
-	}
-
-	private JSONUtils() {
-	}
-
-	public static String toJson(Object src) {
-		StopWatch stopwatch = new StopWatch();
-		Runtime runtime = Runtime.getRuntime();
-
-		double heapSize = runtime.totalMemory() - runtime.freeMemory();
-		stopwatch.start();
-		String ret = gson.toJson(src);
-		stopwatch.stop();
-		heapSize = ((runtime.totalMemory() - runtime.freeMemory()) - heapSize) / 1024. / 1024.;
-		logger.info("JSONing: " + src.getClass().getSimpleName() + " took: " + (stopwatch.getTime() / 1000.) +
-					"s len: " + ret.length() + " size: " + heapSize);
-		return ret;
 	}
 
 	public static class SerializedSerializer  implements JsonSerializer<Serialized> {
@@ -174,5 +133,37 @@ public class JSONUtils {
 	
 	public static GsonBuilder getDefaultGsonBuilder() {
 		return new GsonBuilder().serializeSpecialFloatingPointValues();
+	}
+
+	public static GsonBuilder getFilledDefaultGsonBuilder() {
+		GsonBuilder builder = getDefaultGsonBuilder();
+		builder.registerTypeAdapter(assignedLabelType,AssignedLabel.deserializer);
+		builder.registerTypeAdapter(correctLabelType, CorrectLabel.deserializer);
+		builder.registerTypeAdapter(categoryType, Category.deserializer);
+		builder.registerTypeAdapter(categoryType, Category.serializer);
+		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
+		builder.registerTypeAdapter(datumType, Datum.deserializer);
+		builder.registerTypeAdapter(datumType, Datum.serializer);
+		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
+		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);
+		builder.registerTypeAdapter(workerType, com.datascience.gal.Worker.deserializer);
+		builder.registerTypeAdapter(dawidSkeneType, DawidSkeneDeserializer.deserializer);
+
+		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
+		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
+
+		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
+		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
+		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
+		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
+		builder.registerTypeAdapter(workerContResultsType, new DataJSON.WorkerContResultsSerializer());
+		return builder;
+	}
+
+	public static Gson getOldGson(){
+		GsonBuilder builder = getFilledDefaultGsonBuilder();
+		builder.registerTypeAdapter(com.datascience.gal.Worker.class, Worker.deserializer);
+
+		return builder.create();
 	}
 }
