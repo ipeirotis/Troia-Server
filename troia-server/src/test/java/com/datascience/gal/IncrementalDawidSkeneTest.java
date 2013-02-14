@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.gson.Gson;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -252,15 +253,16 @@ public class IncrementalDawidSkeneTest {
 			boolean fixedPriors, IncrementalDSMethod dsmethod, double priorDenominator) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("id", id);
-		jsonObject.add("objects", JSONUtils.gson.toJsonTree(objects, JSONUtils.stringDatumMapType));
-		jsonObject.add("objectsWithNoLabels", JSONUtils.gson.toJsonTree(new HashMap<String, Datum>(), JSONUtils.stringDatumMapType));
-		jsonObject.add("workers", JSONUtils.gson.toJsonTree(workers, JSONUtils.strinWorkerMapType));
-		jsonObject.add("categories", JSONUtils.gson.toJsonTree(categories, JSONUtils.stringCategoryMapType));
+		jsonObject.add("objects", new JSONUtils().gson.toJsonTree(objects, JSONUtils.stringDatumMapType));
+		jsonObject.add("objectsWithNoLabels", new JSONUtils().gson.toJsonTree(new HashMap<String, Datum>(), JSONUtils.stringDatumMapType));
+		jsonObject.add("workers", new JSONUtils().gson.toJsonTree(workers, JSONUtils.strinWorkerMapType));
+		jsonObject.add("categories", new JSONUtils().gson.toJsonTree(categories, JSONUtils.stringCategoryMapType));
 		jsonObject.addProperty("fixedPriors", fixedPriors);
 		jsonObject.addProperty("dsmethod", IncrementalDSMethod.ITERATELOCAL.toString());
 		jsonObject.addProperty("priorDenominator", priorDenominator);
 		IncrementalDawidSkene.IncrementalDawidSkeneDeserializer deserializer = new IncrementalDawidSkeneDeserializer();
-		IncrementalDawidSkene incrementalDawidSkene = deserializer.deserialize(jsonObject, null, null);
+		Gson gson = JSONUtils.getFilledDefaultGsonBuilder().registerTypeAdapter(IncrementalDawidSkene.class, deserializer).create();
+		IncrementalDawidSkene incrementalDawidSkene = gson.fromJson(jsonObject, IncrementalDawidSkene.class);
 		return incrementalDawidSkene;
 	}
 

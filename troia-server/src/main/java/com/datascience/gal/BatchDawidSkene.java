@@ -168,14 +168,14 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			JsonObject jobject = (JsonObject) json;
 
 			String id = jobject.get("id").getAsString();
-			Map<String, Category> categories = JSONUtils.gson.fromJson(
+			Map<String, Category> categories = context.deserialize(
 					jobject.get("categories"), JSONUtils.stringCategoryMapType);
 			boolean fixedPriors = jobject.get("fixedPriors").getAsBoolean();
-			Map<String, Datum> objects = JSONUtils.gson.fromJson(
+			Map<String, Datum> objects = context.deserialize(
 					jobject.get("objects"), JSONUtils.stringDatumMapType);
-			Map<String, Datum> objectsWithNoLabels = JSONUtils.gson.fromJson(
+			Map<String, Datum> objectsWithNoLabels = context.deserialize(
 					jobject.get("objectsWithNoLabels"), JSONUtils.stringDatumMapType);
-			Map<String, Worker> workers = JSONUtils.gson.fromJson(
+			Map<String, Worker> workers = context.deserialize(
 					jobject.get("workers"), JSONUtils.strinWorkerMapType);
 
 			return new BatchDawidSkene(id, objects, objectsWithNoLabels, workers, categories,

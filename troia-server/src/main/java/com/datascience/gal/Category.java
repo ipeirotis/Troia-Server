@@ -148,7 +148,7 @@ public class Category {
 				prior = jobject.get("prior").getAsDouble();
 			Collection<CategoryValue> misclassificationValues = new ArrayList<CategoryValue>();
 			if (jobject.has("misclassificationCost"))
-				misclassificationValues = JSONUtils.gson.fromJson(
+				misclassificationValues = context.deserialize(
 						jobject.get("misclassificationCost"),
 						JSONUtils.categoryValuesCollectionType);
 			Map<String, Double> misclassification_cost = new HashMap<String, Double>();
@@ -172,7 +172,7 @@ public class Category {
 			for (Entry<String, Double> e : arg0.misclassification_cost.entrySet()){
 				cp.add(new CategoryValue(e.getKey(), e.getValue()));
 			}
-			ret.add("misclassificationCost", JSONUtils.gson.toJsonTree(cp));
+			ret.add("misclassificationCost", arg2.serialize(cp));
 			return ret;
 		}
 	}

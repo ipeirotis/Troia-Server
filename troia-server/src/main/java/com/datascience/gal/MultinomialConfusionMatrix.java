@@ -277,16 +277,6 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 		matrix.put(cp, cost);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.ipeirotis.gal.ConfusionMatrix#toString()
-	 */
-	@Override
-	public String toString() {
-		return JSONUtils.gson.toJson(this);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof MultinomialConfusionMatrix))
@@ -321,11 +311,11 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 		throws JsonParseException {
 			JsonObject jobject = (JsonObject) json;
 			Collection<String> categories =
-				JSONUtils.gson.fromJson(jobject.get("categories"), JSONUtils.stringSetType);
+					context.deserialize(jobject.get("categories"), JSONUtils.stringSetType);
 			
 			
 			Collection<MatrixValue> matrixValues =
-				JSONUtils.gson.fromJson(jobject.get("matrix"), JSONUtils.matrixValuesCollectionType);
+					context.deserialize(jobject.get("matrix"), JSONUtils.matrixValuesCollectionType);
 			Map<CategoryPair, Double> matrix = new HashMap<CategoryPair, Double>();
 			for (MatrixValue mv : matrixValues){
 				matrix.put(new CategoryPair(mv.from, mv.to), mv.value);
@@ -333,7 +323,7 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 			
 			
 			Collection<CategoryValue> rowDenominatorValues =
-				JSONUtils.gson.fromJson(jobject.get("rowDenominator"), JSONUtils.categoryValuesCollectionType);
+					context.deserialize(jobject.get("rowDenominator"), JSONUtils.categoryValuesCollectionType);
 			Map<String, Double> rowDenominator = new HashMap<String, Double>();
 			for (CategoryValue cv : rowDenominatorValues) {
 				rowDenominator.put(cv.categoryName, cv.value);
@@ -354,15 +344,15 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 			for (Entry<String, Double> e : arg0.rowDenominator.entrySet()){
 				cp.add(new CategoryValue(e.getKey(), e.getValue()));
 			}
-			ret.add("rowDenominator", JSONUtils.gson.toJsonTree(cp));
+			ret.add("rowDenominator", arg2.serialize(cp));
 			
 			Collection<MatrixValue> mv = new ArrayList<MatrixValue>(arg0.matrix.size());
 			for (Entry<CategoryPair, Double> e : arg0.matrix.entrySet()){
 				mv.add(new MatrixValue(e.getKey().from, e.getKey().to, e.getValue()));
 			}
-			ret.add("matrix", JSONUtils.gson.toJsonTree(mv));
+			ret.add("matrix", arg2.serialize(mv));
 			
-			ret.add("categories", JSONUtils.gson.toJsonTree(arg0.getCategories()));
+			ret.add("categories", arg2.serialize(arg0.getCategories()));
 			return ret;
 		}
 		
