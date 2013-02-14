@@ -70,14 +70,14 @@ public class InitializationSupport implements ServletContextListener {
 		ProjectCommandExecutor executor =
 			(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
 		try {
-			jobStorage.stop();
-		} catch (Exception ex) {
-			logger.error("FAILED Cleaning service - jobStorage", ex);
-		}
-		try {
 			executor.stop();
 		} catch (Exception ex) {
 			logger.error("FAILED Cleaning service - executor", ex);
+		}
+		try {
+			jobStorage.stop();
+		} catch (Exception ex) {
+			logger.error("FAILED Cleaning service - jobStorage", ex);
 		}
 		deregisterDrivers();
 		logger.info("DONE Cleaning service");
