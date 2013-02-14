@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.datascience.core.storages.JSONUtils;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
@@ -168,11 +167,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	@Override
 	public String getId() {
 		return id;
-	}
-
-	@Override
-	public String toString() {
-		return JSONUtils.toJson(this);
 	}
 
 //	@Override
