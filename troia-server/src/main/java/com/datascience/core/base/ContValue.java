@@ -1,12 +1,23 @@
 package com.datascience.core.base;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.google.common.base.Objects;
 
+@XmlRootElement(name="label")
 public class ContValue {
 
+	@XmlElement
 	protected Double value;
+	
+	@XmlElement
 	protected Double zeta;
 
+	public ContValue(){
+		
+	}
+	
 	public ContValue(Double v, Double z){
 		this.value = v;
 		this.zeta = z;
@@ -31,5 +42,10 @@ public class ContValue {
 					Objects.equal(zeta, ot.zeta);
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("value: %f, zeta: %f", value, zeta);
 	}
 }

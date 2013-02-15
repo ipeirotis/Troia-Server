@@ -15,6 +15,9 @@ import javax.ws.rs.core.Response;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
+import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
+import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
+import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
 import com.datascience.core.storages.JSONUtils;
 import com.datascience.core.storages.DataJSON.ShallowAssign;
 import com.datascience.core.storages.DataJSON.ShallowGoldObject;
@@ -74,8 +77,7 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("objects")
 	@POST
-	public Response addObjects(String json){
-		Collection<String> objects = serializer.parse(json, JSONUtils.stringSetType);
+	public Response addObjects(ShallowObjectCollection objects){
 		GALCommandBase command = new ObjectCommands.AddObjects(job.getProject(), objects);
 		return buildResponseOnCommand(job, command);
 	}
@@ -107,8 +109,7 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("goldObjects")
 	@POST
-	public Response addGoldObjects(String json){
-		Collection<ShallowGoldObject<ContValue>> goldObjects = serializer.parse(json, JSONUtils.goldObjectsCollectionType);
+	public Response addGoldObjects(ShallowGoldObjectCollection<ContValue> goldObjects){
 		GALCommandBase command = new GoldObjectsCommands.AddGoldObjects(job.getProject(), goldObjects);
 		return buildResponseOnCommand(job, command);
 	}
@@ -130,10 +131,9 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	}
 	
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("assigns/")
+	@Path("assigns")
 	@POST
-	public Response addAssigns(String json){
-		Collection<ShallowAssign<ContValue>> assigns = serializer.parse(json, JSONUtils.assignedLabelCollectionType);
+	public Response addAssigns(ShallowAssignCollection<ContValue> assigns){
 		GALCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), assigns);
 		return buildResponseOnCommand(job, command);
 	}
