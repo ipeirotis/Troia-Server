@@ -7,6 +7,7 @@ import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
 import com.datascience.core.storages.DataJSON.ShallowGoldObject;
+import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.galc.ContinuousProject;
 
 /**
@@ -37,8 +38,8 @@ public class GoldObjectsCommands {
 
 	static public class AddGoldObjects extends GALCommandBase<Object> {
 
-		Collection<ShallowGoldObject<ContValue>> goldObjects;
-		public AddGoldObjects(ContinuousProject cp, Collection<ShallowGoldObject<ContValue>> goldObjects){
+		ShallowGoldObjectCollection<ContValue> goldObjects;
+		public AddGoldObjects(ContinuousProject cp, ShallowGoldObjectCollection<ContValue> goldObjects){
 			super(cp, true);
 			this.goldObjects = goldObjects;
 		}
@@ -46,7 +47,7 @@ public class GoldObjectsCommands {
 		@Override
 		protected void realExecute() {
 			Data<ContValue> data = project.getData();
-			for (ShallowGoldObject<ContValue> obj : goldObjects){
+			for (ShallowGoldObject<ContValue> obj : goldObjects.objects){
 				LObject<ContValue> object = data.getOrCreateObject(obj.object);
 				object.setGoldLabel(new Label<ContValue>(obj.label));
 				data.addGoldObject(object);

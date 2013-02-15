@@ -1,10 +1,17 @@
 package com.datascience.core.storages;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
@@ -85,11 +92,23 @@ public class DataJSON {
 			return je;
 		}
 	}
-
+	
+	@XmlRootElement
+	@XmlSeeAlso(ContValue.class)
 	public static class ShallowAssign<T>{
+		
+		@XmlElement
 		public String worker;
+
+		@XmlElement
 		public String object;
+		
+		@XmlAnyElement(lax = true)
 		public T label;
+		
+		public ShallowAssign(){
+			
+		}
 
 		public ShallowAssign(AssignedLabel<T> assign){
 			worker = assign.getWorker().getName();
@@ -97,10 +116,40 @@ public class DataJSON {
 			label = assign.getLabel().getValue();
 		}
 	}
+
+	@XmlRootElement
+	public static class ShallowAssignCollection<T> {
+		public Collection<ShallowAssign<T>> assigns;
+		
+		public ShallowAssignCollection(){
+			
+		}
+	}
 	
+	@XmlRootElement
+	@XmlSeeAlso(ContValue.class)
 	public static class ShallowGoldObject<T>{
+		@XmlElement
 		public String object;
+		
+		@XmlAnyElement(lax = true)
 		public T label;
+		
+		public ShallowGoldObject(){}
+	}
+	
+	@XmlRootElement
+	public static class ShallowGoldObjectCollection<T> {
+		public Collection<ShallowGoldObject<T>> objects;
+		
+		public ShallowGoldObjectCollection() {}
+	}
+	
+	@XmlRootElement
+	public static class ShallowObjectCollection {
+		public Collection<String> objects;
+		
+		public ShallowObjectCollection(){}
 	}
 
 	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {
@@ -135,12 +184,12 @@ public class DataJSON {
 		}
 	}
 	
-	private static class SimpleObjectSerializer<T> implements JsonSerializer<LObject<T>> {
-		@Override
-		public JsonElement serialize(LObject<T> obj, Type type, JsonSerializationContext ctx) {
-			return new JsonPrimitive(obj.getName());
-		}
-	}
+//	private static class SimpleObjectSerializer<T> implements JsonSerializer<LObject<T>> {
+//		@Override
+//		public JsonElement serialize(LObject<T> obj, Type type, JsonSerializationContext ctx) {
+//			return new JsonPrimitive(obj.getName());
+//		}
+//	}
 	
 	public static class SimpleLabelSerializer<T> implements JsonSerializer<Label<T>> {
 		@Override
