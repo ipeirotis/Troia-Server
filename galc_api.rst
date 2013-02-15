@@ -42,7 +42,7 @@ Starting calculations:
 
 ::
 
-    POST /cjobs/{job_id}/calculate
+    POST /cjobs/{job_id}/compute
 
 Getting results:
 
