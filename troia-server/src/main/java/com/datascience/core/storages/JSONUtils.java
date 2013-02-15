@@ -18,8 +18,11 @@ import com.datascience.galc.ContinuousProject;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.Label;
+import com.datascience.core.storages.DataJSON.ShallowAssign;
+import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Category;
 import com.datascience.gal.CategoryPair;
@@ -57,6 +60,10 @@ public class JSONUtils {
 	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {
 	} .getType();
 	public static final Type assignedLabelSetType = new TypeToken<Collection<AssignedLabel>>() {
+	} .getType();
+	public static final Type assignedLabelCollectionType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){
+	} .getType();
+	public static final Type goldObjectsCollectionType = new TypeToken<Collection<ShallowGoldObject<ContValue>>>(){
 	} .getType();
 	public static final Type correctLabelSetType = new TypeToken<Collection<CorrectLabel>>() {
 	} .getType();
