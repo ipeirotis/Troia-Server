@@ -14,12 +14,25 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
-import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
+import com.datascience.core.storages.DataJSON.ShallowAssign;
+import com.datascience.core.storages.DataJSON.ShallowGoldObject;
+import com.datascience.gal.AssignedLabel;
+import com.datascience.gal.Category;
+import com.datascience.gal.CategoryPair;
+import com.datascience.gal.CategoryValue;
+import com.datascience.gal.CorrectLabel;
+import com.datascience.gal.Datum;
+import com.datascience.gal.DawidSkene;
+import com.datascience.gal.DawidSkeneDeserializer;
+import com.datascience.gal.MatrixValue;
+import com.datascience.gal.MisclassificationCost;
+import com.datascience.gal.MultinomialConfusionMatrix;
+import com.datascience.gal.Worker;
 import com.datascience.galc.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
@@ -46,6 +59,10 @@ public class JSONUtils {
 	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {
 	} .getType();
 	public static final Type assignedLabelSetType = new TypeToken<Collection<AssignedLabel>>() {
+	} .getType();
+	public static final Type assignedLabelCollectionType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){
+	} .getType();
+	public static final Type goldObjectsCollectionType = new TypeToken<Collection<ShallowGoldObject<ContValue>>>(){
 	} .getType();
 	public static final Type correctLabelSetType = new TypeToken<Collection<CorrectLabel>>() {
 	} .getType();
@@ -146,7 +163,6 @@ public class JSONUtils {
 	public static Gson getOldGson(){
 		GsonBuilder builder = getFilledDefaultGsonBuilder();
 		builder.registerTypeAdapter(com.datascience.gal.Worker.class, Worker.deserializer);
-
 		return builder.create();
 	}
 }

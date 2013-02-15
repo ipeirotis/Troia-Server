@@ -32,6 +32,26 @@ public class ObjectCommands {
 		}
 	}
 	
+	static public class AddObjects extends GALCommandBase<Object> {
+
+		Collection<String> objects;
+		public AddObjects(ContinuousProject cp, Collection<String> objects){
+			super(cp, true);
+			this.objects = objects;
+		}
+		
+		@Override
+		protected void realExecute() {
+			Data<ContValue> data = project.getData();
+			for (String objectId : objects){
+				if (null == data.getObject(objectId)){
+					data.addObject(new LObject<ContValue>(objectId));
+				}
+			}
+			setResult("Objects without labels added");
+		}
+	}
+	
 	static public class GetObjects extends GALCommandBase<Collection<LObject<ContValue>>> {
 		
 		public GetObjects(ContinuousProject cp){

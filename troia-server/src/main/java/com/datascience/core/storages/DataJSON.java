@@ -87,15 +87,20 @@ public class DataJSON {
 	}
 
 	public static class ShallowAssign<T>{
-		protected String worker;
-		protected String object;
-		protected T label;
+		public String worker;
+		public String object;
+		public T label;
 
 		public ShallowAssign(AssignedLabel<T> assign){
 			worker = assign.getWorker().getName();
 			object = assign.getLobject().getName();
 			label = assign.getLabel().getValue();
 		}
+	}
+	
+	public static class ShallowGoldObject<T>{
+		public String object;
+		public T label;
 	}
 
 	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {

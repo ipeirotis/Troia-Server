@@ -1,14 +1,23 @@
 package com.datascience.service;
 
+import java.util.Collection;
+import java.util.logging.Logger;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
+import com.datascience.core.storages.JSONUtils;
+import com.datascience.core.storages.DataJSON.ShallowAssign;
+import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
@@ -61,6 +70,16 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 		GALCommandBase command = new ObjectCommands.AddObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
+	
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("objects")
+	@POST
+	public Response addObjects(String json){
+		Collection<String> objects = serializer.parse(json, JSONUtils.stringSetType);
+		GALCommandBase command = new ObjectCommands.AddObjects(job.getProject(), objects);
+		return buildResponseOnCommand(job, command);
+	}
+
 
 	@Path("goldObjects")
 	@GET
@@ -81,7 +100,16 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	public Response addGoldObject(@FormParam("objectId") String objectId,
 								  @FormParam("label") Double label,
 								  @FormParam("zeta") Double zeta){
-		GALCommandBase command = new GoldObjectsCommands.AddGoldObjects(job.getProject(), objectId, new ContValue(label, zeta));
+		GALCommandBase command = new GoldObjectsCommands.AddGoldObject(job.getProject(), objectId, new ContValue(label, zeta));
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("goldObjects")
+	@POST
+	public Response addGoldObjects(String json){
+		Collection<ShallowGoldObject<ContValue>> goldObjects = serializer.parse(json, JSONUtils.goldObjectsCollectionType);
+		GALCommandBase command = new GoldObjectsCommands.AddGoldObjects(job.getProject(), goldObjects);
 		return buildResponseOnCommand(job, command);
 	}
 
@@ -97,7 +125,16 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	public Response addAssign(@FormParam("label") Double label,
 							  @FormParam("worker") String worker,
 							  @FormParam("object") String object){
-		GALCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), worker, object, new ContValue(label));
+		GALCommandBase command = new AssignsCommands.AddAssign(job.getProject(), worker, object, new ContValue(label));
+		return buildResponseOnCommand(job, command);
+	}
+	
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("assigns/")
+	@POST
+	public Response addAssigns(String json){
+		Collection<ShallowAssign<ContValue>> assigns = serializer.parse(json, JSONUtils.assignedLabelCollectionType);
+		GALCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), assigns);
 		return buildResponseOnCommand(job, command);
 	}
 

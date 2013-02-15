@@ -8,6 +8,7 @@ import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
+import com.datascience.core.storages.DataJSON.ShallowAssign;
 import com.datascience.galc.ContinuousProject;
 
 
@@ -17,13 +18,13 @@ import com.datascience.galc.ContinuousProject;
  */
 public class AssignsCommands {
 	
-	static public class AddAssigns extends GALCommandBase<Object> {
+	static public class AddAssign extends GALCommandBase<Object> {
 
 		String workerId;
 		String objectId;
 		ContValue label;
 		
-		public AddAssigns(ContinuousProject cp, String worker, String object, ContValue label){
+		public AddAssign(ContinuousProject cp, String worker, String object, ContValue label){
 			super(cp, true);
 			this.workerId = worker;
 			this.objectId = object;
@@ -33,14 +34,31 @@ public class AssignsCommands {
 		@Override
 		protected void realExecute() {
 			Data<ContValue> data = project.getData();
-			Worker<ContValue> worker = data.getWorker(workerId);
-			if (worker == null)
-				worker = new Worker<ContValue>(workerId);
-			LObject<ContValue> object = data.getObject(objectId);
-			if (object == null)
-				object = new LObject<ContValue>(objectId);
+			Worker<ContValue> worker = data.getOrCreateWorker(workerId);
+			LObject<ContValue> object = data.getOrCreateObject(objectId);
 			data.addAssign(new AssignedLabel<ContValue>(worker, object, new Label<ContValue>(label)));
-			setResult("Assigns added");
+			setResult("Assign added");
+		}
+	}
+	
+	static public class AddAssigns extends GALCommandBase<Object> {
+
+		Collection<ShallowAssign<ContValue>> assigns;
+		
+		public AddAssigns(ContinuousProject cp, Collection<ShallowAssign<ContValue>> assigns){
+			super(cp, true);
+			this.assigns = assigns;
+		}
+		
+		@Override
+		protected void realExecute() {
+			for (ShallowAssign<ContValue> al : assigns){
+				Data<ContValue> data = project.getData();
+				Worker<ContValue> worker = data.getOrCreateWorker(al.worker);
+				LObject<ContValue> object = data.getOrCreateObject(al.object);
+				data.addAssign(new AssignedLabel<ContValue>(worker, object, new Label<ContValue>(al.label)));
+				setResult("Assigns added");
+			}
 		}
 	}
 	

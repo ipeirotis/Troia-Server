@@ -3,8 +3,10 @@ package com.datascience.galc.commands;
 import java.util.Collection;
 
 import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
+import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.galc.ContinuousProject;
 
 /**
@@ -13,11 +15,11 @@ import com.datascience.galc.ContinuousProject;
  */
 public class GoldObjectsCommands {
 	
-	static public class AddGoldObjects extends GALCommandBase<Object> {
+	static public class AddGoldObject extends GALCommandBase<Object> {
 
 		String objectId;
 		ContValue label;
-		public AddGoldObjects(ContinuousProject cp, String objectId, ContValue label){
+		public AddGoldObject(ContinuousProject cp, String objectId, ContValue label){
 			super(cp, true);
 			this.objectId = objectId;
 			this.label = label;
@@ -25,15 +27,34 @@ public class GoldObjectsCommands {
 		
 		@Override
 		protected void realExecute() {
-			LObject<ContValue> object = project.getData().getObject(objectId);
-			if (object == null)
-				object = new LObject<ContValue>(objectId);
+			Data<ContValue> data = project.getData();
+			LObject<ContValue> object = data.getOrCreateObject(objectId);
 			object.setGoldLabel(new Label<ContValue>(label));
-			project.getData().addGoldObject(object);
+			data.addGoldObject(object);
 			setResult("Gold object added");
 		}
 	}
-	
+
+	static public class AddGoldObjects extends GALCommandBase<Object> {
+
+		Collection<ShallowGoldObject<ContValue>> goldObjects;
+		public AddGoldObjects(ContinuousProject cp, Collection<ShallowGoldObject<ContValue>> goldObjects){
+			super(cp, true);
+			this.goldObjects = goldObjects;
+		}
+		
+		@Override
+		protected void realExecute() {
+			Data<ContValue> data = project.getData();
+			for (ShallowGoldObject<ContValue> obj : goldObjects){
+				LObject<ContValue> object = data.getOrCreateObject(obj.object);
+				object.setGoldLabel(new Label<ContValue>(obj.label));
+				data.addGoldObject(object);
+			}
+			setResult("Gold objects added");			
+		}
+	}
+
 	static public class GetGoldObjects extends GALCommandBase<Collection<LObject<ContValue>>> {
 		
 		public GetGoldObjects(ContinuousProject cp){
