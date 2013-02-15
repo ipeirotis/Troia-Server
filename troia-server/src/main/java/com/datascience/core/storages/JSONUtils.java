@@ -60,10 +60,6 @@ public class JSONUtils {
 	} .getType();
 	public static final Type assignedLabelSetType = new TypeToken<Collection<AssignedLabel>>() {
 	} .getType();
-	public static final Type assignedLabelCollectionType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){
-	} .getType();
-	public static final Type goldObjectsCollectionType = new TypeToken<Collection<ShallowGoldObject<ContValue>>>(){
-	} .getType();
 	public static final Type correctLabelSetType = new TypeToken<Collection<CorrectLabel>>() {
 	} .getType();
 	public static final Type categorySetType = new TypeToken<Collection<Category>>() {

@@ -9,6 +9,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
 import com.datascience.core.storages.DataJSON.ShallowAssign;
+import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
 import com.datascience.galc.ContinuousProject;
 
 
@@ -43,16 +44,16 @@ public class AssignsCommands {
 	
 	static public class AddAssigns extends GALCommandBase<Object> {
 
-		Collection<ShallowAssign<ContValue>> assigns;
+		ShallowAssignCollection<ContValue> assigns;
 		
-		public AddAssigns(ContinuousProject cp, Collection<ShallowAssign<ContValue>> assigns){
+		public AddAssigns(ContinuousProject cp, ShallowAssignCollection<ContValue> assigns){
 			super(cp, true);
 			this.assigns = assigns;
 		}
 		
 		@Override
 		protected void realExecute() {
-			for (ShallowAssign<ContValue> al : assigns){
+			for (ShallowAssign<ContValue> al : assigns.assigns){
 				Data<ContValue> data = project.getData();
 				Worker<ContValue> worker = data.getOrCreateWorker(al.worker);
 				LObject<ContValue> object = data.getOrCreateObject(al.object);
