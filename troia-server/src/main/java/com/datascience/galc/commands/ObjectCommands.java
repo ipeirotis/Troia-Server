@@ -15,24 +15,6 @@ import com.datascience.galc.ContinuousProject;
  */
 public class ObjectCommands {
 	
-	static public class AddObject extends GALCommandBase<Object> {
-
-		String objectId;
-		public AddObject(ContinuousProject cp, String objectId){
-			super(cp, true);
-			this.objectId = objectId;
-		}
-		
-		@Override
-		protected void realExecute() {
-			Data<ContValue> data = project.getData();
-			if (null == data.getObject(objectId)){
-				data.addObject(new LObject<ContValue>(objectId));
-			}
-			setResult("Object without labels added");
-		}
-	}
-	
 	static public class AddObjects extends GALCommandBase<Object> {
 
 		ShallowObjectCollection objects;

@@ -16,26 +16,6 @@ import com.datascience.galc.ContinuousProject;
  */
 public class GoldObjectsCommands {
 	
-	static public class AddGoldObject extends GALCommandBase<Object> {
-
-		String objectId;
-		ContValue label;
-		public AddGoldObject(ContinuousProject cp, String objectId, ContValue label){
-			super(cp, true);
-			this.objectId = objectId;
-			this.label = label;
-		}
-		
-		@Override
-		protected void realExecute() {
-			Data<ContValue> data = project.getData();
-			LObject<ContValue> object = data.getOrCreateObject(objectId);
-			object.setGoldLabel(new Label<ContValue>(label));
-			data.addGoldObject(object);
-			setResult("Gold object added");
-		}
-	}
-
 	static public class AddGoldObjects extends GALCommandBase<Object> {
 
 		ShallowGoldObjectCollection<ContValue> goldObjects;

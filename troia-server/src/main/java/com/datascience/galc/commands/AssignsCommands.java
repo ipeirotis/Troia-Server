@@ -19,29 +19,6 @@ import com.datascience.galc.ContinuousProject;
  */
 public class AssignsCommands {
 	
-	static public class AddAssign extends GALCommandBase<Object> {
-
-		String workerId;
-		String objectId;
-		ContValue label;
-		
-		public AddAssign(ContinuousProject cp, String worker, String object, ContValue label){
-			super(cp, true);
-			this.workerId = worker;
-			this.objectId = object;
-			this.label = label;
-		}
-		
-		@Override
-		protected void realExecute() {
-			Data<ContValue> data = project.getData();
-			Worker<ContValue> worker = data.getOrCreateWorker(workerId);
-			LObject<ContValue> object = data.getOrCreateObject(objectId);
-			data.addAssign(new AssignedLabel<ContValue>(worker, object, new Label<ContValue>(label)));
-			setResult("Assign added");
-		}
-	}
-	
 	static public class AddAssigns extends GALCommandBase<Object> {
 
 		ShallowAssignCollection<ContValue> assigns;

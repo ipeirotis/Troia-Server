@@ -67,13 +67,6 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 		return buildResponseOnCommand(job, command);
 	}
 
-	@Path("object")
-	@POST
-	public Response addObject(@FormParam("objectId") String objectId){
-		GALCommandBase command = new ObjectCommands.AddObject(job.getProject(), objectId);
-		return buildResponseOnCommand(job, command);
-	}
-	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("objects")
 	@POST
@@ -96,15 +89,6 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 		GALCommandBase command = new GoldObjectsCommands.GetGoldObject(job.getProject(), objectId);
 		return buildResponseOnCommand(job, command);
 	}
-
-	@Path("goldObject")
-	@POST
-	public Response addGoldObject(@FormParam("objectId") String objectId,
-								  @FormParam("label") Double label,
-								  @FormParam("zeta") Double zeta){
-		GALCommandBase command = new GoldObjectsCommands.AddGoldObject(job.getProject(), objectId, new ContValue(label, zeta));
-		return buildResponseOnCommand(job, command);
-	}
 	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("goldObjects")
@@ -121,15 +105,6 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 		return buildResponseOnCommand(job, command);
 	}
 
-	@Path("assign")
-	@POST
-	public Response addAssign(@FormParam("label") Double label,
-							  @FormParam("worker") String worker,
-							  @FormParam("object") String object){
-		GALCommandBase command = new AssignsCommands.AddAssign(job.getProject(), worker, object, new ContValue(label));
-		return buildResponseOnCommand(job, command);
-	}
-	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("assigns")
 	@POST
