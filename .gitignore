@@ -9,6 +9,8 @@ target/*
 .classpath
 .settings/*
 *nb-configuration.xml
+.idea
+*.iml
 # ^^^ we shouldn't keep IDEs settings in repo
 
 # Package Files #
