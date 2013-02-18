@@ -24,9 +24,10 @@ public class ProjectCommandExecutor{
 	private static final Logger log =
 		Logger.getLogger(ProjectCommandExecutor.class.getName());
 
-	private Queue<IExecutorCommand> queue;
-	private ListeningExecutorService commandExecutor;
-	private ExecutorService lockExecutor;
+	protected Queue<IExecutorCommand> queue;
+	protected ListeningExecutorService commandExecutor;
+	protected ExecutorService lockExecutor;
+	protected volatile boolean isAlive;
 	
 	public ProjectCommandExecutor(){
 		this(10);  // TODO: work on this number
@@ -43,13 +44,31 @@ public class ProjectCommandExecutor{
 		commandExecutor = MoreExecutors.listeningDecorator(
 			Executors.newFixedThreadPool(numThreads, cetf));
 		lockExecutor = Executors.newSingleThreadExecutor(ltf);
+		isAlive = true;
 	}
-	
+
+	/**
+	 * Must be synchronized
+	 */
+	protected void checkState(){
+		if (!isAlive) {
+			throw new IllegalStateException("Adding command after ProjectCommandExecutor was stopped");
+		}
+	}
+
+	/**
+	 * Must be synchronized
+	 */
+	protected boolean canStop(){
+		return (!isAlive) && queue.isEmpty();
+	}
+
 	public void add(final IExecutorCommand eCommand){
 		lockExecutor.submit(new Runnable() {
 			@Override
 			public void run(){
 				synchronized (ProjectCommandExecutor.this) {
+					checkState();
 					if (eCommand.canStart()){
 						runCommand(eCommand);
 					} else {
@@ -79,11 +98,28 @@ public class ProjectCommandExecutor{
 							runCommand(eCommand);
 						}
 					}
+					if (canStop()) {
+						ProjectCommandExecutor.this.notify();
+					}
 				}
 			}
 		});
 	}
-	
+
+	protected void initEmptyAndWaitTillEmpty(){
+		synchronized (ProjectCommandExecutor.this) {
+			isAlive = false;
+			if (!canStop()) {
+				try {
+					ProjectCommandExecutor.this.wait();
+				} catch (InterruptedException e) {
+					log.error("Error when waiting for signal to continue ProjectCommandExecutor cleanup", e);
+				}
+			}
+			assert canStop();
+		}
+	}
+
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
@@ -92,6 +128,7 @@ public class ProjectCommandExecutor{
 	
 	public void stop() throws InterruptedException{
 		log.info("STARTED Shutting down executors");
+		initEmptyAndWaitTillEmpty();
 		commandExecutor.shutdown();
 		commandExecutor.awaitTermination(1, TimeUnit.MINUTES);
 		if (!commandExecutor.isTerminated()) {
