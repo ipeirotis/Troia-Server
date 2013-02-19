@@ -41,6 +41,7 @@ public class JobStorageUsingExecutor implements IJobStorage{
 
 	@Override
 	public void stop() throws Exception {
+		executor.stop();
 		internalStorage.stop();
 	}
 	
