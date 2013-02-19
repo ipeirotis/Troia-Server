@@ -9,10 +9,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -125,9 +123,24 @@ public class ProjectCommandExecutor{
 		super.finalize();
 		stop();
 	}
+
+	public void flushAddedJobs() throws InterruptedException {
+		// We want to make sure that all jobs added before start went through lockExecutor
+		// I hope that executors wait queue is FIFO ...
+		final Semaphore semaphore = new Semaphore(1);
+		semaphore.acquire();
+		lockExecutor.submit(new Runnable() {
+			@Override
+			public void run() {
+				semaphore.release();
+			}
+		});
+		semaphore.acquire();
+	}
 	
 	public void stop() throws InterruptedException{
 		log.info("STARTED Shutting down executors");
+		flushAddedJobs();
 		initEmptyAndWaitTillEmpty();
 		commandExecutor.shutdown();
 		commandExecutor.awaitTermination(1, TimeUnit.MINUTES);
