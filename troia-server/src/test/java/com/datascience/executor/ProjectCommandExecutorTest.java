@@ -35,7 +35,7 @@ public class ProjectCommandExecutorTest {
 			assertArrayEquals("Error in " + i + " iteration", expectations[i], canGo);
 		}
 	}
-	
+
 	static class SimpleIExecutor implements IExecutorCommand {
 		
 		private Boolean[] canGo;
@@ -65,6 +65,57 @@ public class ProjectCommandExecutorTest {
 			if (enables != -1) {
 				canGo[enables] = true;
 			}
+		}
+	}
+	
+	
+	@Test
+	public void testClosing() throws InterruptedException {
+		final Boolean[] tab = new Boolean[]{false, true, true, false, false};
+		IExecutorCommand[] commands = new IExecutorCommand[]{
+			new DummyIExecutor(tab, 0),
+			new DummyIExecutor(tab, 1),
+			new DummyIExecutor(tab, 2),
+			new DummyIExecutor(tab, 3),
+			new DummyIExecutor(tab, 4)
+		};
+		ProjectCommandExecutor executor = new ProjectCommandExecutor(3);
+		Boolean[] expectations = new Boolean[]{true, false, false, true, true,};
+		for (int i=0;i< tab.length;i++){
+			executor.add(commands[i]);
+		}
+		executor.stop();
+		Thread.sleep(1000);
+		assertArrayEquals("Arrays not equal", expectations, tab);
+	}
+	
+	static class DummyIExecutor implements IExecutorCommand {
+
+		int i;
+		Boolean[] tab;
+		
+		public DummyIExecutor(Boolean[] tab, int i){
+			this.i = i;
+			this.tab = tab;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			tab[i] = !tab[i];
+		}
+
+		@Override
+		public boolean canStart() {
+			return true;
+		}
+
+		@Override
+		public void cleanup() {
 		}
 	}
 	
