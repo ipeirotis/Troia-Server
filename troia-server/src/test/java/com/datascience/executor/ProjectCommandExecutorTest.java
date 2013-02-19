@@ -71,32 +71,41 @@ public class ProjectCommandExecutorTest {
 	
 	@Test
 	public void testClosing() throws InterruptedException {
-		final Boolean[] tab = new Boolean[]{false, true, true, false, false};
-		IExecutorCommand[] commands = new IExecutorCommand[]{
-			new DummyIExecutor(tab, 0),
-			new DummyIExecutor(tab, 1),
-			new DummyIExecutor(tab, 2),
-			new DummyIExecutor(tab, 3),
-			new DummyIExecutor(tab, 4)
-		};
+		final Boolean[] tab = new Boolean[]{false, false, false, false, false};
 		ProjectCommandExecutor executor = new ProjectCommandExecutor(3);
-		Boolean[] expectations = new Boolean[]{true, false, false, true, true,};
-		for (int i=0;i< tab.length;i++){
-			executor.add(commands[i]);
+		executor.add(new DummyIExecutor(tab, 0, 200));
+		for (int i=1;i< tab.length;i++){
+			executor.add(new DummyIExecutor(tab, i, 0));
 		}
+		assertArrayEquals("Arrays not equal", new Boolean[]{false, false, false, false, false}, tab);
 		executor.stop();
-		Thread.sleep(1000);
-		assertArrayEquals("Arrays not equal", expectations, tab);
+		assertArrayEquals("Arrays not equal", new Boolean[]{true, true, true, true, true}, tab);
+	}
+
+	@Test
+	public void testClosing2() throws InterruptedException {
+		for (int k=0; k< 5; k++){
+			final Boolean[] tab = new Boolean[]{false, false, false, false, false};
+			ProjectCommandExecutor executor = new ProjectCommandExecutor(3);
+			executor.add(new DummyIExecutor(tab, 0, 200));
+			for (int i=1;i< tab.length;i++){
+				executor.add(new DummyIExecutor(tab, i, 0));
+			}
+			executor.stop();
+			assertEquals(String.valueOf(k), true, tab[0]);
+		}
 	}
 	
 	static class DummyIExecutor implements IExecutorCommand {
 
 		int i;
+		int sleep;
 		Boolean[] tab;
 		
-		public DummyIExecutor(Boolean[] tab, int i){
+		public DummyIExecutor(Boolean[] tab, int i, int sleep){
 			this.i = i;
 			this.tab = tab;
+			this.sleep = sleep;
 		}
 		
 		@Override
@@ -111,6 +120,11 @@ public class ProjectCommandExecutorTest {
 
 		@Override
 		public boolean canStart() {
+			try {
+				Thread.sleep(sleep);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			return true;
 		}
 
