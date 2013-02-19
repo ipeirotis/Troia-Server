@@ -81,20 +81,6 @@ public class ProjectCommandExecutorTest {
 		executor.stop();
 		assertArrayEquals("Arrays not equal", new Boolean[]{true, true, true, true, true}, tab);
 	}
-
-	@Test
-	public void testClosing2() throws InterruptedException {
-		for (int k=0; k< 5; k++){
-			final Boolean[] tab = new Boolean[]{false, false, false, false, false};
-			ProjectCommandExecutor executor = new ProjectCommandExecutor(3);
-			executor.add(new DummyIExecutor(tab, 0, 200));
-			for (int i=1;i< tab.length;i++){
-				executor.add(new DummyIExecutor(tab, i, 0));
-			}
-			executor.stop();
-			assertEquals(String.valueOf(k), true, tab[0]);
-		}
-	}
 	
 	static class DummyIExecutor implements IExecutorCommand {
 
