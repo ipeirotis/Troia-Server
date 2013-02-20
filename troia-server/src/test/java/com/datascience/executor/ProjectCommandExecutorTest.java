@@ -84,7 +84,7 @@ public class ProjectCommandExecutorTest {
 
 	@Test
 	public void testClosing2() throws InterruptedException {
-		for (int k=0; k< 5; k++){
+		for (int k=0; k< 20; k++){
 			final Boolean[] tab = new Boolean[]{false, false, false, false, false};
 			ProjectCommandExecutor executor = new ProjectCommandExecutor(3);
 			executor.add(new DummyIExecutor(tab, 0, 200));

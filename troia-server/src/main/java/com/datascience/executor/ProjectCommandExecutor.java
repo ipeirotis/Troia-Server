@@ -24,7 +24,6 @@ public class ProjectCommandExecutor{
 
 	protected Queue<IExecutorCommand> queue;
 	protected ListeningExecutorService commandExecutor;
-	protected ExecutorService lockExecutor;
 	protected volatile boolean isAlive;
 	
 	public ProjectCommandExecutor(){
@@ -36,12 +35,8 @@ public class ProjectCommandExecutor{
 		ThreadFactory cetf = new ThreadFactoryBuilder()
 			.setNameFormat("cmdExTh-%d")
 			.build();
-		ThreadFactory ltf = new ThreadFactoryBuilder()
-			.setNameFormat("lockExTh-%d")
-			.build();
 		commandExecutor = MoreExecutors.listeningDecorator(
 			Executors.newFixedThreadPool(numThreads, cetf));
-		lockExecutor = Executors.newSingleThreadExecutor(ltf);
 		isAlive = true;
 	}
 
@@ -62,46 +57,36 @@ public class ProjectCommandExecutor{
 	}
 
 	public void add(final IExecutorCommand eCommand){
-		lockExecutor.submit(new Runnable() {
-			@Override
-			public void run(){
-				synchronized (ProjectCommandExecutor.this) {
-					checkState();
-					if (eCommand.canStart()){
-						runCommand(eCommand);
-					} else {
-						queue.add(eCommand);
-					}
-				}
+		synchronized (ProjectCommandExecutor.this) {
+			checkState();
+			if (eCommand.canStart()){
+				runCommand(eCommand);
+			} else {
+				queue.add(eCommand);
 			}
-		});
+		}
 	}
 	
 	private void runCommand(IExecutorCommand eCommand){
 		ListenableFuture future = commandExecutor.submit(eCommand);
 		Futures.addCallback(future, new CommandCleaner(eCommand),
-			lockExecutor);
+			MoreExecutors.sameThreadExecutor());
 	}
 	
 	private void executePossibleCommands(){
-		lockExecutor.submit(new Runnable() {
-			@Override
-			public void run(){
-				synchronized (ProjectCommandExecutor.this) {
-					Iterator<IExecutorCommand> iter = queue.iterator();
-					while (iter.hasNext()) {
-						IExecutorCommand eCommand = iter.next();
-						if (eCommand.canStart()) {
-							iter.remove();
-							runCommand(eCommand);
-						}
-					}
-					if (canStop()) {
-						ProjectCommandExecutor.this.notify();
-					}
+		synchronized (ProjectCommandExecutor.this) {
+			Iterator<IExecutorCommand> iter = queue.iterator();
+			while (iter.hasNext()) {
+				IExecutorCommand eCommand = iter.next();
+				if (eCommand.canStart()) {
+					iter.remove();
+					runCommand(eCommand);
 				}
 			}
-		});
+			if (canStop()) {
+				ProjectCommandExecutor.this.notify();
+			}
+		}
 	}
 
 	protected void initEmptyAndWaitTillEmpty(){
@@ -123,34 +108,16 @@ public class ProjectCommandExecutor{
 		super.finalize();
 		stop();
 	}
-
-	public void flushAddedJobs() throws InterruptedException {
-		// We want to make sure that all jobs added before start went through lockExecutor
-		// I hope that executors wait queue is FIFO ...
-		final Semaphore semaphore = new Semaphore(1);
-		semaphore.acquire();
-		lockExecutor.submit(new Runnable() {
-			@Override
-			public void run() {
-				semaphore.release();
-			}
-		});
-		semaphore.acquire();
-	}
 	
 	public void stop() throws InterruptedException{
 		log.info("STARTED Shutting down executors");
-		flushAddedJobs();
 		initEmptyAndWaitTillEmpty();
 		commandExecutor.shutdown();
-		commandExecutor.awaitTermination(1, TimeUnit.MINUTES);
-		if (!commandExecutor.isTerminated()) {
+		boolean terminated = commandExecutor.awaitTermination(1, TimeUnit.MINUTES);
+		if (terminated) {
+			log.info("Command inner executor closed");
+		} else {
 			log.error("FAILED to shutdown commandExecutor");
-		}
-		lockExecutor.shutdown();
-		lockExecutor.awaitTermination(1, TimeUnit.MINUTES);
-		if (!lockExecutor.isTerminated()) {
-			log.error("FAILED to shutdown lockExecutor");
 		}
 		log.info("DONE Shutting down executors");
 	}
