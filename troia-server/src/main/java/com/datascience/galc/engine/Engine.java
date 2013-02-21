@@ -179,8 +179,8 @@ class ReportGenerator {
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);
 			sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t"); 
-			sb.append(d.getEvaluationLabel() != null ? d.getEvaluationLabel().getValue().getValue() : "null" + "\t"); 
-			sb.append(d.getEvaluationLabel() != null ? d.getEvaluationLabel().getValue().getZeta() : "null");
+			sb.append(d.getEvaluationLabel() != null ? d.getEvaluationLabel().getValue() : "null" + "\t"); 
+			sb.append(d.getEvaluationLabel() != null ? d.getEvaluationLabel().getZeta() : "null");
 		  sb.append("\n");
 			
 		}
