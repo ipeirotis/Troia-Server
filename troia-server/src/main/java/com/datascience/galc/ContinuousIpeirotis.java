@@ -30,7 +30,7 @@ public class ContinuousIpeirotis {
 	}
 
 	protected Double getLabel(AssignedLabel<ContValue> assign){
-		return assign.getLabel().getValue().getValue();
+		return assign.getLabel().getValue();
 	}
 
 	private void initWorkers() {
@@ -140,7 +140,7 @@ public class ContinuousIpeirotis {
 				//d.setEst_zeta(zeta / betasum);
 				newZeta = zeta / betasum;
 			} else {
-				oldZeta = object.getGoldLabel().getValue().getZeta();
+				oldZeta = object.getGoldLabel().getZeta();
 				newZeta = oldZeta;
 			}
 

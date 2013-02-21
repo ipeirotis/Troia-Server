@@ -6,7 +6,6 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
 import com.datascience.core.storages.DataJSON.ShallowAssign;
 import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
@@ -34,7 +33,7 @@ public class AssignsCommands {
 				Data<ContValue> data = project.getData();
 				Worker<ContValue> worker = data.getOrCreateWorker(al.worker);
 				LObject<ContValue> object = data.getOrCreateObject(al.object);
-				data.addAssign(new AssignedLabel<ContValue>(worker, object, new Label<ContValue>(al.label)));
+				data.addAssign(new AssignedLabel<ContValue>(worker, object, al.label));
 				setResult("Assigns added");
 			}
 		}

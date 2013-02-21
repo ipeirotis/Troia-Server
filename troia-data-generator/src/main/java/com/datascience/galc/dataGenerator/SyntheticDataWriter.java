@@ -46,7 +46,7 @@ public class SyntheticDataWriter {
 				String line = al.getWorker().getName() + "\t" + 
 						al.getLobject().getName() + "\t" + 
 						// TODO: is it correct?
-						al.getLabel().getValue().getValue() + "\n";
+						al.getLabel().getValue() + "\n";
 				bw.write(line);
 			}
 		} finally {
@@ -81,7 +81,7 @@ public class SyntheticDataWriter {
 		try {
 			for (LObject<ContValue> lo : lObjects) {
 				if (lo.isEvaluation()) {
-					ContValue contValue = lo.getEvaluationLabel().getValue();
+					ContValue contValue = lo.getEvaluationLabel();
 					String line = lo.getName() + "\t" +
 							contValue.getValue() + "\t" +
 							contValue.getZeta() + "\n";
@@ -100,7 +100,7 @@ public class SyntheticDataWriter {
 		try {
 			for (LObject<ContValue> lo : lObjects) {
 				if (lo.isGold()) {
-					ContValue contValue = lo.getGoldLabel().getValue();
+					ContValue contValue = lo.getGoldLabel();
 					String line = lo.getName() + "\t" +
 							contValue.getValue() + "\t" +
 							contValue.getZeta() + "\n";

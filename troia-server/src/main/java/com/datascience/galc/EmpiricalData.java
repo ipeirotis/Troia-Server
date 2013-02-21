@@ -5,7 +5,6 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
 
 
@@ -30,10 +29,9 @@ public class EmpiricalData extends Data<ContValue> {
 			Double value = Double.parseDouble(entries[2]);
 
 			LObject<ContValue> lObject = getOrCreateObject(objectname);
-			Label<ContValue> label = new Label<ContValue>(new ContValue(value));
 
 			Worker<ContValue> worker = getOrCreateWorker(workername);
-			AssignedLabel<ContValue> al = new AssignedLabel<ContValue>(worker, lObject, label);
+			AssignedLabel<ContValue> al = new AssignedLabel<ContValue>(worker, lObject, new ContValue(value));
 			addAssign(al);
 		}
 	}
@@ -55,7 +53,7 @@ public class EmpiricalData extends Data<ContValue> {
 			Double correctZeta = Double.parseDouble(entries[2]);
 
 			LObject<ContValue> d = getOrCreateObject(objectname);
-			d.setGoldLabel(new Label<ContValue>(new ContValue(correctValue, correctZeta)));
+			d.setGoldLabel(new ContValue(correctValue, correctZeta));
 			addGoldObject(d);
 		}
 	}
@@ -98,7 +96,7 @@ public class EmpiricalData extends Data<ContValue> {
 			Double zeta = Double.parseDouble(entries[2]);
 
 			LObject<ContValue> d = getOrCreateObject(objectname);
-			d.setEvaluationLabel(new Label<ContValue>(new ContValue(value, zeta)));
+			d.setEvaluationLabel(new ContValue(value, zeta));
 			addEvaluationObject(d);
 		}
 	}

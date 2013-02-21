@@ -9,8 +9,8 @@ import com.google.common.base.Objects;
 public class LObject<T> {
 
 	protected String name;
-	protected Label<T> goldLabel;
-	protected Label<T> evaluationLabel;
+	protected T goldLabel;
+	protected T evaluationLabel;
 
 	public LObject(String name){
 		this.name = name;
@@ -32,19 +32,19 @@ public class LObject<T> {
 		return evaluationLabel != null;
 	}
 
-	public Label<T> getGoldLabel(){
+	public T getGoldLabel(){
 		return goldLabel;
 	}
 
-	public void setGoldLabel(Label<T> label){
+	public void setGoldLabel(T label){
 		goldLabel = label;
 	}
 
-	public Label<T> getEvaluationLabel(){
+	public T getEvaluationLabel(){
 		return evaluationLabel;
 	}
 
-	public void setEvaluationLabel(Label<T> label){
+	public void setEvaluationLabel(T label){
 		evaluationLabel = label;
 	}
 
