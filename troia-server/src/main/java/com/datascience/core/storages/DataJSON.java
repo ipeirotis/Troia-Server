@@ -14,7 +14,6 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
 import com.datascience.galc.WorkerContResults;
 import com.google.gson.Gson;
@@ -61,7 +60,7 @@ public class DataJSON {
 
 				Worker<T> worker = data.getWorker(sassign.worker);
 				LObject<T> object = data.getObject(sassign.object);
-				data.addAssign(new AssignedLabel<T>(worker, object, new Label<T>(sassign.label)));
+				data.addAssign(new AssignedLabel<T>(worker, object, sassign.label));
 			}
 
 			return data;
@@ -113,7 +112,7 @@ public class DataJSON {
 		public ShallowAssign(AssignedLabel<T> assign){
 			worker = assign.getWorker().getName();
 			object = assign.getLobject().getName();
-			label = assign.getLabel().getValue();
+			label = assign.getLabel();
 		}
 	}
 
@@ -181,20 +180,6 @@ public class DataJSON {
 		@Override
 		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());
-		}
-	}
-	
-//	private static class SimpleObjectSerializer<T> implements JsonSerializer<LObject<T>> {
-//		@Override
-//		public JsonElement serialize(LObject<T> obj, Type type, JsonSerializationContext ctx) {
-//			return new JsonPrimitive(obj.getName());
-//		}
-//	}
-	
-	public static class SimpleLabelSerializer<T> implements JsonSerializer<Label<T>> {
-		@Override
-		public JsonElement serialize(Label<T> label, Type type, JsonSerializationContext ctx) {
-			return ctx.serialize(label.getValue());
 		}
 	}
 }

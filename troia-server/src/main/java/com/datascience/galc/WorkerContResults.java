@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
 
 public class WorkerContResults {
@@ -61,7 +60,7 @@ public class WorkerContResults {
 		double mu_worker = 0.0;
 		double mu_square = 0.0;
 		for (AssignedLabel<ContValue> al : labels) {
-			double label = al.getLabel().getValue().getValue();
+			double label = al.getLabel().getValue();
 			mu_worker += label;
 			mu_square += Math.pow(label, 2);
 		}
@@ -75,9 +74,9 @@ public class WorkerContResults {
 		}
 
 		for (AssignedLabel<ContValue> al : labels) {
-			double label = al.getLabel().getValue().getValue();
+			double label = al.getLabel().getValue();
 			Double z = (label - getEst_mu()) / getEst_sigma();
-			AssignedLabel zl = new AssignedLabel<ContValue>(worker, al.getLobject(), new Label<ContValue>(new ContValue(z)));
+			AssignedLabel zl = new AssignedLabel<ContValue>(worker, al.getLobject(), new ContValue(z));
 			getZetaValues().add(zl);
 		}
 	}

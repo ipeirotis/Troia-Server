@@ -5,7 +5,6 @@ import java.util.Collection;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
 import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.galc.ContinuousProject;
@@ -29,7 +28,7 @@ public class GoldObjectsCommands {
 			Data<ContValue> data = project.getData();
 			for (ShallowGoldObject<ContValue> obj : goldObjects.objects){
 				LObject<ContValue> object = data.getOrCreateObject(obj.object);
-				object.setGoldLabel(new Label<ContValue>(obj.label));
+				object.setGoldLabel(obj.label);
 				data.addGoldObject(object);
 			}
 			setResult("Gold objects added");			
