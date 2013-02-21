@@ -48,6 +48,10 @@ public class ServiceComponentsFactory {
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}
+	
+	public IRandomUniqIDGenerator loadIdGenerator(){
+		return new RandomUniqIDGenerators.PrefixAdderDecorator("RANDOM__", new RandomUniqIDGenerators.NumberAndDate());
+	}
 
 	public CommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
 		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer);

@@ -1,5 +1,9 @@
 package com.datascience.core.storages;
 
+import java.util.concurrent.ExecutionException;
+
+import org.apache.log4j.Logger;
+
 import com.datascience.core.Job;
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
@@ -7,8 +11,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
-import java.util.concurrent.ExecutionException;
-import org.apache.log4j.Logger;
 
 /**
  *

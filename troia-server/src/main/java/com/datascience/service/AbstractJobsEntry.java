@@ -15,7 +15,6 @@ import com.sun.jersey.spi.resource.Singleton;
 @Singleton
 public abstract class AbstractJobsEntry {
 	
-	private static final String RANDOM_PREFIX = "RANDOM__";
 	
 	@Context ServletContext context;
 	
@@ -26,8 +25,7 @@ public abstract class AbstractJobsEntry {
 	
 	@PostConstruct
 	public void postConstruct(){
-		jidGenerator = new RandomUniqIDGenerators.PrefixAdderDecorator(RANDOM_PREFIX,
-				new RandomUniqIDGenerators.NumberAndDate());
+		jidGenerator = (IRandomUniqIDGenerator) context.getAttribute(Constants.ID_GENERATOR);
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 		jobFactory = new JobFactory();

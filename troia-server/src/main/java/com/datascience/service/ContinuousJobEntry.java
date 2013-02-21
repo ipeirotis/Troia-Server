@@ -1,8 +1,5 @@
 package com.datascience.service;
 
-import java.util.Collection;
-import java.util.logging.Logger;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -13,14 +10,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
 import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
-import com.datascience.core.storages.JSONUtils;
-import com.datascience.core.storages.DataJSON.ShallowAssign;
-import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GALCommandBase;
