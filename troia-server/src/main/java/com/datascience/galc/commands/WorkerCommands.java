@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Worker;
-import com.datascience.galc.ContinuousProject;
 
 /**
  *
@@ -14,8 +13,8 @@ public class WorkerCommands {
 	
 	static public class GetWorkers extends GALCommandBase<Collection<Worker<ContValue>>> {
 		
-		public GetWorkers(ContinuousProject cp){
-			super(cp, false);
+		public GetWorkers(){
+			super(false);
 		}
 		
 		@Override
@@ -27,8 +26,8 @@ public class WorkerCommands {
 	static public class GetWorker extends GALCommandBase<Worker<ContValue>> {
 				
 		String workerId;
-		public GetWorker(ContinuousProject cp, String workerId){
-			super(cp, false);
+		public GetWorker(String workerId){
+			super(false);
 			this.workerId = workerId;
 		}
 		

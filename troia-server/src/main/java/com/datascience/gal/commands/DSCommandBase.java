@@ -1,5 +1,6 @@
 package com.datascience.gal.commands;
 
+import com.datascience.core.Job;
 import com.datascience.executor.ProjectCommand;
 import com.datascience.gal.AbstractDawidSkene;
 
@@ -11,8 +12,13 @@ public abstract class DSCommandBase<T> extends ProjectCommand<T> {
 
 	protected AbstractDawidSkene ads;
 	
-	public DSCommandBase(AbstractDawidSkene ads, boolean modifies){
+	public DSCommandBase(boolean modifies){
 		super(modifies);
-		this.ads = ads;
+	}
+	
+	@Override
+	public void prepareExecution() throws Exception{
+		Job job = getJob();
+		ads = (AbstractDawidSkene) job.getProject();
 	}
 }

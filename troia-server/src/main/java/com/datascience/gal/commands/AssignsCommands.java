@@ -1,10 +1,10 @@
 package com.datascience.gal.commands;
 
-import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Datum;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.datascience.gal.AssignedLabel;
+import com.datascience.gal.Datum;
 
 /**
  *
@@ -16,13 +16,13 @@ public class AssignsCommands {
 
 		private Collection<AssignedLabel> labels;
 		
-		public AddAssigns(AbstractDawidSkene ads, Collection<AssignedLabel> labels){
-			super(ads, true);
+		public AddAssigns(Collection<AssignedLabel> labels){
+			super(true);
 			this.labels = labels;
 		}
 		
-		public AddAssigns(AbstractDawidSkene ads, AssignedLabel label){
-			super(ads, true);
+		public AddAssigns(AssignedLabel label){
+			super(true);
 			labels = new ArrayList<AssignedLabel>(1);
 			labels.add(label);
 		}
@@ -36,8 +36,8 @@ public class AssignsCommands {
 	
 	static public class GetAssigns extends DSCommandBase<Collection<AssignedLabel>> {
 		
-		public GetAssigns(AbstractDawidSkene ads){
-			super(ads, false);
+		public GetAssigns(){
+			super(false);
 		}
 		
 		@Override
