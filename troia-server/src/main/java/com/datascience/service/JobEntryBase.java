@@ -17,7 +17,7 @@ import javax.ws.rs.core.UriInfo;
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.CommandStatusesContainer;
-import com.datascience.executor.ProjectCommand;
+import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**
@@ -52,7 +52,7 @@ public abstract class JobEntryBase<T> {
 		Logger.getAnonymousLogger().info(uriInfo.getPath());
 	}
 	
-	protected Response buildResponseOnCommand(ProjectCommand command){
+	protected Response buildResponseOnCommand(JobCommand command){
 		command.setJobId(jid);
 		command.setJobStorage(jobStorage);
 		RequestExecutorCommand rec = new RequestExecutorCommand(

@@ -1,14 +1,14 @@
 package com.datascience.gal.commands;
 
 import com.datascience.core.Job;
-import com.datascience.executor.ProjectCommand;
+import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 
 /**
  * T is result type
  * @author konrad
  */
-public abstract class DSCommandBase<T> extends ProjectCommand<T> {
+public abstract class DSCommandBase<T> extends JobCommand<T> {
 
 	protected AbstractDawidSkene ads;
 	

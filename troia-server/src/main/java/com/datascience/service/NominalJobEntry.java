@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.datascience.core.storages.JSONUtils;
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
@@ -22,7 +23,6 @@ import com.datascience.gal.commands.DatumCommands;
 import com.datascience.gal.commands.EvaluationCommands;
 import com.datascience.gal.commands.JobCommands;
 import com.datascience.gal.commands.PredictionCommands;
-import com.datascience.gal.commands.DSCommandBase;
 import com.datascience.gal.commands.WorkerCommands;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
@@ -33,7 +33,6 @@ import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
-import com.datascience.gal.AbstractDawidSkene;
 
 
 /**
