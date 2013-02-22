@@ -13,4 +13,5 @@ public class Constants {
 	public static final String COMMAND_EXECUTOR = "COMMAND_EXECUTOR";
 	public static final String COMMAND_STATUSES_CONTAINER = "COMMNAD_STATUSES_CONTAINER";
 	public static final String ID_GENERATOR = "ID_GENERATOR";
+	public static final String JOBS_MANAGER = "JOBS_MANAGER";
 }

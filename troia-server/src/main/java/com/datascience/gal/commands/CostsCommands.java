@@ -1,9 +1,9 @@
 package com.datascience.gal.commands;
 
-import com.datascience.gal.AbstractDawidSkene;
+import java.util.Collection;
+
 import com.datascience.gal.Category;
 import com.datascience.gal.MisclassificationCost;
-import java.util.Collection;
 
 /**
  *
@@ -15,8 +15,8 @@ public class CostsCommands {
 
 		private Collection<MisclassificationCost> costs;
 		
-		public SetCosts(AbstractDawidSkene ads, Collection<MisclassificationCost> costs){
-			super(ads, true);
+		public SetCosts(Collection<MisclassificationCost> costs){
+			super(true);
 			this.costs = costs;
 		}
 		
@@ -31,8 +31,8 @@ public class CostsCommands {
 	 * */
 	static public class GetCosts extends DSCommandBase<Collection<Category>> {
 		
-		public GetCosts(AbstractDawidSkene ads){
-			super(ads, false);
+		public GetCosts(){
+			super(false);
 		}
 		
 		@Override

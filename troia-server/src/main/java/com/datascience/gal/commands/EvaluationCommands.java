@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.DatumValue;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
@@ -19,9 +18,8 @@ public class EvaluationCommands {
 
 		private DataEvaluator dataEvaluator;
 		
-		public GetCost(AbstractDawidSkene ads,
-				DataEvaluator dataEvaluator){
-			super(ads, false);
+		public GetCost(DataEvaluator dataEvaluator){
+			super(false);
 			this.dataEvaluator = dataEvaluator;
 		}
 		
@@ -39,9 +37,8 @@ public class EvaluationCommands {
 		
 		private DataEvaluator dataEvaluator;
 		
-		public GetQuality(AbstractDawidSkene ads,
-				DataEvaluator dataEvaluator){
-			super(ads, false);
+		public GetQuality(DataEvaluator dataEvaluator){
+			super(false);
 			this.dataEvaluator = dataEvaluator;
 		}
 		

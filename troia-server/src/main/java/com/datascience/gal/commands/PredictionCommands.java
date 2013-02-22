@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.DatumClassification;
 import com.datascience.gal.DatumValue;
 import com.datascience.gal.Quality;
@@ -23,8 +22,8 @@ public class PredictionCommands {
 
 		private int iterations;
 		
-		public Compute(AbstractDawidSkene ads, int iterations){
-			super(ads, true);
+		public Compute(int iterations){
+			super(true);
 			this.iterations = iterations;
 		}
 		
@@ -40,9 +39,9 @@ public class PredictionCommands {
 		private DecisionEngine decisionEngine;
 
 		
-		public GetPredictedCategory(AbstractDawidSkene ads, ILabelProbabilityDistributionCalculator lpd,
+		public GetPredictedCategory(ILabelProbabilityDistributionCalculator lpd,
 				IObjectLabelDecisionAlgorithm lda){
-			super(ads, false);
+			super(false);
 			decisionEngine = new DecisionEngine(lpd, null, lda);
 		}
 		
@@ -61,10 +60,9 @@ public class PredictionCommands {
 		
 		private DecisionEngine decisionEngine;
 		
-		public GetCost(AbstractDawidSkene ads,
-				ILabelProbabilityDistributionCalculator lpd,
+		public GetCost(ILabelProbabilityDistributionCalculator lpd,
 				ILabelProbabilityDistributionCostCalculator lca){
-			super(ads, false);
+			super(false);
 			decisionEngine = new DecisionEngine(lpd, lca, null);
 		}
 		
@@ -82,10 +80,9 @@ public class PredictionCommands {
 		
 		private DecisionEngine decisionEngine;
 		
-		public GetQuality(AbstractDawidSkene ads,
-				ILabelProbabilityDistributionCalculator lpd,
+		public GetQuality(ILabelProbabilityDistributionCalculator lpd,
 				ILabelProbabilityDistributionCostCalculator lca){
-			super(ads, false);
+			super(false);
 			decisionEngine = new DecisionEngine(lpd, lca, null);
 		}
 		
