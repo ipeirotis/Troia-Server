@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Datum;
 import com.datascience.gal.Quality;
 import com.datascience.gal.Worker;
@@ -23,8 +22,8 @@ public class WorkerCommands {
 
 		private String workerId;
 		
-		public GetWorker(AbstractDawidSkene ads, String workerId){
-			super(ads, false);
+		public GetWorker(String workerId){
+			super(false);
 			this.workerId = workerId;
 		}
 		
@@ -38,8 +37,8 @@ public class WorkerCommands {
 	
 	static public class GetWorkers extends DSCommandBase<Map<String, Map<String, Object>>> {
 		
-		public GetWorkers(AbstractDawidSkene ads){
-			super(ads, false);
+		public GetWorkers(){
+			super(false);
 		}
 		
 		@Override
@@ -57,8 +56,8 @@ public class WorkerCommands {
 	static public class GetWorkersQuality extends DSCommandBase<Collection<WorkerValue>> {
 		private WorkerQualityCalculator wqc;
 		
-		public GetWorkersQuality(AbstractDawidSkene ads, WorkerQualityCalculator wqc){
-			super(ads, false);
+		public GetWorkersQuality(WorkerQualityCalculator wqc){
+			super(false);
 			this.wqc = wqc;
 		}
 		

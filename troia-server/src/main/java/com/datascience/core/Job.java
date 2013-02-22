@@ -1,9 +1,5 @@
 package com.datascience.core;
 
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import com.datascience.executor.NotSafeRWLock;
 import com.google.common.base.Objects;
 
 
@@ -14,7 +10,6 @@ public class Job<T> {
 	
 	T project;
 	String id;
-	ReadWriteLock rwLock;
 	
 	public T getProject() {
 		return project;
@@ -24,14 +19,9 @@ public class Job<T> {
 		return id;
 	}
 
-	public ReadWriteLock getRWLock() {
-		return rwLock;
-	}
-	
 	public Job(T project, String id){
 		this.id = id;
 		this.project = project;
-		rwLock = new NotSafeRWLock();
 	}
 
 	@Override

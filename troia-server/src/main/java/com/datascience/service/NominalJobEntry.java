@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.datascience.core.storages.JSONUtils;
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
@@ -22,7 +23,6 @@ import com.datascience.gal.commands.DatumCommands;
 import com.datascience.gal.commands.EvaluationCommands;
 import com.datascience.gal.commands.JobCommands;
 import com.datascience.gal.commands.PredictionCommands;
-import com.datascience.gal.commands.DSCommandBase;
 import com.datascience.gal.commands.WorkerCommands;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
@@ -33,7 +33,6 @@ import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.gal.decision.WorkerEstimator;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
-import com.datascience.gal.AbstractDawidSkene;
 
 
 /**
@@ -49,105 +48,91 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@Path("")
 	@GET
 	public Response getJobInfo(){
-		DSCommandBase command = new JobCommands.GetJobInfo(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new JobCommands.GetJobInfo());
 	}
 	
 	@Path("categories/")
 	@GET
 	public Response getCategories(){
-		DSCommandBase command = new CategoriesCommands.GetCategories(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new CategoriesCommands.GetCategories());
 	}
 
 	@Path("costs/")
 	@POST
 	public Response setCosts(@FormParam("costs") String sCosts){
 		Collection<MisclassificationCost> costs = serializer.parse(sCosts, JSONUtils.misclassificationCostSetType);
-		DSCommandBase command = new CostsCommands.SetCosts(job.getProject(), costs);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new CostsCommands.SetCosts(costs));
 	}
 	
 	@Path("costs/")
 	@GET
 	public Response getCosts(){
-		DSCommandBase command = new CostsCommands.GetCosts(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new CostsCommands.GetCosts());
 	}
 	
 	@Path("labels/markAsGold/")
 	@POST
 	public Response markAsGold(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		DSCommandBase command = new DatumCommands.MarkDataAsGold(job.getProject(), labels);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.MarkDataAsGold(labels));
 	}
 	
 	@Path("assignedLabels/")
 	@POST
 	public Response addAssigns(@FormParam("labels") String labelsString){
 		Collection<AssignedLabel> labels = serializer.parse(labelsString, JSONUtils.assignedLabelSetType);
-		DSCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), labels);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new AssignsCommands.AddAssigns(labels));
 	}
 	
 	@Path("assignedLabels/")
 	@GET
 	public Response getAssigns(){
-		DSCommandBase command = new AssignsCommands.GetAssigns(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new AssignsCommands.GetAssigns());
 	}
 	
 	@Path("goldData/")
 	@POST
 	public Response addGoldData(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		DSCommandBase command = new DatumCommands.AddGoldData(job.getProject(), labels);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.AddGoldData(labels));
 	}
 	
 	@Path("goldData/")
 	@GET
 	public Response getGoldData(){
-		DSCommandBase command = new DatumCommands.GetGoldData(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.GetGoldData());
 	}
 	
 	@Path("evaluationData/")
 	@POST
 	public Response addEvaluationData(@FormParam("labels") String labelsString){
 		Collection<CorrectLabel> labels = serializer.parse(labelsString, JSONUtils.correctLabelSetType);
-		DSCommandBase command = new DatumCommands.AddEvaluationData(job.getProject(), labels);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.AddEvaluationData(labels));
 	}
 	
 	@Path("evaluationData/")
 	@GET
 	public Response getEvaluationData(){
-		DSCommandBase command = new DatumCommands.GetEvaluationData(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.GetEvaluationData());
 	}
 	
 	@Path("data/")
 	@POST
 	public Response addData(@FormParam("objects") String objectsString){
 		Collection<String> objects = serializer.parse(objectsString, JSONUtils.stringSetType);
-		DSCommandBase command = new DatumCommands.AddData(job.getProject(), objects);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.AddData(objects));
 	}
 	
 	@Path("data/")
 	@GET
 	public Response getData(@DefaultValue("all") @QueryParam("type") String type){
-		DSCommandBase command = new DatumCommands.GetData(job.getProject(), type);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.GetData(type));
 	}
 	
 	@Path("data/{id: [a-zA-Z_0-9/:.-]+}")
 	@GET
 	public Response getDatum(@PathParam("id") String did){
-		DSCommandBase command = new DatumCommands.GetDatum(job.getProject(), did);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.GetDatum(did));
 	}
 	
 	@Path("data/{id: [a-zA-Z_0-9/:.-]+}/categoryProbability")
@@ -155,29 +140,25 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	public Response getDatumCategoryProbability(@PathParam("id") String did, 
 			@DefaultValue("DS") @QueryParam("type") String type){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(type);
-		DSCommandBase command = new DatumCommands.GetDatumCategoryProbability(job.getProject(), did, lpdc);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new DatumCommands.GetDatumCategoryProbability( did, lpdc));
 	}
 	
 	@Path("workers/{id}")
 	@GET
 	public Response getWorker(@PathParam("id") String wid){
-		DSCommandBase command = new WorkerCommands.GetWorker(job.getProject(), wid);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new WorkerCommands.GetWorker( wid));
 	}
 	
 	@Path("workers/")
 	@GET
 	public Response getWorkers(){
-		DSCommandBase command = new WorkerCommands.GetWorkers(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new WorkerCommands.GetWorkers());
 	}
 	
 	@Path("compute/")
 	@POST
 	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
-		DSCommandBase command = new PredictionCommands.Compute(job.getProject(), iterations);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new PredictionCommands.Compute( iterations));
 	}
 	
 	@Path("prediction/data/")
@@ -186,8 +167,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		DSCommandBase command = new PredictionCommands.GetPredictedCategory(job.getProject(), lpdc, olda);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new PredictionCommands.GetPredictedCategory( lpdc, olda));
 	}
 	
 	@Path("prediction/dataCost/")
@@ -196,8 +176,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new PredictionCommands.GetCost(job.getProject(), lpdc, lpdcc);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new PredictionCommands.GetCost( lpdc, lpdcc));
 	}
 	
 	@Path("prediction/dataQuality/")
@@ -206,8 +185,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new PredictionCommands.GetQuality(job.getProject(), lpdc, lpdcc);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new PredictionCommands.GetQuality( lpdc, lpdcc));
 	}
 
 	@Path("evaluation/dataCost/")
@@ -216,8 +194,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		DSCommandBase command = new EvaluationCommands.GetCost(job.getProject(), dataEvaluator);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new EvaluationCommands.GetCost( dataEvaluator));
 	}
 	
 	@Path("evaluation/dataQuality/")
@@ -226,23 +203,20 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		DSCommandBase command = new EvaluationCommands.GetQuality(job.getProject(), dataEvaluator);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new EvaluationCommands.GetQuality( dataEvaluator));
 	}
 	
 	@Path("evaluation/workersQuality")
 	@GET
 	public Response getEvaluatedWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getProject(), new WorkerEvaluator(lpdcc));
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new WorkerCommands.GetWorkersQuality( new WorkerEvaluator(lpdcc)));
 	}
 	
 	@Path("prediction/workersQuality")
 	@GET
 	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		DSCommandBase command = new WorkerCommands.GetWorkersQuality(job.getProject(), new WorkerEstimator(lpdcc));
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new WorkerCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
 	}
 }

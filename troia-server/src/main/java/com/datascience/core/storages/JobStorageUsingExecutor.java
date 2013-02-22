@@ -1,8 +1,9 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
-import com.datascience.gal.commands.JobStorageCommands;
 import com.datascience.executor.ProjectCommandExecutor;
+import com.datascience.gal.commands.JobStorageCommands;
+import com.datascience.service.JobsManager;
 
 /**
  *
@@ -12,10 +13,14 @@ public class JobStorageUsingExecutor implements IJobStorage{
 
 	protected IJobStorage internalStorage;
 	protected ProjectCommandExecutor executor;
+	protected JobsManager jobsManager;
 	
-	public JobStorageUsingExecutor(IJobStorage internalStorage, ProjectCommandExecutor executor){
+	public JobStorageUsingExecutor(IJobStorage internalStorage, 
+			ProjectCommandExecutor executor,
+			JobsManager jobsManager){
 		this.internalStorage = internalStorage;
 		this.executor = executor;
+		this.jobsManager = jobsManager;
 	}
 	
 	@Override
@@ -26,12 +31,12 @@ public class JobStorageUsingExecutor implements IJobStorage{
 
 	@Override
 	public void add(Job job) throws Exception {
-		executor.add(new JobStorageCommands.Adder(internalStorage, job));
+		executor.add(new JobStorageCommands.Adder(internalStorage, jobsManager, job));
 	}
 
 	@Override
 	public void remove(Job job) throws Exception {
-		executor.add(new JobStorageCommands.Remover(internalStorage, job));
+		executor.add(new JobStorageCommands.Remover(internalStorage, jobsManager, job));
 	}
 
 	@Override

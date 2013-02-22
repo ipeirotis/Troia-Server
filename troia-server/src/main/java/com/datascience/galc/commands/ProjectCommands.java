@@ -1,10 +1,9 @@
 package com.datascience.galc.commands;
 
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
 import java.util.Collection;
 
-import com.datascience.galc.ContinuousProject;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Data;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.WorkerContResults;
 
@@ -19,8 +18,8 @@ public class ProjectCommands {
 		int iterations;
 		double epsilon;
 		
-		public Compute(ContinuousProject cp, int iterations, double epsilon){
-			super(cp, true);
+		public Compute(int iterations, double epsilon){
+			super(true);
 			this.iterations = iterations;
 			this.epsilon = epsilon;
 		}
@@ -34,8 +33,8 @@ public class ProjectCommands {
 	
 	static public class GetProjectInfo extends GALCommandBase<Data<ContValue>> {
 
-		public GetProjectInfo(ContinuousProject cp){
-			super(cp, false);
+		public GetProjectInfo(){
+			super(false);
 		}
 		
 		@Override
@@ -46,8 +45,8 @@ public class ProjectCommands {
 	
 	static public class ObjectsPrediction extends GALCommandBase<Collection<DatumContResults>> {
 
-		public ObjectsPrediction(ContinuousProject cp){
-			super(cp, true);
+		public ObjectsPrediction(){
+			super(true);
 		}
 		
 		@Override
@@ -58,8 +57,8 @@ public class ProjectCommands {
 
 	static public class WorkersPrediction extends GALCommandBase<Collection<WorkerContResults>> {
 
-		public WorkersPrediction(ContinuousProject cp){
-			super(cp, true);
+		public WorkersPrediction(){
+			super(true);
 		}
 		
 		@Override

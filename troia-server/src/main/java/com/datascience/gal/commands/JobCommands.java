@@ -12,8 +12,8 @@ public class JobCommands {
 	
 	static public class GetJobInfo extends DSCommandBase<Map<String, String>> {
 
-		public GetJobInfo(AbstractDawidSkene ads){
-			super(ads, false);
+		public GetJobInfo(){
+			super(false);
 		}
 		
 		@Override
