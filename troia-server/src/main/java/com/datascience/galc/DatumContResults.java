@@ -4,7 +4,7 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 
 public class DatumContResults {
-	
+
 	private Double							est_value;
 	private Double							est_zeta;
 
@@ -12,7 +12,7 @@ public class DatumContResults {
 	private Double 							distributionSigma;
 
 	protected LObject<ContValue> object;
-	
+
 	public DatumContResults(LObject<ContValue> object) {
 		this.object = object;
 	}
@@ -25,9 +25,9 @@ public class DatumContResults {
 	 * @return the est_value
 	 */
 	public Double getEst_value() {
-
-		this.est_value=  this.est_zeta * this.distributionSigma + this.distributionMu;
-		
+        if (est_value == null) {
+		    est_value =  est_zeta * distributionSigma + distributionMu;
+        }
 		return est_value;
 	}
 
@@ -73,5 +73,5 @@ public class DatumContResults {
 	public void setDistributionSigma(Double distributionSigma) {
 
 		this.distributionSigma = distributionSigma;
-	}	
+	}
 }
