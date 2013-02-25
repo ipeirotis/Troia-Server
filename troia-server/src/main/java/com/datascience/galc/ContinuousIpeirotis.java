@@ -77,6 +77,15 @@ public class ContinuousIpeirotis {
 			logLikelihood = getLogLikelihood();
 			diff = Math.abs(logLikelihood - pastLogLikelihood);
 		}
+		// Estimate distribution mu and sigma.
+		double mu = estimateDistributionMu();
+		double sigma = estimateDistributionSigma();
+		// Estimate objects' values. 
+		for (DatumContResults dcr : objectsResults.values()) {
+			dcr.setDistributionMu(mu);
+			dcr.setDistributionSigma(sigma);
+			dcr.getEst_value();
+		}
 		logger.info(String.format("GALC estimate STOP. iterations %d/%d, loglikelihood =%f",
 				round, max_iters, logLikelihood));
 
@@ -228,6 +237,34 @@ public class ContinuousIpeirotis {
 			diff += Math.abs(wr.getEst_rho() - oldrho);
 		}
 		return diff;
+	}
+	
+	private Double estimateDistributionSigma() {
+
+		Double nominatorSigma = 0.0;
+		Double denominatorSigma = 0.0;
+		for (WorkerContResults wcr : workersResults.values()) {
+			Double b = wcr.getBeta();
+			Double coef = Math.sqrt(b * b - b);
+			Double s = wcr.getEst_sigma();
+			nominatorSigma += coef * s;
+			denominatorSigma += b;
+		}
+		return nominatorSigma / denominatorSigma;
+	}
+	
+	private Double estimateDistributionMu() {
+
+		Double nominatorMu = 0.0;
+		Double denominatorMu = 0.0;
+		for (WorkerContResults wcr : workersResults.values()) {
+			Double b = wcr.getBeta();
+			Double coef = Math.sqrt(b * b - b);
+			Double m = wcr.getEst_mu();
+			nominatorMu += coef * m;
+			denominatorMu += b;
+		}
+		return nominatorMu / denominatorMu;
 	}
 
 	public Map<LObject<ContValue>, DatumContResults> getObjectsResults() {
