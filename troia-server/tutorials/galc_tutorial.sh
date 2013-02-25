@@ -1,7 +1,7 @@
 #!/bin/bash
 
-URL="http://localhost:8080/troia-server-0.8"
-#URL="http://project-troia.com/api"
+#URL="http://localhost:8080/troia-server-0.8"
+URL="http://project-troia.com/api"
 redirectId=0
 
 function createJob 
@@ -205,14 +205,14 @@ function galcTutorial
     loadUnassignedLabels $JobID
     compute $JobID
     waitComputationToFinish $JobID
-    
-    expectedPredictionObjects[0]='{"est_zeta":-0.1913547099132667,"object":{"name":"http://youporn.com"}}'
-    expectedPredictionObjects[1]='{"est_zeta":0.343407722905,"object":{"name":"http://sunnyfun.com","goldLabel":{"value":{"value":8.219077484951955,"zeta":0.343407722905}}}}'
-    expectedPredictionObjects[2]='{"est_zeta":-0.08366872414864963,"object":{"name":"http://sex-mission.com"}}'
-    expectedPredictionObjects[3]='{"est_zeta":0.292643407722905,"object":{"name":"http://google.com","goldLabel":{"value":{"value":10.219077484951955,"zeta":0.292643407722905}}}}'
-    expectedPredictionObjects[4]='{"est_zeta":NaN,"object":{"name":"object1"}}'
-    expectedPredictionObjects[5]='{"est_zeta":NaN,"object":{"name":"object2"}}'
-    expectedPredictionObjects[6]='{"est_zeta":-0.2965350443548846,"object":{"name":"http://yahoo.com"}}'
+   
+    expectedPredictionObjects[0]='{"est_value":0.11456418171572877,"est_zeta":-0.1913547099132667,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://youporn.com"}}'
+    expectedPredictionObjects[1]='{"est_value":0.41045876986866625,"est_zeta":0.343407722905,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://sunnyfun.com","goldLabel":{"value":8.219077484951955,"zeta":0.343407722905}}}'
+    expectedPredictionObjects[2]='{"est_value":0.17414895890312143,"est_zeta":-0.08366872414864963,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://sex-mission.com"}}'
+    expectedPredictionObjects[3]='{"est_value":0.38236987429215774,"est_zeta":0.292643407722905,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://google.com","goldLabel":{"value":10.219077484951955,"zeta":0.292643407722905}}}'
+    expectedPredictionObjects[4]='{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object1"}}'
+    expectedPredictionObjects[5]='{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object2"}}'
+    expectedPredictionObjects[6]='{"est_value":0.05636583076319032,"est_zeta":-0.2965350443548846,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://yahoo.com"}}'
 
     getPredictionObjects $JobID $expectedPredictionObjects
     

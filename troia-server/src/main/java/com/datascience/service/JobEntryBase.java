@@ -4,6 +4,8 @@
  */
 package com.datascience.service;
 
+import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.PathParam;
@@ -15,7 +17,7 @@ import javax.ws.rs.core.UriInfo;
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.CommandStatusesContainer;
-import com.datascience.executor.ProjectCommand;
+import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**
@@ -36,6 +38,7 @@ public abstract class JobEntryBase<T> {
 	ISerializer serializer;
 	CommandStatusesContainer statusesContainer;
 	IJobStorage jobStorage;
+	JobsManager jobsManager;
 	
 	@PostConstruct
 	public void postConstruct() throws Exception{
@@ -44,17 +47,16 @@ public abstract class JobEntryBase<T> {
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
 		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
+		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 		
-		Job tmp_job = jobStorage.get(jid);
-		if (tmp_job == null || !expectedClass.isAssignableFrom(tmp_job.getProject().getClass())) {
-			throw new IllegalArgumentException("Job with ID " + jid + " does not exist or is of different kind");
-		}
-		job = tmp_job;
+		Logger.getAnonymousLogger().info(uriInfo.getPath());
 	}
 	
-	protected Response buildResponseOnCommand(Job job, ProjectCommand command){
+	protected Response buildResponseOnCommand(JobCommand command){
+		command.setJobId(jid);
+		command.setJobStorage(jobStorage);
 		RequestExecutorCommand rec = new RequestExecutorCommand(
-				statusesContainer.initNewStatus(), command, job.getRWLock(), statusesContainer);
+				statusesContainer.initNewStatus(), command, jobsManager.getLock(jid), statusesContainer);
 		executor.add(rec);
 		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
 	}

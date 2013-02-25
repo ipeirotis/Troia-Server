@@ -7,7 +7,6 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
-import com.datascience.galc.ContinuousProject;
 
 /**
  *
@@ -18,8 +17,8 @@ public class ObjectCommands {
 	static public class AddObjects extends GALCommandBase<Object> {
 
 		ShallowObjectCollection objects;
-		public AddObjects(ContinuousProject cp, ShallowObjectCollection objects){
-			super(cp, true);
+		public AddObjects(ShallowObjectCollection objects){
+			super(true);
 			this.objects = objects;
 		}
 		
@@ -37,8 +36,8 @@ public class ObjectCommands {
 	
 	static public class GetObjects extends GALCommandBase<Collection<LObject<ContValue>>> {
 		
-		public GetObjects(ContinuousProject cp){
-			super(cp, false);
+		public GetObjects(){
+			super(false);
 		}
 		
 		@Override
@@ -50,8 +49,8 @@ public class ObjectCommands {
 	static public class GetObject extends GALCommandBase<LObject<ContValue>> {
 		
 		String objectId;
-		public GetObject(ContinuousProject cp, String objectId){
-			super(cp, false);
+		public GetObject(String objectId){
+			super(false);
 			this.objectId = objectId;
 		}
 		
@@ -64,8 +63,8 @@ public class ObjectCommands {
 	static public class GetObjectAssigns extends GALCommandBase<Collection<AssignedLabel<ContValue>>> {
 		
 		String objectId;
-		public GetObjectAssigns(ContinuousProject cp, String objectId){
-			super(cp, false);
+		public GetObjectAssigns(String objectId){
+			super(false);
 			this.objectId = objectId;
 		}
 		

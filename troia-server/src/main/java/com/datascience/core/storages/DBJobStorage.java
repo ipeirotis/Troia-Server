@@ -96,6 +96,7 @@ public class DBJobStorage implements IJobStorage {
 	
 	@Override
 	public <T> Job<T>  get(String id) throws SQLException {
+		logger.info("Get job from DB: " + id);
 		ResultSet dsResults = null;
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
