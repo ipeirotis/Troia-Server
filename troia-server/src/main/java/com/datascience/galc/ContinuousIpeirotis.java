@@ -77,6 +77,7 @@ public class ContinuousIpeirotis {
 			logLikelihood = getLogLikelihood();
 			diff = Math.abs(logLikelihood - pastLogLikelihood);
 		}
+        estimateObjectValues();
 		logger.info(String.format("GALC estimate STOP. iterations %d/%d, loglikelihood =%f",
 				round, max_iters, logLikelihood));
 
@@ -99,7 +100,13 @@ public class ContinuousIpeirotis {
 		return result;
 
 	}
-	
+
+    private void estimateObjectValues() {
+        for (DatumContResults dcr : objectsResults.values()) {
+            dcr.setEst_value(getAverageLabel(dcr.getObject()));
+        }
+    }
+
 	private void initObjectZetas() {
 		for (LObject<ContValue> obj : data.getObjects()){
 			DatumContResults dr = new DatumContResults(obj);
