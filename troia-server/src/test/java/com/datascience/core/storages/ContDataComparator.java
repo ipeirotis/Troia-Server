@@ -32,15 +32,13 @@ public class ContDataComparator {
 		object1 = new LObject<ContValue>("object1");
 		object2 = new LObject<ContValue>("gobject2");
 		object3 = new LObject<ContValue>("object3");
-		object2.setGoldLabel(new Label<ContValue>(new ContValue(0.42, 0.1)));
+		object2.setGoldLabel(new ContValue(0.42, 0.1));
 		data.addGoldObject(object2);
 		data.addObject(object3);
 		data.addObject(object3); // just for test ...
 
-		assign1 = new AssignedLabel<ContValue>(worker1, object1,
-				new Label<ContValue>(new ContValue(1.)));
-		assign2 = new AssignedLabel<ContValue>(worker2, object2,
-				new Label<ContValue>(new ContValue(0.5)));
+		assign1 = new AssignedLabel<ContValue>(worker1, object1, new ContValue(1.));
+		assign2 = new AssignedLabel<ContValue>(worker2, object2, new ContValue(0.5));
 
 		data.addAssign(assign1);
 		data.addAssign(assign2);

@@ -1,14 +1,14 @@
 package com.datascience.galc.dataGenerator;
 
+import org.apache.log4j.Logger;
+
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Label;
 import com.datascience.core.base.Worker;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.Utils;
 import com.datascience.galc.WorkerContResults;
-import org.apache.log4j.Logger;
 
 public class SyntheticDataGenerator {
 
@@ -59,7 +59,7 @@ public class SyntheticDataGenerator {
 			DatumContResults dcr = new DatumContResults(lo);
 			Double v = datumGenerator.nextData();
 			Double z = (v-this.dataMu)/this.dataSigma;
-			lo.setEvaluationLabel(new Label<ContValue>(new ContValue(v, z)));
+			lo.setEvaluationLabel(new ContValue(v, z));
 			data.addObjectContResults(dcr);
 		}
 		
@@ -67,8 +67,8 @@ public class SyntheticDataGenerator {
 		int currentGoldCount = 0;
 		for (LObject<ContValue> lo : data.getObjects()) {
 			if(currentGoldCount++ < goldCount) {
-				ContValue cv = lo.getEvaluationLabel().getValue();
-				lo.setGoldLabel(new Label<ContValue>(new ContValue(cv.getValue(),cv.getZeta())));
+				ContValue cv = lo.getEvaluationLabel();
+				lo.setGoldLabel(new ContValue(cv.getValue(),cv.getZeta()));
 			}
 		}
 		
@@ -86,13 +86,13 @@ public class SyntheticDataGenerator {
 			for (WorkerContResults wcr : data.getWorkerContResults()) {
 				LObject<ContValue> lo = dcr.getObject();
 				Worker<ContValue> w = wcr.getWorker();
-				Label<ContValue> label = lo.isGold() ? lo.getGoldLabel() : lo.getEvaluationLabel();
-				Double datum_z = (label.getValue().getValue() - this.dataMu) / this.dataSigma;
+				ContValue label = lo.isGold() ? lo.getGoldLabel() : lo.getEvaluationLabel();
+				Double datum_z = (label.getValue() - this.dataMu) / this.dataSigma;
 				Double label_mu = wcr.getTrueMu() + wcr.getTrueRho() * wcr.getTrueSigma() * datum_z;
 				Double label_sigma = Math.sqrt(1 - Math.pow(wcr.getTrueRho(), 2)) * wcr.getTrueSigma();
 				Generator labelGenerator = new Generator(Generator.Distribution.GAUSSIAN);
 				labelGenerator.setGaussianParameters(label_mu, label_sigma);
-				data.addAssign(new AssignedLabel<ContValue>(w, lo, new Label<ContValue>(new ContValue(labelGenerator.nextData()))));
+				data.addAssign(new AssignedLabel<ContValue>(w, lo, new ContValue(labelGenerator.nextData())));
 			}
 		}
 		

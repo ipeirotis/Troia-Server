@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.CategoryValue;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.Datum;
@@ -20,8 +19,8 @@ public class DatumCommands {
 
 		private Collection<CorrectLabel> labels;
 		
-		public MarkDataAsGold(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
-			super(ads, true);
+		public MarkDataAsGold(Collection<CorrectLabel> labels){
+			super(true);
 			this.labels = labels;
 		}
 		
@@ -36,8 +35,8 @@ public class DatumCommands {
 
 		private Collection<CorrectLabel> labels;
 		
-		public AddGoldData(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
-			super(ads, true);
+		public AddGoldData(Collection<CorrectLabel> labels){
+			super(true);
 			this.labels = labels;
 		}
 		
@@ -50,8 +49,8 @@ public class DatumCommands {
 	
 	static public class GetGoldData extends DSCommandBase<Collection<CorrectLabel>> {
 		
-		public GetGoldData(AbstractDawidSkene ads){
-			super(ads, false);
+		public GetGoldData(){
+			super(false);
 		}
 		
 		@Override
@@ -64,8 +63,8 @@ public class DatumCommands {
 
 		private Collection<CorrectLabel> labels;
 		
-		public AddEvaluationData(AbstractDawidSkene ads, Collection<CorrectLabel> labels){
-			super(ads, true);
+		public AddEvaluationData(Collection<CorrectLabel> labels){
+			super(true);
 			this.labels = labels;
 		}
 		
@@ -78,8 +77,8 @@ public class DatumCommands {
 	
 	static public class GetEvaluationData extends DSCommandBase<Collection<CorrectLabel>> {
 		
-		public GetEvaluationData(AbstractDawidSkene ads){
-			super(ads, false);
+		public GetEvaluationData(){
+			super(false);
 		}
 		
 		@Override
@@ -92,8 +91,8 @@ public class DatumCommands {
 
 		private Collection<String> objects;
 		
-		public AddData(AbstractDawidSkene ads, Collection<String> objects){
-			super(ads, true);
+		public AddData(Collection<String> objects){
+			super(true);
 			this.objects = objects;
 		}
 		
@@ -108,8 +107,8 @@ public class DatumCommands {
 		
 		private String type;
 		
-		public GetData(AbstractDawidSkene ads, String type){
-			super(ads, false);
+		public GetData(String type){
+			super(false);
 			this.type = type;
 		}
 		
@@ -134,8 +133,8 @@ public class DatumCommands {
 		
 		private String datumId;
 		
-		public GetDatum(AbstractDawidSkene ads, String datumId){
-			super(ads, false);
+		public GetDatum(String datumId){
+			super(false);
 			this.datumId = datumId;
 		}
 		
@@ -150,9 +149,9 @@ public class DatumCommands {
 		private String datumId;
 		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
 		
-		public GetDatumCategoryProbability(AbstractDawidSkene ads, String datumId,
+		public GetDatumCategoryProbability(String datumId,
 				ILabelProbabilityDistributionCalculator type){
-			super(ads, false);
+			super(false);
 			this.datumId = datumId;
 			labelProbabilityDistributionCalculator = type;
 		}

@@ -1,5 +1,6 @@
 package com.datascience.executor;
 
+
 /**
  * T is result type
  * @author konrad
@@ -32,11 +33,14 @@ public abstract class ProjectCommand<T> {
 	
 	public void execute(){
 		try {
+			prepareExecution();
 			realExecute();
 		} catch (Exception e) {
 			exception = e;
 		}
 	}
+	
+	protected abstract void prepareExecution() throws Exception;
 	
 	protected abstract void realExecute() throws Exception;
 	

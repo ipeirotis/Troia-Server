@@ -1,8 +1,5 @@
 package com.datascience.service;
 
-import java.util.Collection;
-import java.util.logging.Logger;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -13,17 +10,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
 import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
-import com.datascience.core.storages.JSONUtils;
-import com.datascience.core.storages.DataJSON.ShallowAssign;
-import com.datascience.core.storages.DataJSON.ShallowGoldObject;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
-import com.datascience.galc.commands.GALCommandBase;
 import com.datascience.galc.commands.GoldObjectsCommands;
 import com.datascience.galc.commands.ObjectCommands;
 import com.datascience.galc.commands.ProjectCommands;
@@ -42,117 +34,100 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@Path("")
 	@GET
 	public Response getJobInfo(){
-		GALCommandBase command = new ProjectCommands.GetProjectInfo(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ProjectCommands.GetProjectInfo());
 	}
 
 	@Path("objects")
 	@GET
 	public Response getObjects(){
-		GALCommandBase command = new ObjectCommands.GetObjects(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ObjectCommands.GetObjects());
 	}
 
 	@Path("objects/{oid}")
 	@GET
 	public Response getObject(@PathParam("oid") String objectId){
-		GALCommandBase command = new ObjectCommands.GetObject(job.getProject(), objectId);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ObjectCommands.GetObject(objectId));
 	}
 	
 	@Path("objects/{oid}/assigns")
 	@GET
 	public Response getObjectAssigns(@PathParam("oid") String objectId){
-		GALCommandBase command = new ObjectCommands.GetObjectAssigns(job.getProject(), objectId);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ObjectCommands.GetObjectAssigns(objectId));
 	}
 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("objects")
 	@POST
 	public Response addObjects(ShallowObjectCollection objects){
-		GALCommandBase command = new ObjectCommands.AddObjects(job.getProject(), objects);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ObjectCommands.AddObjects(objects));
 	}
 
 
 	@Path("goldObjects")
 	@GET
 	public Response getGoldObjects(){
-		GALCommandBase command = new GoldObjectsCommands.GetGoldObjects(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new GoldObjectsCommands.GetGoldObjects());
 	}
 
 	@Path("goldObjects/{oid}")
 	@GET
 	public Response getGoldObject(@PathParam("oid") String objectId){
-		GALCommandBase command = new GoldObjectsCommands.GetGoldObject(job.getProject(), objectId);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new GoldObjectsCommands.GetGoldObject(objectId));
 	}
 	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("goldObjects")
 	@POST
 	public Response addGoldObjects(ShallowGoldObjectCollection<ContValue> goldObjects){
-		GALCommandBase command = new GoldObjectsCommands.AddGoldObjects(job.getProject(), goldObjects);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new GoldObjectsCommands.AddGoldObjects(goldObjects));
 	}
 
 	@Path("assigns")
 	@GET
 	public Response getAssigns(){
-		GALCommandBase command = new AssignsCommands.GetAssigns(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new AssignsCommands.GetAssigns());
 	}
 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("assigns")
 	@POST
 	public Response addAssigns(ShallowAssignCollection<ContValue> assigns){
-		GALCommandBase command = new AssignsCommands.AddAssigns(job.getProject(), assigns);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new AssignsCommands.AddAssigns(assigns));
 	}
 
 	@Path("workers")
 	@GET
 	public Response getWorkers(){
-		GALCommandBase command = new WorkerCommands.GetWorkers(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new WorkerCommands.GetWorkers());
 	}
 
 	@Path("workers/{wid}")
 	@GET
 	public Response getWorker(@PathParam("wid") String worker){
-		GALCommandBase command = new WorkerCommands.GetWorker(job.getProject(), worker);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new WorkerCommands.GetWorker(worker));
 	}
 
 	@Path("workers/{wid}/assigns")
 	@GET
 	public Response getWorkerAssigns(@PathParam("wid") String worker){
-		GALCommandBase command = new AssignsCommands.GetWorkerAssigns(job.getProject(), worker);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new AssignsCommands.GetWorkerAssigns(worker));
 	}
 
 	@Path("compute/")
 	@POST
 	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
-		GALCommandBase command = new ProjectCommands.Compute(job.getProject(), iterations, 1e-6);
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ProjectCommands.Compute(iterations, 1e-6));
 	}
 
 	@Path("prediction/objects/")
 	@GET
 	public Response getObjectsPrediction(){
-		GALCommandBase command = new ProjectCommands.ObjectsPrediction(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ProjectCommands.ObjectsPrediction());
 	}
 
 	@Path("prediction/workers/")
 	@GET
 	public Response getWorkerQuality(){
-		GALCommandBase command = new ProjectCommands.WorkersPrediction(job.getProject());
-		return buildResponseOnCommand(job, command);
+		return buildResponseOnCommand(new ProjectCommands.WorkersPrediction());
 	}
-
 }

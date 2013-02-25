@@ -11,9 +11,9 @@ public class AssignedLabel<T> {
 
 	protected LObject<T> lobject;
 	protected Worker<T> worker;
-	protected Label<T> label;
+	protected T label;
 	
-	public AssignedLabel(Worker<T> worker, LObject<T> object, Label<T> label){
+	public AssignedLabel(Worker<T> worker, LObject<T> object, T label){
 		this.label = label;
 		this.lobject = object;
 		this.worker = worker;
@@ -27,11 +27,11 @@ public class AssignedLabel<T> {
 		this.lobject = lobject;
 	}
 
-	public Label<T> getLabel() {
+	public T getLabel() {
 		return label;
 	}
 
-	public void setLabel(Label<T> label) {
+	public void setLabel(T label) {
 		this.label = label;
 	}
 

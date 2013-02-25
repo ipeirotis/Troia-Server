@@ -29,7 +29,7 @@ public class ServiceComponentsFactory {
 		this.properties = properties;
 	}
 	
-	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor)
+	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
 			throws IOException, ClassNotFoundException, SQLException {
 		String user = properties.getProperty("USER");
 		String password = properties.getProperty("PASSWORD");
@@ -43,10 +43,14 @@ public class ServiceComponentsFactory {
 		}
 		IJobStorage internalJobStorage = new DBJobStorage(user,
 			password, db, url, serializer);
-		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor);
+		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
 		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cachesize, 10, TimeUnit.MINUTES);
 		logger.info("Job Storage loaded");
 		return jobStorage;
+	}
+	
+	public IRandomUniqIDGenerator loadIdGenerator(){
+		return new RandomUniqIDGenerators.PrefixAdderDecorator("RANDOM__", new RandomUniqIDGenerators.NumberAndDate());
 	}
 
 	public CommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
@@ -64,5 +68,9 @@ public class ServiceComponentsFactory {
 	
 	public ResponseBuilder loadResponser(ISerializer serializer) {
 		return new ResponseBuilder(serializer);
+	}
+	
+	public JobsManager loadJobsManager() {
+		return new JobsManager();
 	}
 }
