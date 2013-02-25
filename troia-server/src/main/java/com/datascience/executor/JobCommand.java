@@ -1,7 +1,5 @@
 package com.datascience.executor;
 
-import javax.resource.spi.IllegalStateException;
-
 import com.datascience.core.Job;
 import com.datascience.core.storages.IJobStorage;
 
