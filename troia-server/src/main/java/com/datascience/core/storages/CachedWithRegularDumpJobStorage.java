@@ -30,6 +30,7 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	public void stop() throws Exception {
 		dumpingService.stopAndWait();
 		dumpingService.executor.shutdown();
+		dumpingService.executor.awaitTermination(1, TimeUnit.MINUTES);
 		super.stop();
 	}
 	
