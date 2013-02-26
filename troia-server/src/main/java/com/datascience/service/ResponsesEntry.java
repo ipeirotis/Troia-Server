@@ -36,15 +36,6 @@ public class ResponsesEntry {
 		if (status == null) {
 			throw new NoSuchElementException("No status with id: " + sid);
 		}
-		switch(status.getStatus()){
-			case OK:
-				return responser.makeOKResponse(status.getData());
-			case ERROR:
-				return responser.makeExceptionResponse(status.getError());
-			case NOT_READY:
-				return responser.makeNotReadyResponse();
-			default:
-				return null;
-		}
+		return responser.makeStatusResponse(status);
 	}
 }

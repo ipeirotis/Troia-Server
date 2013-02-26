@@ -12,11 +12,13 @@ public class CommandStatus<T> {
 	private CommandStatusType status;
 	private T data;
 	private Exception exception;
+	private Double executionTimeInSeconds;
 	
-	protected CommandStatus(CommandStatusType status, T data, Exception exception){
+	protected CommandStatus(CommandStatusType status, T data, Exception exception, Double executionTimeInSeconds){
 		this.status = status;
 		this.data = data;
 		this.exception = exception;
+		this.executionTimeInSeconds = executionTimeInSeconds;
 	}
 	
 	public T getData(){
@@ -30,16 +32,20 @@ public class CommandStatus<T> {
 	public Exception getError(){
 		return exception;
 	}
-	
-	public static<T> CommandStatus<T> errorCommandStatus(Exception ex){
-		return new CommandStatus<T>(CommandStatusType.ERROR, null, ex);
+
+	public Double getExecutionTime(){
+		return executionTimeInSeconds;
 	}
 	
-	public static<T> CommandStatus<T> okCommandStatus(T data){
-		return new CommandStatus<T>(CommandStatusType.OK, data, null);
+	public static<T> CommandStatus<T> errorCommandStatus(Exception ex, Double executionTimeInSeconds){
+		return new CommandStatus<T>(CommandStatusType.ERROR, null, ex, executionTimeInSeconds);
+	}
+	
+	public static<T> CommandStatus<T> okCommandStatus(T data, Double executionTimeInSeconds){
+		return new CommandStatus<T>(CommandStatusType.OK, data, null, executionTimeInSeconds);
 	}
 	
 	public static<T> CommandStatus<T> notReadyCommandStatus(){
-		return new CommandStatus<T>(CommandStatusType.NOT_READY, null, null);
+		return new CommandStatus<T>(CommandStatusType.NOT_READY, null, null, 0.);
 	}
 }

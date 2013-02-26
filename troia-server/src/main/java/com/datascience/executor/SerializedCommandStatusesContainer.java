@@ -19,7 +19,7 @@ public class SerializedCommandStatusesContainer extends
 		if (result.getData() != null) {
 			Object serializedData = serializer.getRaw(result.getData());
 			result = new CommandStatus(result.getStatus(), new Serialized(serializedData),
-					result.getError());
+					result.getError(), result.getExecutionTime());
 		}
 		super.addCommandStatus(id, result);
 	}

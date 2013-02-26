@@ -5,6 +5,9 @@ import com.datascience.executor.CommandStatus;
 import com.datascience.executor.ProjectCommand;
 import com.datascience.gal.commands.DSCommandBase;
 import com.datascience.executor.SynchronizedCommand;
+import com.google.common.base.Stopwatch;
+
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
@@ -16,6 +19,7 @@ public class RequestExecutorCommand extends SynchronizedCommand{
 	String commandId;
 	ProjectCommand command;
 	CommandStatusesContainer statusContainer;
+	Double executionTimeInSeconds;
 	
 	public RequestExecutorCommand(String commandId, ProjectCommand command,
 			ReadWriteLock rwLock, CommandStatusesContainer statusContainer){
@@ -30,15 +34,17 @@ public class RequestExecutorCommand extends SynchronizedCommand{
 		super.cleanup();
 		CommandStatus status;
 		if (command.wasOk()){
-			status = CommandStatus.okCommandStatus(command.getResult());
+			status = CommandStatus.okCommandStatus(command.getResult(), executionTimeInSeconds);
 		} else {
-			status = CommandStatus.errorCommandStatus(command.getError());
+			status = CommandStatus.errorCommandStatus(command.getError(), executionTimeInSeconds);
 		}
 		statusContainer.addCommandStatus(commandId, status);
 	}
 
 	@Override
 	public void run() {
+		Stopwatch stopwatch = new Stopwatch().start();
 		command.execute();
+		executionTimeInSeconds = stopwatch.elapsedTime(TimeUnit.MILLISECONDS) / 1000.;
 	}
 }

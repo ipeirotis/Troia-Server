@@ -55,6 +55,20 @@ public class ProjectCommands {
 		}
 	}
 
+    static public class ObjectPrediction extends GALCommandBase<DatumContResults> {
+
+        String objectId;
+        public ObjectPrediction(String objectId){
+            super(true);
+            this.objectId = objectId;
+        }
+
+        @Override
+        protected void realExecute() {
+            setResult(project.getDataPrediction().get(project.getData().getObject(objectId)));
+        }
+    }
+
 	static public class WorkersPrediction extends GALCommandBase<Collection<WorkerContResults>> {
 
 		public WorkersPrediction(){
@@ -66,5 +80,18 @@ public class ProjectCommands {
 			setResult(project.getWorkerPrediction().values());
 		}
 	}
-	
+
+    static public class WorkerPrediction extends GALCommandBase<WorkerContResults> {
+
+        String workerId;
+        public WorkerPrediction(String wid){
+            super(true);
+            workerId = wid;
+        }
+
+        @Override
+        protected void realExecute() {
+            setResult(project.getWorkerPrediction().get(project.getData().getWorker(workerId)));
+        }
+    }
 }
