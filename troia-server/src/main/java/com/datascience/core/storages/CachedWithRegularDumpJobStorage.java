@@ -3,6 +3,8 @@ package com.datascience.core.storages;
 import com.datascience.core.Job;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.AbstractScheduledService;
+
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -11,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	
-	protected AbstractScheduledService dumpingService;
+	protected DumpingService dumpingService;
 	
 	public CachedWithRegularDumpJobStorage(IJobStorage cachedJobStorage, int cacheSize,
 			long period, TimeUnit unit){
@@ -27,6 +29,8 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	@Override
 	public void stop() throws Exception {
 		dumpingService.stopAndWait();
+		dumpingService.executor.shutdown();
+		dumpingService.executor.awaitTermination(1, TimeUnit.MINUTES);
 		super.stop();
 	}
 	
@@ -38,6 +42,7 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	public class DumpingService extends AbstractScheduledService {
 		
 		protected Scheduler scheduler;
+		public ScheduledExecutorService executor;
 		
 		public DumpingService(long delay, TimeUnit unit) {
 			scheduler = AbstractScheduledService.Scheduler.newFixedDelaySchedule(delay, delay, unit);
@@ -53,6 +58,12 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 		@Override
 		protected Scheduler scheduler() {
 			return scheduler;
+		}
+
+		@Override
+		protected ScheduledExecutorService executor(){
+			executor = super.executor();
+			return executor;
 		}
 	}
 }
