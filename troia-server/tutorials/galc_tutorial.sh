@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#URL="http://localhost:8080/troia-server-0.8"
+#URL="http://localhost:8080/troia-server-1.0"
 URL="http://project-troia.com/api"
 redirectId=0
 
