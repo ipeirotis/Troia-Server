@@ -52,8 +52,6 @@ import com.google.gson.reflect.TypeToken;
  *
  */
 public class JSONUtils {
-	private static final Logger logger = Logger.getLogger("troia.performance");
-
 	public final Gson gson;
 
 	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {
