@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 @Provider
 public class ExceptionMapping implements ExceptionMapper<Exception>{
 
-	private static Logger log = Logger.getLogger(ExceptionMapping.class.getName());
+	private static Logger log = Logger.getLogger(ExceptionMapping.class);
 	@Context
 	ServletContext context;
 	
