@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#URL="http://localhost:8080/troia-server-1.0"
-URL="http://project-troia.com/api"
+URL="http://localhost:8080/troia-server-1.0"
+#URL="http://project-troia.com/api"
 redirectId=0
 
 function createJob 
@@ -113,9 +113,7 @@ function compute {
   #compute 
   echo "Starting to compute ..."
   local result=$(curl -s1 -X POST "$URL/cjobs/$1/compute")
-  echo $result
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
-  echo $redirectId
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
     then
@@ -131,6 +129,7 @@ function waitComputationToFinish {
   #get the job status and check that the data is correct
   echo "Checking if the computation has ended - redirect=$redirectId..."
   local result=$(curl -s1 -X GET "$URL/$redirectId")
+  echo $result
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   while [[ $status != "Computation done" ]]
     do
@@ -146,11 +145,11 @@ function waitComputationToFinish {
 
 function getPredictionObjects {
   echo "Getting prediction objects"
-  local result=$(curl -s1 -X GET "$URL/cjobs/$1/prediction/objects")
+  local result=$(curl -s1 -X GET "$URL/cjobs/$1/objects/prediction")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   
   local result=$(curl -s1 -X GET "$URL/$redirectId")
-  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ',' -f 3| cut -d ':' -f 2 | cut -d '"' -f 2 )
   local predictionObjects=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 1)
 
   if [[ "$status" != "OK" ]]
@@ -177,7 +176,7 @@ function getPredictionObjects {
 
 function getPredictionWorkers {
   echo "Getting prediction workers"
-  local result=$(curl -s1 -X GET "$URL/cjobs/$1/prediction/workers")
+  local result=$(curl -s1 -X GET "$URL/cjobs/$1/workers/quality/estimated")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   
   local result=$(curl -s1 -X GET "$URL/$redirectId")

@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 public class ProjectCommandExecutor{
 	
 	private static final Logger log =
-		Logger.getLogger(ProjectCommandExecutor.class.getName());
+		Logger.getLogger(ProjectCommandExecutor.class);
 
 	protected Queue<IExecutorCommand> queue;
 	protected ListeningExecutorService commandExecutor;

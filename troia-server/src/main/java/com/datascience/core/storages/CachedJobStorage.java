@@ -18,7 +18,7 @@ import com.google.common.cache.RemovalNotification;
  */
 public class CachedJobStorage implements IJobStorage {
 	
-	private static Logger logger = Logger.getLogger(CachedJobStorage.class.getName());
+	private static Logger logger = Logger.getLogger(CachedJobStorage.class);
 
 	protected IJobStorage cachedJobStorage;
 	protected LoadingCache<String, Optional<Job>> cache; 

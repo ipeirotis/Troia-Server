@@ -34,8 +34,9 @@ public class InitializationSupport implements ServletContextListener {
 			logger.info("Initialization support started");
 			ServletContext scontext = event.getServletContext();
 			Properties props = new Properties();
-			props.load(scontext.getResourceAsStream("/WEB-INF/classes/dawidskene.properties"));
+			props.load(scontext.getResourceAsStream("/WEB-INF/classes/troia.properties"));
 
+			scontext.setAttribute(Constants.DOWNLOADS_PATH, props.getProperty(Constants.DOWNLOADS_PATH));
 			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
 			
 			ISerializer serializer = factory.loadSerializer();
