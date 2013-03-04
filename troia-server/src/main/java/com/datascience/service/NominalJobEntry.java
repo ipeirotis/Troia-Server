@@ -219,4 +219,11 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
 		return buildResponseOnCommand(new WorkerCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
 	}
+
+	@Path("prediction/zip")
+	@GET
+	public Response getPredictionZip(){
+		return buildResponseOnCommand(new PredictionCommands.GetPredictionZip(
+				(String)context.getAttribute(Constants.DOWNLOADS_PATH)));
+	}
 }
