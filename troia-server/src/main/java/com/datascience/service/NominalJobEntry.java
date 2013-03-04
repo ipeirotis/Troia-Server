@@ -223,7 +223,7 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 	@Path("prediction/zip")
 	@GET
 	public Response getPredictionZip(){
-		return buildResponseOnCommand(new PredictionCommands.GetStatistics(
+		return buildResponseOnCommand(new PredictionCommands.GetPredictionZip(
 				(String)context.getAttribute(Constants.DOWNLOADS_PATH)));
 	}
 }

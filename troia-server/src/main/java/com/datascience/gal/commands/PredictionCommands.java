@@ -94,19 +94,19 @@ public class PredictionCommands {
 		}
 	}
 
-	static public class GetStatistics extends DSCommandBase<String> {
+	static public class GetPredictionZip extends DSCommandBase<String> {
 
 		private String[] lpdc = new String[]{"DS", "MV"};
 		private String[] lda = new String[]{"MaxLikelihood", "MinCost"};
 		private String[] lca = new String[]{"MaxLikelihood", "MinCost", "ExpectedCost"};
 		private String path;
 
-		public GetStatistics(String path){
+		public GetPredictionZip(String path){
 			super(false);
 			this.path = path;
 		}
 
-		abstract class GetTSVFile{
+		abstract class GetStatistics {
 
 			public List<List<Object>> call() {
 				return null;
@@ -119,7 +119,7 @@ public class PredictionCommands {
 			}
 		}
 
-		class GetDataPrediction extends GetTSVFile{
+		class GetDataPrediction extends GetStatistics {
 
 			@Override
 			public List<List<Object>> call(){
@@ -149,7 +149,7 @@ public class PredictionCommands {
 			}
 		}
 
-		class GetWorkersQuality extends GetTSVFile{
+		class GetWorkersQuality extends GetStatistics {
 
 			public List<List<Object>> call(){
 				List<List<Object>> ret = new ArrayList<List<Object>>();
@@ -184,11 +184,11 @@ public class PredictionCommands {
 				FileOutputStream fos = new FileOutputStream(path + fileName);
 				ZipOutputStream zos = new ZipOutputStream(fos);
 
-				HashMap<String, GetTSVFile> files = new HashMap<String, GetTSVFile>();
+				HashMap<String, GetStatistics> files = new HashMap<String, GetStatistics>();
 				files.put("prediction.tsv", new GetDataPrediction());
 				files.put("workers_quality.tsv", new GetWorkersQuality());
 
-				for(Entry<String, GetTSVFile> e : files.entrySet()){
+				for(Entry<String, GetStatistics> e : files.entrySet()){
 					ZipEntry ze= new ZipEntry(e.getKey());
 					zos.putNextEntry(ze);
 					e.getValue().generateToStream(e.getValue().call(), "\t", zos);
