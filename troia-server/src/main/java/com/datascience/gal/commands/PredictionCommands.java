@@ -2,14 +2,12 @@ package com.datascience.gal.commands;
 
 import com.datascience.gal.*;
 import com.datascience.gal.decision.*;
+import com.google.common.base.Joiner;
 import org.joda.time.DateTime;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -96,96 +94,104 @@ public class PredictionCommands {
 		}
 	}
 
-	static public class GetPredictionZip extends DSCommandBase<String> {
+	static public class GetStatistics extends DSCommandBase<String> {
 
 		private String[] lpdc = new String[]{"DS", "MV"};
 		private String[] lda = new String[]{"MaxLikelihood", "MinCost"};
 		private String[] lca = new String[]{"MaxLikelihood", "MinCost", "ExpectedCost"};
 		private String path;
 
-		public GetPredictionZip(String path){
+		public GetStatistics(String path){
 			super(false);
 			this.path = path;
 		}
 
-		interface IGetTSVFile{
-			public String call();
+		abstract class GetTSVFile{
+
+			public List<List<Object>> call() {
+				return null;
+			}
+			public void generateToStream(List<List<Object>> data, String separator, OutputStream os) throws IOException {
+				Joiner j = Joiner.on(separator);
+				for (List<Object> lo : data){
+					os.write((j.join(lo) + "\n").getBytes());
+				}
+			}
 		}
 
-		class GetPredictionTSV implements IGetTSVFile{
+		class GetDataPrediction extends GetTSVFile{
 
-			public String call(){
-				StringBuilder sb = new StringBuilder();
+			@Override
+			public List<List<Object>> call(){
+				List<List<Object>> ret = new ArrayList<List<Object>>();
+				List<Object> header = new ArrayList<Object>();
 
-				sb.append("\t");
+				header.add("");
 				for (String lpd : lpdc)
 					for (String la : lda)
-						sb.append(lpd+" "+la+"\t");
-				sb.append("\n");
+						header.add(lpd+" "+la);
+				ret.add(header);
 
 				for (Entry<String, Datum> d : ads.getObjects().entrySet()){
-					sb.append(d.getKey()+"\t");
+					List<Object> line = new ArrayList<Object>();
+					line.add(d.getKey());
 					for (String lpd : lpdc)
 						for (String la : lda){
 							ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 							IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(la);
 							DecisionEngine decisionEngine = new DecisionEngine(lpdc, null, olda);
-							sb.append(decisionEngine.predictLabel(ads, d.getValue()) + "\t");
+							line.add(decisionEngine.predictLabel(ads, d.getValue()));
 						}
-					sb.append("\n");
+					ret.add(line);
 				}
 
-				return sb.toString();
+				return ret;
 			}
 		}
 
-		class GetWorkersQualityTSV implements  IGetTSVFile{
+		class GetWorkersQuality extends GetTSVFile{
 
-			public String call(){
-				StringBuffer sb = new StringBuffer();
+			public List<List<Object>> call(){
+				List<List<Object>> ret = new ArrayList<List<Object>>();
+				List<Object> header = new ArrayList<Object>();
 
-				sb.append("\t");
+				header.add("");
 				for (String lc : lca)
-					sb.append(lc+"\t");
-				sb.append("\n");
+					header.add(lc);
+				ret.add(header);
 
 				for (Worker w : ads.getWorkers()){
-					sb.append(w.getName()+"\t");
+					List<Object> line = new ArrayList<Object>();
+					line.add(w.getName());
 					for (String lc : lca){
 						ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lc);
 						WorkerQualityCalculator wqc = new WorkerEstimator(lpdcc);
-						sb.append(wqc.getCost(ads, w) + "\t");
+						line.add(wqc.getCost(ads, w));
 					}
-					sb.append("\n");
+					ret.add(line);
 				}
 
-				return sb.toString();
+				return ret;
 			}
 		}
 
 		@Override
 		protected void realExecute(){
 
-			byte[] buffer = new byte[1024];
 			String fileName = "";
 			try{
 				fileName = DateTime.now() + "_" + ads.getId() + ".zip";
 				FileOutputStream fos = new FileOutputStream(path + fileName);
 				ZipOutputStream zos = new ZipOutputStream(fos);
 
-				HashMap<String, IGetTSVFile> files = new HashMap<String, IGetTSVFile>();
-				files.put("prediction.tsv", new GetPredictionTSV());
-				files.put("workers_quality.tsv", new GetWorkersQualityTSV());
+				HashMap<String, GetTSVFile> files = new HashMap<String, GetTSVFile>();
+				files.put("prediction.tsv", new GetDataPrediction());
+				files.put("workers_quality.tsv", new GetWorkersQuality());
 
-				for(Entry<String, IGetTSVFile> e : files.entrySet()){
+				for(Entry<String, GetTSVFile> e : files.entrySet()){
 					ZipEntry ze= new ZipEntry(e.getKey());
 					zos.putNextEntry(ze);
-					InputStream is = new ByteArrayInputStream(e.getValue().call().getBytes());
-					int len;
-					while ((len = is.read(buffer)) > 0) {
-						zos.write(buffer, 0, len);
-					}
-					is.close();
+					e.getValue().generateToStream(e.getValue().call(), "\t", zos);
 				}
 				zos.closeEntry();
 				zos.close();
