@@ -39,7 +39,7 @@ public class EngineTest {
 	 */
 	@Test
 	public void testBasicExecution() throws Exception {
-		executeOn("--labels data/synthetic/assignedlabels.txt --evalObjects data/synthetic/evaluationObjects.txt --evalWorkers data/synthetic/evaluationWorkers.txt --gold data/synthetic/goldObjects.txt --synthetic data/synthetic/synthetic-options.txt");
+		executeOn("--labels ../data/galc/generated/assignedlabels.txt --evalObjects ../data/galc/generated/evaluationObjects.txt --evalWorkers ../data/galc/generated/evaluationWorkers.txt --gold ../data/galc/generated/goldObjects.txt --synthetic ../data/galc/synthetic-options.txt");
 	}
 
 }
