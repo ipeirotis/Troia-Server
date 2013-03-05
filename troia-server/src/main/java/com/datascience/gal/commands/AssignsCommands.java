@@ -3,6 +3,8 @@ package com.datascience.gal.commands;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.datascience.executor.JobCommand;
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.Datum;
 
@@ -12,7 +14,7 @@ import com.datascience.gal.Datum;
  */
 public class AssignsCommands {
 	
-	static public class AddAssigns extends DSCommandBase<Object> {
+	static public class AddAssigns extends JobCommand<Object, AbstractDawidSkene> {
 
 		private Collection<AssignedLabel> labels;
 		
@@ -29,12 +31,12 @@ public class AssignsCommands {
 		
 		@Override
 		protected void realExecute() {
-			ads.addAssignedLabels(labels);
+			project.addAssignedLabels(labels);
 			setResult("Assigns added");
 		}
 	}
 	
-	static public class GetAssigns extends DSCommandBase<Collection<AssignedLabel>> {
+	static public class GetAssigns extends JobCommand<Collection<AssignedLabel>, AbstractDawidSkene> {
 		
 		public GetAssigns(){
 			super(false);
@@ -43,7 +45,7 @@ public class AssignsCommands {
 		@Override
 		protected void realExecute() {
 			Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
-			for (Datum d : ads.getObjects().values()){
+			for (Datum d : project.getObjects().values()){
 				labels.addAll(d.getAssignedLabels());
 			}
 			setResult(labels);
