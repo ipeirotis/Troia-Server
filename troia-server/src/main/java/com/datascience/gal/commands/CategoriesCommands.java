@@ -1,5 +1,8 @@
 package com.datascience.gal.commands;
 
+import com.datascience.executor.JobCommand;
+import com.datascience.gal.AbstractDawidSkene;
+
 import java.util.Collection;
 
 /**
@@ -8,7 +11,7 @@ import java.util.Collection;
  */
 public class CategoriesCommands {
 	
-	static public class GetCategories extends DSCommandBase<Collection<String>> {
+	static public class GetCategories extends JobCommand<Collection<String>, AbstractDawidSkene> {
 		
 		public GetCategories(){
 			super(false);
@@ -16,7 +19,7 @@ public class CategoriesCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(ads.getCategories().keySet());
+			setResult(project.getCategories().keySet());
 		}
 	}
 }

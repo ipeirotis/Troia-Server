@@ -2,6 +2,7 @@ package com.datascience.gal.commands;
 
 import java.util.Map;
 
+import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 
 /**
@@ -10,7 +11,7 @@ import com.datascience.gal.AbstractDawidSkene;
  */
 public class JobCommands {
 	
-	static public class GetJobInfo extends DSCommandBase<Map<String, String>> {
+	static public class GetJobInfo extends JobCommand<Map<String, String>, AbstractDawidSkene> {
 
 		public GetJobInfo(){
 			super(false);
@@ -18,7 +19,7 @@ public class JobCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(ads.getInfo());
+			setResult(project.getInfo());
 		}
 	}
 }

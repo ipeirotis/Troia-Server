@@ -14,6 +14,8 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
 import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
+import com.datascience.executor.JobCommand;
+import com.datascience.gal.commands.PredictionCommands;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.AssignsCommands;
 import com.datascience.galc.commands.GoldObjectsCommands;
@@ -140,5 +142,10 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 	@POST
 	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
 		return buildResponseOnCommand(new ProjectCommands.Compute(iterations, 1e-6));
+	}
+
+	@Override
+	protected JobCommand getPredictionZipCommand(String path){
+		return new ProjectCommands.GetPredictionZip(path);
 	}
 }
