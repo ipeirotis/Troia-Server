@@ -7,10 +7,11 @@ import com.datascience.core.storages.IJobStorage;
  * T is result type
  * @author artur
  */
-public abstract class JobCommand<T> extends ProjectCommand<T> {
+public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 
 	protected IJobStorage jobStorage;
 	protected String jobId;
+	protected U project;
 
 	public JobCommand(boolean modifies) {
 		super(modifies);
@@ -34,6 +35,10 @@ public abstract class JobCommand<T> extends ProjectCommand<T> {
 	
 	public void setJobStorage(IJobStorage js){
 		jobStorage = js;
+	}
+
+	protected void prepareExecution() throws Exception{
+		project = (U) getJob().getProject();
 	}
 }
 

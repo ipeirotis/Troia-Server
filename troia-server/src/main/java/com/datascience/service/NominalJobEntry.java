@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.datascience.core.storages.JSONUtils;
+import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
@@ -220,10 +221,9 @@ public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
 		return buildResponseOnCommand(new WorkerCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
 	}
 
-	@Path("prediction/zip")
-	@GET
-	public Response getPredictionZip(){
-		return buildResponseOnCommand(new PredictionCommands.GetPredictionZip(
-				(String)context.getAttribute(Constants.DOWNLOADS_PATH)));
+	@Override
+	protected JobCommand getPredictionZipCommand(String path){
+		return new PredictionCommands.GetPredictionZip(path);
 	}
+
 }
