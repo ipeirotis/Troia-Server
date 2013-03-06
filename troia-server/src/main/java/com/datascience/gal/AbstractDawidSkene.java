@@ -24,7 +24,7 @@ import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
 import com.google.common.math.DoubleMath;
 
-public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
+public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorithm<String, NominalData, DatumResult, T> {
 
 	protected boolean fixedPriors;
 	protected DecisionEngine mvDecisionEnginge;
@@ -92,7 +92,9 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 			c.setPrior(1. / data.getCategories().size());
 	}
 
-	protected abstract double getErrorRateForWorker(Worker<String> worker, String from, String to);
+	protected double getErrorRateForWorker(Worker<String> worker, String from, String to){
+		return results.getWokerResults().get(worker).getErrorRate(from, to);
+	}
 
 	protected abstract double prior(String categoryName);
 
@@ -100,7 +102,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	protected double getLogLikelihood() {
 		double result = 0;
 		for (AssignedLabel<String> al : data.getAssigns()){
-			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(al.getLobject()).getCategoryProbabilites();
+			Map<String, Double> estimatedCorrectLabel = results.getDatumResults().get(al.getLobject()).getCategoryProbabilites();
 			for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
 				Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
 				if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
@@ -162,7 +164,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 //	}
 
 	protected double getEntropyForObject(LObject<String> obj){
-		DatumResult result = results.getDatumResult(obj);
+		DatumResult result = results.getDatumResults().get(obj);
 		double[] p = new double[result.getCategoryProbabilites().size()];
 
 		int i = 0;
@@ -185,7 +187,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		for (LObject<String> obj : data.getObjects()){
 			for (Category c : data.getCategories()){
 				priors.put(c.getName(), priors.get(c.getName()) +
-						results.getDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
+						results.getDatumResults().get(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
 			}
 		}
 
@@ -197,8 +199,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		return getObjectClassProbabilities(objectName, null);
 	}
 
-	protected Map<String, Double> getObjectClassProbabilities(
-		String objectName, String workerToIgnore) {
+	protected Map<String, Double> getObjectClassProbabilities(String objectName, String workerToIgnore) {
 
 		Map<String, Double> result = new HashMap<String, Double>();
 

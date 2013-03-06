@@ -15,4 +15,5 @@ public class DatumResult {
 	public Double getCategoryProbability(String categoryName){
 		return categoryProbabilites.get(categoryName);
 	}
+
 }
