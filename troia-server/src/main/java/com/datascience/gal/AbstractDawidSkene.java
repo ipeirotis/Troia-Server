@@ -9,13 +9,12 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.core.base.*;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.decision.DecisionEngine;
@@ -25,18 +24,9 @@ import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
 import com.google.common.math.DoubleMath;
 
-public abstract class AbstractDawidSkene implements DawidSkene {
-
-	protected Map<String, Datum> objects;
-	protected Map<String, Datum> objectsWithNoLabels;
-	protected Map<String, Worker> workers;
-	protected Map<String, Category> categories;
-	protected Map<String, CorrectLabel> evaluationData;
+public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
 
 	protected boolean fixedPriors;
-
-	protected final String id;
-
 	protected DecisionEngine mvDecisionEnginge;
 	protected ILabelProbabilityDistributionCalculator spammerProbDistr;
 	
@@ -44,25 +34,16 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * Set to true if this project was computed.
 	 * Any modification to DS project will set it to false
 	 */
-	private boolean computed;
+	private boolean computed = false;
 	
-	protected AbstractDawidSkene(String id) {
-		this.id = id;
-		this.evaluationData = new HashMap<String,CorrectLabel>();
-		this.objects = new HashMap<String, Datum>();
-		this.workers = new HashMap<String, Worker>();
-		this.objectsWithNoLabels = new HashMap<String, Datum>();
-		this.computed = false;
+	protected AbstractDawidSkene() {
 		mvDecisionEnginge = new DecisionEngine(
 			new LabelProbabilityDistributionCalculators.DS(), null,
 			new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
 	}
 	
-	public AbstractDawidSkene(String id, Collection<Category> categories){
-		this(id);
-		this.fixedPriors = false;
-		this.categories = new HashMap<String, Category>();
+	public AbstractDawidSkene(Collection<Category> categories){
 		double priorSum = 0.;
 		int priorCnt = 0;
 		
@@ -70,7 +51,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			throw new IllegalArgumentException("There should be at least two categories");
 		}
 		for (Category c : categories) {
-			this.categories.put(c.getName(), c);
+			data.addCategory(c);
 			if (c.hasPrior()) {
 				priorCnt += 1;
 				priorSum += c.getPrior();
@@ -87,8 +68,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			fixedPriors = true;
 		
 		//set cost matrix values if not provided
-		for (Category from : this.categories.values()) {
-			for (Category to : this.categories.values()) {
+		for (Category from : data.getCategories()) {
+			for (Category to : data.getCategories()) {
 				if (from.getCost(to.getName()) == null){
 					from.setCost(to.getName(), from.getName().equals(to.getName()) ? 0. : 1.);
 				}
@@ -107,125 +88,71 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	}
 
 	protected void initializePriors() {
-
-		for (String cat : categories.keySet()) {
-			Category c = categories.get(cat);
-			c.setPrior(1.0 / categories.keySet().size());
-			categories.put(cat, c);
-		}
-		invalidateComputed();
+		for (Category c : data.getCategories())
+			c.setPrior(1. / data.getCategories().size());
 	}
 
-	protected Double getLogLikelihood() {
+	protected abstract double getErrorRateForWorker(Worker<String> worker, String from, String to);
+
+	protected abstract double prior(String categoryName);
+
+	@Override
+	protected double getLogLikelihood() {
 		double result = 0;
-		for (Datum d : objects.values()) {
-			for (AssignedLabel al: d.getAssignedLabels()) {
-				String workerName = al.getWorkerName();
-				String assignedLabel = al.getCategoryName();
-				Map<String, Double> estimatedCorrectLabel =
-					d.getCategoryProbability();
-				for (String from: estimatedCorrectLabel.keySet()) {
-					Worker w = workers.get(workerName);
-					Double categoryProbability = estimatedCorrectLabel.get(from);
-					Double labelingProbability = getErrorRateForWorker(w, from,
-												 assignedLabel);
-					if (categoryProbability == 0.0 || Double.isNaN(labelingProbability) || labelingProbability ==0.0 ) 
-						continue; 
-					else
-						result += Math.log(categoryProbability) + Math.log(labelingProbability);
-				}
+		for (AssignedLabel<String> al : data.getAssigns()){
+			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(al.getLobject()).getCategoryProbabilites();
+			for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
+				Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
+				if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
+					continue;
+				else
+					result += Math.log(e.getValue()) + Math.log(labelingProbability);
+
 			}
 		}
 		return result;
 	}
 
-	protected void validateCategory(String categoryName) {
-		if (!categories.containsKey(categoryName)) {
-			String message = "attempting to add invalid category: " + categoryName;
-			logger.warn(message);
-			throw new IllegalArgumentException(message);
-		}
-	}
-
-	@Override
-	public Map<String, String> getInfo() {
-		Map<String, String> ret = new HashMap<String, String>();
-		ret.put("DS kind", String.valueOf(this.getClass()));
-		int a = 0, g = 0;
-		for (Datum d : this.objects.values()){
-			if (d.isGold())
-				g++;
-			a += d.getAssignedLabels().size();
-		}
-		ret.put("Number of assigns", String.valueOf(a));
-		ret.put("Number of objects", String.valueOf(this.getNumberOfObjects()));
-		ret.put("Number of gold objects", String.valueOf(g));
-		ret.put("Number of workers", String.valueOf(this.workers.size()));
-		return ret;
-	}
-	
-	@Override
-	public String getId() {
-		return id;
-	}
-
-//	@Override
-//	public void setFixedPriors(Map<String, Double> priors) {
-//
-//		this.fixedPriors = true;
-//		setPriors(priors);
+//	protected void validateCategory(String categoryName) {
+//		if (!categories.containsKey(categoryName)) {
+//			String message = "attempting to add invalid category: " + categoryName;
+//			logger.warn(message);
+//			throw new IllegalArgumentException(message);
+//		}
 //	}
-//
-	protected void setPriors(Map<String, Double> priors) {
 
-		for (String c : this.categories.keySet()) {
-			Category category = this.categories.get(c);
-			Double prior = priors.get(c);
-			category.setPrior(prior);
-			this.categories.put(c, category);
+	protected void setPriors(Map<String, Double> priors) {
+		for (Category c : data.getCategories()){
+			c.setPrior(priors.get(c.getName()));
 		}
 	}
-	
-	@Override
-	public int getNumberOfObjects() {
-		return this.objects.size();
-	}
 
-	@Override
-	public int getNumberOfWorkers() {
-		return this.workers.size();
-	}
-	
-	@Override
-	public int getNumberOfUnassignedObjects() {
-		return this.objectsWithNoLabels.size();
-	}
-	
 //	@Override
 //	public boolean fixedPriors() {
 //		return fixedPriors;
 //	}
 
-	@Override
-	public Map<String, Double> getObjectProbs(String objectName) {
-		return getObjectClassProbabilities(objectName);
-	}
-
-	@Override
-	public Map<String, Map<String, Double>> getObjectProbs() {
-		return getObjectProbs(objects.keySet());
-	}
-
-	@Override
-	public Map<String, Map<String, Double>> getObjectProbs(
-		Collection<String> objectNames) {
-		Map<String, Map<String, Double>> out = new HashMap<String, Map<String, Double>>(
-			objectNames.size());
-		for (String objectName : objectNames) {
-			out.put(objectName, getObjectProbs(objectName));
-		}
-		return out;
-	}
+//OBJECT PROBS
+//	@Override
+//	public Map<String, Double> getObjectProbs(String objectName) {
+//		return getObjectClassProbabilities(objectName);
+//	}
+//
+//	@Override
+//	public Map<String, Map<String, Double>> getObjectProbs() {
+//		return getObjectProbs(objects.keySet());
+//	}
+//
+//	@Override
+//	public Map<String, Map<String, Double>> getObjectProbs(
+//		Collection<String> objectNames) {
+//		Map<String, Map<String, Double>> out = new HashMap<String, Map<String, Double>>(
+//			objectNames.size());
+//		for (String objectName : objectNames) {
+//			out.put(objectName, getObjectProbs(objectName));
+//		}
+//		return out;
+//	}
 
 //	@Override
 //	public void unsetFixedPriors() {
@@ -234,25 +161,34 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 //		updatePriors();
 //	}
 
-	protected void updatePriors() {
+	protected double getEntropyForObject(LObject<String> obj){
+		DatumResult result = results.getDatumResult(obj);
+		double[] p = new double[result.getCategoryProbabilites().size()];
 
+		int i = 0;
+		for (Map.Entry<String, Double> e : result.getCategoryProbabilites().entrySet()) {
+			p[i] = e.getValue();
+			i++;
+		}
+		return Utils.entropy(p);
+	}
+
+	protected void updatePriors() {
 		if (fixedPriors)
 			return;
 
 		HashMap<String, Double> priors = new HashMap<String, Double>();
-		for (String c : this.categories.keySet()) {
-			priors.put(c, 0.0);
+		for (Category c : data.getCategories()) {
+			priors.put(c.getName(), 0.0);
 		}
 
-		int totalObjects = this.objects.size();
-		for (Datum d : this.objects.values()) {
-			for (String c : this.categories.keySet()) {
-				Double prior = priors.get(c);
-				Double objectProb = d.getCategoryProbability(c);
-				prior += objectProb / totalObjects;
-				priors.put(c, prior);
+		for (LObject<String> obj : data.getObjects()){
+			for (Category c : data.getCategories()){
+				priors.put(c.getName(), priors.get(c.getName()) +
+						results.getDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
 			}
 		}
+
 		setPriors(priors);
 		invalidateComputed();
 	}
@@ -266,18 +202,18 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		Map<String, Double> result = new HashMap<String, Double>();
 
-		Datum d = this.objects.get(objectName);
+		LObject<String> d = data.getObject(objectName);
 
 		// If this is a gold example, just put the probability estimate to be
 		// 1.0
 		// for the correct class
 		if (d.isGold()) {
-			for (String category : this.categories.keySet()) {
-				String correctCategory = d.getCorrectCategory();
-				if (category.equals(correctCategory)) {
-					result.put(category, 1.0);
+			for (Category c : data.getCategories()) {
+				String correctCategory = d.getGoldLabel();
+				if (c.getName().equals(correctCategory)) {
+					result.put(c.getName(), 1.0);
 				} else {
-					result.put(category, 0.0);
+					result.put(c.getName(), 0.0);
 				}
 			}
 			return result;
@@ -285,13 +221,13 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 		// Let's check first if we have any workers who have labeled this item,
 		// except for the worker that we ignore
-		Set<AssignedLabel> labels = new HashSet<AssignedLabel>(
-			d.getAssignedLabels());
+		Set<AssignedLabel<String>> labels = data.getAssignsForObject(d);
+
 		if (labels.isEmpty())
 			return null;
 		if (workerToIgnore != null && labels.size() == 1) {
 			for (AssignedLabel al : labels) {
-				if (al.getWorkerName().equals(workerToIgnore))
+				if (al.getWorker().getName().equals(workerToIgnore))
 					// if only the ignored labeler has labeled
 					return null;
 			}
@@ -310,14 +246,14 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		// compute them
 		Map<String, Double> categoryNominators = new HashMap<String, Double>();
 
-		for (Category category : categories.values()) {
+		for (Category category : data.getCategories()) {
 
 			// We estimate now Equation 2.5 of Dawid & Skene
 			double categoryNominator = prior(category.getName());
 
 			// We go through all the labels assigned to the d object
-			for (AssignedLabel al : d.getAssignedLabels()) {
-				Worker w = workers.get(al.getWorkerName());
+			for (AssignedLabel<String> al : data.getAssignsForObject(d)) {
+				Worker w = data.getWorker(al.getWorker().getName());
 
 				// If we are trying to estimate the category probability
 				// distribution
@@ -328,7 +264,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 						&& w.getName().equals(workerToIgnore))
 					continue;
 
-				String assigned_category = al.getCategoryName();
+				String assigned_category = al.getLabel();
 				double evidence_for_category = getErrorRateForWorker(w,
 					category.getName(), assigned_category);
 				if (Double.isNaN(evidence_for_category))
@@ -340,14 +276,14 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			denominator += categoryNominator;
 		}
 
-		for (String category : categories.keySet()) {
-			double nominator = categoryNominators.get(category);
+		for (Category c : data.getCategories()) {
+			double nominator = categoryNominators.get(c.getName());
 			if (denominator == 0.0) {
 				// result.put(category, 0.0);
 				return null;
 			} else {
 				double probability = Utils.round(nominator / denominator, 5);
-				result.put(category, probability);
+				result.put(c.getName(), probability);
 			}
 		}
 
@@ -355,145 +291,21 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 
 	}
 
-	@Override
 	public void addMisclassificationCost(MisclassificationCost cl) {
-
-		String from = cl.getCategoryFrom();
-		String to = cl.getCategoryTo();
-		Double cost = cl.getCost();
-
-		Category c = this.categories.get(from);
-		c.setCost(to, cost);
-		this.categories.put(from, c);
+		data.getCategory(cl.getCategoryFrom()).setCost(cl.getCategoryTo(), cl.getCost());
 		invalidateComputed();
 	}
-
-	@Override
-	public void addAssignedLabels(Collection<AssignedLabel> als) {
-		for (AssignedLabel al : als) {
-			addAssignedLabel(al);
-		}
-	}
-
-	@Override
-	public void addCorrectLabels(Collection<CorrectLabel> cls) {
-		for (CorrectLabel cl : cls) {
-			addCorrectLabel(cl);
-		}
-	}
 	
-	@Override
-	public void markObjectsAsGold(Collection<CorrectLabel> cls) {
-		for (CorrectLabel cl : cls) {
-			if (!objects.containsKey(cl.getObjectName()))
-				throw new IllegalArgumentException(String.format("%s is not present in objects map", cl.getObjectName()));
-		}
-		addCorrectLabels(cls);
-	}
 
-	@Override
 	public void addMisclassificationCosts(Collection<MisclassificationCost> cls) {
 		for (MisclassificationCost cl : cls)
 			addMisclassificationCost(cl);
 	}
 
-	@Override
-	public Map<String, Double> objectClassProbabilities(String objectName) {
-		return objectClassProbabilities(objectName, 0.);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.ipeirotis.gal.DawidSkene#addAssignedLabel(com.ipeirotis.gal.AssignedLabel
-	 * )
-	 */
-	@Override
-	public void addAssignedLabel(AssignedLabel al) {
-
-		String workerName = al.getWorkerName();
-		String objectName = al.getObjectName();
-
-		String categoryName = al.getCategoryName();
-		this.validateCategory(categoryName);
-		// If we already have the object, then just add the label
-		// in the set of labels for the object.
-		// If it is the first time we see the object, then create
-		// the appropriate entry in the objects hashmap
-		Datum d;
-		if (objects.containsKey(objectName)) {
-			d = objects.get(objectName);
-		} else {
-			Set<Category> datumCategories = new HashSet<Category>(
-				categories.values());
-			d = new Datum(objectName, datumCategories);
-		}
-		if (objectsWithNoLabels.containsKey(objectName)) {
-			objectsWithNoLabels.remove(objectName);
-		}
-		d.addAssignedLabel(al);
-		objects.put(objectName, d);
-
-		// If we already have the worker, then just add the label
-		// in the set of labels assigned by the worker.
-		// If it is the first time we see the object, then create
-		// the appropriate entry in the objects hashmap
-		Worker w;
-		if (workers.containsKey(workerName)) {
-			w = workers.get(workerName);
-		} else {
-			Set<Category> workerCategories = new HashSet<Category>(
-				categories.values());
-			w = new Worker(workerName, workerCategories);
-		}
-		w.addAssignedLabel(al);
-		workers.put(workerName, w);
-		invalidateComputed();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.ipeirotis.gal.DawidSkene#addCorrectLabel(com.ipeirotis.gal.CorrectLabel
-	 * )
-	 */
-	@Override
-	public void addCorrectLabel(CorrectLabel cl) {
-
-		String objectName = cl.getObjectName();
-		String correctCategory = cl.getCorrectCategory();
-
-		Datum d;
-		this.validateCategory(correctCategory);
-		if (this.objects.containsKey(objectName)) {
-			d = this.objects.get(objectName);
-		} else {
-			Set<Category> categories = new HashSet<Category>(
-				this.categories.values());
-			d = new Datum(objectName, categories);
-		}
-		if (objectsWithNoLabels.containsKey(objectName)) {
-			objectsWithNoLabels.remove(objectName);
-		}
-		d.setGold(true);
-		d.setCorrectCategory(correctCategory);
-		this.objects.put(objectName, d);
-		invalidateComputed();
-	}
+//	public Map<String, Double> objectClassProbabilities(String objectName) {
+//		return objectClassProbabilities(objectName, 0.);
+//	}
 	
-	@Override
-	public void addObjects(Collection<String> objs){
-		Set<Category> categories = new HashSet<Category>(this.categories.values());
-		for (String obj : objs){
-			if (!this.objects.containsKey(obj) && !this.objectsWithNoLabels.containsKey(obj)) {
-				this.objectsWithNoLabels.put(obj, new Datum(obj, categories));
-			}
-		}
-		invalidateComputed();
-	}
-
 	// josh- over ride the proceeding with incremental methods.
 
 	/**
@@ -501,13 +313,13 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * @param objectCategory
 	 * @return
 	 */
-	protected Map<String, Double> getNaiveSoftLabel(Worker w,
+	protected Map<String, Double> getNaiveSoftLabel(Worker<String> w,
 			String objectCategory) {
 
 		HashMap<String, Double> naiveSoftLabel = new HashMap<String, Double>();
-		for (String cat : this.categories.keySet()) {
-			naiveSoftLabel.put(cat,
-							   getErrorRateForWorker(w, objectCategory, cat));
+		for (Category cat : data.getCategories()) {
+			naiveSoftLabel.put(cat.getName(),
+							   getErrorRateForWorker(w, objectCategory, cat.getName()));
 		}
 		return naiveSoftLabel;
 	}
@@ -516,7 +328,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * Gets as input a "soft label" (i.e., a distribution of probabilities over
 	 * classes) and returns the expected cost of this soft label.
 	 *
-	 * @param p
 	 * @return The expected cost of this soft label
 	 */
 	protected double getNaiveSoftLabelCost(String source,
@@ -525,7 +336,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		double c = 0.0;
 		for (String destination : destProbabilities.keySet()) {
 			double p = destProbabilities.get(destination);
-			Double cost = this.categories.get(source).getCost(destination);
+			Double cost = data.getCategory(source).getCost(destination);
 			c += p * cost;
 		}
 
@@ -536,7 +347,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * Gets as input a "soft label" (i.e., a distribution of probabilities over
 	 * classes) and returns the expected cost of this soft label.
 	 *
-	 * @param p
 	 * @return The expected cost of this soft label
 	 */
 	private double getSoftLabelCost(Map<String, Double> probabilities) {
@@ -546,7 +356,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			for (String c2 : probabilities.keySet()) {
 				double p1 = probabilities.get(c1);
 				double p2 = probabilities.get(c2);
-				Double cost = categories.get(c1).getCost(c2);
+				Double cost = data.getCategory(c1).getCost(c2);
 				c += p1 * p2 * cost;
 			}
 		}
@@ -558,7 +368,6 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	 * Gets as input a "soft label" (i.e., a distribution of probabilities over
 	 * classes) and returns the smallest possible cost for this soft label.
 	 *
-	 * @param p
 	 * @return The expected cost of this soft label
 	 */
 	private double getMinSoftLabelCost(Map<String, Double> probabilities) {
@@ -574,7 +383,7 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 			for (String c2 : probabilities.keySet()) {
 				// With probability p2 it actually belongs to class c2
 				double p2 = probabilities.get(c2);
-				Double cost = categories.get(c1).getCost(c2);
+				Double cost = data.getCategory(c1).getCost(c2);
 				costfor_c2 += p2 * cost;
 
 			}
@@ -613,70 +422,8 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 		return getSoftLabelCost(prior);
 	}
 
-	public Datum getObject(String object_id) {
-		Datum ret = objects.get(object_id);
-		if (ret == null)
-			return objectsWithNoLabels.get(object_id);
-		return ret;
-	}
-
-	@Override
-	public Map<String,Datum> getObjects() {
-		return objects;
-	}
-	
-	public Map<String,Datum> getObjectsWithNoLabels() {
-		return objectsWithNoLabels;
-	}
-
-	@Override
-	public Map<String,Category> getCategories() {
-		return categories;
-	}
-
-	public Category getCategory(String category) {
-		return categories.get(category);
-	}
-	
-	@Override
-	public Collection<CorrectLabel> getGoldDatums() {
-		Collection<CorrectLabel> ret = new ArrayList<CorrectLabel>();
-		for (Datum d : objects.values()){
-			if (d.isGold())
-				ret.add(new CorrectLabel(d.getName(), d.getCorrectCategory()));
-		}
-		return ret;
-	}
-
-	@Override
-	public void addEvaluationDatums(Collection<CorrectLabel> cl) {
-		for (CorrectLabel correctLabel : cl) {
-			this.evaluationData.put(correctLabel.getObjectName(),correctLabel);
-		}
-	}
-	
-	@Override
-	public Map<String, CorrectLabel> getEvaluationDatums() {
-		return this.evaluationData;
-	}
-        
-	public CorrectLabel getEvaluationDatum(String name) {
-		return this.evaluationData.get(name);
-	}
-
-	@Override
 	public boolean isComputed() {
 		return this.computed;
-	}
-
-	@Override
-	public Worker getWorker(String name) {
-		return this.workers.get(name);
-	}
-	
-	@Override
-	public Collection<Worker> getWorkers() {
-		return this.workers.values();
 	}
 
 	// Log-likelihod stop condition.
@@ -684,13 +431,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 	// One pass of the incremental algorithm.
 	protected abstract void estimateInner();
 
-	@Override
-	public void estimate(int maxIterations) {
-		estimate(maxIterations, DEFAULT_EPSILON);
-	}
 
 	@Override
-	public void estimate(int maxIterations, double epsilon) {
+	public double estimate(double epsilon, int maxIterations) {
 		double prevLogLikelihood = Double.POSITIVE_INFINITY;
 		double currLogLikelihood = 0d;
 		int iteration = 0;
@@ -705,8 +448,9 @@ public abstract class AbstractDawidSkene implements DawidSkene {
 					maxIterations + " with log-likelihood difference " +
 					diffLogLikelihood);
 		markComputed();
+
+		return 0;
 	}
 	
-
 	protected static Logger logger = null; // will be initialized in subclasses
 }

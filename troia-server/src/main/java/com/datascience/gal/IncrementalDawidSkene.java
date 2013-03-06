@@ -41,12 +41,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
 
-	public IncrementalDawidSkene(String id, Collection<Category> categories,
-								 IncrementalDSMethod dsmethod) {
-		this(id, categories);
-		this.dsmethod = dsmethod;
-	}
-
 	public IncrementalDawidSkene(String id, Collection<Category> categories) {
 		super(id, categories);
 		super.logger = this.logger;
