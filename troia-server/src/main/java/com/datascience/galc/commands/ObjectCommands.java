@@ -7,6 +7,8 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
+import com.datascience.executor.JobCommand;
+import com.datascience.galc.ContinuousProject;
 
 /**
  *
@@ -14,7 +16,7 @@ import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
  */
 public class ObjectCommands {
 	
-	static public class AddObjects extends GALCommandBase<Object> {
+	static public class AddObjects extends JobCommand<Object, ContinuousProject> {
 
 		ShallowObjectCollection objects;
 		public AddObjects(ShallowObjectCollection objects){
@@ -34,7 +36,7 @@ public class ObjectCommands {
 		}
 	}
 	
-	static public class GetObjects extends GALCommandBase<Collection<LObject<ContValue>>> {
+	static public class GetObjects extends JobCommand<Collection<LObject<ContValue>>, ContinuousProject> {
 		
 		public GetObjects(){
 			super(false);
@@ -46,7 +48,7 @@ public class ObjectCommands {
 		}
 	}
 	
-	static public class GetObject extends GALCommandBase<LObject<ContValue>> {
+	static public class GetObject extends JobCommand<LObject<ContValue>, ContinuousProject> {
 		
 		String objectId;
 		public GetObject(String objectId){
@@ -60,7 +62,7 @@ public class ObjectCommands {
 		}
 	}
 	
-	static public class GetObjectAssigns extends GALCommandBase<Collection<AssignedLabel<ContValue>>> {
+	static public class GetObjectAssigns extends JobCommand<Collection<AssignedLabel<ContValue>>, ContinuousProject> {
 		
 		String objectId;
 		public GetObjectAssigns(String objectId){

@@ -9,6 +9,8 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.storages.DataJSON.ShallowAssign;
 import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
+import com.datascience.executor.JobCommand;
+import com.datascience.galc.ContinuousProject;
 
 
 /**
@@ -17,7 +19,7 @@ import com.datascience.core.storages.DataJSON.ShallowAssignCollection;
  */
 public class AssignsCommands {
 	
-	static public class AddAssigns extends GALCommandBase<Object> {
+	static public class AddAssigns extends JobCommand<Object, ContinuousProject> {
 
 		ShallowAssignCollection<ContValue> assigns;
 		
@@ -38,7 +40,7 @@ public class AssignsCommands {
 		}
 	}
 	
-	static public class GetAssigns extends GALCommandBase<Collection<AssignedLabel<ContValue>>> {
+	static public class GetAssigns extends JobCommand<Collection<AssignedLabel<ContValue>>, ContinuousProject> {
 		
 		public GetAssigns(){
 			super(false);
@@ -50,7 +52,7 @@ public class AssignsCommands {
 		}
 	}
 	
-	static public class GetWorkerAssigns extends GALCommandBase<Collection<AssignedLabel<ContValue>>> {
+	static public class GetWorkerAssigns extends JobCommand<Collection<AssignedLabel<ContValue>>, ContinuousProject> {
 		
 		String workerId;
 		public GetWorkerAssigns(String workerId){
