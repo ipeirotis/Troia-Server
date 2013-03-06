@@ -1,29 +1,15 @@
 package com.datascience.galc;
 
-import com.datascience.core.base.LObject;
+import com.datascience.core.base.*;
 import org.apache.log4j.Logger;
 
 import java.util.*;
 
-import com.datascience.core.base.Data;
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Worker;
-
-public class ContinuousIpeirotis {
+public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, DatumContResults, WorkerContResults> {
 
 	private static Logger logger = Logger.getLogger(ContinuousIpeirotis.class);
 
-	protected Data<ContValue> data;
-	private Map<LObject<ContValue>, DatumContResults> objectsResults;
-	private Map<Worker<ContValue>, WorkerContResults> workersResults;
-
-
-	public void setData(Data<ContValue> data){
-		this.data = data;
-
-		objectsResults = new HashMap<LObject<ContValue>, DatumContResults>();
-		workersResults = new HashMap<Worker<ContValue>, WorkerContResults>();
+	public ContinuousIpeirotis(){
 
 		initWorkers();
 		initObjectZetas();
@@ -39,7 +25,7 @@ public class ContinuousIpeirotis {
 			WorkerContResults wcr = new WorkerContResults(w);
 			wcr.setEst_rho(initial_rho);
 			wcr.computeZetaValues();
-			workersResults.put(w, wcr);
+			results.getWokerResults().put(w, wcr);
 		}
 	}
 
@@ -57,6 +43,7 @@ public class ContinuousIpeirotis {
 		return sum / assigns.size();
 	}
 
+	@Override
 	public double estimate(double epsilon, int max_iters) {
 		logger.info("GALC estimate START");
 
@@ -81,7 +68,7 @@ public class ContinuousIpeirotis {
 		double mu = estimateDistributionMu();
 		double sigma = estimateDistributionSigma();
 		// Estimate objects' values. 
-		for (DatumContResults dcr : objectsResults.values()) {
+		for (DatumContResults dcr : results.getDatumResults().values()) {
 			dcr.setDistributionMu(mu);
 			dcr.setDistributionSigma(sigma);
 			dcr.getEst_value();
@@ -92,10 +79,11 @@ public class ContinuousIpeirotis {
 		return logLikelihood;
 	}
 
-	private double getLogLikelihood() {
+	@Override
+	protected double getLogLikelihood() {
 
 		double result = 0d;
-		for (WorkerContResults wr: workersResults.values()) {
+		for (WorkerContResults wr: getWorkersResults().values()) {
 			Worker<ContValue> workerToIgnore = wr.getWorker();
 			for (AssignedLabel<ContValue> al : wr.getZetaValues()) {
 				HashMap<LObject<ContValue>, Double> zetas = estimateObjectZetas(workerToIgnore);
@@ -112,7 +100,7 @@ public class ContinuousIpeirotis {
 	private void initObjectZetas() {
 		for (LObject<ContValue> obj : data.getObjects()){
 			DatumContResults dr = new DatumContResults(obj);
-			objectsResults.put(obj, dr);
+			results.getDatumResults().put(obj, dr);
 		}
 		estimateObjectZetas();
 	}
@@ -121,7 +109,7 @@ public class ContinuousIpeirotis {
 
 		// See equation 9
 		double diff = 0.0;
-		for (DatumContResults dr: this.objectsResults.values()) {
+		for (DatumContResults dr: results.getDatumResults().values()) {
 			Double oldZeta;
 			Double newZeta;
 			Double zeta = 0.0;
@@ -131,7 +119,7 @@ public class ContinuousIpeirotis {
 				oldZeta = dr.getEst_zeta();
 
 				for (AssignedLabel<ContValue> al : data.getAssignsForObject(object)) {
-					WorkerContResults wr = workersResults.get(al.getWorker());
+					WorkerContResults wr = results.getWokerResults().get(al.getWorker());
 					Double b = wr.getBeta();
 					Double r = wr.getEst_rho();
 					Double z = wr.getZeta(getLabel(al));
@@ -181,7 +169,7 @@ public class ContinuousIpeirotis {
 				Worker<ContValue>  worker = al.getWorker();
 				if(worker.equals(workerToIgnore))
 					continue;
-				WorkerContResults wr = workersResults.get(worker);
+				WorkerContResults wr = results.getWokerResults().get(worker);
 				Double b = wr.getBeta();
 				Double r = wr.getEst_rho();
 				Double z = wr.getZeta(getLabel(al));
@@ -206,7 +194,7 @@ public class ContinuousIpeirotis {
 		// See equation 10
 
 		double diff = 0.0;
-		for (WorkerContResults wr : workersResults.values()) {
+		for (WorkerContResults wr : results.getWokerResults().values()) {
 			Worker workerToIgnore = wr.getWorker();
 			Double sum_prod = 0.0;
 			Double sum_zi = 0.0;
@@ -243,7 +231,7 @@ public class ContinuousIpeirotis {
 
 		Double nominatorSigma = 0.0;
 		Double denominatorSigma = 0.0;
-		for (WorkerContResults wcr : workersResults.values()) {
+		for (WorkerContResults wcr : results.getWokerResults().values()) {
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double s = wcr.getEst_sigma();
@@ -257,7 +245,7 @@ public class ContinuousIpeirotis {
 
 		Double nominatorMu = 0.0;
 		Double denominatorMu = 0.0;
-		for (WorkerContResults wcr : workersResults.values()) {
+		for (WorkerContResults wcr : results.getWokerResults().values()) {
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double m = wcr.getEst_mu();
@@ -268,10 +256,10 @@ public class ContinuousIpeirotis {
 	}
 
 	public Map<LObject<ContValue>, DatumContResults> getObjectsResults() {
-		return objectsResults;
+		return results.getDatumResults();
 	}
 
 	public Map<Worker<ContValue>, WorkerContResults> getWorkersResults() {
-		return workersResults;
+		return results.getWokerResults();
 	}
 }

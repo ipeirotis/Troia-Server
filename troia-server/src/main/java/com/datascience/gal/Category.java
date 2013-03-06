@@ -66,25 +66,14 @@ public class Category {
 		return misclassification_cost;
 	}
 
-	/**
-	 * @return the prior
-	 */
 	public double getPrior() {
 		return prior;
 	}
 
-	/**
-	 * @param prior
-	 *            the prior to set
-	 */
 	public void setPrior(double prior) {
 		this.prior = prior;
 	}
 
-	/**
-	 * @param prior
-	 *            the prior to set
-	 */
 	public boolean hasPrior() {
 		return this.prior != -1;
 	}
@@ -113,17 +102,10 @@ public class Category {
 			Objects.equal(prior, other.prior);
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
