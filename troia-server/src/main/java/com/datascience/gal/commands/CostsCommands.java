@@ -2,6 +2,8 @@ package com.datascience.gal.commands;
 
 import java.util.Collection;
 
+import com.datascience.executor.JobCommand;
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.MisclassificationCost;
 
@@ -11,7 +13,7 @@ import com.datascience.gal.MisclassificationCost;
  */
 public class CostsCommands {
 	
-	static public class SetCosts extends DSCommandBase<Object> {
+	static public class SetCosts extends JobCommand<Object, AbstractDawidSkene> {
 
 		private Collection<MisclassificationCost> costs;
 		
@@ -22,14 +24,14 @@ public class CostsCommands {
 		
 		@Override
 		protected void realExecute() {
-			ads.addMisclassificationCosts(costs);
+			project.addMisclassificationCosts(costs);
 			setResult("Costs set");
 		}
 	}
 	
 	/** This is not a bug - we are using categories here as they gsoned gives us costs
 	 * */
-	static public class GetCosts extends DSCommandBase<Collection<Category>> {
+	static public class GetCosts extends JobCommand<Collection<Category>, AbstractDawidSkene> {
 		
 		public GetCosts(){
 			super(false);
@@ -37,7 +39,7 @@ public class CostsCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(ads.getCategories().values());
+			setResult(project.getCategories().values());
 		}
 	}
 }

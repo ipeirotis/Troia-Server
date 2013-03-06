@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
@@ -19,6 +21,7 @@ import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
+import com.datascience.galc.commands.ProjectCommands;
 
 /**
  *
@@ -39,7 +42,9 @@ public abstract class JobEntryBase<T> {
 	CommandStatusesContainer statusesContainer;
 	IJobStorage jobStorage;
 	JobsManager jobsManager;
-	
+
+	protected abstract JobCommand getPredictionZipCommand(String path);
+
 	@PostConstruct
 	public void postConstruct() throws Exception{
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
@@ -48,10 +53,10 @@ public abstract class JobEntryBase<T> {
 		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
 		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
-		
+
 		Logger.getAnonymousLogger().info(uriInfo.getPath());
 	}
-	
+
 	protected Response buildResponseOnCommand(JobCommand command){
 		command.setJobId(jid);
 		command.setJobStorage(jobStorage);
@@ -59,5 +64,11 @@ public abstract class JobEntryBase<T> {
 				statusesContainer.initNewStatus(), command, jobsManager.getLock(jid), statusesContainer);
 		executor.add(rec);
 		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
+	}
+
+	@Path("prediction/zip")
+	@GET
+	public Response getPredictionsZip(){
+		return buildResponseOnCommand(getPredictionZipCommand((String)context.getAttribute(Constants.DOWNLOADS_PATH)));
 	}
 }

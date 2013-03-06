@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Worker;
+import com.datascience.executor.JobCommand;
+import com.datascience.galc.ContinuousProject;
 
 /**
  *
@@ -11,7 +13,7 @@ import com.datascience.core.base.Worker;
  */
 public class WorkerCommands {
 	
-	static public class GetWorkers extends GALCommandBase<Collection<Worker<ContValue>>> {
+	static public class GetWorkers extends JobCommand<Collection<Worker<ContValue>>, ContinuousProject> {
 		
 		public GetWorkers(){
 			super(false);
@@ -23,7 +25,7 @@ public class WorkerCommands {
 		}
 	}
 	
-	static public class GetWorker extends GALCommandBase<Worker<ContValue>> {
+	static public class GetWorker extends JobCommand<Worker<ContValue>, ContinuousProject> {
 				
 		String workerId;
 		public GetWorker(String workerId){

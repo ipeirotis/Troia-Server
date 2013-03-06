@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+import com.datascience.executor.JobCommand;
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.DatumValue;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
@@ -14,7 +16,7 @@ import com.datascience.gal.evaluation.DataEvaluator;
  */
 public class EvaluationCommands {
 	
-	static public class GetCost extends DSCommandBase<Collection<DatumValue>> {
+	static public class GetCost extends JobCommand<Collection<DatumValue>, AbstractDawidSkene> {
 
 		private DataEvaluator dataEvaluator;
 		
@@ -26,14 +28,14 @@ public class EvaluationCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
-			for (Entry<String, Double> e : dataEvaluator.evaluate(ads).entrySet()){
+			for (Entry<String, Double> e : dataEvaluator.evaluate(project).entrySet()){
 				cp.add(new DatumValue(e.getKey(), e.getValue()));
 			}
 			setResult(cp);
 		}
 	}
 	
-	static public class GetQuality extends DSCommandBase<Collection<DatumValue>> {
+	static public class GetQuality extends JobCommand<Collection<DatumValue>, AbstractDawidSkene> {
 		
 		private DataEvaluator dataEvaluator;
 		
@@ -45,7 +47,7 @@ public class EvaluationCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
-			for (Entry<String, Double> e : Quality.fromCosts(ads, dataEvaluator.evaluate(ads)).entrySet()){
+			for (Entry<String, Double> e : Quality.fromCosts(project, dataEvaluator.evaluate(project)).entrySet()){
 				cp.add(new DatumValue(e.getKey(), e.getValue()));
 			}
 			setResult(cp);
