@@ -10,13 +10,19 @@ import java.util.Map;
 /**
  * User: artur
  */
-public class WorkerResult {
+public abstract class WorkerResult {
 
 	// The error matrix for the worker
 	public ConfusionMatrix cm;
 
 	//The confusion matrix for the worker based on evaluation data
 	private ConfusionMatrix eval_cm;
+
+	public abstract double getErrorRate(String categoryFrom, String categoryTo);
+
+	public double getEvalErrorRate(String from, String to){
+		return eval_cm.getErrorRateBatch(from, to);
+	}
 
 	public void empty() {
 		cm.empty();
@@ -59,21 +65,6 @@ public class WorkerResult {
 		}
 	}
 
-	public double getErrorRateIncremental(String categoryFrom,
-										  String categoryTo, ConfusionMatrixNormalizationType type) {
-		switch (type) {
-			case UNIFORM:
-				return cm.getNormalizedErrorRate(categoryFrom, categoryTo);
-			case LAPLACE:
-			default:
-				return cm.getLaplaceNormalizedErrorRate(categoryFrom, categoryTo);
-		}
-	}
-
-	public double getErrorRateBatch(String categoryFrom, String categoryTo) {
-		return cm.getErrorRateBatch(categoryFrom, categoryTo);
-	}
-
 	public void computeEvalConfusionMatrix(Map<String, LObject<String>> evalData,
 										   Collection<Category> categories,
 										   Collection<AssignedLabel<String>> workerAssigns) {
@@ -88,9 +79,5 @@ public class WorkerResult {
 			}
 		}
 		eval_cm.normalize();
-	}
-
-	public double getEvalErrorRate(String from, String to){
-		return eval_cm.getErrorRateBatch(from, to);
 	}
 }

@@ -35,34 +35,14 @@ import com.google.gson.JsonParseException;
  * @author josh
  *
  */
-public class IncrementalDawidSkene extends AbstractDawidSkene {
-	public static final IncrementalDawidSkeneDeserializer deserializer = new IncrementalDawidSkeneDeserializer();
+public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncremental> {
 
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
 
-	public IncrementalDawidSkene(String id, Collection<Category> categories) {
-		super(id, categories);
+	public IncrementalDawidSkene(Collection<Category> categories) {
+		super(categories);
 		super.logger = this.logger;
-	}
-
-	public IncrementalDawidSkene(String id) {
-		super(id);
-		super.logger = this.logger;
-	}
-
-	private IncrementalDawidSkene(String id, Map<String, Datum> objects, Map<String, Datum> objectsWithNoLabels,
-								  Map<String, Worker> workers, Map<String, Category> categories,
-								  boolean fixedPriors, IncrementalDSMethod dsmethod,
-								  double priorDenominator) {
-		super(id);
-		this.objects = objects;
-		this.objectsWithNoLabels = objectsWithNoLabels;
-		this.workers = workers;
-		this.categories = categories;
-		this.fixedPriors = fixedPriors;
-		this.dsmethod = dsmethod;
-		this.priorDenominator = priorDenominator;
 	}
 
 	@Override
@@ -313,32 +293,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene {
 	protected void estimateInner() {
 		for (Datum d : objects.values())
 			updateObjectInformation(d, true);
-	}
-
-	public static class IncrementalDawidSkeneDeserializer implements
-		JsonDeserializer<IncrementalDawidSkene> {
-
-		@Override
-		public IncrementalDawidSkene deserialize(JsonElement json, Type type,
-				JsonDeserializationContext context) throws JsonParseException {
-			JsonObject jobject = (JsonObject) json;
-
-			String id = jobject.get("id").getAsString();
-			Map<String, Category> categories = context.deserialize(
-					jobject.get("categories"), JSONUtils.stringCategoryMapType);
-			boolean fixedPriors = jobject.get("fixedPriors").getAsBoolean();
-			Map<String, Datum> objects = context.deserialize(
-					jobject.get("objects"), JSONUtils.stringDatumMapType);
-			Map<String, Datum> objectsWithNoLabels = context.deserialize(
-					jobject.get("objectsWithNoLabels"), JSONUtils.stringDatumMapType);
-			Map<String, Worker> workers = context.deserialize(
-					jobject.get("workers"), JSONUtils.strinWorkerMapType);
-			IncrementalDSMethod dsmethod = IncrementalDSMethod.valueOf(jobject.get("dsmethod").getAsString());
-			double priorDenominator = jobject.get("priorDenominator").getAsDouble();
-
-			return new IncrementalDawidSkene(id, objects, objectsWithNoLabels, workers, categories,
-											 fixedPriors, dsmethod, priorDenominator);
-		}
 	}
 
 	private static final Logger logger = Logger.getLogger(IncrementalDawidSkene.class);
