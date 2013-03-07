@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.datascience.gal.DawidSkene;
+import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
@@ -39,7 +39,7 @@ public class DBJobStorage implements IJobStorage {
 		if (object instanceof ContinuousProject){
 			return "CONTINUOUS";
 		}
-		if (object instanceof DawidSkene){
+		if (object instanceof AbstractDawidSkene){
 			return "NOMINAL";
 		}
 		throw new IllegalArgumentException("Unknown job kind for class: " + object.getClass());

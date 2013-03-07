@@ -16,8 +16,7 @@ import java.util.Map;
 public class JobFactory {
 
 	protected interface Creator{
-		AbstractDawidSkene create(String id);
-		AbstractDawidSkene create(String id, Collection<Category> categories);
+		AbstractDawidSkene create(Collection<Category> categories);
 	}
 	
 	final static Map<String, Creator> DS_FACTORY = new HashMap();
@@ -25,26 +24,15 @@ public class JobFactory {
 		DS_FACTORY.put("batch", new Creator() {
 
 			@Override
-			public AbstractDawidSkene create(String id) {
-				return new BatchDawidSkene(id);
-			}
-
-			@Override
-			public AbstractDawidSkene create(String id, Collection<Category> categories) {
-				return new BatchDawidSkene(id, categories);
+			public AbstractDawidSkene create(Collection<Category> categories) {
+				return new BatchDawidSkene(categories);
 			}
 		});
 		
 		DS_FACTORY.put("incremental", new Creator() {
-
 			@Override
-			public AbstractDawidSkene create(String id) {
-				return new IncrementalDawidSkene(id);
-			}
-
-			@Override
-			public AbstractDawidSkene create(String id, Collection<Category> categories) {
-				return new IncrementalDawidSkene(id, categories);
+			public AbstractDawidSkene create(Collection<Category> categories) {
+				return new IncrementalDawidSkene(categories);
 			}
 		});
 	};
@@ -58,15 +46,9 @@ public class JobFactory {
 		return creator;
 	}
 
-	public Job createJob(String type, String id){
-		Creator creator = getCreator(type);
-		AbstractDawidSkene ads = creator.create(id);
-		return new Job(ads, id);
-	}
-
 	public Job createJob(String type, String id, Collection<Category> categories){
 		Creator creator = getCreator(type);
-		AbstractDawidSkene ads = creator.create(id, categories);
+		AbstractDawidSkene ads = creator.create(categories);
 		return new Job(ads, id);
 	}
 	
