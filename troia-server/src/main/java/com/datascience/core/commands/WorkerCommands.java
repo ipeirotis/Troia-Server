@@ -1,11 +1,11 @@
-package com.datascience.galc.commands;
+package com.datascience.core.commands;
 
-import java.util.Collection;
-
-import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.executor.JobCommand;
-import com.datascience.galc.ContinuousProject;
+import com.datascience.galc.commands.ParamChecking;
+
+import java.util.Collection;
 
 /**
  *
@@ -13,7 +13,7 @@ import com.datascience.galc.ContinuousProject;
  */
 public class WorkerCommands {
 	
-	static public class GetWorkers extends JobCommand<Collection<Worker<ContValue>>, ContinuousProject> {
+	static public class GetWorkers<T> extends JobCommand<Collection<Worker<T>>, Project> {
 		
 		public GetWorkers(){
 			super(false);
@@ -25,7 +25,7 @@ public class WorkerCommands {
 		}
 	}
 	
-	static public class GetWorker extends JobCommand<Worker<ContValue>, ContinuousProject> {
+	static public class GetWorker<T> extends JobCommand<Worker<T>, Project> {
 				
 		String workerId;
 		public GetWorker(String workerId){

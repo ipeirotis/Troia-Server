@@ -14,23 +14,29 @@ import java.util.Map.Entry;
  * @author artur
  */
 public class PredictionCommands {
-	
-	static public class Compute extends JobCommand<Object, AbstractDawidSkene> {
 
-		private int iterations;
-		
-		public Compute(int iterations){
-			super(true);
-			this.iterations = iterations;
+	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue>, NominalProject> {
+		private WorkerQualityCalculator wqc;
+
+		public GetWorkersQuality(WorkerQualityCalculator wqc){
+			super(false);
+			this.wqc = wqc;
 		}
-		
+
 		@Override
 		protected void realExecute() {
-			project.estimate(1e-6, iterations);
-			setResult("Computation done");
+			Map<String, Double> result = new HashMap<String, Double>();
+			Collection<WorkerValue> wq = new ArrayList<WorkerValue>();
+			for (Worker<String> w : project.getData().getWorkers()){
+				result.put(w.getName(), wqc.getCost(project, w));
+			}
+			for (Entry<String, Double> e : Quality.fromCosts(project, result).entrySet()){
+				wq.add(new WorkerValue(e.getKey(), e.getValue()));
+			}
+			setResult(wq);
 		}
 	}
-	
+
 	static public class GetPredictedCategory extends JobCommand<Collection<DatumClassification>, NominalProject> {
 		
 		private DecisionEngine decisionEngine;

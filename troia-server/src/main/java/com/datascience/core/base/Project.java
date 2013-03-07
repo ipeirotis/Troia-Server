@@ -25,6 +25,10 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 		return results;
 	}
 
+	public Algorithm<T, U, V, W> getAlgorithm(){
+		return algorithm;
+	}
+
 	public Map<String, String> getInfo() {
 		Map<String, String> ret = new HashMap<String, String>();
 		ret.put("Number of assigns", String.valueOf(data.getAssigns().size()));

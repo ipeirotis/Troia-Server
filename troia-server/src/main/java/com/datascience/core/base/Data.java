@@ -120,6 +120,14 @@ public class Data <T>{
 		return evaluationObjects;
 	}
 
+	public LObject<T> getEvaluationObject(String objectId){
+		for (LObject<T> obj : evaluationObjects){
+			if (obj.getName().equals(objectId))
+				return obj;
+		}
+		return null;
+	}
+
 	public void addAssign(AssignedLabel<T> assign){
 		assigns.add(assign);
 		LObject<T> object = assign.getLobject();
