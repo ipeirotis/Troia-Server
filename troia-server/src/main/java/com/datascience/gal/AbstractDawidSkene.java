@@ -178,20 +178,19 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 		invalidateComputed();
 	}
 
-	protected Map<String, Double> getObjectClassProbabilities(String objectName) {
-		return getObjectClassProbabilities(objectName, null);
+	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object) {
+		return getObjectClassProbabilities(object, null);
 	}
 
-	protected Map<String, Double> getObjectClassProbabilities(String objectName, String workerToIgnore) {
+	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
 		Map<String, Double> result = new HashMap<String, Double>();
-		LObject<String> d = data.getObject(objectName);
 
 		// If this is a gold example, just put the probability estimate to be
 		// 1.0
 		// for the correct class
-		if (d.isGold()) {
+		if (object.isGold()) {
 			for (Category c : data.getCategories()) {
-				String correctCategory = d.getGoldLabel();
+				String correctCategory = object.getGoldLabel();
 				if (c.getName().equals(correctCategory)) {
 					result.put(c.getName(), 1.0);
 				} else {
@@ -203,13 +202,13 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 
 		// Let's check first if we have any workers who have labeled this item,
 		// except for the worker that we ignore
-		Set<AssignedLabel<String>> labels = data.getAssignsForObject(d);
+		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
 		if (labels.isEmpty())
 			return null;
 		if (workerToIgnore != null && labels.size() == 1) {
 			for (AssignedLabel al : labels) {
-				if (al.getWorker().getName().equals(workerToIgnore))
+				if (al.getWorker().equals(workerToIgnore))
 					// if only the ignored labeler has labeled
 					return null;
 			}
@@ -234,8 +233,8 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 			double categoryNominator = prior(category.getName());
 
 			// We go through all the labels assigned to the d object
-			for (AssignedLabel<String> al : data.getAssignsForObject(d)) {
-				Worker w = data.getWorker(al.getWorker().getName());
+			for (AssignedLabel<String> al : data.getAssignsForObject(object)) {
+				Worker<String> w = al.getWorker();
 
 				// If we are trying to estimate the category probability
 				// distribution
@@ -243,7 +242,7 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 				// ignore
 				// the labels submitted by this worker.
 				if (workerToIgnore != null
-						&& w.getName().equals(workerToIgnore))
+						&& w.equals(workerToIgnore))
 					continue;
 
 				String assigned_category = al.getLabel();
