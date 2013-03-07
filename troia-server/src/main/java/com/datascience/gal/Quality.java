@@ -9,14 +9,14 @@ import java.util.Map;
  */
 public class Quality {
 
-	static public double fromCost(DawidSkene ds, double cost){
-		return 1. - cost / ((AbstractDawidSkene) ds).getMinSpammerCost();
+	static public double fromCost(NominalProject project, double cost){
+		return 1. - cost / project.getMinSpammerCost();
 	}
 	
-	static public Map<String, Double> fromCosts(DawidSkene ds, Map<String, Double> costs){
+	static public Map<String, Double> fromCosts(NominalProject project, Map<String, Double> costs){
 		Map<String, Double> quality = new HashMap<String, Double>();
 		for (Map.Entry<String, Double> e: costs.entrySet()) {
-			quality.put(e.getKey(), fromCost(ds, e.getValue()));
+			quality.put(e.getKey(), fromCost(project, e.getValue()));
 		}
 		return quality;
 	}

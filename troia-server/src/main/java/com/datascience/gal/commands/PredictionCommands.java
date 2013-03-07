@@ -1,5 +1,7 @@
 package com.datascience.gal.commands;
 
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.*;
 import com.datascience.gal.decision.*;
@@ -29,7 +31,7 @@ public class PredictionCommands {
 		}
 	}
 	
-	static public class GetPredictedCategory extends JobCommand<Collection<DatumClassification>, AbstractDawidSkene> {
+	static public class GetPredictedCategory extends JobCommand<Collection<DatumClassification>, NominalProject> {
 		
 		private DecisionEngine decisionEngine;
 
@@ -49,7 +51,7 @@ public class PredictionCommands {
 		}
 	}
 
-	static public class GetCost extends JobCommand<Collection<DatumValue>, AbstractDawidSkene> {
+	static public class GetCost extends JobCommand<Collection<DatumValue>, NominalProject> {
 		
 		private DecisionEngine decisionEngine;
 		
@@ -69,7 +71,7 @@ public class PredictionCommands {
 		}
 	}
 	
-	static public class GetQuality extends JobCommand<Collection<DatumValue>, AbstractDawidSkene> {
+	static public class GetQuality extends JobCommand<Collection<DatumValue>, NominalProject> {
 		
 		private DecisionEngine decisionEngine;
 		
@@ -89,7 +91,7 @@ public class PredictionCommands {
 		}
 	}
 
-	static public class GetPredictionZip extends com.datascience.core.commands.PredictionCommands.AbstractGetPredictionZip<AbstractDawidSkene> {
+	static public class GetPredictionZip extends com.datascience.core.commands.PredictionCommands.AbstractGetPredictionZip<NominalProject> {
 
 		public GetPredictionZip(String path){
 			super(path);
@@ -114,16 +116,16 @@ public class PredictionCommands {
 						header.add(lpd+" "+la);
 				ret.add(header);
 
-				for (Map.Entry<String, Datum> d : project.getObjects().entrySet()){
+				for (LObject<String> d : project.getData().getObjects()){
 					List<Object> line = new ArrayList<Object>();
-					line.add(d.getKey());
+					line.add(d.getName());
 					for (String lpdc : lpdcs)
 						for (String la : lda){
 							DecisionEngine decisionEngine = new DecisionEngine(
 									LabelProbabilityDistributionCalculators.get(lpdc),
 									null,
 									ObjectLabelDecisionAlgorithms.get(la));
-							line.add(decisionEngine.predictLabel(project, d.getValue()));
+							line.add(decisionEngine.predictLabel(project, d));
 						}
 					ret.add(line);
 				}
@@ -144,7 +146,7 @@ public class PredictionCommands {
 					header.add(lc);
 				ret.add(header);
 
-				for (Worker w : project.getWorkers()){
+				for (Worker<String> w : project.getData().getWorkers()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(w.getName());
 					for (String lc : lca){
