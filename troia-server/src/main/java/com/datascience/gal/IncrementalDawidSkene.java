@@ -72,15 +72,15 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 		// matricies
 
 		LObject<String> object = al.getLobject();
-		if (d != null) {
-			// this should work on old previous assign ..
-			unupdatePrior(object);
-			unupdateWorkers(object);
-		} else {
-			d = data.getOrCreateObject(objectName);
-		}
+//		if (d != null) {
+//			// this should work on old previous assign ..
+//			unupdatePrior(object);
+//			unupdateWorkers(object);
+//		} else {
+//			d = data.getOrCreateObject(objectName);
+//		}
 		// this would also add new worker to workers collection
-		data.addAssign(al);
+//		data.addAssign(al);
 		// ^^^^^^ XXX TODO FIXME
 
 		return object;
@@ -116,28 +116,27 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 
 	/**
 	 * This function needs to know whether this is compleately new assign or "remake"
-	 * @param al
 	 * @return
 	 */
 	private void coreCorrectLabelUpdate(LObject<String> goldObject) {
-		String objectName = cl.getObjectName();
-		String correctCategory = cl.getCorrectCategory();
-
-		if (objects.containsKey(objectName)) {
-			unupdatePrior(goldObject);
-			unupdateWorkers(goldObject);
-			d = objects.get(objectName);
-		} else {
-			Set<Category> categories = new HashSet<Category>(
-				this.categories.values());
-			d = new Datum(objectName, categories);
-		}
-		if (objectsWithNoLabels.containsKey(objectName)) {
-			objectsWithNoLabels.remove(objectName);
-		}
-		d.setGold(true);
-		d.setCorrectCategory(correctCategory);
-		objects.put(objectName, d);
+//		String objectName = cl.getObjectName();
+//		String correctCategory = cl.getCorrectCategory();
+//
+//		if (objects.containsKey(objectName)) {
+//			unupdatePrior(goldObject);
+//			unupdateWorkers(goldObject);
+//			d = objects.get(objectName);
+//		} else {
+//			Set<Category> categories = new HashSet<Category>(
+//				this.categories.values());
+//			d = new Datum(objectName, categories);
+//		}
+//		if (objectsWithNoLabels.containsKey(objectName)) {
+//			objectsWithNoLabels.remove(objectName);
+//		}
+//		d.setGold(true);
+//		d.setCorrectCategory(correctCategory);
+//		objects.put(objectName, d);
 
 	}
 
@@ -168,8 +167,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 
 	/**
 	 * removes information to the priors
-	 *
-	 * @param objectName
 	 */
 	private void unupdatePrior(LObject<String> object) {
 		priorDenominator--;
@@ -183,8 +180,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 
 	/**
 	 * increases the prior using the object's probs
-	 *
-	 * @param objectName
 	 */
 	private void incrementPrior(LObject<String> object) {
 		priorDenominator++;

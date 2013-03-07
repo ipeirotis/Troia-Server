@@ -44,7 +44,7 @@ public class BatchDawidSkene extends AbstractDawidSkene<WorkerResultBatch> {
 	}
 
 	private void updateObjectClassProbabilities(LObject<String> obj) {
-		Map<String, Double> probabilities = getObjectClassProbabilities(obj.getName(), null);
+		Map<String, Double> probabilities = getObjectClassProbabilities(obj, null);
 		if (probabilities == null)
 			return;
 		for (String category : probabilities.keySet()) {
@@ -69,12 +69,11 @@ public class BatchDawidSkene extends AbstractDawidSkene<WorkerResultBatch> {
 
 			// Get the name of the object and the category it
 			// is classified from this worker.
-			String objectName = al.getLobject().getName();
 			String destination = al.getLabel();
 			// We get the classification of the object
 			// based on the votes of all the other workers
 			// We treat this classification as the "correct" one
-			Map<String, Double> probabilities = getObjectClassProbabilities(objectName, worker.getName());
+			Map<String, Double> probabilities = getObjectClassProbabilities(al.getLobject(), worker);
 			if (probabilities == null)
 				continue; // No other worker labeled the object
 

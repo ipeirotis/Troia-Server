@@ -65,16 +65,13 @@ public abstract class WorkerResult {
 		}
 	}
 
-	public void computeEvalConfusionMatrix(Map<String, LObject<String>> evalData,
-										   Collection<Category> categories,
+	public void computeEvalConfusionMatrix(Collection<Category> categories,
 										   Collection<AssignedLabel<String>> workerAssigns) {
 		eval_cm = new MultinomialConfusionMatrix(categories, new HashMap<CategoryPair, Double>());
 		for (AssignedLabel<String> l : workerAssigns) {
-			String objectName = l.getLobject().getName();
-			LObject<String> d = evalData.get(objectName);
-			if (d != null){
+			if (l.getLobject().getEvaluationLabel() != null){
 				String assignedCategory = l.getLabel();
-				String correctCategory = d.getGoldLabel();
+				String correctCategory = l.getLobject().getEvaluationLabel();
 				eval_cm.addError(correctCategory, assignedCategory, 1.0);
 			}
 		}

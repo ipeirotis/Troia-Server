@@ -87,7 +87,7 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 		return results.getWokerResults().get(worker).getErrorRate(from, to);
 	}
 
-	protected abstract double prior(String categoryName);
+	public abstract double prior(String categoryName);
 
 	@Override
 	protected double getLogLikelihood() {
