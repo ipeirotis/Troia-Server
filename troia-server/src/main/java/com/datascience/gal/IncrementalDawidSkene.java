@@ -9,21 +9,14 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 import org.apache.log4j.Logger;
-
-import com.datascience.core.storages.JSONUtils;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 /**
  * fully incremental version of DS- adjustments to the data structures are made
@@ -47,24 +40,22 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 
 	@Override
 	protected void initializePriors() {
-		for (String cat : categories.keySet()) {
-			Category c = categories.get(cat);
+		for (Category c : data.getCategories())
 			c.setPrior(0);
-		}
 		priorDenominator = 0;
 	}
 
 	@Override
 	public double prior(String categoryName) {
 		if (fixedPriors || priorDenominator == 0)
-			return 1. / (double) categories.size();
+			return 1. / (double) data.getCategories().size();
 		else
-			return categories.get(categoryName).getPrior() / priorDenominator;
+			return data.getCategory(categoryName).getPrior() / priorDenominator;
 	}
 
-	@Override
-	public void addAssignedLabel(AssignedLabel al) {
-		Datum d = coreAssignedLabelUpdate(al);
+	//TODO: on data change (observable pattern)
+	public void addAssignedLabel(AssignedLabel<String> al) {
+		LObject<String> d = coreAssignedLabelUpdate(al);
 		switch (dsmethod) {
 			case ITERATELOCAL:
 				for (int i = 0; i < 5; i++) // XXX: magic number
@@ -78,139 +69,104 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 		invalidateComputed();
 	}
 
-	private Datum coreAssignedLabelUpdate(AssignedLabel al) {
-		String workerName = al.getWorkerName();
-		String objectName = al.getObjectName();
-
-		String categoryName = al.getCategoryName();
-		this.validateCategory(categoryName);
+	private LObject<String> coreAssignedLabelUpdate(AssignedLabel<String> al) {
+		String objectName = al.getLobject().getName();
 		// If we already have the object, un-update it's prevous contribution to
 		// the prior,
 		// and remove the previous contribution to the workers confusion
 		// matricies
 
-		Datum d;
-		if (objects.containsKey(objectName)) {
+		LObject<String> d = data.getObject(objectName);
+		if (d != null) {
 			unupdatePrior(objectName);
 			unupdateWorkers(objectName);
-			d = objects.get(objectName);
 		} else {
-			Set<Category> datumCategories = new HashSet<Category>(
-				categories.values());
-			d = new Datum(objectName, datumCategories);
+			d = data.getOrCreateObject(objectName);
 		}
-		if (objectsWithNoLabels.containsKey(objectName)) {
-			objectsWithNoLabels.remove(objectName);
-		}
-		d.addAssignedLabel(al);
-		objects.put(objectName, d);
+		// this would also add new worker to workers collection
+		data.addAssign(al);
 
-		// If we already have the worker, then just add the label
-		// in the set of labels assigned by the worker.
-		// If it is the first time we see the object, then create
-		// the appropriate entry in the objects hashmap
-		Worker w;
-		if (this.workers.containsKey(workerName)) {
-			w = this.workers.get(workerName);
-		} else {
-			Set<Category> categories = new HashSet<Category>(
-				this.categories.values());
-			w = new Worker(workerName, categories);
-		}
-		w.addAssignedLabel(al);
-		workers.put(workerName, w);
 		return d;
 	}
 
-	private void updateObjectInformation(Datum d, boolean unupdate) {
-		String objectName = d.name;
+	private void updateObjectInformation(LObject<String> d, boolean unupdate) {
+		String objectName = d.getName();
 		if (unupdate) {
 			unupdatePrior(objectName);
 			unupdateWorkers(objectName);
 		}
-		d.categoryProbability = null;
-		d.categoryProbability = getObjectClassProbabilities(objectName);
-
+		results.getDatumResults().get(d).setCategoryProbabilites(getObjectClassProbabilities(objectName));
 		incrementPrior(objectName);
 		updateWorkers(objectName);
 	}
 
-	@Override
-	public void addCorrectLabel(CorrectLabel cl) {
-		Datum d = coreCorrectLabelUpdate(cl);
-		switch (dsmethod) {
-			case ITERATELOCAL:
-				for (int i = 0; i < 5; i++)// XXX: magic number
-					updateObjectInformation(d, 0 != i);
-				break;
-			case UPDATEWORKERS:
-			default:
-				updateObjectInformation(d, false);
-				break;
-		}
-
-	}
-	
-	private Datum coreCorrectLabelUpdate(CorrectLabel cl) {
-		String objectName = cl.getObjectName();
-		String correctCategory = cl.getCorrectCategory();
-
-		Datum d;
-		this.validateCategory(correctCategory);
-		if (objects.containsKey(objectName)) {
-			unupdatePrior(objectName);
-			unupdateWorkers(objectName);
-			d = objects.get(objectName);
-		} else {
-			Set<Category> categories = new HashSet<Category>(
-				this.categories.values());
-			d = new Datum(objectName, categories);
-		}
-		if (objectsWithNoLabels.containsKey(objectName)) {
-			objectsWithNoLabels.remove(objectName);
-		}
-		d.setGold(true);
-		d.setCorrectCategory(correctCategory);
-		objects.put(objectName, d);
-		
-		return d;
-	}
+// TODO: on data change (observable pattern)
+//	@Override
+//	public void addCorrectLabel(CorrectLabel cl) {
+//		Datum d = coreCorrectLabelUpdate(cl);
+//		switch (dsmethod) {
+//			case ITERATELOCAL:
+//				for (int i = 0; i < 5; i++)// XXX: magic number
+//					updateObjectInformation(d, 0 != i);
+//				break;
+//			case UPDATEWORKERS:
+//			default:
+//				updateObjectInformation(d, false);
+//				break;
+//		}
+//
+//	}
+//
+//	private Datum coreCorrectLabelUpdate(CorrectLabel cl) {
+//		String objectName = cl.getObjectName();
+//		String correctCategory = cl.getCorrectCategory();
+//
+//		Datum d;
+//		if (objects.containsKey(objectName)) {
+//			unupdatePrior(objectName);
+//			unupdateWorkers(objectName);
+//			d = objects.get(objectName);
+//		} else {
+//			Set<Category> categories = new HashSet<Category>(
+//				this.categories.values());
+//			d = new Datum(objectName, categories);
+//		}
+//		if (objectsWithNoLabels.containsKey(objectName)) {
+//			objectsWithNoLabels.remove(objectName);
+//		}
+//		d.setGold(true);
+//		d.setCorrectCategory(correctCategory);
+//		objects.put(objectName, d);
+//
+//		return d;
+//	}
 
 	private void updateWorkers(String objectName) {
-		Datum datum = objects.get(objectName);
-		for (AssignedLabel al : datum.getAssignedLabels()) {
-			String destination = al.getCategoryName();
-			String workerName = al.getWorkerName();
-			updateWorker(objectName, workerName, destination);
+		LObject<String> obj = data.getObject(objectName);
+		for (AssignedLabel<String> al : data.getAssignsForObject(obj)) {
+			updateWorker(objectName, al.getWorker().getName(), al.getLabel());
 		}
 
 	}
 
-	private void updateWorker(String objectName, String workerName,
-							  String destination) {
+	private void updateWorker(String objectName, String workerName, String destination) {
 		Map<String, Double> probs = getObjectClassProbabilities(objectName);
-		Worker worker = workers.get(workerName);
-
+		Worker<String> worker = data.getWorker(workerName);
 		for (String source : probs.keySet())
-			worker.addError(source, destination, probs.get(source));
+			results.getWokerResults().get(worker).addError(source, destination, probs.get(source));
 	}
 
 	private void unupdateWorkers(String objectName) {
-		Datum datum = objects.get(objectName);
-		for (AssignedLabel al : datum.getAssignedLabels()) {
-			String destination = al.getCategoryName();
-			String workerName = al.getWorkerName();
-			unupdateWorker(objectName, workerName, destination);
-		}
+		LObject<String> obj = data.getObject(objectName);
+		for (AssignedLabel<String> al : data.getAssignsForObject(obj))
+			unupdateWorker(objectName, al.getWorker().getName(), al.getLabel());
 	}
 
-	private void unupdateWorker(String objectName, String workerName,
-								String destination) {
+	private void unupdateWorker(String objectName, String workerName, String destination) {
 		Map<String, Double> probs = getObjectClassProbabilities(objectName);
-		Worker worker = workers.get(workerName);
-
+		Worker<String> worker = data.getWorker(workerName);
 		for (String source : probs.keySet())
-			worker.removeError(source, destination, probs.get(source));
+			results.getWokerResults().get(worker).removeError(source, destination, probs.get(source));
 	}
 
 	/**
@@ -221,12 +177,10 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 	private void unupdatePrior(String objectName) {
 		priorDenominator--;
 		Map<String, Double> probs = getObjectClassProbabilities(objectName);
-
-		for (String catName : categories.keySet()) {
-			double prior = probs.get(catName);
-			Category category = categories.get(catName);
-			double oldValue = category.getPrior();
-			category.setPrior(Math.max(0, oldValue - prior));
+		for (Category c: data.getCategories()) {
+			double prior = probs.get(c.getName());
+			double oldValue = c.getPrior();
+			c.setPrior(Math.max(0, oldValue - prior));
 		}
 	}
 
@@ -238,61 +192,33 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 	private void incrementPrior(String objectName) {
 		priorDenominator++;
 		Map<String, Double> probs = getObjectClassProbabilities(objectName);
-		for (String catName : categories.keySet()) {
-			double prior = probs.get(catName);
-			Category category = categories.get(catName);
-			double oldValue = category.getPrior();
-			category.setPrior(oldValue + prior);
+		for (Category c: data.getCategories()) {
+			double prior = probs.get(c.getName());
+			double oldValue = c.getPrior();
+			c.setPrior(oldValue + prior);
 		}
 	}
 
-	@Override
-	public Map<String, Double> objectClassProbabilities(String objectName,
-			double entropyThreshold) {
-
-		Map<String, Double> out = new HashMap<String, Double>();
-
-		if (!objects.containsKey(objectName)) {
-			logger.warn("attempting to get class probabilities for non-existent object");
-		} else {
-			Datum datum = objects.get(objectName);
-			if (datum.getEntropy() >= entropyThreshold) {
-				for (String cat : categories.keySet())
-					out.put(cat, datum.getCategoryProbability(cat));
-			}
-		}
-		return out;
-	}
-
-	@Override
 	public Map<String, Double> getCategoryPriors() {
-		Map<String, Double> out = new HashMap<String, Double>(categories.size());
-		for (String catName : categories.keySet())
-			out.put(catName, prior(catName));
+		Map<String, Double> out = new HashMap<String, Double>(data.getCategories().size());
+		for (Category c : data.getCategories())
+			out.put(c.getName(), prior(c.getName()));
 		return out;
 	}
 
 	@Override
-	public double getErrorRateForWorker(Worker worker, String from, String to) {
-		return worker.getErrorRateIncremental(from, to,
-											  ConfusionMatrixNormalizationType.UNIFORM);
-	}
-
-	@Override
-	public Map<String, Double> getObjectClassProbabilities(String objectName,
-			String workerToIgnore) {
-		Datum datum = objects.get(objectName);
-		if (null != datum.categoryProbability)
-			return datum.categoryProbability;
+	public Map<String, Double> getObjectClassProbabilities(String objectName, String workerToIgnore) {
+		Map<String, Double> cp = results.getDatumResults().get(data.getObject(objectName)).getCategoryProbabilites();
+		if (null != cp)
+			return cp;
 		else
-			return super
-				   .getObjectClassProbabilities(objectName, workerToIgnore);
+			return super.getObjectClassProbabilities(objectName, workerToIgnore);
 	}
 
 	@Override
 	protected void estimateInner() {
-		for (Datum d : objects.values())
-			updateObjectInformation(d, true);
+		for (LObject<String> obj :data.getObjects())
+			updateObjectInformation(obj, true);
 	}
 
 	private static final Logger logger = Logger.getLogger(IncrementalDawidSkene.class);
