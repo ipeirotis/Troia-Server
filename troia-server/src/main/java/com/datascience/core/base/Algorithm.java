@@ -9,11 +9,14 @@ public abstract class Algorithm<T, U extends Data<T>, V, W> {
 	protected Results<T, V, W> results;
 
 	public Algorithm(){
-		results = new Results<T, V, W>();
 	}
 
 	public void setData(U data){
 		this.data = data;
+	}
+
+	public void setResults(Results<T, V, W> results){
+		this.results = results;
 	}
 
 	public abstract double estimate(double eps, int iterations);
