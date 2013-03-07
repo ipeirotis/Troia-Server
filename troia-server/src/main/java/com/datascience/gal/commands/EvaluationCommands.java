@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.DatumValue;
+import com.datascience.gal.NominalProject;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 
@@ -16,7 +17,7 @@ import com.datascience.gal.evaluation.DataEvaluator;
  */
 public class EvaluationCommands {
 	
-	static public class GetCost extends JobCommand<Collection<DatumValue>, AbstractDawidSkene> {
+	static public class GetCost extends JobCommand<Collection<DatumValue>, NominalProject> {
 
 		private DataEvaluator dataEvaluator;
 		
@@ -35,7 +36,7 @@ public class EvaluationCommands {
 		}
 	}
 	
-	static public class GetQuality extends JobCommand<Collection<DatumValue>, AbstractDawidSkene> {
+	static public class GetQuality extends JobCommand<Collection<DatumValue>, NominalProject> {
 		
 		private DataEvaluator dataEvaluator;
 		

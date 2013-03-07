@@ -1,14 +1,11 @@
-package com.datascience.galc.commands;
+package com.datascience.core.commands;
 
-import java.util.Collection;
-
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
-import com.datascience.core.base.LObject;
+import com.datascience.core.base.*;
 import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
 import com.datascience.executor.JobCommand;
-import com.datascience.galc.ContinuousProject;
+import com.datascience.galc.commands.ParamChecking;
+
+import java.util.Collection;
 
 /**
  *
@@ -16,9 +13,10 @@ import com.datascience.galc.ContinuousProject;
  */
 public class ObjectCommands {
 	
-	static public class AddObjects extends JobCommand<Object, ContinuousProject> {
+	static public class AddObjects<T> extends JobCommand<Object, Project> {
 
 		ShallowObjectCollection objects;
+
 		public AddObjects(ShallowObjectCollection objects){
 			super(true);
 			this.objects = objects;
@@ -26,17 +24,17 @@ public class ObjectCommands {
 		
 		@Override
 		protected void realExecute() {
-			Data<ContValue> data = project.getData();
+			Data<T> data = project.getData();
 			for (String objectId : objects.objects){
 				if (null == data.getObject(objectId)){
-					data.addObject(new LObject<ContValue>(objectId));
+					data.addObject(new LObject<T>(objectId));
 				}
 			}
 			setResult("Objects without labels added");
 		}
 	}
 	
-	static public class GetObjects extends JobCommand<Collection<LObject<ContValue>>, ContinuousProject> {
+	static public class GetObjects<T> extends JobCommand<Collection<LObject<T>>, Project> {
 		
 		public GetObjects(){
 			super(false);
@@ -48,7 +46,7 @@ public class ObjectCommands {
 		}
 	}
 	
-	static public class GetObject extends JobCommand<LObject<ContValue>, ContinuousProject> {
+	static public class GetObject<T> extends JobCommand<LObject<T>, Project> {
 		
 		String objectId;
 		public GetObject(String objectId){
@@ -62,7 +60,7 @@ public class ObjectCommands {
 		}
 	}
 	
-	static public class GetObjectAssigns extends JobCommand<Collection<AssignedLabel<ContValue>>, ContinuousProject> {
+	static public class GetObjectAssigns<T> extends JobCommand<Collection<AssignedLabel<T>>, Project> {
 		
 		String objectId;
 		public GetObjectAssigns(String objectId){

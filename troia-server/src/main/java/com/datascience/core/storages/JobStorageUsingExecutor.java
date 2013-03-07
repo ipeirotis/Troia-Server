@@ -2,7 +2,7 @@ package com.datascience.core.storages;
 
 import com.datascience.core.Job;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.gal.commands.JobStorageCommands;
+import com.datascience.core.commands.JobStorageCommands;
 import com.datascience.service.JobsManager;
 
 /**

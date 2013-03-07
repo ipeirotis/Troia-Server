@@ -2,58 +2,25 @@ package com.datascience.galc.commands;
 
 import java.util.*;
 
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.commands.PredictionCommands;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.WorkerContResults;
 
 /**
- *
- * @author artur
- */
-public class ProjectCommands {
-	
-	static public class Compute extends JobCommand<Object, ContinuousProject> {
+*
+* @author artur
+*/
+public class PredictionCommands {
 
-		int iterations;
-		double epsilon;
-		
-		public Compute(int iterations, double epsilon){
-			super(true);
-			this.iterations = iterations;
-			this.epsilon = epsilon;
-		}
-		
-		@Override
-		protected void realExecute() {
-			project.compute(iterations, epsilon);
-			setResult("Computation done");
-		}
-	}
-	
-	static public class GetProjectInfo extends JobCommand<Data<ContValue>, ContinuousProject> {
-
-		public GetProjectInfo(){
-			super(false);
-		}
-		
-		@Override
-		protected void realExecute() {
-			setResult(project.getData());
-		}
-	}
-	
 	static public class ObjectsPrediction extends JobCommand<Collection<DatumContResults>, ContinuousProject> {
 
 		public ObjectsPrediction(){
 			super(true);
 		}
-		
+
 		@Override
 		protected void realExecute() {
 			setResult(project.getDataPrediction().values());
@@ -79,7 +46,7 @@ public class ProjectCommands {
 		public WorkersPrediction(){
 			super(true);
 		}
-		
+
 		@Override
 		protected void realExecute() {
 			setResult(project.getWorkerPrediction().values());
@@ -100,7 +67,7 @@ public class ProjectCommands {
         }
     }
 
-	static public class GetPredictionZip extends PredictionCommands.AbstractGetPredictionZip<ContinuousProject> {
+	static public class GetPredictionZip extends com.datascience.core.commands.PredictionCommands.AbstractGetPredictionZip<ContinuousProject> {
 
 		public GetPredictionZip(String path){
 			super(path);

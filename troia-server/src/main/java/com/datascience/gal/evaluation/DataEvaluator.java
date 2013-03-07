@@ -1,9 +1,8 @@
 package com.datascience.gal.evaluation;
 
+import com.datascience.core.base.LObject;
 import com.datascience.gal.Category;
-import com.datascience.gal.CorrectLabel;
-import com.datascience.gal.Datum;
-import com.datascience.gal.DawidSkene;
+import com.datascience.gal.NominalProject;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
@@ -26,21 +25,9 @@ public class DataEvaluator {
 		this.labelProbabilityDistributionCalculator = lpdc;
 	}
 	
-	public double evaluate(DawidSkene ds, CorrectLabel ed) {
-		String correctLabel = ed.getCorrectCategory();
-		if (correctLabel != null){
-			Datum datum = ds.getObjects().get(ed.getObjectName());
-			if (datum == null) {
-				throw new IllegalArgumentException("Evaluation object doesn't match any datum: " + correctLabel);
-			}
-			return evaluate(ds, datum, correctLabel);
-		}
-		return 1.; // FIXME: in previous version was 1. - maybe we should throw exception if correctLabel== null ?
-	}
-	
-	protected double evaluate(DawidSkene ds, Datum datum, String correctLabel) {
-		Map<String, Double> dest_probabilities = labelProbabilityDistributionCalculator.calculateDistribution(datum, ds);
-		Category fromCostVector = ds.getCategories().get(correctLabel);
+	protected double evaluate(NominalProject project, LObject<String> datum) {
+		Map<String, Double> dest_probabilities = labelProbabilityDistributionCalculator.calculateDistribution(datum, project);
+		Category fromCostVector = project.getData().getCategory(datum.getEvaluationLabel());
 		double cost = 0.0;
 		for (Map.Entry<String, Double> e : dest_probabilities.entrySet()) {
 			Double misclassification_cost = fromCostVector.getCost(e.getKey());
@@ -49,16 +36,15 @@ public class DataEvaluator {
 		return cost;
 	}
 	
-	public Map<String, Double> evaluate(DawidSkene ds){
-		Collection<CorrectLabel> evalData = ds.getEvaluationDatums().values();
+	public Map<String, Double> evaluate(NominalProject project){
+		Collection<LObject<String>> evalData = project.getData().getEvaluationObjects();
 		Map<String, Double> ret = new HashMap<String, Double>();
-		for (CorrectLabel cl: evalData) {
-			ret.put(cl.getObjectName(), evaluate(ds, cl));
+		for (LObject<String> cl: evalData) {
+			ret.put(cl.getName(), evaluate(project, cl));
 		}
 		return ret;
 	}
-	
-	
+
 	public static DataEvaluator get(String labelChoosingMethod,
 			ILabelProbabilityDistributionCalculator lpdc){
 		if (Strings.isNullOrEmpty(labelChoosingMethod)) {

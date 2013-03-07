@@ -8,20 +8,17 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
 import com.datascience.core.Job;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.commands.*;
+import com.datascience.core.storages.DataJSON;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.galc.commands.ProjectCommands;
 
 /**
  *
@@ -70,5 +67,105 @@ public abstract class JobEntryBase<T> {
 	@GET
 	public Response getPredictionsZip(){
 		return buildResponseOnCommand(getPredictionZipCommand((String)context.getAttribute(Constants.DOWNLOADS_PATH)));
+	}
+
+	@Path("")
+	@GET
+	public Response getJobInfo(){
+		return buildResponseOnCommand(new ProjectCommands.GetProjectInfo());
+	}
+
+	@Path("objects")
+	@GET
+	public Response getObjects(){
+		return buildResponseOnCommand(new ObjectCommands.GetObjects());
+	}
+
+	@Path("objects/{oid:[a-zA-Z_0-9/:.-]+}/info")
+	@GET
+	public Response getObject(@PathParam("oid") String objectId){
+		return buildResponseOnCommand(new ObjectCommands.GetObject(objectId));
+	}
+
+	@Path("objects/{oid:[a-zA-Z_0-9/:.-]+}/assigns")
+	@GET
+	public Response getObjectAssigns(@PathParam("oid") String objectId){
+		return buildResponseOnCommand(new ObjectCommands.GetObjectAssigns(objectId));
+	}
+
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("objects")
+	@POST
+	public Response addObjects(DataJSON.ShallowObjectCollection objects){
+		return buildResponseOnCommand(new ObjectCommands.AddObjects(objects));
+	}
+
+	@Path("goldObjects")
+	@GET
+	public Response getGoldObjects(){
+		return buildResponseOnCommand(new GoldObjectsCommands.GetGoldObjects());
+	}
+
+	@Path("goldObjects/{oid:[a-zA-Z_0-9/:.-]+}")
+	@GET
+	public Response getGoldObject(@PathParam("oid") String objectId){
+		return buildResponseOnCommand(new GoldObjectsCommands.GetGoldObject(objectId));
+	}
+
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("goldObjects")
+	@POST
+	public Response addGoldObjects(DataJSON.ShallowGoldObjectCollection<ContValue> goldObjects){
+		return buildResponseOnCommand(new GoldObjectsCommands.AddGoldObjects(goldObjects));
+	}
+
+	@Path("evaluationObjects")
+	@GET
+	public Response getEvaluationObjects(){
+		return buildResponseOnCommand(new EvaluationObjectsCommands.GetEvaluationObjects());
+	}
+
+	@Path("evaluationObjects/{oid:[a-zA-Z_0-9/:.-]+}")
+	@GET
+	public Response getEvaluationObject(@PathParam("oid") String objectId){
+		return buildResponseOnCommand(new EvaluationObjectsCommands.GetEvaluationObject(objectId));
+	}
+
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("evaluationObjects")
+	@POST
+	public Response addEvaluationObjects(DataJSON.ShallowGoldObjectCollection<ContValue> goldObjects){
+		return buildResponseOnCommand(new EvaluationObjectsCommands.AddEvaluationObjects(goldObjects));
+	}
+
+	@Path("workers")
+	@GET
+	public Response getWorkers(){
+		return buildResponseOnCommand(new WorkerCommands.GetWorkers());
+	}
+
+	@Path("workers/{wid:[a-zA-Z_0-9/:.-]+}/info")
+	@GET
+	public Response getWorker(@PathParam("wid") String worker){
+		return buildResponseOnCommand(new WorkerCommands.GetWorker(worker));
+	}
+
+	@Path("workers/{wid:[a-zA-Z_0-9/:.-]+}/assigns")
+	@GET
+	public Response getWorkerAssigns(@PathParam("wid") String worker){
+		return buildResponseOnCommand(new AssignsCommands.GetWorkerAssigns<T>(worker));
+	}
+
+	@Path("assigns")
+	@GET
+	public Response getAssigns(){
+		return buildResponseOnCommand(new AssignsCommands.GetAssigns<T>());
+	}
+
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("assigns")
+	@POST
+	public Response addAssigns(DataJSON.ShallowAssignCollection<T> assigns){
+		return buildResponseOnCommand(new AssignsCommands.AddAssigns<T>(assigns));
 	}
 }
