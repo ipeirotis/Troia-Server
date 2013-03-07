@@ -1,8 +1,11 @@
 package com.datascience.core.base;
 
+import com.datascience.core.algorithms.IUpdatableAlgorithm;
+
 import java.util.*;
 
 /**
+ * Observable - notifies updatable algorithms about new data
  * @Author: konrad
  */
 public class Data <T>{
@@ -16,6 +19,7 @@ public class Data <T>{
 	protected Set<LObject<T>> evaluationObjects;
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
 
+	protected List<IUpdatableAlgorithm<T>> observeringAlgorithms;
 
 	public Data(){
 		assigns = new HashSet<AssignedLabel<T>>();
@@ -26,12 +30,14 @@ public class Data <T>{
 		datums = new HashMap<LObject<T>, Set<AssignedLabel<T>>>();
 		mapWorkers = new HashMap<String, Worker<T>>();
 		mapObjects = new HashMap<String, LObject<T>>();
+		observeringAlgorithms = new LinkedList<IUpdatableAlgorithm<T>>();
 	}
 
 	public void addWorker(Worker<T> worker){
 		if (!workers.contains(worker)){
 			workers.add(worker);
 			mapWorkers.put(worker.getName(), worker);
+			notifyNewWorker(worker);
 		}
 	}
 
@@ -51,11 +57,23 @@ public class Data <T>{
 		return workers;
 	}
 
-	public void addObject(LObject<T> object){
+	/**
+	 * @param object
+	 * @return whether object was added (no addition if it was already in)
+	 */
+	protected boolean addObjectNoNotify(LObject<T> object){
 		if (!datums.containsKey(object)) {
 			objects.add(object);
 			mapObjects.put(object.getName(), object);
 			datums.put(object, new HashSet<AssignedLabel<T>>());
+			return true;
+		}
+		return false;
+	}
+
+	public void addObject(LObject<T> object){
+		if (addObjectNoNotify(object)) {
+			notifyNewObject(object);
 		}
 	}
 
@@ -77,7 +95,8 @@ public class Data <T>{
 
 	public void addGoldObject(LObject<T> object){
 		goldObjects.add(object);
-		addObject(object);
+		addObjectNoNotify(object);
+		notifyNewGoldObject(object);
 	}
 
 	public LObject<T> getGoldObject(String objectId){
@@ -109,6 +128,7 @@ public class Data <T>{
 		Worker<T> worker = assign.getWorker();
 		addWorker(worker);
 		worker.addAssign(assign);
+		notifyNewAssign(assign);
 	}
 
 
@@ -123,4 +143,27 @@ public class Data <T>{
 		return assigns;
 	}
 
+	protected void notifyNewAssign(AssignedLabel<T> assign){
+		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+			updatableAlgorithm.newAssign(assign);
+		}
+	}
+
+	protected void notifyNewGoldObject(LObject<T> object){
+		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+			updatableAlgorithm.newGoldObject(object);
+		}
+	}
+
+	protected void notifyNewObject(LObject<T> object){
+		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+			updatableAlgorithm.newObject(object);
+		}
+	}
+
+	protected void notifyNewWorker(Worker<T> worker){
+		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+			updatableAlgorithm.newWorker(worker);
+		}
+	}
 }

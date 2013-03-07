@@ -4,17 +4,16 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 
-import java.util.Collection;
 
 /**
  * @Author: konrad
  */
 public interface IUpdatableAlgorithm<T> {
 
-	void newAssigns(Collection<AssignedLabel<T>> assigns);
-	void newGoldObjects(Collection<LObject<T>> objects);
+	void newAssign(AssignedLabel<T> assign);
+	void newGoldObject(LObject<T> object);
 
 	// Those two might be important for scheduling system
-	void newObjects(Collection<LObject<T>> objects);
-	void newWorkers(Collection<Worker<T>> workers);
+	void newObject(LObject<T> object);
+	void newWorker(Worker<T> worker);
 }
