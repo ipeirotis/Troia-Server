@@ -9,10 +9,9 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import com.datascience.core.algorithms.IUpdatableAlgorithm;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
@@ -28,7 +27,8 @@ import org.apache.log4j.Logger;
  * @author josh
  *
  */
-public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncremental> {
+public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncremental>
+			implements IUpdatableAlgorithm<String>{
 
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
@@ -53,120 +53,117 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 			return data.getCategory(categoryName).getPrior() / priorDenominator;
 	}
 
-	//TODO: on data change (observable pattern)
-	public void addAssignedLabel(AssignedLabel<String> al) {
+	@Override
+	public void newAssign(AssignedLabel<String> al) {
 		LObject<String> d = coreAssignedLabelUpdate(al);
-		switch (dsmethod) {
-			case ITERATELOCAL:
-				for (int i = 0; i < 5; i++) // XXX: magic number
-					updateObjectInformation(d, 0 != i);
-				break;
-			case UPDATEWORKERS:
-			default:
-				updateObjectInformation(d, false);
-				break;
-		}
+		computeForObject(d);
 		invalidateComputed();
 	}
 
+	/**
+	 * This function needs to know whether this is compleately new assign or "remake"
+	 * @param al
+	 * @return
+	 */
 	private LObject<String> coreAssignedLabelUpdate(AssignedLabel<String> al) {
-		String objectName = al.getLobject().getName();
 		// If we already have the object, un-update it's prevous contribution to
 		// the prior,
 		// and remove the previous contribution to the workers confusion
 		// matricies
 
-		LObject<String> d = data.getObject(objectName);
+		LObject<String> object = al.getLobject();
 		if (d != null) {
-			unupdatePrior(objectName);
-			unupdateWorkers(objectName);
+			// this should work on old previous assign ..
+			unupdatePrior(object);
+			unupdateWorkers(object);
 		} else {
 			d = data.getOrCreateObject(objectName);
 		}
 		// this would also add new worker to workers collection
 		data.addAssign(al);
+		// ^^^^^^ XXX TODO FIXME
 
-		return d;
+		return object;
 	}
 
-	private void updateObjectInformation(LObject<String> d, boolean unupdate) {
-		String objectName = d.getName();
+	private void updateObjectInformation(LObject<String> object, boolean unupdate) {
 		if (unupdate) {
-			unupdatePrior(objectName);
-			unupdateWorkers(objectName);
+			unupdatePrior(object);
+			unupdateWorkers(object);
 		}
-		results.getDatumResults().get(d).setCategoryProbabilites(getObjectClassProbabilities(objectName));
-		incrementPrior(objectName);
-		updateWorkers(objectName);
+		incrementPrior(object);
+		updateWorkers(object);
 	}
 
-// TODO: on data change (observable pattern)
-//	@Override
-//	public void addCorrectLabel(CorrectLabel cl) {
-//		Datum d = coreCorrectLabelUpdate(cl);
-//		switch (dsmethod) {
-//			case ITERATELOCAL:
-//				for (int i = 0; i < 5; i++)// XXX: magic number
-//					updateObjectInformation(d, 0 != i);
-//				break;
-//			case UPDATEWORKERS:
-//			default:
-//				updateObjectInformation(d, false);
-//				break;
-//		}
-//
-//	}
-//
-//	private Datum coreCorrectLabelUpdate(CorrectLabel cl) {
-//		String objectName = cl.getObjectName();
-//		String correctCategory = cl.getCorrectCategory();
-//
-//		Datum d;
-//		if (objects.containsKey(objectName)) {
-//			unupdatePrior(objectName);
-//			unupdateWorkers(objectName);
-//			d = objects.get(objectName);
-//		} else {
-//			Set<Category> categories = new HashSet<Category>(
-//				this.categories.values());
-//			d = new Datum(objectName, categories);
-//		}
-//		if (objectsWithNoLabels.containsKey(objectName)) {
-//			objectsWithNoLabels.remove(objectName);
-//		}
-//		d.setGold(true);
-//		d.setCorrectCategory(correctCategory);
-//		objects.put(objectName, d);
-//
-//		return d;
-//	}
+	public void computeForObject(LObject<String> object){
+		switch (dsmethod) {
+			case ITERATELOCAL:
+				for (int i = 0; i < 5; i++)// XXX: magic number
+					updateObjectInformation(object, 0 != i);
+				break;
+			case UPDATEWORKERS:
+			default:
+				updateObjectInformation(object, false);
+				break;
+		}
+	}
+//// TODO: on data change (observable pattern)
+	@Override
+	public void newGoldObject(LObject<String> goldObject) {
+		coreCorrectLabelUpdate(goldObject);
+		computeForObject(goldObject);
+	}
 
-	private void updateWorkers(String objectName) {
-		LObject<String> obj = data.getObject(objectName);
+	/**
+	 * This function needs to know whether this is compleately new assign or "remake"
+	 * @param al
+	 * @return
+	 */
+	private void coreCorrectLabelUpdate(LObject<String> goldObject) {
+		String objectName = cl.getObjectName();
+		String correctCategory = cl.getCorrectCategory();
+
+		if (objects.containsKey(objectName)) {
+			unupdatePrior(goldObject);
+			unupdateWorkers(goldObject);
+			d = objects.get(objectName);
+		} else {
+			Set<Category> categories = new HashSet<Category>(
+				this.categories.values());
+			d = new Datum(objectName, categories);
+		}
+		if (objectsWithNoLabels.containsKey(objectName)) {
+			objectsWithNoLabels.remove(objectName);
+		}
+		d.setGold(true);
+		d.setCorrectCategory(correctCategory);
+		objects.put(objectName, d);
+
+	}
+
+	private void updateWorkers(LObject<String> obj) {
 		for (AssignedLabel<String> al : data.getAssignsForObject(obj)) {
-			updateWorker(objectName, al.getWorker().getName(), al.getLabel());
+			updateWorker(al);
 		}
-
 	}
 
-	private void updateWorker(String objectName, String workerName, String destination) {
-		Map<String, Double> probs = getObjectClassProbabilities(objectName);
-		Worker<String> worker = data.getWorker(workerName);
+	private void updateWorker(AssignedLabel<String> assign) {
+		Map<String, Double> probs = getObjectClassProbabilities(assign.getLobject());
+		Worker<String> worker = assign.getWorker();
 		for (String source : probs.keySet())
-			results.getWokerResults().get(worker).addError(source, destination, probs.get(source));
+			results.getWokerResults().get(worker).addError(source, assign.getLabel(), probs.get(source));
 	}
 
-	private void unupdateWorkers(String objectName) {
-		LObject<String> obj = data.getObject(objectName);
+	private void unupdateWorkers(LObject<String> obj) {
 		for (AssignedLabel<String> al : data.getAssignsForObject(obj))
-			unupdateWorker(objectName, al.getWorker().getName(), al.getLabel());
+			unupdateWorker(al);
 	}
 
-	private void unupdateWorker(String objectName, String workerName, String destination) {
-		Map<String, Double> probs = getObjectClassProbabilities(objectName);
-		Worker<String> worker = data.getWorker(workerName);
+	private void unupdateWorker(AssignedLabel<String> assign) {
+		Map<String, Double> probs = getObjectClassProbabilities(assign.getLobject());
+		Worker<String> worker = assign.getWorker();
 		for (String source : probs.keySet())
-			results.getWokerResults().get(worker).removeError(source, destination, probs.get(source));
+			results.getWokerResults().get(worker).removeError(source, assign.getLabel(), probs.get(source));
 	}
 
 	/**
@@ -174,9 +171,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 	 *
 	 * @param objectName
 	 */
-	private void unupdatePrior(String objectName) {
+	private void unupdatePrior(LObject<String> object) {
 		priorDenominator--;
-		Map<String, Double> probs = getObjectClassProbabilities(objectName);
+		Map<String, Double> probs = getObjectClassProbabilities(object);
 		for (Category c: data.getCategories()) {
 			double prior = probs.get(c.getName());
 			double oldValue = c.getPrior();
@@ -189,9 +186,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 	 *
 	 * @param objectName
 	 */
-	private void incrementPrior(String objectName) {
+	private void incrementPrior(LObject<String> object) {
 		priorDenominator++;
-		Map<String, Double> probs = getObjectClassProbabilities(objectName);
+		Map<String, Double> probs = getObjectClassProbabilities(object);
 		for (Category c: data.getCategories()) {
 			double prior = probs.get(c.getName());
 			double oldValue = c.getPrior();
@@ -207,12 +204,12 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 	}
 
 	@Override
-	public Map<String, Double> getObjectClassProbabilities(String objectName, String workerToIgnore) {
-		Map<String, Double> cp = results.getDatumResults().get(data.getObject(objectName)).getCategoryProbabilites();
+	public Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
+		Map<String, Double> cp = results.getDatumResults().get(object).getCategoryProbabilites();
 		if (null != cp)
 			return cp;
 		else
-			return super.getObjectClassProbabilities(objectName, workerToIgnore);
+			return super.getObjectClassProbabilities(object, workerToIgnore);
 	}
 
 	@Override
@@ -222,4 +219,14 @@ public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncrem
 	}
 
 	private static final Logger logger = Logger.getLogger(IncrementalDawidSkene.class);
+
+	@Override
+	public void newObject(LObject<String> object) {
+		// This algorithm is not interested in this ??
+	}
+
+	@Override
+	public void newWorker(Worker<String> worker) {
+		// This algorithm is not interested in this ??
+	}
 }
