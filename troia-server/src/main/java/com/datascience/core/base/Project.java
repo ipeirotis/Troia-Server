@@ -1,5 +1,6 @@
 package com.datascience.core.base;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,11 +11,19 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 
 	protected Algorithm<T, U, V, W> algorithm;
 	protected U data;
+	protected Results<T, V, W> results;
 	protected int id;
 
 	public Project(){
 	}
 
+	public U getData(){
+		return data;
+	}
+
+	public Results<T, V, W> getResults(){
+		return results;
+	}
 
 	public Map<String, String> getInfo() {
 		Map<String, String> ret = new HashMap<String, String>();

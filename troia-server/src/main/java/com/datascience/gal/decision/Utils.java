@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import com.datascience.gal.Category;
-import com.datascience.gal.DawidSkene;
+import com.datascience.gal.NominalProject;
 import com.datascience.utils.CostMatrix;
 
 /**
@@ -56,9 +56,9 @@ public class Utils {
 		return ret;
 	}
 
-	static public CostMatrix<String> getCategoriesCostMatrix(DawidSkene ads) {
+	static public CostMatrix<String> getCategoriesCostMatrix(NominalProject project) {
 		CostMatrix<String> cm = new CostMatrix<String>();
-		for (Category c: ads.getCategories().values()) {
+		for (Category c: project.getData().getCategories()) {
 			String name = c.getName();
 			for (Map.Entry<String, Double> entry: c.getMisclassificationCosts().entrySet()) {
 				cm.add(name, entry.getKey(), entry.getValue());

@@ -1,10 +1,11 @@
 package com.datascience.gal.decision;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.datascience.gal.Datum;
-import com.datascience.gal.DawidSkene;
+import com.datascience.core.base.LObject;
+import com.datascience.gal.NominalProject;
 import com.datascience.utils.CostMatrix;
 
 /**
@@ -26,44 +27,43 @@ public class DecisionEngine {
 	}
 	
 	
-	public Map<String, Double> getPD(Datum datum, DawidSkene ds){
-		return labelProbabilityDistributionCalculator.calculateDistribution(datum, ds);
+	public Map<String, Double> getPD(LObject<String> datum, NominalProject project){
+		return labelProbabilityDistributionCalculator.calculateDistribution(datum, project);
 	}
 	
-	public String predictLabel(DawidSkene ds, Datum datum, CostMatrix<String> cm) {
-		return objectLabelDecisionAlgorithm.predictLabel(getPD(datum, ds), cm);
+	public String predictLabel(NominalProject project, LObject<String> datum, CostMatrix<String> cm) {
+		return objectLabelDecisionAlgorithm.predictLabel(getPD(datum, project), cm);
 	}
 	
-	public double estimateMissclassificationCost(DawidSkene ds, Datum datum, CostMatrix<String> cm) {
+	public double estimateMissclassificationCost(NominalProject project, LObject<String> datum, CostMatrix<String> cm) {
 		return labelProbabilityDistributionCostCalculator.predictedLabelCost(
-			getPD(datum, ds), cm);
+			getPD(datum, project), cm);
 	}
 	
-	public String predictLabel(DawidSkene ds, Datum datum) {
-		return predictLabel(ds, datum, Utils.getCategoriesCostMatrix(ds));
+	public String predictLabel(NominalProject project, LObject<String> datum) {
+		return predictLabel(project, datum, Utils.getCategoriesCostMatrix(project));
 	}
 
-	public double estimateMissclassificationCost(DawidSkene ds, Datum datum) {
-		return estimateMissclassificationCost(ds, datum, Utils.getCategoriesCostMatrix(ds));
+	public double estimateMissclassificationCost(NominalProject project, LObject<String> datum) {
+		return estimateMissclassificationCost(project, datum, Utils.getCategoriesCostMatrix(project));
 	}
 
-	
-	public Map<String, String> predictLabels(DawidSkene ds){
-		Map<String, Datum> datums = ds.getObjects();
-		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
+	public Map<String, String> predictLabels(NominalProject project){
+		Collection<LObject<String>> datums = project.getData().getObjects();
+		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(project);
 		Map<String, String> ret = new HashMap<String, String>();
-		for (Map.Entry<String, Datum> e: datums.entrySet()) {
-			ret.put(e.getKey(), predictLabel(ds, e.getValue(), cm));
+		for (LObject<String> e: datums) {
+			ret.put(e.getName(), predictLabel(project, e, cm));
 		}
 		return ret;
 	}
 	
-	public Map<String, Double> estimateMissclassificationCosts(DawidSkene ds){
-		Map<String, Datum> datums = ds.getObjects();
-		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(ds);
+	public Map<String, Double> estimateMissclassificationCosts(NominalProject project){
+		Collection<LObject<String>> datums = project.getData().getObjects();
+		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(project);
 		Map<String, Double> ret = new HashMap<String, Double>();
-		for (Map.Entry<String, Datum> e: datums.entrySet()) {
-			ret.put(e.getKey(), estimateMissclassificationCost(ds, e.getValue(), cm));
+		for (LObject<String> e: datums) {
+			ret.put(e.getName(), estimateMissclassificationCost(project, e, cm));
 		}
 		return ret;
 	}

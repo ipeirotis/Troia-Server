@@ -2,6 +2,8 @@ package com.datascience.core.base;
 
 import com.datascience.gal.Category;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -13,6 +15,14 @@ public class NominalData extends Data<String> {
 
 	public Set<Category> getCategories(){
 		return categories;
+	}
+
+	public Collection<String> getCategoriesNames(){
+		Collection<String> ret = new ArrayList<String>();
+		for (Category c : categories){
+			ret.add(c.getName());
+		}
+		return ret;
 	}
 
 	public Category getCategory(String name){

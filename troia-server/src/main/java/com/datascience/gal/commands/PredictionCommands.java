@@ -24,7 +24,7 @@ public class PredictionCommands {
 		
 		@Override
 		protected void realExecute() {
-			project.estimate(iterations);
+			project.estimate(1e-6, iterations);
 			setResult("Computation done");
 		}
 	}
