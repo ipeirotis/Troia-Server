@@ -115,14 +115,6 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 		return result;
 	}
 
-//	protected void validateCategory(String categoryName) {
-//		if (!categories.containsKey(categoryName)) {
-//			String message = "attempting to add invalid category: " + categoryName;
-//			logger.warn(message);
-//			throw new IllegalArgumentException(message);
-//		}
-//	}
-
 	protected void setPriors(Map<String, Double> priors) {
 		for (Category c : data.getCategories()){
 			c.setPrior(priors.get(c.getName()));
@@ -200,9 +192,7 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(String objectName, String workerToIgnore) {
-
 		Map<String, Double> result = new HashMap<String, Double>();
-
 		LObject<String> d = data.getObject(objectName);
 
 		// If this is a gold example, just put the probability estimate to be
@@ -302,12 +292,6 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 		for (MisclassificationCost cl : cls)
 			addMisclassificationCost(cl);
 	}
-
-//	public Map<String, Double> objectClassProbabilities(String objectName) {
-//		return objectClassProbabilities(objectName, 0.);
-//	}
-	
-	// josh- over ride the proceeding with incremental methods.
 
 	/**
 	 * @param w
@@ -427,11 +411,8 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 		return this.computed;
 	}
 
-	// Log-likelihod stop condition.
-
 	// One pass of the incremental algorithm.
 	protected abstract void estimateInner();
-
 
 	@Override
 	public double estimate(double epsilon, int maxIterations) {

@@ -16,4 +16,8 @@ public class DatumResult {
 		return categoryProbabilites.get(categoryName);
 	}
 
+	public void setCategoryProbabilites(Map<String, Double> cp){
+		categoryProbabilites = cp;
+	}
+
 }
