@@ -1,9 +1,7 @@
 package com.datascience.gal.decision;
 
-import com.datascience.gal.DawidSkene;
-import com.datascience.gal.Worker;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.gal.decision.WorkerQualityCalculator;
+import com.datascience.core.base.Worker;
+import com.datascience.gal.NominalProject;
 
 public class WorkerEstimator extends WorkerQualityCalculator{
 
@@ -12,7 +10,7 @@ public class WorkerEstimator extends WorkerQualityCalculator{
 	}
 
 	@Override
-	public double getError(DawidSkene ds, Worker w, String from, String to) {
-		return ds.getErrorRateForWorker(w, from, to);
+	public double getError(NominalProject project, Worker<String> w, String from, String to) {
+		return project.getResults().getWokerResults().get(w).getErrorRate(from, to);
 	}
 }
