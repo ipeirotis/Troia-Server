@@ -9,11 +9,13 @@ import java.util.Queue;
 
 public class Scheduler<T> implements IScheduler<T> {
 
+	public static int INITIAL_QUEUE_SIZE = 10;
+
 	protected Queue<LObject<T>> queue;
 	private Data<T> data;
 
 	public Scheduler(Data<T> data, IPriorityCalculator<T> calculator) {
-		queue = new PriorityQueue<LObject<T>>(10, new ObjectComparator<T>(calculator));
+		queue = new PriorityQueue<LObject<T>>(INITIAL_QUEUE_SIZE, new ObjectComparator<T>(calculator));
 		this.data = data;
 		update();
 	}
@@ -26,6 +28,7 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	@Override
 	public void update(LObject<T> object) {
+		queue.remove(object);
 		queue.add(object);
 	}
 
