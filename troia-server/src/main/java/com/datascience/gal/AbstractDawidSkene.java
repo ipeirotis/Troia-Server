@@ -17,14 +17,9 @@ import java.util.Set;
 import com.datascience.core.base.*;
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.decision.DecisionEngine;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.Utils;
-import com.google.common.math.DoubleMath;
 
-public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorithm<String, NominalData, DatumResult, T> {
+public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
 
 	protected boolean fixedPriors;
 
@@ -34,40 +29,12 @@ public abstract class AbstractDawidSkene<T extends WorkerResult> extends Algorit
 	 */
 	private boolean computed = false;
 	
-	public AbstractDawidSkene(Collection<Category> categories){
-		double priorSum = 0.;
-		int priorCnt = 0;
-		
-		if (categories.size() < 2){
-			throw new IllegalArgumentException("There should be at least two categories");
+	public AbstractDawidSkene(NominalData data, Results<String, DatumResult, WorkerResult> results, boolean fixedPriors){
+		super(data, results);
+		this.fixedPriors = fixedPriors;
+		if (!fixedPriors){
+	    	initializePriors();
 		}
-		for (Category c : categories) {
-			data.addCategory(c);
-			if (c.hasPrior()) {
-				priorCnt += 1;
-				priorSum += c.getPrior();
-			}
-		}
-		if (!(priorCnt == 0 || (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6)))){
-			throw new IllegalArgumentException(
-					"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
-		}
-		if (priorCnt == 0){
-			initializePriors();
-		}
-		if (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6))
-			fixedPriors = true;
-		
-		//set cost matrix values if not provided
-		for (Category from : data.getCategories()) {
-			for (Category to : data.getCategories()) {
-				if (from.getCost(to.getName()) == null){
-					from.setCost(to.getName(), from.getName().equals(to.getName()) ? 0. : 1.);
-				}
-			}
-		}
-		
-		invalidateComputed();
 	}
 
 	protected void invalidateComputed() {

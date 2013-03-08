@@ -9,9 +9,12 @@ import com.datascience.core.base.*;
  */
 public class ContinuousProject extends Project<ContValue, Data<ContValue>, DatumContResults, WorkerContResults> {
 
+	public ContinuousProject(){
+		data = new Data<ContValue>();
+	}
+
 	public void compute(int iterations, double epsilon){
-		algorithm = new ContinuousIpeirotis();
-		algorithm.setData(data);
+		algorithm = new ContinuousIpeirotis(data, null);
 		algorithm.estimate(epsilon, iterations);
 	}
 

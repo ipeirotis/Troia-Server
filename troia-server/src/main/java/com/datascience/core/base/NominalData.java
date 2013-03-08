@@ -1,9 +1,11 @@
 package com.datascience.core.base;
 
 import com.datascience.gal.Category;
+import com.google.common.math.DoubleMath;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -32,7 +34,61 @@ public class NominalData extends Data<String> {
 		return null;
 	}
 
-	public void addCategory(Category c){
-		categories.add(c);
+	/*
+		@returns: fixedPriors
+	 */
+	public boolean addCategories(Collection<Category> categories){
+		double priorSum = 0.;
+		int priorCnt = 0;
+		boolean fixedPriors = false;
+
+		this.categories = new HashSet<Category>();
+		if (categories.size() < 2){
+			throw new IllegalArgumentException("There should be at least two categories");
+		}
+		for (Category c : categories) {
+			this.categories.add(c);
+			if (c.hasPrior()) {
+				priorCnt += 1;
+				priorSum += c.getPrior();
+			}
+		}
+		if (!(priorCnt == 0 || (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6)))){
+			throw new IllegalArgumentException(
+					"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
+		}
+		if (priorCnt == 0){
+			for (Category c : this.categories)
+				c.setPrior(1. / categories.size());
+		}
+		if (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6))
+			fixedPriors = true;
+
+		//set cost matrix values if not provided
+		for (Category from : this.categories) {
+			for (Category to : this.categories) {
+				if (from.getCost(to.getName()) == null){
+					from.setCost(to.getName(), from.getName().equals(to.getName()) ? 0. : 1.);
+				}
+			}
+		}
+		return fixedPriors;
+	}
+
+	@Override
+	public void addAssign(AssignedLabel<String> assign){
+		checkForCategoryExist(assign.getLabel());
+		super.addAssign(assign);
+	}
+
+	@Override
+	public void addGoldObject(LObject<String> object){
+		checkForCategoryExist(object.getGoldLabel());
+		super.addGoldObject(object);
+	}
+
+	private void checkForCategoryExist(String name){
+		if (!getCategoriesNames().contains(name))
+			throw new IllegalArgumentException("There is no category named: " + name);
 	}
 }

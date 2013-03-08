@@ -12,9 +12,7 @@ package com.datascience.gal;
 import java.util.*;
 
 import com.datascience.core.algorithms.IUpdatableAlgorithm;
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
+import com.datascience.core.base.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -27,14 +25,14 @@ import org.apache.log4j.Logger;
  * @author josh
  *
  */
-public class IncrementalDawidSkene extends AbstractDawidSkene<WorkerResultIncremental>
+public class IncrementalDawidSkene extends AbstractDawidSkene
 			implements IUpdatableAlgorithm<String>{
 
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
 
-	public IncrementalDawidSkene(Collection<Category> categories) {
-		super(categories);
+	public IncrementalDawidSkene(NominalData data, Results<String, DatumResult, WorkerResult> results, boolean fixedPriors) {
+		super(data, results, fixedPriors);
 		super.logger = this.logger;
 	}
 

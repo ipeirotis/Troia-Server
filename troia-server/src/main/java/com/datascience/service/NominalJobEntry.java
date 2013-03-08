@@ -15,6 +15,7 @@ import com.datascience.core.storages.JSONUtils;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.MisclassificationCost;
+import com.datascience.gal.NominalProject;
 import com.datascience.gal.commands.CategoriesCommands;
 import com.datascience.gal.commands.CostsCommands;
 import com.datascience.gal.commands.DatumCommands;
@@ -35,7 +36,7 @@ import com.datascience.gal.evaluation.WorkerEvaluator;
  * @author Konrad Kurdej
  */
 @Path("/jobs/{id}/")
-public class NominalJobEntry extends JobEntryBase<AbstractDawidSkene> {
+public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
 	public NominalJobEntry(){
 		expectedClass = AbstractDawidSkene.class;

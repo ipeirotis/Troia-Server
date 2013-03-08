@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.datascience.core.base.Project;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
@@ -95,7 +96,7 @@ public class DBJobStorage implements IJobStorage {
 	}
 	
 	@Override
-	public <T> Job<T>  get(String id) throws SQLException {
+	public <T extends Project> Job<T>  get(String id) throws SQLException {
 		logger.info("Get job from DB: " + id);
 		ResultSet dsResults = null;
 		ensureDBConnection();

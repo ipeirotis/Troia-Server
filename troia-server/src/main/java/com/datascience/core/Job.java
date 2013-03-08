@@ -1,12 +1,13 @@
 package com.datascience.core;
 
+import com.datascience.core.base.Project;
 import com.google.common.base.Objects;
 
 
 /**
  * @author konrad
  */
-public class Job<T> {
+public class Job<T extends Project> {
 	
 	T project;
 	String id;

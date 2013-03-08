@@ -38,7 +38,7 @@ public class JobsEntry extends AbstractJobsEntry{
 		}
 		Collection<Category> categories = responser.getSerializer().parse(sCategories,
 			JSONUtils.categorySetType);
-		Job job = jobFactory.createJob(type, jid, categories);
+		Job job = jobFactory.createNominalJob(type, jid, categories);
 
 		jobStorage.add(job);
 		return responser.makeOKResponse("New job created with ID: " + jid);
