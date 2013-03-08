@@ -1,13 +1,12 @@
 package com.datascience.gal;
 
-import com.datascience.core.base.NominalData;
-import com.datascience.core.base.Project;
-import com.datascience.core.base.Worker;
+import com.datascience.core.base.*;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,10 +19,21 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	protected ILabelProbabilityDistributionCalculator spammerProbDistr;
 
 	public NominalProject(){
+		super();
 		mvDecisionEnginge = new DecisionEngine(
 				new LabelProbabilityDistributionCalculators.DS(), null,
 				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
+		data = new NominalData();
+	}
+
+
+	public void setNewBatchDawidSkene(boolean fp){
+		algorithm = new BatchDawidSkene(data, results, fp);
+	}
+
+	public void setNewIncrementalDawidSkene(boolean fp){
+		algorithm = new IncrementalDawidSkene(data, results, fp);
 	}
 
 	/**

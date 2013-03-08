@@ -2,6 +2,7 @@ package com.datascience.core.storages;
 
 import java.util.concurrent.ExecutionException;
 
+import com.datascience.core.base.Project;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
@@ -61,7 +62,7 @@ public class CachedJobStorage implements IJobStorage {
 	}
 	
 	@Override
-	public <T> Job<T> get(String id) throws Exception {
+	public <T extends Project> Job<T> get(String id) throws Exception {
 		logger.info("CACHED_JS: get " + id);
 		try {
 			return cache.get(id).get();

@@ -12,9 +12,10 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 	protected Algorithm<T, U, V, W> algorithm;
 	protected U data;
 	protected Results<T, V, W> results;
-	protected int id;
+
 
 	public Project(){
+		results = new Results<T, V, W>();
 	}
 
 	public U getData(){

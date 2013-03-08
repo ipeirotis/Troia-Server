@@ -1,6 +1,8 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
+import com.datascience.core.base.Project;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +19,7 @@ public class MemoryJobStorage implements IJobStorage{
 	}
 	
 	@Override
-	public <T> Job<T> get(String id) throws Exception {
+	public <T extends Project> Job<T> get(String id) throws Exception {
 		return storage.get(id);
 	}
 

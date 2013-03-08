@@ -13,6 +13,7 @@ import javax.ws.rs.core.*;
 
 import com.datascience.core.Job;
 import com.datascience.core.base.ContValue;
+import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
 import com.datascience.core.storages.DataJSON;
 import com.datascience.core.storages.IJobStorage;
@@ -24,7 +25,7 @@ import com.datascience.executor.ProjectCommandExecutor;
  *
  * @author konrad
  */
-public abstract class JobEntryBase<T> {
+public abstract class JobEntryBase<T extends Project> {
 	
 	@Context ServletContext context;
 	@Context Request request;

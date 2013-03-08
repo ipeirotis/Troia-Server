@@ -1,6 +1,7 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
+import com.datascience.core.base.Project;
 
 /**
  *
@@ -8,7 +9,7 @@ import com.datascience.core.Job;
  */
 public interface IJobStorage {
 
-	<T> Job<T>  get(String id) throws Exception;
+	<T extends Project> Job<T>  get(String id) throws Exception;
 	void add(Job job) throws Exception;
 	void remove(Job job) throws Exception;
 	void test() throws Exception;

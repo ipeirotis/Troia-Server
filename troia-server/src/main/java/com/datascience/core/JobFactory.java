@@ -1,11 +1,9 @@
 package com.datascience.core;
 
-import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.BatchDawidSkene;
-import com.datascience.gal.Category;
-import com.datascience.gal.IncrementalDawidSkene;
+import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
 
+import java.nio.channels.NonWritableChannelException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +14,7 @@ import java.util.Map;
 public class JobFactory {
 
 	protected interface Creator{
-		AbstractDawidSkene create(Collection<Category> categories);
+		NominalProject create(Collection<Category> categories);
 	}
 	
 	final static Map<String, Creator> DS_FACTORY = new HashMap();
@@ -24,15 +22,21 @@ public class JobFactory {
 		DS_FACTORY.put("batch", new Creator() {
 
 			@Override
-			public AbstractDawidSkene create(Collection<Category> categories) {
-				return new BatchDawidSkene(categories);
+			public NominalProject create(Collection<Category> categories) {
+				NominalProject np = new NominalProject();
+				boolean fp = np.getData().addCategories(categories);
+				np.setNewBatchDawidSkene(fp);
+				return np;
 			}
 		});
 		
 		DS_FACTORY.put("incremental", new Creator() {
 			@Override
-			public AbstractDawidSkene create(Collection<Category> categories) {
-				return new IncrementalDawidSkene(categories);
+			public NominalProject create(Collection<Category> categories) {
+				NominalProject np = new NominalProject();
+				boolean fp = np.getData().addCategories(categories);
+				np.setNewIncrementalDawidSkene(fp);
+				return np;
 			}
 		});
 	};
@@ -46,10 +50,9 @@ public class JobFactory {
 		return creator;
 	}
 
-	public Job createJob(String type, String id, Collection<Category> categories){
+	public Job createNominalJob(String type, String id, Collection<Category> categories){
 		Creator creator = getCreator(type);
-		AbstractDawidSkene ads = creator.create(categories);
-		return new Job(ads, id);
+		return new Job(creator.create(categories), id);
 	}
 	
 	public Job createContinuousJob(String id){

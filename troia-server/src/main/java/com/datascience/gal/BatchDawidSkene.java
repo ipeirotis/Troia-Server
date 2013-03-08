@@ -9,22 +9,19 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
+import com.datascience.core.base.*;
 import org.apache.log4j.Logger;
 
-public class BatchDawidSkene extends AbstractDawidSkene<WorkerResultBatch> {
+public class BatchDawidSkene extends AbstractDawidSkene {
 
-	public BatchDawidSkene(Collection<Category> categories) {
-		super(categories);
+	public BatchDawidSkene(NominalData data, Results<String, DatumResult, WorkerResult> results, boolean fixedPriors) {
+		super(data, results, fixedPriors);
 		super.logger = this.logger;
 	}
-	
+
 	public Map<String, Double> getCategoryPriors() {
 		Map<String, Double> out = new HashMap<String, Double>(data.getCategories().size());
 		for (Category cat : data.getCategories())
