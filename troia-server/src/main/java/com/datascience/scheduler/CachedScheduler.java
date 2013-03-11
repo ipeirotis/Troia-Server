@@ -12,20 +12,14 @@ import java.util.concurrent.TimeUnit;
 
 public class CachedScheduler<T> extends Scheduler<T> {
 
-	public static int DEFAULT_PAUSE_TIME = 10;
-
 	private static Logger logger = Logger.getLogger(CachedScheduler.class);
 
 	protected Cache<String, LObject<T>> polled;
 
-	public CachedScheduler(Data<T> data, IPriorityCalculator<T> calculator) {
-		this(data, calculator, DEFAULT_PAUSE_TIME);
-	}
-
-	public CachedScheduler(Data<T> data, IPriorityCalculator<T> calculator, int pauseTime) {
+	public CachedScheduler(Data<T> data, IPriorityCalculator<T> calculator, long pauseDuration, TimeUnit pauseUnit) {
 		super(data, calculator);
 		polled = CacheBuilder.newBuilder()
-				.expireAfterWrite(pauseTime, TimeUnit.MINUTES)
+				.expireAfterWrite(pauseDuration, pauseUnit)
 				.removalListener(getRemovalListener())
 				.build();
 	}
