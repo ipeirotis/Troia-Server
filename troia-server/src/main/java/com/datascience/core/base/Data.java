@@ -151,6 +151,10 @@ public class Data <T>{
 		return assigns;
 	}
 
+	public void addNewUpdatableAlgorithm(IUpdatableAlgorithm<T> updatableAlgorithm){
+		observeringAlgorithms.add(updatableAlgorithm);
+	}
+
 	protected void notifyNewAssign(AssignedLabel<T> assign){
 		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
 			updatableAlgorithm.newAssign(assign);
