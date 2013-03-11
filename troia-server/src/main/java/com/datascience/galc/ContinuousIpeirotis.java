@@ -42,7 +42,6 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		return sum / assigns.size();
 	}
 
-	@Override
 	public double estimate(double epsilon, int max_iters) {
 		logger.info("GALC estimate START");
 
@@ -78,7 +77,6 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		return logLikelihood;
 	}
 
-	@Override
 	protected double getLogLikelihood() {
 
 		double result = 0d;
@@ -260,5 +258,11 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 
 	public Map<Worker<ContValue>, WorkerContResults> getWorkersResults() {
 		return results.getWorkerResults();
+	}
+
+	@Override
+	public void compute(){
+		estimate(0.0000001, 50);
+		// TODO FIXME XXX this should be on some variable
 	}
 }

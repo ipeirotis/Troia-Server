@@ -48,7 +48,6 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 
 	public abstract double prior(String categoryName);
 
-	@Override
 	protected double getLogLikelihood() {
 		double result = 0;
 		for (AssignedLabel<String> al : data.getAssigns()){
@@ -249,7 +248,6 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	// One pass of the incremental algorithm.
 	protected abstract void estimateInner();
 
-	@Override
 	public double estimate(double epsilon, int maxIterations) {
 		double prevLogLikelihood = Double.POSITIVE_INFINITY;
 		double currLogLikelihood = 0d;
@@ -267,6 +265,12 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		markComputed();
 
 		return 0;
+	}
+
+	@Override
+	public void compute(){
+		estimate(0.0000001, 50);
+		// TODO XXX FIXME ^^^ those should be set on some variable
 	}
 	
 	protected static Logger logger = null; // will be initialized in subclasses

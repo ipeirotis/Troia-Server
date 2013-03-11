@@ -16,7 +16,5 @@ public abstract class Algorithm<T, U extends Data<T>, V, W> {
 		this.results = results;
 	}
 
-	public abstract double estimate(double eps, int iterations);
-
-	protected abstract double getLogLikelihood();
+	public abstract void compute();
 }

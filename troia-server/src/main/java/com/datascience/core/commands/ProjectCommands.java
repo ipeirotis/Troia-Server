@@ -24,7 +24,8 @@ public class ProjectCommands {
 		
 		@Override
 		protected void realExecute() {
-			project.getAlgorithm().estimate(epsilon, iterations);
+			project.getAlgorithm().compute(); //estimate(epsilon, iterations);
+			// TODO FIXME XXX maybe we should use Visitor Pattern to set parameters from Map<String, Object>?
 			setResult("Computation done");
 		}
 	}
