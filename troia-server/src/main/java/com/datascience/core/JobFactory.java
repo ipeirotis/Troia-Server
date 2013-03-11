@@ -1,6 +1,7 @@
 package com.datascience.core;
 
 import com.datascience.gal.*;
+import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 
 import java.nio.channels.NonWritableChannelException;
@@ -23,9 +24,8 @@ public class JobFactory {
 
 			@Override
 			public NominalProject create(Collection<Category> categories) {
-				NominalProject np = new NominalProject();
-				boolean fp = np.getData().addCategories(categories);
-				np.setNewBatchDawidSkene(fp);
+				NominalProject np = new NominalProject(new BatchDawidSkene());
+				np.initializeCategories(categories);
 				return np;
 			}
 		});
@@ -33,9 +33,8 @@ public class JobFactory {
 		DS_FACTORY.put("incremental", new Creator() {
 			@Override
 			public NominalProject create(Collection<Category> categories) {
-				NominalProject np = new NominalProject();
-				boolean fp = np.getData().addCategories(categories);
-				np.setNewIncrementalDawidSkene(fp);
+				NominalProject np = new NominalProject(new IncrementalDawidSkene());
+				np.initializeCategories(categories);
 				return np;
 			}
 		});
@@ -56,6 +55,6 @@ public class JobFactory {
 	}
 	
 	public Job createContinuousJob(String id){
-		return new Job(new ContinuousProject(), id);
+		return new Job(new ContinuousProject(new ContinuousIpeirotis()), id);
 	}
 }

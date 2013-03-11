@@ -9,13 +9,11 @@ import com.datascience.core.base.*;
  */
 public class ContinuousProject extends Project<ContValue, Data<ContValue>, DatumContResults, WorkerContResults> {
 
-	public ContinuousProject(){
+	public ContinuousProject(ContinuousIpeirotis ci){
+		super(ci);
 		data = new Data<ContValue>();
-	}
-
-	public void compute(int iterations, double epsilon){
-		algorithm = new ContinuousIpeirotis(data, null);
-		algorithm.estimate(epsilon, iterations);
+		ci.setData(data);
+		ci.setResults(results);
 	}
 
 	protected void checkComputed(){

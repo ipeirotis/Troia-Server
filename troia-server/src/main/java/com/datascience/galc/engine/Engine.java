@@ -244,7 +244,7 @@ public class Engine {
 		}
 		data = edata;
 
-		ContinuousIpeirotis ip = new ContinuousIpeirotis(data, null);
+		ContinuousIpeirotis ip = new ContinuousIpeirotis();
 		ip.estimate(1e-5, 20);
 
 		ReportGenerator rpt = new ReportGenerator(ip, ctx);

@@ -29,9 +29,8 @@ public class BatchDawidSkeneTest {
 		categories.add(category1);
 		categories.add(category2);
 
-		project = new NominalProject();
-		boolean fp = project.getData().addCategories(categories);
-		project.setNewBatchDawidSkene(fp);
+		project = new NominalProject(new BatchDawidSkene());
+		project.initializeCategories(categories);
 	}
 
 	@Test

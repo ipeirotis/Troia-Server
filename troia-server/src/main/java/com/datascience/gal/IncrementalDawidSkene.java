@@ -31,8 +31,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;
 
-	public IncrementalDawidSkene(NominalData data, Results<String, DatumResult, WorkerResult> results, boolean fixedPriors) {
-		super(data, results, fixedPriors);
+	public IncrementalDawidSkene() {
 		super.logger = this.logger;
 	}
 

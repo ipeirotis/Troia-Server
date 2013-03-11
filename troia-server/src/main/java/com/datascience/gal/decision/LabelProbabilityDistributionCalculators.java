@@ -35,16 +35,23 @@ public class LabelProbabilityDistributionCalculators {
 				return Utils.generateGoldDistribution(project.getData().getCategoriesNames(), datum.getGoldLabel());
 			}
 			Map<String, Double> pd = new HashMap<String, Double>();
-			for (Category c: project.getData().getCategories()) {
-				pd.put(c.getName(), 0.0);
-			}
-
 			Collection<AssignedLabel<String>> assignedLabels = project.getData().getAssignsForObject(datum);
-			double revn = 1. / assignedLabels.size();
-			for (AssignedLabel<String> al : assignedLabels) {
-				String c = al.getLabel();
-				Double current = pd.get(c);
-				pd.put(c, current + revn);
+			if (assignedLabels.size() > 0){
+				for (Category c: project.getData().getCategories()) {
+					pd.put(c.getName(), 0.0);
+				}
+
+				double revn = 1. / assignedLabels.size();
+				for (AssignedLabel<String> al : assignedLabels) {
+					String c = al.getLabel();
+					Double current = pd.get(c);
+					pd.put(c, current + revn);
+				}
+			}
+			else{
+				for (Category c: project.getData().getCategories()) {
+					pd.put(c.getName(), c.getPrior());
+				}
 			}
 			return pd;
 		}
