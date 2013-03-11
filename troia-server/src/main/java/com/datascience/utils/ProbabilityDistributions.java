@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.NominalData;
 import com.datascience.gal.Category;
 import com.datascience.gal.NominalProject;
@@ -77,6 +78,17 @@ public class ProbabilityDistributions {
 		Map<String, Double> pd = new HashMap<String, Double>();
 		for (Category c: data.getCategories()) {
 			pd.put(c.getName(), c.getPrior());
+		}
+		return pd;
+	}
+
+	public static Map<String, Double> generateMV_PD(Collection<String> categories,
+				Collection<AssignedLabel<String>> assigns){
+		Map<String, Double> pd = ProbabilityDistributions.generateConstantDistribution(categories, 0.);
+		Double base = 1. / assigns.size();
+		for (AssignedLabel<String> assign: assigns) {
+			String label = assign.getLabel();
+			pd.put(label, pd.get(label) + base);
 		}
 		return pd;
 	}

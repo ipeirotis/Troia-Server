@@ -39,12 +39,6 @@ public abstract class MajorityVote extends Algorithm<String, NominalData, DatumR
 
 	public Map<String, Double> generateLabelDistribution(Collection<String> categories,
 				Collection<AssignedLabel<String>> assigns){
-		Map<String, Double> pd = ProbabilityDistributions.generateConstantDistribution(categories, 0.);
-		Double base = 1. / assigns.size();
-		for (AssignedLabel<String> assign: assigns) {
-			String label = assign.getLabel();
-			pd.put(label, pd.get(label) + base);
-		}
-		return pd;
+		return ProbabilityDistributions.generateMV_PD(categories, assigns);
 	}
 }
