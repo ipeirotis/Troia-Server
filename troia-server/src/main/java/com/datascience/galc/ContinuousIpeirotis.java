@@ -9,8 +9,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 
 	private static Logger logger = Logger.getLogger(ContinuousIpeirotis.class);
 
-	public ContinuousIpeirotis(Data<ContValue> data, Results<ContValue, DatumContResults, WorkerContResults> results){
-		super(data, results);
+	public ContinuousIpeirotis(){
 		initWorkers();
 		initObjectZetas();
 	}

@@ -29,14 +29,6 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	 */
 	private boolean computed = false;
 	
-	public AbstractDawidSkene(NominalData data, Results<String, DatumResult, WorkerResult> results, boolean fixedPriors){
-		super(data, results);
-		this.fixedPriors = fixedPriors;
-		if (!fixedPriors){
-	    	initializePriors();
-		}
-	}
-
 	protected void invalidateComputed() {
 		this.computed = false;
 	}

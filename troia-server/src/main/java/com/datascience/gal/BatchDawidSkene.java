@@ -17,8 +17,7 @@ import org.apache.log4j.Logger;
 
 public class BatchDawidSkene extends AbstractDawidSkene {
 
-	public BatchDawidSkene(NominalData data, Results<String, DatumResult, WorkerResult> results, boolean fixedPriors) {
-		super(data, results, fixedPriors);
+	public BatchDawidSkene() {
 		super.logger = this.logger;
 	}
 

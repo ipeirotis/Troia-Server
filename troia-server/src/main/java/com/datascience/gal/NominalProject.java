@@ -18,22 +18,21 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	protected DecisionEngine mvDecisionEnginge;
 	protected ILabelProbabilityDistributionCalculator spammerProbDistr;
 
-	public NominalProject(){
-		super();
+	public NominalProject(AbstractDawidSkene ads){
+		super(ads);
 		mvDecisionEnginge = new DecisionEngine(
 				new LabelProbabilityDistributionCalculators.DS(), null,
 				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
 		data = new NominalData();
+		algorithm.setResults(results);
+		algorithm.setData(data);
 	}
 
-
-	public void setNewBatchDawidSkene(boolean fp){
-		algorithm = new BatchDawidSkene(data, results, fp);
-	}
-
-	public void setNewIncrementalDawidSkene(boolean fp){
-		algorithm = new IncrementalDawidSkene(data, results, fp);
+	public void initializeCategories(Collection<Category> categories){
+		boolean fp = data.addCategories(categories);
+		if (!fp)
+			((AbstractDawidSkene)algorithm).initializePriors();
 	}
 
 	/**

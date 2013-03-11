@@ -37,9 +37,8 @@ public class IncrementalDawidSkeneTest {
 		categories.add(category1);
 		categories.add(category2);
 
-		project = new NominalProject();
-		boolean fp = project.getData().addCategories(categories);
-		project.setNewBatchDawidSkene(fp);
+		project = new NominalProject(new IncrementalDawidSkene());
+		project.initializeCategories(categories);
 	}
 
 	@After
