@@ -1,4 +1,4 @@
-package com.datascience.gal.decision;
+package com.datascience.utils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import com.datascience.utils.CostMatrix;
 /**
  * @author Konrad Kurdej
  */
-public class Utils {
+public class ProbabilityDistributions {
 
 	static public Double calculateLabelCost(String calcLabel,
 			Map<String, Double> labelProbabilities, CostMatrix<String> costMatrix) {

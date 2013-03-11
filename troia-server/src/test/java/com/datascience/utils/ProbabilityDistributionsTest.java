@@ -1,4 +1,4 @@
-package com.datascience.gal.decision;
+package com.datascience.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,14 +9,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.junit.Ignore;
+import com.datascience.utils.ProbabilityDistributions;
 import org.junit.Test;
 
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.utils.CostMatrix;
 
 /**
- * The class <code>UtilsTest</code> contains tests for the class {@link <code>Utils</code>}
+ * The class <code>ProbabilityDistributionsTest</code> contains tests for the class {@link <code>ProbabilityDistributions</code>}
  *
  * @pattern JUnit Test Case
  *
@@ -26,7 +25,7 @@ import com.datascience.utils.CostMatrix;
  *
  * @version $Revision$
  */
-public class UtilsTest {
+public class ProbabilityDistributionsTest {
 
 	/**
 	 * Run the Double calculateLabelCost(String, Map<String,Double>,
@@ -45,8 +44,8 @@ public class UtilsTest {
 		costMatrix.add("LOK", "OK", 10.);
 		costMatrix.add("HOK", "OK", 20.);
 
-		Double result = Utils.calculateLabelCost(calcLabel, labelProbabilities,
-						costMatrix);
+		Double result = ProbabilityDistributions.calculateLabelCost(calcLabel, labelProbabilities,
+				costMatrix);
 		assertEquals(20.5, result, 0.0);
 	}
 
@@ -61,8 +60,8 @@ public class UtilsTest {
 			objects.add("" + i);
 		}
 		double value = Math.PI;
-		Map<String, Double> result = Utils.generateConstantDistribution(
-										 objects, value);
+		Map<String, Double> result = ProbabilityDistributions.generateConstantDistribution(
+				objects, value);
 		for (String s : objects) {
 			assertEquals(Math.PI, result.get(s), 0.0);
 		}
@@ -78,7 +77,7 @@ public class UtilsTest {
 		for (int i = 0; i < 8; i++) {
 			objects.add("" + i);
 		}
-		Map<String, Double> result = Utils.generateUniformDistribution(objects);
+		Map<String, Double> result = ProbabilityDistributions.generateUniformDistribution(objects);
 		for (String s : objects) {
 			assertEquals(1. / 8, result.get(s), 0.0);
 		}

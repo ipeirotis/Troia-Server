@@ -8,6 +8,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.gal.Category;
 import com.datascience.gal.NominalProject;
+import com.datascience.utils.ProbabilityDistributions;
 import com.google.common.base.Strings;
 
 /**
@@ -21,7 +22,7 @@ public class LabelProbabilityDistributionCalculators {
 		@Override
 		public Map<String, Double> calculateDistribution(LObject<String> datum,	NominalProject project) {
 			if (datum.isGold()) {
-				return Utils.generateGoldDistribution(project.getData().getCategoriesNames(), datum.getGoldLabel());
+				return ProbabilityDistributions.generateGoldDistribution(project.getData().getCategoriesNames(), datum.getGoldLabel());
 			}
 			return project.getResults().getDatumResult(datum).getCategoryProbabilites();
 		}
@@ -32,7 +33,7 @@ public class LabelProbabilityDistributionCalculators {
 		@Override
 		public Map<String, Double> calculateDistribution(LObject<String> datum, NominalProject project) {
 			if (datum.isGold()) {
-				return Utils.generateGoldDistribution(project.getData().getCategoriesNames(), datum.getGoldLabel());
+				return ProbabilityDistributions.generateGoldDistribution(project.getData().getCategoriesNames(), datum.getGoldLabel());
 			}
 			Map<String, Double> pd = new HashMap<String, Double>();
 			Collection<AssignedLabel<String>> assignedLabels = project.getData().getAssignsForObject(datum);
@@ -61,7 +62,7 @@ public class LabelProbabilityDistributionCalculators {
 
 		@Override
 		public Map<String, Double> calculateDistribution(LObject<String> datum, NominalProject project) {
-			return Utils.getSpammerDistribution(project.getData());
+			return ProbabilityDistributions.getSpammerDistribution(project.getData());
 		}
 	}
 

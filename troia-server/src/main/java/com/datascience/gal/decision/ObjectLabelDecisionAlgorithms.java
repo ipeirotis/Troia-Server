@@ -1,6 +1,7 @@
 package com.datascience.gal.decision;
 
 import com.datascience.utils.CostMatrix;
+import com.datascience.utils.ProbabilityDistributions;
 import com.google.common.base.Strings;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class ObjectLabelDecisionAlgorithms {
 			String minCostLabel = null;
 			double minCostLabelCost = Double.POSITIVE_INFINITY;
 			for (String label: labelProbabilities.keySet()) {
-				double cost = Utils.calculateLabelCost(label, labelProbabilities, costMatrix);
+				double cost = ProbabilityDistributions.calculateLabelCost(label, labelProbabilities, costMatrix);
 				if (cost < minCostLabelCost) {
 					minCostLabel = label;
 					minCostLabelCost = cost;

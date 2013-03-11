@@ -1,6 +1,7 @@
 package com.datascience.gal.decision;
 
 import com.datascience.utils.CostMatrix;
+import com.datascience.utils.ProbabilityDistributions;
 import com.google.common.base.Strings;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class LabelProbabilityDistributionCostCalculators {
 		public Double predictedLabelCost(Map<String, Double> labelProbabilities,
 				CostMatrix<String> costMatrix) {
 			String choosenLabel = labelChooser.predictLabel(labelProbabilities, costMatrix);
-			return Utils.calculateLabelCost(choosenLabel, labelProbabilities, costMatrix);
+			return ProbabilityDistributions.calculateLabelCost(choosenLabel, labelProbabilities, costMatrix);
 		}
 	}
 

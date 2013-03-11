@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
-import com.datascience.gal.decision.Utils;
+import com.datascience.utils.ProbabilityDistributions;
 import org.apache.log4j.Logger;
 
 public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
@@ -162,7 +162,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
 		if (labels.isEmpty()){
-			Utils.getSpammerDistribution(getData());
+			ProbabilityDistributions.getSpammerDistribution(getData());
 		}
 		if (workerToIgnore != null && labels.size() == 1) {
 			for (AssignedLabel al : labels) {

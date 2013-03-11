@@ -7,6 +7,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.Category;
 import com.datascience.gal.NominalProject;
+import com.datascience.utils.ProbabilityDistributions;
 
 /*
  * @author: Artur Ambroziak
@@ -29,7 +30,7 @@ public abstract class WorkerQualityCalculator {
 		double cost = 0.;
 		for (Category c : project.getData().getCategories()) {
 			Map<String, Double> softLabel = getSoftLabelForHardCategoryLabel(project, w, c.getName());
-			cost += labelProbabilityDistributionCostCalculator.predictedLabelCost(softLabel, Utils.getCategoriesCostMatrix(project)) * workerPriors.get(c.getName());
+			cost += labelProbabilityDistributionCostCalculator.predictedLabelCost(softLabel, ProbabilityDistributions.getCategoriesCostMatrix(project)) * workerPriors.get(c.getName());
 		}
 		return cost;
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 import com.datascience.core.base.LObject;
 import com.datascience.gal.NominalProject;
 import com.datascience.utils.CostMatrix;
+import com.datascience.utils.ProbabilityDistributions;
 
 /**
  *
@@ -41,16 +42,16 @@ public class DecisionEngine {
 	}
 
 	public String predictLabel(NominalProject project, LObject<String> datum) {
-		return predictLabel(project, datum, Utils.getCategoriesCostMatrix(project));
+		return predictLabel(project, datum, ProbabilityDistributions.getCategoriesCostMatrix(project));
 	}
 
 	public double estimateMissclassificationCost(NominalProject project, LObject<String> datum) {
-		return estimateMissclassificationCost(project, datum, Utils.getCategoriesCostMatrix(project));
+		return estimateMissclassificationCost(project, datum, ProbabilityDistributions.getCategoriesCostMatrix(project));
 	}
 
 	public Map<String, String> predictLabels(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
-		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(project);
+		CostMatrix<String> cm = ProbabilityDistributions.getCategoriesCostMatrix(project);
 		Map<String, String> ret = new HashMap<String, String>();
 		for (LObject<String> e: datums) {
 			ret.put(e.getName(), predictLabel(project, e, cm));
@@ -60,7 +61,7 @@ public class DecisionEngine {
 
 	public Map<String, Double> estimateMissclassificationCosts(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
-		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(project);
+		CostMatrix<String> cm = ProbabilityDistributions.getCategoriesCostMatrix(project);
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (LObject<String> e: datums) {
 			ret.put(e.getName(), estimateMissclassificationCost(project, e, cm));
