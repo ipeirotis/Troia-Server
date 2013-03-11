@@ -70,6 +70,10 @@ public class ProbabilityDistributions {
 	}
 
 	static public Map<String, Double> getSpammerDistribution(NominalData data){
+		return getPriorBasedDistribution(data);
+	}
+
+	static public Map<String, Double> getPriorBasedDistribution(NominalData data){
 		Map<String, Double> pd = new HashMap<String, Double>();
 		for (Category c: data.getCategories()) {
 			pd.put(c.getName(), c.getPrior());
