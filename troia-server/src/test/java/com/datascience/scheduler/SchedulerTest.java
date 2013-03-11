@@ -3,6 +3,8 @@ package com.datascience.scheduler;
 import com.datascience.core.base.*;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -68,7 +70,7 @@ public class SchedulerTest {
 	public static class DummyCachedScheduler<T> extends CachedScheduler<T> {
 
 		public DummyCachedScheduler(Data<T> data, IPriorityCalculator<T> calculator) {
-			super(data, calculator);
+			super(data, calculator, 10, TimeUnit.SECONDS);
 		}
 
 		public void revert(LObject<T> object) {
