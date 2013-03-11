@@ -17,7 +17,6 @@ public class Scheduler<T> implements IScheduler<T> {
 	public Scheduler(Data<T> data, IPriorityCalculator<T> calculator) {
 		queue = new PriorityQueue<LObject<T>>(INITIAL_QUEUE_SIZE, new ObjectComparator<T>(calculator));
 		this.data = data;
-		update();
 	}
 
 	@Override
@@ -34,11 +33,7 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	@Override
 	public LObject<T> nextObject() {
-		LObject<T> object = queue.poll();
-		if (object != null) {
-			queue.add(object);
-		}
-		return object;
+		return queue.peek();
 	}
 
 	@Override
