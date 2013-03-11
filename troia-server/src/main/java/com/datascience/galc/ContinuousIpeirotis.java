@@ -24,7 +24,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 			WorkerContResults wcr = new WorkerContResults(w);
 			wcr.setEst_rho(initial_rho);
 			wcr.computeZetaValues();
-			results.getWokerResults().put(w, wcr);
+			results.addWorkerResult(w, wcr);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 	private void initObjectZetas() {
 		for (LObject<ContValue> obj : data.getObjects()){
 			DatumContResults dr = new DatumContResults(obj);
-			results.getDatumResults().put(obj, dr);
+			results.addDatumResult(obj, dr);
 		}
 		estimateObjectZetas();
 	}
@@ -118,7 +118,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 				oldZeta = dr.getEst_zeta();
 
 				for (AssignedLabel<ContValue> al : data.getAssignsForObject(object)) {
-					WorkerContResults wr = results.getWokerResults().get(al.getWorker());
+					WorkerContResults wr = results.getWorkerResult(al.getWorker());
 					Double b = wr.getBeta();
 					Double r = wr.getEst_rho();
 					Double z = wr.getZeta(getLabel(al));
@@ -168,7 +168,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 				Worker<ContValue>  worker = al.getWorker();
 				if(worker.equals(workerToIgnore))
 					continue;
-				WorkerContResults wr = results.getWokerResults().get(worker);
+				WorkerContResults wr = results.getWorkerResult(worker);
 				Double b = wr.getBeta();
 				Double r = wr.getEst_rho();
 				Double z = wr.getZeta(getLabel(al));
@@ -193,7 +193,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		// See equation 10
 
 		double diff = 0.0;
-		for (WorkerContResults wr : results.getWokerResults().values()) {
+		for (WorkerContResults wr : results.getWorkerResults().values()) {
 			Worker workerToIgnore = wr.getWorker();
 			Double sum_prod = 0.0;
 			Double sum_zi = 0.0;
@@ -230,7 +230,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 
 		Double nominatorSigma = 0.0;
 		Double denominatorSigma = 0.0;
-		for (WorkerContResults wcr : results.getWokerResults().values()) {
+		for (WorkerContResults wcr : results.getWorkerResults().values()) {
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double s = wcr.getEst_sigma();
@@ -244,7 +244,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 
 		Double nominatorMu = 0.0;
 		Double denominatorMu = 0.0;
-		for (WorkerContResults wcr : results.getWokerResults().values()) {
+		for (WorkerContResults wcr : results.getWorkerResults().values()) {
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double m = wcr.getEst_mu();
@@ -259,6 +259,6 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 	}
 
 	public Map<Worker<ContValue>, WorkerContResults> getWorkersResults() {
-		return results.getWokerResults();
+		return results.getWorkerResults();
 	}
 }

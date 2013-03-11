@@ -45,7 +45,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			return;
 		for (String category : probabilities.keySet()) {
 			double probability = probabilities.get(category);
-			results.getDatumResults().get(obj).getCategoryProbabilites().put(category, probability);
+			results.getDatumResult(obj).getCategoryProbabilites().put(category, probability);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	}
 
 	private void rebuildWorkerConfusionMatrix(Worker<String> worker) {
-		WorkerResult wr = results.getWokerResults().get(worker);
+		WorkerResult wr = results.getWorkerResult(worker);
 		wr.empty();
 
 		// Scan all objects and change the confusion matrix for each worker

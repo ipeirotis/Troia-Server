@@ -23,7 +23,7 @@ public class LabelProbabilityDistributionCalculators {
 			if (datum.isGold()) {
 				return Utils.generateGoldDistribution(project.getData().getCategoriesNames(), datum.getGoldLabel());
 			}
-			return project.getResults().getDatumResults().get(datum).getCategoryProbabilites();
+			return project.getResults().getDatumResult(datum).getCategoryProbabilites();
 		}
 	}
 

@@ -43,7 +43,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	}
 
 	protected double getErrorRateForWorker(Worker<String> worker, String from, String to){
-		return results.getWokerResults().get(worker).getErrorRate(from, to);
+		return results.getWorkerResult(worker).getErrorRate(from, to);
 	}
 
 	public abstract double prior(String categoryName);
@@ -52,7 +52,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	protected double getLogLikelihood() {
 		double result = 0;
 		for (AssignedLabel<String> al : data.getAssigns()){
-			Map<String, Double> estimatedCorrectLabel = results.getDatumResults().get(al.getLobject()).getCategoryProbabilites();
+			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(al.getLobject()).getCategoryProbabilites();
 			for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
 				Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
 				if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
@@ -106,7 +106,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 //	}
 
 	protected double getEntropyForObject(LObject<String> obj){
-		DatumResult result = results.getDatumResults().get(obj);
+		DatumResult result = results.getDatumResult(obj);
 		double[] p = new double[result.getCategoryProbabilites().size()];
 
 		int i = 0;
@@ -129,7 +129,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		for (LObject<String> obj : data.getObjects()){
 			for (Category c : data.getCategories()){
 				priors.put(c.getName(), priors.get(c.getName()) +
-						results.getDatumResults().get(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
+						results.getDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
 			}
 		}
 

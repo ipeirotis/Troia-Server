@@ -23,7 +23,7 @@ public abstract class WorkerQualityCalculator {
 	}
 	
 	public double getCost(NominalProject project, Worker w){
-		Map<String, Double> workerPriors = project.getResults().getWokerResults().get(w).getPrior(
+		Map<String, Double> workerPriors = project.getResults().getWorkerResult(w).getPrior(
 				w.getAssigns(), project.getData().getCategoriesNames());
 
 		double cost = 0.;
@@ -40,7 +40,7 @@ public abstract class WorkerQualityCalculator {
 	
 	private Map<String, Double> getSoftLabelForHardCategoryLabel(NominalProject project, Worker<String> w, String label) {
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
-		Map<String, Double> worker_prior = project.getResults().getWokerResults().get(w).getPrior(
+		Map<String, Double> worker_prior = project.getResults().getWorkerResult(w).getPrior(
 				w.getAssigns(),
 				project.getData().getCategoriesNames());
 		Map<String, Double> result = new HashMap<String, Double>();

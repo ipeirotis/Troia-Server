@@ -147,7 +147,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		Map<String, Double> probs = getObjectClassProbabilities(assign.getLobject());
 		Worker<String> worker = assign.getWorker();
 		for (String source : probs.keySet())
-			results.getWokerResults().get(worker).addError(source, assign.getLabel(), probs.get(source));
+			results.getWorkerResult(worker).addError(source, assign.getLabel(), probs.get(source));
 	}
 
 	private void unupdateWorkers(LObject<String> obj) {
@@ -159,7 +159,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		Map<String, Double> probs = getObjectClassProbabilities(assign.getLobject());
 		Worker<String> worker = assign.getWorker();
 		for (String source : probs.keySet())
-			results.getWokerResults().get(worker).removeError(source, assign.getLabel(), probs.get(source));
+			results.getWorkerResult(worker).removeError(source, assign.getLabel(), probs.get(source));
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	@Override
 	public Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
-		Map<String, Double> cp = results.getDatumResults().get(object).getCategoryProbabilites();
+		Map<String, Double> cp = results.getDatumResult(object).getCategoryProbabilites();
 		if (null != cp)
 			return cp;
 		else

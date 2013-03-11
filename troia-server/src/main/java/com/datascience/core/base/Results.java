@@ -15,11 +15,34 @@ public class Results<T, U, V> {
 		workerResults = new HashMap<Worker<T>, V>();
 	}
 
-	public Map<Worker<T>, V> getWokerResults(){
+	public Map<Worker<T>, V> getWorkerResults(){
 		return workerResults;
 	}
 
 	public Map<LObject<T>, U> getDatumResults(){
 		return datumResults;
+	}
+
+
+	public U getDatumResult(LObject<T> obj){
+		U ret = datumResults.get(obj);
+		if (ret == null)
+			throw new IllegalArgumentException("You have not run compute or there is no object named " + obj.getName());
+		return ret;
+	}
+
+	public void addDatumResult(LObject<T> obj, U result){
+		datumResults.put(obj, result);
+	}
+
+	public V getWorkerResult(Worker<T> worker){
+		V ret = workerResults.get(worker);
+		if (ret == null)
+			throw new IllegalArgumentException("You have not run compute or there is no worker named " + worker.getName());
+		return ret;
+	}
+
+	public void addWorkerResult(Worker<T> worker, V result){
+		workerResults.put(worker, result);
 	}
 }

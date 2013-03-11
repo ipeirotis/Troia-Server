@@ -1,8 +1,5 @@
 package com.datascience.core.base;
 
-import com.datascience.gal.DatumResult;
-import com.datascience.gal.WorkerResult;
-
 /**
  * User: artur
  */
