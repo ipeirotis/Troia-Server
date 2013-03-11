@@ -45,7 +45,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			return;
 		for (String category : probabilities.keySet()) {
 			double probability = probabilities.get(category);
-			results.getDatumResult(obj).getCategoryProbabilites().put(category, probability);
+			results.getOrCreateDatumResult(obj).getCategoryProbabilites().put(category, probability);
 		}
 	}
 

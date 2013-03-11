@@ -1,5 +1,6 @@
 package com.datascience.gal;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -7,6 +8,10 @@ import java.util.Map;
  */
 public class DatumResult {
 	protected Map<String, Double> categoryProbabilites;
+
+	public DatumResult(){
+		categoryProbabilites = new HashMap<String, Double>();
+	}
 
 	public Map<String, Double> getCategoryProbabilites(){
 		return categoryProbabilites;

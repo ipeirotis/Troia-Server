@@ -15,9 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
+import com.datascience.gal.decision.Utils;
 import org.apache.log4j.Logger;
-
-import com.datascience.utils.Utils;
 
 public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
 
@@ -28,7 +27,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	 * Any modification to DS project will set it to false
 	 */
 	private boolean computed = false;
-	
+
 	protected void invalidateComputed() {
 		this.computed = false;
 	}
@@ -113,7 +112,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 			p[i] = e.getValue();
 			i++;
 		}
-		return Utils.entropy(p);
+		return com.datascience.utils.Utils.entropy(p);
 	}
 
 	protected void updatePriors() {
@@ -128,7 +127,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		for (LObject<String> obj : data.getObjects()){
 			for (Category c : data.getCategories()){
 				priors.put(c.getName(), priors.get(c.getName()) +
-						results.getDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
+						results.getOrCreateDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
 			}
 		}
 
@@ -162,8 +161,9 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		// except for the worker that we ignore
 		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
-		if (labels.isEmpty())
-			return null;
+		if (labels.isEmpty()){
+			Utils.getSpammerDistribution(getData());
+		}
 		if (workerToIgnore != null && labels.size() == 1) {
 			for (AssignedLabel al : labels) {
 				if (al.getWorker().equals(workerToIgnore))
@@ -221,7 +221,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 				// result.put(category, 0.0);
 				return null;
 			} else {
-				double probability = Utils.round(nominator / denominator, 5);
+				double probability = com.datascience.utils.Utils.round(nominator / denominator, 5);
 				result.put(c.getName(), probability);
 			}
 		}

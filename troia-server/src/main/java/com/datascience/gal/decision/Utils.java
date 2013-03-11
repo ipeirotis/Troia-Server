@@ -3,6 +3,8 @@ package com.datascience.gal.decision;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.datascience.core.base.NominalData;
 import com.datascience.gal.Category;
 import com.datascience.gal.NominalProject;
 import com.datascience.utils.CostMatrix;
@@ -65,5 +67,13 @@ public class Utils {
 			}
 		}
 		return cm;
+	}
+
+	static public Map<String, Double> getSpammerDistribution(NominalData data){
+		Map<String, Double> pd = new HashMap<String, Double>();
+		for (Category c: data.getCategories()) {
+			pd.put(c.getName(), c.getPrior());
+		}
+		return pd;
 	}
 }

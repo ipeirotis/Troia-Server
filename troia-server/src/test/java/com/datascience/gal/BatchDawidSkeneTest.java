@@ -1,7 +1,6 @@
 package com.datascience.gal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -51,11 +50,25 @@ public class BatchDawidSkeneTest {
 		LObject<String> obj = new LObject<String>("object1");
 		project.getData().addObject(obj);
 
-		//check objects quality for each category. it should be 1./categories_size
 		DecisionEngine de = new DecisionEngine(
 			new LabelProbabilityDistributionCalculators.DS(),
 			LabelProbabilityDistributionCostCalculators.get(""), null);
-		assertEquals(1./project.getData().getCategories().size(), de.estimateMissclassificationCost(project, obj), 1e-10);
-
+		try{
+			de.estimateMissclassificationCost(project, obj);
+			fail("trying to get estimated value for not computed object");
+		}
+		catch(Exception ex){
+		}
+		project.getAlgorithm().estimate(1e-6, 10);
+		assertEquals(
+				1./project.getData().getCategories().size(),
+				de.estimateMissclassificationCost(project, obj),
+				1e-10);
+		try{
+			de.estimateMissclassificationCost(project, new LObject<String>("testObj"));
+			fail("trying to get estimated value for non existions object");
+		}
+		catch(Exception e){
+		}
 	}
 }

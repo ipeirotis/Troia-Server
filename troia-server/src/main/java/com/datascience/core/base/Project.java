@@ -16,7 +16,6 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 
 	public Project(Algorithm<T, U, V, W> alg){
 		this.algorithm = alg;
-		results = new Results<T, V, W>();
 	}
 
 	public U getData(){

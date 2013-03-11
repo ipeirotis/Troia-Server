@@ -7,10 +7,13 @@ import java.util.Map;
  * User: artur
  */
 public class Results<T, U, V> {
+
 	protected Map<LObject<T>, U> datumResults;
 	protected Map<Worker<T>, V> workerResults;
+	protected ResultsFactory.IDatumResultCreator creator;
 
-	public Results(){
+	public Results(ResultsFactory.IDatumResultCreator creator){
+		this.creator = creator;
 		datumResults = new HashMap<LObject<T>, U>();
 		workerResults = new HashMap<Worker<T>, V>();
 	}
@@ -23,6 +26,14 @@ public class Results<T, U, V> {
 		return datumResults;
 	}
 
+	public U getOrCreateDatumResult(LObject<T> obj){
+		U ret = datumResults.get(obj);
+		if (ret == null)
+			ret = (U) creator.create(obj);
+			datumResults.put(obj, ret);
+		return ret;
+
+	}
 
 	public U getDatumResult(LObject<T> obj){
 		U ret = datumResults.get(obj);

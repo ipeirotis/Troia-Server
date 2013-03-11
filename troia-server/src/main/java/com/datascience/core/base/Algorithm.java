@@ -12,9 +12,17 @@ public abstract class Algorithm<T, U extends Data<T>, V, W> {
 		this.data = data;
 	}
 
+	public U getData(){
+		return data;
+	}
+
 	public void setResults(Results<T, V, W> results){
 		this.results = results;
 	}
 
+	public Results<T, V, W> getResults(){
+		return  results;
+	}
 	public abstract void compute();
+
 }

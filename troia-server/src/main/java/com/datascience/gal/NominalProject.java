@@ -24,6 +24,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 				new LabelProbabilityDistributionCalculators.DS(), null,
 				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
+		results = new Results<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory());
 		data = new NominalData();
 		algorithm.setResults(results);
 		algorithm.setData(data);
@@ -45,8 +46,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 
 		HashMap<String, Double> naiveSoftLabel = new HashMap<String, Double>();
 		for (Category cat : data.getCategories()) {
-			naiveSoftLabel.put(cat.getName(),
-					((AbstractDawidSkene)algorithm).getErrorRateForWorker(w, objectCategory, cat.getName()));
+			naiveSoftLabel.put(cat.getName(), ((AbstractDawidSkene) algorithm).getErrorRateForWorker(w, objectCategory, cat.getName()));
 		}
 		return naiveSoftLabel;
 	}

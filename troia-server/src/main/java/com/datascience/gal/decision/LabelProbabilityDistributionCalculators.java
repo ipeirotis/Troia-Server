@@ -56,23 +56,19 @@ public class LabelProbabilityDistributionCalculators {
 			return pd;
 		}
 	}
-	
+
 	public static class PriorBased implements ILabelProbabilityDistributionCalculator {
 
 		@Override
 		public Map<String, Double> calculateDistribution(LObject<String> datum, NominalProject project) {
-			Map<String, Double> pd = new HashMap<String, Double>();
-			for (Category c: project.getData().getCategories()) {
-				pd.put(c.getName(), c.getPrior());
-			}
-			return pd;
+			return Utils.getSpammerDistribution(project.getData());
 		}
 	}
-	
+
 	public static class OnlyOneLabel implements ILabelProbabilityDistributionCalculator {
-		
+
 		private DecisionEngine decisionEngine;
-		
+
 		public OnlyOneLabel(DecisionEngine decisionEngine) {
 			this.decisionEngine = decisionEngine;
 		}

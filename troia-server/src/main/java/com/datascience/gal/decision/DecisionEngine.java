@@ -17,7 +17,7 @@ public class DecisionEngine {
 	ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
 	ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator;
 	IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm;
-	
+
 	public DecisionEngine(ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator,
 			ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
 			IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm){
@@ -25,21 +25,21 @@ public class DecisionEngine {
 		this.labelProbabilityDistributionCostCalculator = labelProbabilityDistributionCostCalculator;
 		this.objectLabelDecisionAlgorithm = objectLabelDecisionAlgorithm;
 	}
-	
-	
+
+
 	public Map<String, Double> getPD(LObject<String> datum, NominalProject project){
 		return labelProbabilityDistributionCalculator.calculateDistribution(datum, project);
 	}
-	
+
 	public String predictLabel(NominalProject project, LObject<String> datum, CostMatrix<String> cm) {
 		return objectLabelDecisionAlgorithm.predictLabel(getPD(datum, project), cm);
 	}
-	
+
 	public double estimateMissclassificationCost(NominalProject project, LObject<String> datum, CostMatrix<String> cm) {
 		return labelProbabilityDistributionCostCalculator.predictedLabelCost(
 			getPD(datum, project), cm);
 	}
-	
+
 	public String predictLabel(NominalProject project, LObject<String> datum) {
 		return predictLabel(project, datum, Utils.getCategoriesCostMatrix(project));
 	}
@@ -57,7 +57,7 @@ public class DecisionEngine {
 		}
 		return ret;
 	}
-	
+
 	public Map<String, Double> estimateMissclassificationCosts(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
 		CostMatrix<String> cm = Utils.getCategoriesCostMatrix(project);
