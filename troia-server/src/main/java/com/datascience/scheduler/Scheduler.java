@@ -12,11 +12,14 @@ public class Scheduler<T> implements IScheduler<T> {
 	public static int INITIAL_QUEUE_SIZE = 10;
 
 	protected Queue<LObject<T>> queue;
-	private Data<T> data;
+	protected Data<T> data;
+	private IPriorityCalculator<T> calculator;
+
+	public Scheduler() { }
 
 	public Scheduler(Data<T> data, IPriorityCalculator<T> calculator) {
-		queue = new PriorityQueue<LObject<T>>(INITIAL_QUEUE_SIZE, new ObjectComparator<T>(calculator));
-		this.data = data;
+		setData(data);
+		setUpQueue(calculator);
 	}
 
 	@Override
@@ -39,5 +42,21 @@ public class Scheduler<T> implements IScheduler<T> {
 	@Override
 	public LObject<T> nextObject(Worker<T> worker) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setUpQueue(IPriorityCalculator<T> calculator) {
+		queue = new PriorityQueue<LObject<T>>(INITIAL_QUEUE_SIZE, new ObjectComparator<T>(calculator));
+		this.calculator = calculator;
+	}
+
+	@Override
+	public void setData(Data<T> data) {
+		this.data = data;
+	}
+
+	@Override
+	public IPriorityCalculator<T> getCalculator() {
+		return calculator;
 	}
 }
