@@ -108,7 +108,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	 */
 	private double getMinSoftLabelCost(Map<String, Double> probabilities) {
 
-		double min_cost = Double.NaN;
+		double min_cost = Double.MAX_VALUE;
 
 		for (String c1 : probabilities.keySet()) {
 			// So, with probability p1 it belongs to class c1
@@ -123,11 +123,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 				costfor_c2 += p2 * cost;
 
 			}
-
-			if (Double.isNaN(min_cost) || costfor_c2 < min_cost) {
-				min_cost = costfor_c2;
-			}
-
+			min_cost = Math.min(min_cost, costfor_c2);
 		}
 
 		return min_cost;
