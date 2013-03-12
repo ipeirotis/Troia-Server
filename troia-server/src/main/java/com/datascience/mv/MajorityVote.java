@@ -1,11 +1,8 @@
 package com.datascience.mv;
 
-import com.datascience.core.base.Algorithm;
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.NominalData;
+import com.datascience.core.base.*;
+import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.gal.DatumResult;
-import com.datascience.gal.WorkerResult;
 import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;
@@ -14,7 +11,11 @@ import java.util.Map;
 /**
  * @Author: konrad
  */
-public abstract class MajorityVote extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
+public abstract class MajorityVote extends NominalAlgorithm {
+
+	public MajorityVote(IErrorRateCalculator errorRateCalculator){
+		super(errorRateCalculator);
+	}
 
 	public void computeResultsForObject(LObject<String> object){
 		DatumResult dr = results.getOrCreateDatumResult(object);

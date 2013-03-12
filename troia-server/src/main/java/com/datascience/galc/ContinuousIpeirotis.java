@@ -265,14 +265,4 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		estimate(0.0000001, 50);
 		// TODO FIXME XXX this should be on some variable
 	}
-
-	@Override
-	public ResultsFactory.IWorkerResultCreator getWorkerResultCreator() {
-		return new ResultsFactory.WorkerContResultFactory();
-	}
-
-	@Override
-	public ResultsFactory.IDatumResultCreator getDatumResultCreator() {
-		return new ResultsFactory.DatumResultFactory();
-	}
 }

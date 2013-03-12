@@ -37,15 +37,13 @@ public class  ResultsFactory {
 	public static class WorkerResultNominalFactory implements IWorkerResultCreator<String, WorkerResult> {
 
 		protected static Collection<Category> categories;
-		protected static ErrorRateCalculators.IErrorRateCalculator calculator;
 
-		public WorkerResultNominalFactory(ErrorRateCalculators.IErrorRateCalculator calc, Collection<Category> categories){
+		public WorkerResultNominalFactory(Collection<Category> categories){
 			this.categories = categories;
-			this.calculator = calc;
 		}
 
 		public WorkerResult create(Worker<String> obj){
-			return new WorkerResult(calculator, categories);
+			return new WorkerResult(categories);
 		}
 	}
 

@@ -15,25 +15,21 @@ import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
+import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import org.apache.log4j.Logger;
 
-public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
+public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	protected boolean fixedPriors;
 
-	/**
-	 * Set to true if this project was computed.
-	 * Any modification to DS project will set it to false
-	 */
-	private boolean computed = false;
-
-	protected void invalidateComputed() {
-		this.computed = false;
+	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
+		super(errorRateCalculator);
 	}
 
-	protected void markComputed() {
-		this.computed = true;
+	@Override
+	public IErrorRateCalculator getErrorRateCalculator(){
+		return errorRateCalculator;
 	}
 
 	protected void initializePriors() {
@@ -42,12 +38,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	}
 
 	protected double getErrorRateForWorker(Worker<String> worker, String from, String to){
-		return results.getOrCreateWorkerResult(worker).getErrorRate(from, to);
-	}
-
-	@Override
-	public ResultsFactory.IDatumResultCreator getDatumResultCreator() {
-		return new ResultsFactory.DatumResultFactory();
+		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
 	}
 
 	public abstract double prior(String categoryName);
@@ -137,7 +128,6 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		}
 
 		setPriors(priors);
-		invalidateComputed();
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object) {
@@ -229,17 +219,12 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 
 	public void addMisclassificationCost(MisclassificationCost cl) {
 		data.getCategory(cl.getCategoryFrom()).setCost(cl.getCategoryTo(), cl.getCost());
-		invalidateComputed();
 	}
 	
 
 	public void addMisclassificationCosts(Collection<MisclassificationCost> cls) {
 		for (MisclassificationCost cl : cls)
 			addMisclassificationCost(cl);
-	}
-
-	public boolean isComputed() {
-		return this.computed;
 	}
 
 	// One pass of the incremental algorithm.
@@ -256,11 +241,9 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 			currLogLikelihood = getLogLikelihood();
 		}
 		double diffLogLikelihood = Math.abs(currLogLikelihood - prevLogLikelihood);
-		logger.info("Estimated: performed " + iteration  + " / " +
-					maxIterations + " with log-likelihood difference " +
-					diffLogLikelihood);
-		markComputed();
-
+		logger.info("Estimated: performed " + iteration + " / " +
+				maxIterations + " with log-likelihood difference " +
+				diffLogLikelihood);
 		return 0;
 	}
 

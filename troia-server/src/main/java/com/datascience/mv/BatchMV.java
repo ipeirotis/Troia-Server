@@ -7,6 +7,10 @@ import com.datascience.core.base.LObject;
  */
 public class BatchMV extends MajorityVote {
 
+	public BatchMV(){
+		super(null); // TODO FIXME XXX set proper error rate calculator
+	}
+
 	@Override
 	public void compute() {
 		computeForObjects();

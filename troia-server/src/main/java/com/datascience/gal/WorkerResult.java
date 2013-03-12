@@ -2,6 +2,7 @@ package com.datascience.gal;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.stats.IErrorRateCalculator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,17 +17,14 @@ public class WorkerResult {
 	public ConfusionMatrix cm;
 
 	//The confusion matrix for the worker based on evaluation data
-	private ConfusionMatrix eval_cm;
+	protected ConfusionMatrix eval_cm;
 
-	private ErrorRateCalculators.IErrorRateCalculator errorRateCalc;
-
-	public WorkerResult(ErrorRateCalculators.IErrorRateCalculator erc, Collection<Category> categories){
-		errorRateCalc = erc;
+	public WorkerResult(Collection<Category> categories){
 		cm = new MultinomialConfusionMatrix(categories);
 	}
 
-	public double getErrorRate(String categoryFrom, String categoryTo){
-		return errorRateCalc.getErrorRate(cm, categoryFrom, categoryTo);
+	public double getErrorRate(IErrorRateCalculator erc, String categoryFrom, String categoryTo){
+		return erc.getErrorRate(cm, categoryFrom, categoryTo);
 	}
 
 	public double getEvalErrorRate(String from, String to){

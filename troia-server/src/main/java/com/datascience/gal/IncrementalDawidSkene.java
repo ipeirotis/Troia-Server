@@ -32,6 +32,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	private double priorDenominator;
 
 	public IncrementalDawidSkene() {
+		super(new ErrorRateCalculators.IncrementalErrorRateCalculator());
 		super.logger = this.logger;
 	}
 
@@ -51,17 +52,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	@Override
-	public ResultsFactory.IWorkerResultCreator getWorkerResultCreator() {
-		return new ResultsFactory.WorkerResultNominalFactory(
-				new ErrorRateCalculators.IncrementalErrorRateCalculator(),
-				data.getCategories());
-	}
-
-	@Override
 	public void newAssign(AssignedLabel<String> al) {
 		LObject<String> d = coreAssignedLabelUpdate(al);
 		computeForObject(d);
-		invalidateComputed();
 	}
 
 	/**

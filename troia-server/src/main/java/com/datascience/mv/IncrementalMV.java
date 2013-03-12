@@ -10,6 +10,10 @@ import com.datascience.core.base.Worker;
  */
 public class IncrementalMV extends MajorityVote implements IUpdatableAlgorithm{
 
+	public IncrementalMV(){
+		super(null); // TODO FIXME XXX set proper error rate calculator
+	}
+
 	@Override
 	public void compute() {
 		//There is nothing that we would make sense to do here

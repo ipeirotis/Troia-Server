@@ -12,8 +12,8 @@ public class ContinuousProject extends Project<ContValue, Data<ContValue>, Datum
 	public ContinuousProject(ContinuousIpeirotis ci){
 		super(ci);
 		results = new Results<ContValue, DatumContResults, WorkerContResults>(
-				algorithm.getDatumResultCreator(),
-				algorithm.getWorkerResultCreator());
+				new ResultsFactory.DatumContResultFactory(),
+				new ResultsFactory.WorkerContResultFactory());
 		data = new Data<ContValue>();
 		ci.setData(data);
 		ci.setResults(results);

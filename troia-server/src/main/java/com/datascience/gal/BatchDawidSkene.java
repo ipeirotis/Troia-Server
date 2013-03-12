@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 public class BatchDawidSkene extends AbstractDawidSkene {
 
 	public BatchDawidSkene() {
+		super(new ErrorRateCalculators.BatchErrorRateCalculator());
 		super.logger = this.logger;
 	}
 
@@ -31,13 +32,6 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	@Override
 	public double prior(String categoryName) {
 		return data.getCategory(categoryName).getPrior();
-	}
-
-	@Override
-	public ResultsFactory.IWorkerResultCreator getWorkerResultCreator() {
-		return new ResultsFactory.WorkerResultNominalFactory(
-				new ErrorRateCalculators.BatchErrorRateCalculator(),
-				data.getCategories());
 	}
 
 	private void updateObjectClassProbabilities() {

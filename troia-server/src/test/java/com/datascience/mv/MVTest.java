@@ -3,14 +3,13 @@ package com.datascience.mv;
 import com.datascience.core.base.*;
 import com.datascience.gal.Category;
 import com.datascience.gal.DatumResult;
+import com.datascience.gal.NominalProject;
 import com.datascience.gal.WorkerResult;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,11 +88,10 @@ public class MVTest {
 
 	@Test
 	public void testBatchMV(){
-		NominalData nd = new NominalData();
 		BatchMV mv = new BatchMV();
-		Results<String, DatumResult, WorkerResult> results =
-				new Results<String, DatumResult, WorkerResult>(
-						new ResultsFactory.DatumResultFactory());
+		NominalProject np = new NominalProject(mv);
+		NominalData nd = np.getData();
+		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
 		fillNominalData(nd);
@@ -103,11 +101,10 @@ public class MVTest {
 
 	@Test
 	public void testIncrementalMV(){
-		NominalData nd = new NominalData();
 		IncrementalMV mv = new IncrementalMV();
-		Results<String, DatumResult, WorkerResult> results =
-				new Results<String, DatumResult, WorkerResult>(
-						new ResultsFactory.DatumResultFactory());
+		NominalProject np = new NominalProject(mv);
+		NominalData nd = np.getData();
+		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
 		nd.addNewUpdatableAlgorithm(mv);

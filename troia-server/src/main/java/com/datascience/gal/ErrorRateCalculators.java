@@ -1,15 +1,14 @@
 package com.datascience.gal;
 
+import com.datascience.core.stats.IErrorRateCalculator;
+
 /**
  * User: artur
  * Date: 3/12/13
  */
 public class ErrorRateCalculators {
-	public static interface IErrorRateCalculator {
-		double getErrorRate(ConfusionMatrix cm, String from, String to);
-	}
 
-	public static class BatchErrorRateCalculator implements IErrorRateCalculator{
+	public static class BatchErrorRateCalculator implements IErrorRateCalculator {
 
 		@Override
 		public double getErrorRate(ConfusionMatrix cm, String from, String to) {

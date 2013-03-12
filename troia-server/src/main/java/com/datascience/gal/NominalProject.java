@@ -5,6 +5,7 @@ import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
+import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,24 +19,28 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	protected DecisionEngine mvDecisionEnginge;
 	protected ILabelProbabilityDistributionCalculator spammerProbDistr;
 
-	public NominalProject(AbstractDawidSkene ads){
-		super(ads);
+	public NominalProject(Algorithm algorithm1){
+		super(algorithm1);
 		mvDecisionEnginge = new DecisionEngine(
 				new LabelProbabilityDistributionCalculators.DS(), null,
 				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
 		data = new NominalData();
 		algorithm.setData(data);
+		results = createResultsInstance();
 	}
 
 	public void initializeCategories(Collection<Category> categories){
 		boolean fp = data.addCategories(categories);
 		if (!fp)
 			((AbstractDawidSkene)algorithm).initializePriors();
-		results = new Results<String, DatumResult, WorkerResult>(
-				algorithm.getDatumResultCreator(),
-				algorithm.getWorkerResultCreator());
 		algorithm.setResults(results);
+	}
+
+	public Results<String, DatumResult, WorkerResult> createResultsInstance(){
+		return new Results<String, DatumResult, WorkerResult>(
+				new ResultsFactory.DatumResultFactory(),
+				new ResultsFactory.WorkerResultNominalFactory(data.getCategories()));
 	}
 
 	/**
@@ -133,8 +138,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	 * @return The expected cost of a spammer worker
 	 */
 	public double getMinSpammerCost() {
-		Map<String, Double> prior =
-				spammerProbDistr.calculateDistribution(null, this);
+		Map<String, Double> prior = ProbabilityDistributions.getSpammerDistribution(data);
 
 		return getMinSoftLabelCost(prior);
 	}
@@ -146,8 +150,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	 * @return The expected cost of a spammer worker
 	 */
 	public double getSpammerCost() {
-		Map<String, Double> prior =
-				spammerProbDistr.calculateDistribution(null, this);
+		Map<String, Double> prior = ProbabilityDistributions.getSpammerDistribution(data);
 		return getSoftLabelCost(prior);
 	}
 }
