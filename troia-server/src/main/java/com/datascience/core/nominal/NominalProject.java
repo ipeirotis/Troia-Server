@@ -20,9 +20,11 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 
 	protected DecisionEngine mvDecisionEnginge;
 	protected ILabelProbabilityDistributionCalculator spammerProbDistr;
+	protected NominalAlgorithm nomAlgorithm;
 
 	public NominalProject(Algorithm algorithm1){
 		super(algorithm1);
+		nomAlgorithm = (NominalAlgorithm) algorithm1; // just to skip casting over and over
 		mvDecisionEnginge = new DecisionEngine(
 				new LabelProbabilityDistributionCalculators.DS(), null,
 				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
@@ -32,9 +34,8 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 	}
 
 	public void initializeCategories(Collection<Category> categories){
-		boolean fp = data.addCategories(categories);
-		if (!fp)
-			((AbstractDawidSkene)algorithm).initializePriors();
+		data.addCategories(categories);
+		nomAlgorithm.initializeOnCategories(categories);
 		results = createResultsInstance(categories);
 		algorithm.setResults(results);
 	}

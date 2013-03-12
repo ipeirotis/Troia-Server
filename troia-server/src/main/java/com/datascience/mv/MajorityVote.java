@@ -43,4 +43,8 @@ public abstract class MajorityVote extends NominalAlgorithm {
 				Collection<AssignedLabel<String>> assigns){
 		return ProbabilityDistributions.generateMV_PD(categories, assigns);
 	}
+
+	@Override
+	public void initializeOnCategories(Collection<Category> categories){
+	}
 }

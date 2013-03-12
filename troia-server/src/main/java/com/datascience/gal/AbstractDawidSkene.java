@@ -36,6 +36,13 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return errorRateCalculator;
 	}
 
+	@Override
+	public void initializeOnCategories(Collection<Category> categories){
+		if (data.arePriorsFixed()) {
+			initializePriors();
+		}
+	}
+
 	public void initializePriors() {
 		for (Category c : data.getCategories())
 			c.setPrior(1. / data.getCategories().size());

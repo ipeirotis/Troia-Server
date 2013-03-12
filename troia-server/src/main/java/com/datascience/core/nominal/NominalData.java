@@ -17,6 +17,7 @@ import java.util.Set;
 public class NominalData extends Data<String> {
 
 	protected Set<Category> categories;
+	protected boolean fixedPriors;
 
 	public Set<Category> getCategories(){
 		return categories;
@@ -37,13 +38,17 @@ public class NominalData extends Data<String> {
 		return null;
 	}
 
+	public boolean arePriorsFixed(){
+		return fixedPriors;
+	}
+
 	/*
 		@returns: fixedPriors
 	 */
-	public boolean addCategories(Collection<Category> categories){
+	public void addCategories(Collection<Category> categories){
 		double priorSum = 0.;
 		int priorCnt = 0;
-		boolean fixedPriors = false;
+		fixedPriors = false;
 
 		this.categories = new HashSet<Category>();
 		if (categories.size() < 2){
@@ -75,7 +80,6 @@ public class NominalData extends Data<String> {
 				}
 			}
 		}
-		return fixedPriors;
 	}
 
 	@Override
