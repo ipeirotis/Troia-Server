@@ -1,8 +1,6 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.ResultsFactory;
-import com.datascience.gal.ErrorRateCalculators;
 
 /**
  * @Author: konrad
@@ -25,10 +23,4 @@ public class BatchMV extends MajorityVote {
 		// TODO XXX FIXME what it should do here?
 	}
 
-	@Override
-	public ResultsFactory.IWorkerResultCreator getWorkerResultCreator() {
-		return new ResultsFactory.WorkerResultNominalFactory(
-				new ErrorRateCalculators.BatchErrorRateCalculator(),
-				data.getCategories());
-	}
 }

@@ -1,6 +1,9 @@
 package com.datascience.mv;
 
-import com.datascience.core.base.*;
+import com.datascience.core.base.Algorithm;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.NominalData;
 import com.datascience.gal.DatumResult;
 import com.datascience.gal.WorkerResult;
 import com.datascience.utils.ProbabilityDistributions;
@@ -37,10 +40,5 @@ public abstract class MajorityVote extends Algorithm<String, NominalData, DatumR
 	public Map<String, Double> generateLabelDistribution(Collection<String> categories,
 				Collection<AssignedLabel<String>> assigns){
 		return ProbabilityDistributions.generateMV_PD(categories, assigns);
-	}
-
-	@Override
-	public ResultsFactory.IDatumResultCreator getDatumResultCreator() {
-		return new ResultsFactory.DatumResultFactory();
 	}
 }
