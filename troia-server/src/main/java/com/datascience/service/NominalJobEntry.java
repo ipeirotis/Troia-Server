@@ -1,35 +1,16 @@
 package com.datascience.service;
 
-import java.util.Collection;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
-
-import com.datascience.core.storages.JSONUtils;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.NominalProject;
-import com.datascience.gal.commands.CategoriesCommands;
-import com.datascience.gal.commands.CostsCommands;
-import com.datascience.gal.commands.DatumCommands;
-import com.datascience.gal.commands.EvaluationCommands;
-import com.datascience.gal.commands.PredictionCommands;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
-import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
-import com.datascience.gal.decision.WorkerEstimator;
+import com.datascience.gal.commands.*;
+import com.datascience.gal.decision.*;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 
 
 /**
