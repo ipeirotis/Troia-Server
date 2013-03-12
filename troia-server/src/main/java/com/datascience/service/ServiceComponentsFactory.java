@@ -5,12 +5,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import com.datascience.core.JobsManager;
+import com.datascience.core.storages.*;
+import com.datascience.core.storages.serialization.ISerializer;
 import org.apache.log4j.Logger;
 
-import com.datascience.core.storages.CachedWithRegularDumpJobStorage;
-import com.datascience.core.storages.DBJobStorage;
-import com.datascience.core.storages.IJobStorage;
-import com.datascience.core.storages.JobStorageUsingExecutor;
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.SerializedCommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;

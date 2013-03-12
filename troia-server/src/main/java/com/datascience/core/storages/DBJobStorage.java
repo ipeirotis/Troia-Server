@@ -14,12 +14,13 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.datascience.core.base.Project;
+import com.datascience.core.storages.serialization.ISerializer;
+import com.datascience.core.storages.serialization.json.JSONUtils;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
-import com.datascience.service.ISerializer;
 
 /**
  * From old class DawidSkeneCache.

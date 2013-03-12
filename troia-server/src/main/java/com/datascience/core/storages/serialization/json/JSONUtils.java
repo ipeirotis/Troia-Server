@@ -7,7 +7,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-package com.datascience.core.storages;
+package com.datascience.core.storages.serialization.json;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -18,14 +18,13 @@ import com.datascience.core.base.Category;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.base.CategoryPair;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
-import com.datascience.core.storages.serialization.json.CategoryJSON;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.base.Data;
 import com.datascience.galc.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
-import com.datascience.service.Serialized;
+import com.datascience.core.storages.serialization.Serialized;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;

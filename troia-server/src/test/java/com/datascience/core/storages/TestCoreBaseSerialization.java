@@ -1,10 +1,10 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.base.*;
+import com.datascience.core.storages.serialization.ISerializer;
 import com.datascience.service.GSONSerializer;
-import com.datascience.service.ISerializer;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
 import static org.junit.Assert.assertEquals;
 
 /**

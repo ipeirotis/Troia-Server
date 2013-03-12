@@ -1,11 +1,10 @@
 package com.datascience.core.commands;
 
-import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
-import com.datascience.core.storages.DataJSON.ShallowGoldObject;
-import com.datascience.core.storages.DataJSON.ShallowGoldObjectCollection;
+import com.datascience.core.storages.serialization.json.DataJSON.ShallowGoldObject;
+import com.datascience.core.storages.serialization.json.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.executor.JobCommand;
 
 import java.util.Collection;

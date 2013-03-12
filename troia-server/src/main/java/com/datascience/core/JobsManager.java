@@ -1,4 +1,4 @@
-package com.datascience.service;
+package com.datascience.core;
 
 import java.util.HashMap;
 import java.util.Map;

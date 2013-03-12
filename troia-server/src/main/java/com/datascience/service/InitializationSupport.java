@@ -10,6 +10,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import com.datascience.core.JobsManager;
+import com.datascience.core.storages.serialization.ISerializer;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 

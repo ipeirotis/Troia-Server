@@ -2,7 +2,6 @@ package com.datascience.core.storages.serialization.json;
 
 import com.datascience.core.base.Category;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.storages.JSONUtils;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

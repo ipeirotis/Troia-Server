@@ -1,7 +1,7 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
-import com.datascience.core.storages.DataJSON.ShallowObjectCollection;
+import com.datascience.core.storages.serialization.json.DataJSON.ShallowObjectCollection;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.commands.ParamChecking;
 

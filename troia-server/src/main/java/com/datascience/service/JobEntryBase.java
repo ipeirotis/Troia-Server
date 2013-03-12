@@ -12,11 +12,13 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import com.datascience.core.Job;
+import com.datascience.core.JobsManager;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
-import com.datascience.core.storages.DataJSON;
+import com.datascience.core.storages.serialization.json.DataJSON;
 import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.storages.serialization.ISerializer;
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;

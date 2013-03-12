@@ -1,8 +1,8 @@
 package com.datascience.executor;
 
 import com.datascience.service.IRandomUniqIDGenerator;
-import com.datascience.service.ISerializer;
-import com.datascience.service.Serialized;
+import com.datascience.core.storages.serialization.ISerializer;
+import com.datascience.core.storages.serialization.Serialized;
 
 public class SerializedCommandStatusesContainer extends
 		CommandStatusesContainer {

@@ -4,7 +4,7 @@ import com.datascience.core.Job;
 import com.datascience.core.base.Project;
 import com.datascience.executor.ProjectCommandExecutor;
 import com.datascience.core.commands.JobStorageCommands;
-import com.datascience.service.JobsManager;
+import com.datascience.core.JobsManager;
 
 /**
  *
