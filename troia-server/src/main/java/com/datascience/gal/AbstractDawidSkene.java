@@ -23,6 +23,8 @@ import org.apache.log4j.Logger;
 
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
+	private static Logger logger = Logger.getLogger(AbstractDawidSkene.class);
+
 	protected boolean fixedPriors;
 
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
@@ -222,7 +224,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	public void addMisclassificationCost(MisclassificationCost cl) {
 		data.getCategory(cl.getCategoryFrom()).setCost(cl.getCategoryTo(), cl.getCost());
 	}
-	
+
 
 	public void addMisclassificationCosts(Collection<MisclassificationCost> cls) {
 		for (MisclassificationCost cl : cls)
@@ -254,6 +256,4 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		estimate(0.0000001, 50);
 		// TODO XXX FIXME ^^^ those should be set on some variable
 	}
-	
-	protected static Logger logger = null; // will be initialized in subclasses
 }

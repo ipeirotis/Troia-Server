@@ -35,7 +35,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	public IncrementalDawidSkene() {
 		super(new ErrorRateCalculators.IncrementalErrorRateCalculator());
-		super.logger = this.logger;
 	}
 
 	@Override
@@ -211,8 +210,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		for (LObject<String> obj :data.getObjects())
 			updateObjectInformation(obj, true);
 	}
-
-	private static final Logger logger = Logger.getLogger(IncrementalDawidSkene.class);
 
 	@Override
 	public void newObject(LObject<String> object) {

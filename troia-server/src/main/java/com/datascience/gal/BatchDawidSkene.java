@@ -13,16 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
-import com.datascience.core.base.Category;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
 import com.datascience.core.stats.ErrorRateCalculators;
-import org.apache.log4j.Logger;
 
 public class BatchDawidSkene extends AbstractDawidSkene {
 
 	public BatchDawidSkene() {
 		super(new ErrorRateCalculators.BatchErrorRateCalculator());
-		super.logger = this.logger;
 	}
 
 	public Map<String, Double> getCategoryPriors() {
@@ -96,6 +93,4 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		updatePriors();
 		rebuildWorkerConfusionMatrices();
 	}
-
-	private static final Logger logger = Logger.getLogger(BatchDawidSkene.class);
 }
