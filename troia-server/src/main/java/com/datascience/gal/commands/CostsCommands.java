@@ -3,10 +3,8 @@ package com.datascience.gal.commands;
 import java.util.Collection;
 
 import com.datascience.executor.JobCommand;
-import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.Category;
-import com.datascience.gal.MisclassificationCost;
-import com.datascience.gal.NominalProject;
+import com.datascience.core.stats.Category;
+import com.datascience.core.base.NominalProject;
 
 /**
  *

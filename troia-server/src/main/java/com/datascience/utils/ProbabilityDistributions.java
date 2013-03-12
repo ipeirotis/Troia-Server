@@ -6,9 +6,8 @@ import java.util.Map;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.NominalData;
-import com.datascience.gal.Category;
-import com.datascience.gal.NominalProject;
-import com.datascience.utils.CostMatrix;
+import com.datascience.core.stats.Category;
+import com.datascience.core.base.NominalProject;
 
 /**
  * @author Konrad Kurdej

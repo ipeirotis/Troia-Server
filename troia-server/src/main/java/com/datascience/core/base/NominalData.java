@@ -1,6 +1,6 @@
 package com.datascience.core.base;
 
-import com.datascience.gal.Category;
+import com.datascience.core.stats.Category;
 import com.google.common.math.DoubleMath;
 
 import java.util.ArrayList;

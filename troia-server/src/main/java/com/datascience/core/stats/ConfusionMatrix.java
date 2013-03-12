@@ -7,58 +7,47 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-package com.datascience.gal;
+package com.datascience.core.stats;
 
+import java.util.Set;
 
-public class CategoryPair {
+public interface ConfusionMatrix {
 
-	String from;
-	String to;
+	public abstract void incrementRowDenominator(String from, double value);
 
-	public CategoryPair(String from, String to) {
-		this.from = from;
-		this.to = to;
-	}
+	public abstract void decrementRowDenominator(String from, double value);
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#hashCode()
+	public abstract void empty();
+
+	/**
+	 * Makes the matrix to be row-stochastic: In other words, for a given "from"
+	 * category, if we sum the errors across all the "to" categories, we get 1.0
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((from == null) ? 0 : from.hashCode());
-		result = prime * result + ((to == null) ? 0 : to.hashCode());
-		return result;
-	}
+	public abstract void normalize();
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Makes the matrix to be row-stochastic: In other words, for a given "from"
+	 * category, if we sum the errors across all the "to" categories, we get
+	 * 1.0.
 	 *
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * We use Laplace smoothing
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof CategoryPair))
-			return false;
-		CategoryPair other = (CategoryPair) obj;
-		if (from == null) {
-			if (other.from != null)
-				return false;
-		} else if (!from.equals(other.from))
-			return false;
-		if (to == null) {
-			if (other.to != null)
-				return false;
-		} else if (!to.equals(other.to))
-			return false;
-		return true;
-	}
+	public abstract void normalizeLaplacean();
+
+	public abstract void addError(String from, String to, Double error);
+
+	public abstract void removeError(String from, String to, Double error);
+
+	public abstract double getErrorRateBatch(String from, String to);
+
+	public abstract double getNormalizedErrorRate(String from, String to);
+
+	public abstract double getLaplaceNormalizedErrorRate(String from, String to);
+
+	public abstract double getIncrementalErrorRate(String from, String to);
+
+	public abstract void setErrorRate(String from, String to, Double cost);
+
+	public abstract Set<String> getCategories();
 
 }

@@ -1,9 +1,7 @@
 package com.datascience.core.base;
 
-import com.datascience.gal.Category;
+import com.datascience.core.stats.Category;
 import com.datascience.gal.DatumResult;
-import com.datascience.gal.ErrorRateCalculators;
-import com.datascience.gal.WorkerResult;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.WorkerContResults;
 

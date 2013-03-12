@@ -1,8 +1,7 @@
-package com.datascience.gal;
+package com.datascience.core.base;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.LObject;
-import com.datascience.core.stats.IErrorRateCalculator;
+import com.datascience.core.stats.*;
 
 import java.util.Collection;
 import java.util.HashMap;

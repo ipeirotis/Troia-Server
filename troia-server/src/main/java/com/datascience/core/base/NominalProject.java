@@ -1,6 +1,8 @@
-package com.datascience.gal;
+package com.datascience.core.base;
 
-import com.datascience.core.base.*;
+import com.datascience.core.stats.Category;
+import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.gal.DatumResult;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;

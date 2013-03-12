@@ -4,6 +4,8 @@ import static java.io.File.separator;
 
 import java.io.File;
 import java.util.Collection;
+
+import com.datascience.core.stats.Category;
 import org.apache.log4j.Logger;
 
 import junit.framework.TestCase;
@@ -11,7 +13,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
 
 /**
  * The class <code>DataManagerTest</code> contains tests for the class

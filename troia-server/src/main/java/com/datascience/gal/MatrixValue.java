@@ -2,9 +2,9 @@ package com.datascience.gal;
 
 public class MatrixValue {
 
-	String from;
-	String to;
-	Double value;
+	public String from;
+	public String to;
+	public Double value;
 	
 	public MatrixValue(String from, String to, Double v){
 		this.from = from;

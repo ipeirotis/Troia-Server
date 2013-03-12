@@ -7,13 +7,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.NominalProject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.stats.Category;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

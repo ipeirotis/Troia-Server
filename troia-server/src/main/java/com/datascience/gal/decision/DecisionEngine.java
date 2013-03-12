@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.LObject;
-import com.datascience.gal.NominalProject;
+import com.datascience.core.base.NominalProject;
 import com.datascience.utils.CostMatrix;
 import com.datascience.utils.ProbabilityDistributions;
 

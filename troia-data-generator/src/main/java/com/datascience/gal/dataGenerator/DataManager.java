@@ -16,7 +16,7 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
+import com.datascience.core.stats.Category;
 import com.datascience.gal.CorrectLabel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

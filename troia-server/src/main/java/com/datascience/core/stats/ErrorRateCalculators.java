@@ -1,5 +1,6 @@
-package com.datascience.gal;
+package com.datascience.core.stats;
 
+import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.IErrorRateCalculator;
 
 /**

@@ -1,8 +1,8 @@
 package com.datascience.gal.evaluation;
 
 import com.datascience.core.base.Worker;
-import com.datascience.gal.NominalProject;
-import com.datascience.gal.WorkerResult;
+import com.datascience.core.base.NominalProject;
+import com.datascience.core.base.WorkerResult;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.gal.decision.WorkerQualityCalculator;
 

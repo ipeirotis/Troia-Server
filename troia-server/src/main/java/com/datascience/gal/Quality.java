@@ -1,5 +1,7 @@
 package com.datascience.gal;
 
+import com.datascience.core.base.NominalProject;
+
 import java.util.HashMap;
 import java.util.Map;
 

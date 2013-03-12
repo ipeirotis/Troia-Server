@@ -1,8 +1,8 @@
 package com.datascience.gal.evaluation;
 
 import com.datascience.core.base.LObject;
-import com.datascience.gal.Category;
-import com.datascience.gal.NominalProject;
+import com.datascience.core.stats.Category;
+import com.datascience.core.base.NominalProject;
 import com.datascience.gal.decision.DecisionEngine;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.gal.decision.IObjectLabelDecisionAlgorithm;

@@ -5,18 +5,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
+import com.datascience.core.stats.Category;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;
 import com.datascience.gal.Worker;
-import com.datascience.gal.decision.WorkerEstimator;
 
 /**
  * This class is used to create test data for Troia client tests.
@@ -286,10 +284,10 @@ public class DataGenerator {
 			Collection<AssignedLabel> labels,
 			Collection<CorrectLabel> goldLabels) {
 		// Objects conversion.
-		Collection<com.datascience.gal.Category> tsCategories =
-				new ArrayList<com.datascience.gal.Category>();
+		Collection<Category> tsCategories =
+				new ArrayList<Category>();
 		for (Category category : categories) {
-			tsCategories.add(new com.datascience.gal.Category(category.getName()));
+			tsCategories.add(new Category(category.getName()));
 		}
 		Collection<AssignedLabel> tsLabels =
 				new ArrayList<AssignedLabel>();
@@ -312,7 +310,7 @@ public class DataGenerator {
 		dawidSkene.getCategoryPriors();
 		System.out.println("DEBUG >>>");
 		for (Category c : categories) {
-			//com.datascience.gal.Category c = dawidSkene.getCategories().get(name);
+			//com.datascience.core.stats.Category c = dawidSkene.getCategories().get(name);
 			System.out.println(">>>>>> " + c.getName() + " " + c.getPrior() + " " + c.getMisclassificationCosts());
 		}
 		

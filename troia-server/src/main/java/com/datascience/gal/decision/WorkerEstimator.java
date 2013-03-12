@@ -2,7 +2,7 @@ package com.datascience.gal.decision;
 
 import com.datascience.core.base.NominalAlgorithm;
 import com.datascience.core.base.Worker;
-import com.datascience.gal.NominalProject;
+import com.datascience.core.base.NominalProject;
 
 public class WorkerEstimator extends WorkerQualityCalculator{
 

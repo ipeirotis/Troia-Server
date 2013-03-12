@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.NominalProject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.stats.Category;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,7 +63,7 @@ public class BatchDawidSkeneTest {
 		}
 		project.getAlgorithm().compute();
 		assertEquals(
-				1./project.getData().getCategories().size(),
+				1. / project.getData().getCategories().size(),
 				de.estimateMissclassificationCost(project, obj),
 				1e-10);
 		try{

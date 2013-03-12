@@ -1,6 +1,7 @@
 package com.datascience.gal.commands;
 
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.NominalProject;
 import com.datascience.core.base.Worker;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.*;

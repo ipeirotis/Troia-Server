@@ -14,6 +14,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.datascience.core.stats.Category;
+import com.datascience.core.stats.CategoryPair;
+import com.datascience.core.stats.MultinomialConfusionMatrix;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.base.Data;

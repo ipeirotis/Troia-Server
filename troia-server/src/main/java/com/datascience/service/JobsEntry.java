@@ -9,8 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import com.datascience.core.Job;
+import com.datascience.core.stats.Category;
 import com.datascience.core.storages.JSONUtils;
-import com.datascience.gal.Category;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**

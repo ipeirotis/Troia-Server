@@ -1,7 +1,5 @@
 package com.datascience.core.stats;
 
-import com.datascience.gal.ConfusionMatrix;
-
 /**
  * @Author: konrad
  */

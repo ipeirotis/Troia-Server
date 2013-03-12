@@ -1,10 +1,11 @@
 package com.datascience.core;
 
+import com.datascience.core.base.NominalProject;
+import com.datascience.core.stats.Category;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 
-import java.nio.channels.NonWritableChannelException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

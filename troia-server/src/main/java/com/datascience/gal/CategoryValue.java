@@ -2,8 +2,8 @@ package com.datascience.gal;
 
 public class CategoryValue {
 
-	String categoryName;
-	Double value;
+	public String categoryName;
+	public Double value;
 	
 	public CategoryValue(String cat, Double v){
 		categoryName = cat;

@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.Worker;
+import com.datascience.core.stats.Category;
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.gal.Category;
-import com.datascience.gal.NominalProject;
+import com.datascience.core.base.NominalProject;
 import com.datascience.utils.ProbabilityDistributions;
 
 /*

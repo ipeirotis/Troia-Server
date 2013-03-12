@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
+import com.datascience.core.stats.Category;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import org.apache.log4j.Logger;
@@ -32,12 +33,12 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return errorRateCalculator;
 	}
 
-	protected void initializePriors() {
+	public void initializePriors() {
 		for (Category c : data.getCategories())
 			c.setPrior(1. / data.getCategories().size());
 	}
 
-	protected double getErrorRateForWorker(Worker<String> worker, String from, String to){
+	public double getErrorRateForWorker(Worker<String> worker, String from, String to){
 		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
 	}
 

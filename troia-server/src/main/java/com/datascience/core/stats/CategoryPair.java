@@ -7,47 +7,32 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
-package com.datascience.gal;
+package com.datascience.core.stats;
 
-import java.util.Set;
 
-public interface ConfusionMatrix {
+import com.google.common.base.Objects;
 
-	public abstract void incrementRowDenominator(String from, double value);
+public class CategoryPair {
 
-	public abstract void decrementRowDenominator(String from, double value);
+	String from;
+	String to;
 
-	public abstract void empty();
+	public CategoryPair(String from, String to) {
+		this.from = from;
+		this.to = to;
+	}
 
-	/**
-	 * Makes the matrix to be row-stochastic: In other words, for a given "from"
-	 * category, if we sum the errors across all the "to" categories, we get 1.0
-	 */
-	public abstract void normalize();
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(from, to);
+	}
 
-	/**
-	 * Makes the matrix to be row-stochastic: In other words, for a given "from"
-	 * category, if we sum the errors across all the "to" categories, we get
-	 * 1.0.
-	 *
-	 * We use Laplace smoothing
-	 */
-	public abstract void normalizeLaplacean();
-
-	public abstract void addError(String from, String to, Double error);
-
-	public abstract void removeError(String from, String to, Double error);
-
-	public abstract double getErrorRateBatch(String from, String to);
-
-	public abstract double getNormalizedErrorRate(String from, String to);
-
-	public abstract double getLaplaceNormalizedErrorRate(String from, String to);
-
-	public abstract double getIncrementalErrorRate(String from, String to);
-
-	public abstract void setErrorRate(String from, String to, Double cost);
-
-	public abstract Set<String> getCategories();
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CategoryPair))
+			return false;
+		CategoryPair other = (CategoryPair) obj;
+		return Objects.equal(from, other.from) && Objects.equal(to, other.to);
+	}
 
 }

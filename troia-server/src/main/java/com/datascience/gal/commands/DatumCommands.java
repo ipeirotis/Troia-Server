@@ -8,7 +8,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.commands.ParamChecking;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.CategoryValue;
-import com.datascience.gal.NominalProject;
+import com.datascience.core.base.NominalProject;
 import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
 
 /**
