@@ -42,7 +42,12 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 	}
 
 	protected double getErrorRateForWorker(Worker<String> worker, String from, String to){
-		return results.getWorkerResult(worker).getErrorRate(from, to);
+		return results.getOrCreateWorkerResult(worker).getErrorRate(from, to);
+	}
+
+	@Override
+	public ResultsFactory.IDatumResultCreator getDatumResultCreator() {
+		return new ResultsFactory.DatumResultFactory();
 	}
 
 	public abstract double prior(String categoryName);
@@ -146,15 +151,7 @@ public abstract class AbstractDawidSkene extends Algorithm<String, NominalData, 
 		// 1.0
 		// for the correct class
 		if (object.isGold()) {
-			for (Category c : data.getCategories()) {
-				String correctCategory = object.getGoldLabel();
-				if (c.getName().equals(correctCategory)) {
-					result.put(c.getName(), 1.0);
-				} else {
-					result.put(c.getName(), 0.0);
-				}
-			}
-			return result;
+			return ProbabilityDistributions.generateGoldDistribution(data.getCategoriesNames(), object.getGoldLabel());
 		}
 
 		// Let's check first if we have any workers who have labeled this item,

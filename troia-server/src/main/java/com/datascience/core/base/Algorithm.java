@@ -25,4 +25,7 @@ public abstract class Algorithm<T, U extends Data<T>, V, W> {
 	}
 	public abstract void compute();
 
+	public abstract ResultsFactory.IWorkerResultCreator getWorkerResultCreator();
+
+	public abstract ResultsFactory.IDatumResultCreator getDatumResultCreator();
 }

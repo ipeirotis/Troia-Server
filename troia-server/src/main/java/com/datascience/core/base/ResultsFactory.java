@@ -1,14 +1,20 @@
 package com.datascience.core.base;
 
+import com.datascience.gal.Category;
 import com.datascience.gal.DatumResult;
+import com.datascience.gal.ErrorRateCalculators;
+import com.datascience.gal.WorkerResult;
 import com.datascience.galc.DatumContResults;
+import com.datascience.galc.WorkerContResults;
+
+import java.util.Collection;
 
 /**
  * User: artur
  */
-public class ResultsFactory {
+public class  ResultsFactory {
 
-	protected interface IDatumResultCreator<T, U>{
+	public interface IDatumResultCreator<T, U>{
 		U create(LObject<T> obj);
 	}
 
@@ -21,6 +27,31 @@ public class ResultsFactory {
 	public static class DatumContResultFactory implements  IDatumResultCreator<ContValue, DatumContResults>{
 		public DatumContResults create(LObject<ContValue> obj){
 			return new DatumContResults(obj);
+		}
+	}
+
+	public interface IWorkerResultCreator<T, U>{
+		U create(Worker<T> w);
+	}
+
+	public static class WorkerResultNominalFactory implements IWorkerResultCreator<String, WorkerResult> {
+
+		protected static Collection<Category> categories;
+		protected static ErrorRateCalculators.IErrorRateCalculator calculator;
+
+		public WorkerResultNominalFactory(ErrorRateCalculators.IErrorRateCalculator calc, Collection<Category> categories){
+			this.categories = categories;
+			this.calculator = calc;
+		}
+
+		public WorkerResult create(Worker<String> obj){
+			return new WorkerResult(calculator, categories);
+		}
+	}
+
+	public static class WorkerContResultFactory implements IWorkerResultCreator<ContValue, WorkerContResults>{
+		public WorkerContResults create(Worker<ContValue> obj){
+			return new WorkerContResults(obj);
 		}
 	}
 }

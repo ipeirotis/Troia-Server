@@ -59,7 +59,6 @@ public class BatchDawidSkeneTest {
 		}
 		catch(Exception ex){
 		}
-//		project.getAlgorithm().estimate(1e-6, 10);
 		project.getAlgorithm().compute();
 		assertEquals(
 				1./project.getData().getCategories().size(),

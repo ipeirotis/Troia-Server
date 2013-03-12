@@ -33,6 +33,13 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		return data.getCategory(categoryName).getPrior();
 	}
 
+	@Override
+	public ResultsFactory.IWorkerResultCreator getWorkerResultCreator() {
+		return new ResultsFactory.WorkerResultNominalFactory(
+				new ErrorRateCalculators.BatchErrorRateCalculator(),
+				data.getCategories());
+	}
+
 	private void updateObjectClassProbabilities() {
 		for (LObject<String> obj : data.getObjects()) {
 			this.updateObjectClassProbabilities(obj);

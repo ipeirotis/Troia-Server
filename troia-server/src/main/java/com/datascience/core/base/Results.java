@@ -10,10 +10,12 @@ public class Results<T, U, V> {
 
 	protected Map<LObject<T>, U> datumResults;
 	protected Map<Worker<T>, V> workerResults;
-	protected ResultsFactory.IDatumResultCreator creator;
+	protected ResultsFactory.IDatumResultCreator datumCreator;
+	protected ResultsFactory.IWorkerResultCreator workerCreator;
 
-	public Results(ResultsFactory.IDatumResultCreator creator){
-		this.creator = creator;
+	public Results(ResultsFactory.IDatumResultCreator datumCreator, ResultsFactory.IWorkerResultCreator workerCreator){
+		this.datumCreator = datumCreator;
+		this.workerCreator = workerCreator;
 		datumResults = new HashMap<LObject<T>, U>();
 		workerResults = new HashMap<Worker<T>, V>();
 	}
@@ -28,9 +30,10 @@ public class Results<T, U, V> {
 
 	public U getOrCreateDatumResult(LObject<T> obj){
 		U ret = datumResults.get(obj);
-		if (ret == null)
-			ret = (U) creator.create(obj);
+		if (ret == null){
+			ret = (U) datumCreator.create(obj);
 			datumResults.put(obj, ret);
+		}
 		return ret;
 
 	}
@@ -44,6 +47,15 @@ public class Results<T, U, V> {
 
 	public void addDatumResult(LObject<T> obj, U result){
 		datumResults.put(obj, result);
+	}
+
+	public V getOrCreateWorkerResult(Worker<T> wor){
+		V ret = workerResults.get(wor);
+		if (ret == null){
+			ret = (V) workerCreator.create(wor);
+			workerResults.put(wor, ret);
+		}
+		return ret;
 	}
 
 	public V getWorkerResult(Worker<T> worker){

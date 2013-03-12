@@ -51,6 +51,13 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	@Override
+	public ResultsFactory.IWorkerResultCreator getWorkerResultCreator() {
+		return new ResultsFactory.WorkerResultNominalFactory(
+				new ErrorRateCalculators.IncrementalErrorRateCalculator(),
+				data.getCategories());
+	}
+
+	@Override
 	public void newAssign(AssignedLabel<String> al) {
 		LObject<String> d = coreAssignedLabelUpdate(al);
 		computeForObject(d);
@@ -196,9 +203,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	@Override
-	public Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
-		Map<String, Double> cp = results.getDatumResult(object).getCategoryProbabilites();
-		if (null != cp)
+	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
+		Map<String, Double> cp = results.getOrCreateDatumResult(object).getCategoryProbabilites();
+		if (cp.size() == data.getCategories().size())
 			return cp;
 		else
 			return super.getObjectClassProbabilities(object, workerToIgnore);

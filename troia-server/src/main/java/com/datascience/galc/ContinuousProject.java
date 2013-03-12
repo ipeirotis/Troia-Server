@@ -1,10 +1,8 @@
 package com.datascience.galc;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
-import com.datascience.gal.Category;
 
 /**
  * @Author: konrad
@@ -13,7 +11,9 @@ public class ContinuousProject extends Project<ContValue, Data<ContValue>, Datum
 
 	public ContinuousProject(ContinuousIpeirotis ci){
 		super(ci);
-		results = new Results<ContValue, DatumContResults, WorkerContResults>(new ResultsFactory.DatumContResultFactory());
+		results = new Results<ContValue, DatumContResults, WorkerContResults>(
+				algorithm.getDatumResultCreator(),
+				algorithm.getWorkerResultCreator());
 		data = new Data<ContValue>();
 		ci.setData(data);
 		ci.setResults(results);

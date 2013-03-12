@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * User: artur
  */
-public abstract class WorkerResult {
+public class WorkerResult {
 
 	// The error matrix for the worker
 	public ConfusionMatrix cm;
@@ -18,7 +18,16 @@ public abstract class WorkerResult {
 	//The confusion matrix for the worker based on evaluation data
 	private ConfusionMatrix eval_cm;
 
-	public abstract double getErrorRate(String categoryFrom, String categoryTo);
+	private ErrorRateCalculators.IErrorRateCalculator errorRateCalc;
+
+	public WorkerResult(ErrorRateCalculators.IErrorRateCalculator erc, Collection<Category> categories){
+		errorRateCalc = erc;
+		cm = new MultinomialConfusionMatrix(categories);
+	}
+
+	public double getErrorRate(String categoryFrom, String categoryTo){
+		return errorRateCalc.getErrorRate(cm, categoryFrom, categoryTo);
+	}
 
 	public double getEvalErrorRate(String from, String to){
 		return eval_cm.getErrorRateBatch(from, to);

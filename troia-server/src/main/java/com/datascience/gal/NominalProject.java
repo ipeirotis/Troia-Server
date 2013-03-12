@@ -24,9 +24,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 				new LabelProbabilityDistributionCalculators.DS(), null,
 				new ObjectLabelDecisionAlgorithms.MaxProbabilityDecisionAlgorithm());
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
-		results = new Results<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory());
 		data = new NominalData();
-		algorithm.setResults(results);
 		algorithm.setData(data);
 	}
 
@@ -34,6 +32,10 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 		boolean fp = data.addCategories(categories);
 		if (!fp)
 			((AbstractDawidSkene)algorithm).initializePriors();
+		results = new Results<String, DatumResult, WorkerResult>(
+				algorithm.getDatumResultCreator(),
+				algorithm.getWorkerResultCreator());
+		algorithm.setResults(results);
 	}
 
 	/**
