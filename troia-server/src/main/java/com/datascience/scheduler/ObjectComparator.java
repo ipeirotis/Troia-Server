@@ -1,6 +1,5 @@
 package com.datascience.scheduler;
 
-
 import com.datascience.core.base.LObject;
 import com.google.common.collect.ComparisonChain;
 

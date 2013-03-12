@@ -109,5 +109,10 @@ public class SchedulerTest {
 		public double getPriority(LObject<T> object) {
 			return data.getAssignsForObject(object).size();
 		}
+
+		@Override
+		public void setProject(Project<T, ?, ?, ?> project) {
+			data = project.getData();
+		}
 	}
 }
