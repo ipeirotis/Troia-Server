@@ -85,6 +85,7 @@ public class Data <T>{
 		LObject<T> object = getObject(objectId);
 		if (object == null) {
 			object = new LObject<T>(objectId);
+			addObject(object);
 		}
 		return object;
 	}
@@ -129,13 +130,13 @@ public class Data <T>{
 	}
 
 	public void addAssign(AssignedLabel<T> assign){
-		assigns.add(assign);
+		forceAddAssign(assign, assigns);
 		LObject<T> object = assign.getLobject();
 		addObject(object);
-		datums.get(object).add(assign);
+		forceAddAssign(assign, datums.get(object));
 		Worker<T> worker = assign.getWorker();
 		addWorker(worker);
-		worker.addAssign(assign);
+		forceAddAssign(assign, worker.getAssigns());
 		notifyNewAssign(assign);
 	}
 
@@ -176,6 +177,13 @@ public class Data <T>{
 	protected void notifyNewWorker(Worker<T> worker){
 		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
 			updatableAlgorithm.newWorker(worker);
+		}
+	}
+
+	private void forceAddAssign(AssignedLabel<T> assign, Set<AssignedLabel<T>> assigns) {
+		if (!assigns.add(assign)) {
+			assigns.remove(assign);
+			assigns.add(assign);
 		}
 	}
 }
