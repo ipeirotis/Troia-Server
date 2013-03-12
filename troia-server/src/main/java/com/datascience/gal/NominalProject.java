@@ -27,20 +27,20 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 		spammerProbDistr = new LabelProbabilityDistributionCalculators.PriorBased();
 		data = new NominalData();
 		algorithm.setData(data);
-		results = createResultsInstance();
 	}
 
 	public void initializeCategories(Collection<Category> categories){
 		boolean fp = data.addCategories(categories);
 		if (!fp)
 			((AbstractDawidSkene)algorithm).initializePriors();
+		results = createResultsInstance(categories);
 		algorithm.setResults(results);
 	}
 
-	public Results<String, DatumResult, WorkerResult> createResultsInstance(){
+	public Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<Category> categories){
 		return new Results<String, DatumResult, WorkerResult>(
 				new ResultsFactory.DatumResultFactory(),
-				new ResultsFactory.WorkerResultNominalFactory(data.getCategories()));
+				new ResultsFactory.WorkerResultNominalFactory(categories));
 	}
 
 	/**
