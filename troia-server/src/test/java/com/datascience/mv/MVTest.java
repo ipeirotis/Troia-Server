@@ -93,7 +93,8 @@ public class MVTest {
 		BatchMV mv = new BatchMV();
 		Results<String, DatumResult, WorkerResult> results =
 				new Results<String, DatumResult, WorkerResult>(
-						new ResultsFactory.DatumResultFactory());
+						mv.getDatumResultCreator(),
+						mv.getWorkerResultCreator());
 		mv.setData(nd);
 		mv.setResults(results);
 		fillNominalData(nd);
@@ -107,7 +108,8 @@ public class MVTest {
 		IncrementalMV mv = new IncrementalMV();
 		Results<String, DatumResult, WorkerResult> results =
 				new Results<String, DatumResult, WorkerResult>(
-						new ResultsFactory.DatumResultFactory());
+						mv.getDatumResultCreator(),
+						mv.getWorkerResultCreator());
 		mv.setData(nd);
 		mv.setResults(results);
 		nd.addNewUpdatableAlgorithm(mv);
