@@ -1,5 +1,7 @@
-package com.datascience.core.base;
+package com.datascience.core.nominal;
 
+import com.datascience.core.base.Algorithm;
+import com.datascience.core.base.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.gal.DatumResult;
 

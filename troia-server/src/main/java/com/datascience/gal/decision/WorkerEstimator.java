@@ -1,8 +1,8 @@
 package com.datascience.gal.decision;
 
-import com.datascience.core.base.NominalAlgorithm;
+import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.base.Worker;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.nominal.NominalProject;
 
 public class WorkerEstimator extends WorkerQualityCalculator{
 

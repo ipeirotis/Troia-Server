@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
 import com.datascience.gal.MisclassificationCost;
 
 /**

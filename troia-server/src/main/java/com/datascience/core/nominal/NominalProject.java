@@ -1,6 +1,6 @@
-package com.datascience.core.base;
+package com.datascience.core.nominal;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.*;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.DatumResult;
 import com.datascience.gal.decision.DecisionEngine;

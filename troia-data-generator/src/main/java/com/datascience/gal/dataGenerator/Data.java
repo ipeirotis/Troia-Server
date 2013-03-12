@@ -3,7 +3,7 @@ package com.datascience.gal.dataGenerator;
 import java.util.Collection;
 import java.util.Map;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
 import com.datascience.gal.AssignedLabel;
 import com.datascience.gal.CorrectLabel;
 import com.datascience.gal.MisclassificationCost;

@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.datascience.core.base.Category;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.AssignedLabel;
-import com.datascience.core.stats.Category;
 import com.datascience.gal.CorrectLabel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

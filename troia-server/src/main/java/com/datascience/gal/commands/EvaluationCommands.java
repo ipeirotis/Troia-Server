@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.DatumValue;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.nominal.NominalProject;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 

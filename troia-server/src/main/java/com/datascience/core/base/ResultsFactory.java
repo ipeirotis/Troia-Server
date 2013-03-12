@@ -1,6 +1,5 @@
 package com.datascience.core.base;
 
-import com.datascience.core.stats.Category;
 import com.datascience.gal.DatumResult;
 import com.datascience.galc.DatumContResults;
 import com.datascience.galc.WorkerContResults;

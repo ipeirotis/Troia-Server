@@ -1,6 +1,9 @@
-package com.datascience.core.base;
+package com.datascience.core.nominal;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Category;
+import com.datascience.core.base.Data;
+import com.datascience.core.base.LObject;
 import com.google.common.math.DoubleMath;
 
 import java.util.ArrayList;

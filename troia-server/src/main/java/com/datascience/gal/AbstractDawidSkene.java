@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
+import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import org.apache.log4j.Logger;

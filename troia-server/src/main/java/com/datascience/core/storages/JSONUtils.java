@@ -14,9 +14,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.core.stats.Category;
-import com.datascience.core.stats.CategoryPair;
+import com.datascience.core.base.Category;
+import com.datascience.core.nominal.CategoryValue;
+import com.datascience.core.base.CategoryPair;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
+import com.datascience.core.storages.serialization.json.CategoryJSON;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.base.Data;
@@ -102,8 +104,8 @@ public class JSONUtils {
 
 	public static GsonBuilder getFilledDefaultGsonBuilder() {
 		GsonBuilder builder = getDefaultGsonBuilder();
-		builder.registerTypeAdapter(categoryType, Category.deserializer);
-		builder.registerTypeAdapter(categoryType, Category.serializer);
+		builder.registerTypeAdapter(categoryType, new CategoryJSON.CategoryDeserializer());
+		builder.registerTypeAdapter(categoryType, new CategoryJSON.CategorySerializer());
 		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
 		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
 		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);

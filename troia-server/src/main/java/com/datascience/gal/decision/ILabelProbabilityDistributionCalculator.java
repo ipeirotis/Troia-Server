@@ -3,7 +3,7 @@ package com.datascience.gal.decision;
 import java.util.Map;
 
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.nominal.NominalProject;
 
 /**
  * @author Konrad Kurdej

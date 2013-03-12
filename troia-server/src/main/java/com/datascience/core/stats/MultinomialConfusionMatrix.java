@@ -18,8 +18,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.datascience.core.base.Category;
+import com.datascience.core.base.CategoryPair;
+import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.storages.JSONUtils;
-import com.datascience.gal.CategoryValue;
 import com.datascience.gal.MatrixValue;
 import com.google.common.base.Objects;
 import com.google.gson.JsonDeserializationContext;

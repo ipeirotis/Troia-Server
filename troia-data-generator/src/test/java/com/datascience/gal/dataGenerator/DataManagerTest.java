@@ -5,7 +5,7 @@ import static java.io.File.separator;
 import java.io.File;
 import java.util.Collection;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
 import org.apache.log4j.Logger;
 
 import junit.framework.TestCase;

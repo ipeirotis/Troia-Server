@@ -3,7 +3,7 @@ package com.datascience.service;
 
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.nominal.NominalProject;
 import com.datascience.gal.commands.*;
 import com.datascience.gal.decision.*;
 import com.datascience.gal.evaluation.DataEvaluator;

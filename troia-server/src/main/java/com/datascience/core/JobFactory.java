@@ -1,7 +1,7 @@
 package com.datascience.core;
 
-import com.datascience.core.base.NominalProject;
-import com.datascience.core.stats.Category;
+import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.base.Category;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;

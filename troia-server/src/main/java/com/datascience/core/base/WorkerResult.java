@@ -1,6 +1,5 @@
 package com.datascience.core.base;
 
-import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.stats.*;
 
 import java.util.Collection;

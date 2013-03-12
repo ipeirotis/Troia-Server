@@ -1,9 +1,10 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
+import com.datascience.core.nominal.NominalData;
 import com.datascience.gal.DatumResult;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.WorkerResult;
 import static org.junit.Assert.*;
 import org.junit.Before;

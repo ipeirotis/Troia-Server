@@ -1,6 +1,7 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
+import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.gal.DatumResult;
 import com.datascience.utils.ProbabilityDistributions;

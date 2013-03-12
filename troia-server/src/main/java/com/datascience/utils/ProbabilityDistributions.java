@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.NominalData;
-import com.datascience.core.stats.Category;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.base.Category;
+import com.datascience.core.nominal.NominalData;
+import com.datascience.core.nominal.NominalProject;
 
 /**
  * @author Konrad Kurdej

@@ -1,4 +1,4 @@
-package com.datascience.gal;
+package com.datascience.core.nominal;
 
 public class CategoryValue {
 

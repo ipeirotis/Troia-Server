@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
 import org.apache.log4j.Logger;
 
 import com.datascience.gal.AssignedLabel;
@@ -310,7 +310,7 @@ public class DataGenerator {
 		dawidSkene.getCategoryPriors();
 		System.out.println("DEBUG >>>");
 		for (Category c : categories) {
-			//com.datascience.core.stats.Category c = dawidSkene.getCategories().get(name);
+			//com.datascience.core.base.Category c = dawidSkene.getCategories().get(name);
 			System.out.println(">>>>>> " + c.getName() + " " + c.getPrior() + " " + c.getMisclassificationCosts());
 		}
 		

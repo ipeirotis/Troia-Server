@@ -13,7 +13,7 @@ import java.util.*;
 
 import com.datascience.core.algorithms.IUpdatableAlgorithm;
 import com.datascience.core.base.*;
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
 import com.datascience.core.stats.ErrorRateCalculators;
 import org.apache.log4j.Logger;
 

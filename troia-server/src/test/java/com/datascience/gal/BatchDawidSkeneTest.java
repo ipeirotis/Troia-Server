@@ -6,10 +6,10 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.stats.Category;
 import org.junit.Before;
 import org.junit.Test;
 

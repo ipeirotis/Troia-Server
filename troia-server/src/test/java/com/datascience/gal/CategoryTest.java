@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.datascience.core.stats.Category;
+import com.datascience.core.base.Category;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,7 +52,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#hashCode()}.
+	 * Test method for {@link com.datascience.core.base.Category#hashCode()}.
 	 */
 	@Test
 	public final void testHashCode_ByNameParameterOnly() {
@@ -62,7 +62,7 @@ public class CategoryTest {
 		doTestHashCode(category1, category2, category3, true);
 	}
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#hashCode()}.
+	 * Test method for {@link com.datascience.core.base.Category#hashCode()}.
 	 */
 	@Test @Ignore("FIXME - this test shows why category shouldn't store cost matrix")
 	public final void testHashCode_ByNameAndCost() {
@@ -75,7 +75,7 @@ public class CategoryTest {
 		doTestHashCode(category1, category2, category3, false);
 	}
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#hashCode()}.
+	 * Test method for {@link com.datascience.core.base.Category#hashCode()}.
 	 */
 	@Test
 	public final void testHashCode_ByNameAndPrior() {
@@ -106,7 +106,7 @@ public class CategoryTest {
 		assertFalse(third+"="+second,hashCode3==hashCode2);
 	}
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#Category(java.lang.String)}.
+	 * Test method for {@link com.datascience.core.base.Category#Category(java.lang.String)}.
 	 */
 	@Test
 	public final void testCategory() {
@@ -116,7 +116,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#setCost(java.lang.String, double)}.
+	 * Test method for {@link com.datascience.core.base.Category#setCost(java.lang.String, double)}.
 	 */
 	@Test
 	public final void testSetCost() {
@@ -132,7 +132,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#getCost(java.lang.String)}.
+	 * Test method for {@link com.datascience.core.base.Category#getCost(java.lang.String)}.
 	 */
 	@Test
 	public final void testGetCost() {
@@ -149,7 +149,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#getPrior()}.
+	 * Test method for {@link com.datascience.core.base.Category#getPrior()}.
 	 */
 	@Test
 	public final void testGetPrior() {
@@ -162,7 +162,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#setPrior(double)}.
+	 * Test method for {@link com.datascience.core.base.Category#setPrior(double)}.
 	 */
 	@Test
 	public final void testSetPrior() {
@@ -175,7 +175,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#hasPrior()}.
+	 * Test method for {@link com.datascience.core.base.Category#hasPrior()}.
 	 */
 	@Test
 	public final void testHasPrior() {
@@ -187,7 +187,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#equals(java.lang.Object)}.
+	 * Test method for {@link com.datascience.core.base.Category#equals(java.lang.Object)}.
 	 */
 	@Test
 	public final void testEqualsObject_ByNameParameterOnly() {
@@ -197,7 +197,7 @@ public class CategoryTest {
 		doTestEqualsObject(category1, category2, category3, true);
 	}
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#equals(java.lang.Object)}.
+	 * Test method for {@link com.datascience.core.base.Category#equals(java.lang.Object)}.
 	 */
 	@Test @Ignore("FIXME - this test shows why category shouldn't store cost matrix")
 	public final void testEqualsObject_ByNameAndCost() {
@@ -211,7 +211,7 @@ public class CategoryTest {
 		doTestEqualsObject(category1, category2, category3, false);
 	}
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#equals(java.lang.Object)}.
+	 * Test method for {@link com.datascience.core.base.Category#equals(java.lang.Object)}.
 	 */
 	@Test
 	public final void testEqualsObject_ByNameAndPrior() {
@@ -245,8 +245,8 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#equals(java.lang.Object)}.
-	 * Test method for {@link com.datascience.core.stats.Category#hashCode()}.
+	 * Test method for {@link com.datascience.core.base.Category#equals(java.lang.Object)}.
+	 * Test method for {@link com.datascience.core.base.Category#hashCode()}.
 	 */
 	@Test
 	public final void testEqualsObjectWithHashCode() {
@@ -297,7 +297,7 @@ public class CategoryTest {
 		assertTrue(first+"="+secondCouldBeNull, isEqual == isTheSameHashCode);
 	}
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#getName()}.
+	 * Test method for {@link com.datascience.core.base.Category#getName()}.
 	 */
 	@Test
 	public final void testGetName() {
@@ -310,7 +310,7 @@ public class CategoryTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.core.stats.Category#setName(java.lang.String)}.
+	 * Test method for {@link com.datascience.core.base.Category#setName(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetName() {

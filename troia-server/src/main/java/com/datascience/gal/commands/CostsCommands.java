@@ -3,8 +3,8 @@ package com.datascience.gal.commands;
 import java.util.Collection;
 
 import com.datascience.executor.JobCommand;
-import com.datascience.core.stats.Category;
-import com.datascience.core.base.NominalProject;
+import com.datascience.core.base.Category;
+import com.datascience.core.nominal.NominalProject;
 
 /**
  *
