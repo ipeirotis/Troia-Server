@@ -22,7 +22,6 @@ import com.datascience.core.base.Category;
 import com.datascience.core.base.CategoryPair;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.storages.serialization.json.JSONUtils;
-import com.datascience.gal.MatrixValue;
 import com.google.common.base.Objects;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
