@@ -6,6 +6,7 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.results.WorkerContResults;
 
 
 public class EmpiricalData extends Data<ContValue> {

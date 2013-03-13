@@ -1,6 +1,9 @@
 package com.datascience.core.nominal;
 
 import com.datascience.core.base.*;
+import com.datascience.core.results.Results;
+import com.datascience.core.results.ResultsFactory;
+import com.datascience.core.results.WorkerResult;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.DatumResult;
 import com.datascience.gal.decision.DecisionEngine;

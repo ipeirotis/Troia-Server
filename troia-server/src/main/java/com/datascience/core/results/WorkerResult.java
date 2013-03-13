@@ -1,5 +1,8 @@
-package com.datascience.core.base;
+package com.datascience.core.results;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Category;
+import com.datascience.core.base.CategoryPair;
 import com.datascience.core.stats.*;
 
 import java.util.Collection;

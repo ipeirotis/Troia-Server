@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 
 import com.datascience.galc.ContinuousIpeirotis;
 
-import com.datascience.galc.DatumContResults;
+import com.datascience.core.results.DatumContResults;
 import com.datascience.galc.EmpiricalData;
-import com.datascience.galc.WorkerContResults;
+import com.datascience.core.results.WorkerContResults;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;

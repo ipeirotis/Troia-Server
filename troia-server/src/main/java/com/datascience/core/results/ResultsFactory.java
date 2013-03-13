@@ -1,8 +1,10 @@
-package com.datascience.core.base;
+package com.datascience.core.results;
 
+import com.datascience.core.base.Category;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 import com.datascience.gal.DatumResult;
-import com.datascience.galc.DatumContResults;
-import com.datascience.galc.WorkerContResults;
 
 import java.util.Collection;
 

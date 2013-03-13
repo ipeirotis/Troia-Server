@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
+import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
 import com.datascience.core.stats.ErrorRateCalculators;
 

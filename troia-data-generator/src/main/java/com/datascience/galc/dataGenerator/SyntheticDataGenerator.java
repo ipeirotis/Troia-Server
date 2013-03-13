@@ -6,9 +6,9 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.galc.DatumContResults;
+import com.datascience.core.results.DatumContResults;
 import com.datascience.galc.Utils;
-import com.datascience.galc.WorkerContResults;
+import com.datascience.core.results.WorkerContResults;
 
 public class SyntheticDataGenerator {
 

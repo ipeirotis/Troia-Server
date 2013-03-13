@@ -1,4 +1,4 @@
-package com.datascience.galc;
+package com.datascience.core.results;
 
 import java.util.HashSet;
 import java.util.Set;

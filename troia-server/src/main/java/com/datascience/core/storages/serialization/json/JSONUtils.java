@@ -24,7 +24,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.base.Data;
-import com.datascience.galc.WorkerContResults;
+import com.datascience.core.results.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
 import com.datascience.core.storages.serialization.Serialized;

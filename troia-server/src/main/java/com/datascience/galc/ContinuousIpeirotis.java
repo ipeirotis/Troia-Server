@@ -1,6 +1,8 @@
 package com.datascience.galc;
 
 import com.datascience.core.base.*;
+import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.WorkerContResults;
 import org.apache.log4j.Logger;
 
 import java.util.*;

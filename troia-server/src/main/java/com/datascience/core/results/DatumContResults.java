@@ -1,4 +1,4 @@
-package com.datascience.galc;
+package com.datascience.core.results;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;

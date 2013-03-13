@@ -1,4 +1,7 @@
-package com.datascience.core.base;
+package com.datascience.core.results;
+
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 
 import java.util.HashMap;
 import java.util.Map;

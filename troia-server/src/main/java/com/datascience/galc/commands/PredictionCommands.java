@@ -6,8 +6,8 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.ContinuousProject;
-import com.datascience.galc.DatumContResults;
-import com.datascience.galc.WorkerContResults;
+import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.WorkerContResults;
 
 /**
 *

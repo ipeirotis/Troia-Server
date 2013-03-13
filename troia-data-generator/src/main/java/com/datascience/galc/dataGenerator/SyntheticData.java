@@ -2,8 +2,8 @@ package com.datascience.galc.dataGenerator;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
-import com.datascience.galc.DatumContResults;
-import com.datascience.galc.WorkerContResults;
+import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.WorkerContResults;
 import java.util.HashSet;
 import java.util.Set;
 
