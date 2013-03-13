@@ -47,7 +47,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
 	@Path("objects/{oid:[a-zA-Z_0-9/:.-]+}/categoryProbability")
 	@GET
-	public Response getDatumCategoryProbability(@PathParam("id") String did, 
+	public Response getDatumCategoryProbability(@PathParam("oid") String did,
 			@DefaultValue("DS") @QueryParam("type") String type){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(type);
 		return buildResponseOnCommand(new DatumCommands.GetDatumCategoryProbability( did, lpdc));
