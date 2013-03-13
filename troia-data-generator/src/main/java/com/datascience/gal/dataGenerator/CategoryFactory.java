@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.datascience.core.base.Category;
-import com.datascience.gal.AssignedLabel;
+import com.datascience.core.base.AssignedLabel;
 
 /**
  * This factory is used for creation of Category objects
@@ -67,22 +67,22 @@ public class CategoryFactory {
 
 
 
-	public Collection<Category> extractCategories(Collection<AssignedLabel> labels) {
+	public Collection<Category> extractCategories(Collection<AssignedLabel<String>> labels) {
 		Collection<String> categoryNames = new ArrayList<String>();
-		for (AssignedLabel label : labels) {
-			if(!categoryNames.contains(label.getCategoryName())) {
-				categoryNames.add(label.getCategoryName());
+		for (AssignedLabel<String> label : labels) {
+			if(!categoryNames.contains(label.getLabel())) {
+				categoryNames.add(label.getLabel());
 			}
 		}
 		return this.createCategories(categoryNames);
 	}
 
 
-	public Collection<Category> extractCategories(Collection<AssignedLabel> labels,Map<String,Map<String,Double>> misclassificationMatrix) {
+	public Collection<Category> extractCategories(Collection<AssignedLabel<String>> labels,Map<String,Map<String,Double>> misclassificationMatrix) {
 		Collection<String> categoryNames = new ArrayList<String>();
-		for (AssignedLabel label : labels) {
-			if(!categoryNames.contains(label.getCategoryName())) {
-				categoryNames.add(label.getCategoryName());
+		for (AssignedLabel<String> label : labels) {
+			if(!categoryNames.contains(label.getLabel())) {
+				categoryNames.add(label.getLabel());
 			}
 		}
 		return this.createCategories(categoryNames,misclassificationMatrix);

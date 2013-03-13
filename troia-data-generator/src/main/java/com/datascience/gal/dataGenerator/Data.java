@@ -1,12 +1,11 @@
 package com.datascience.gal.dataGenerator;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.Category;
+import com.datascience.gal.MisclassificationCost;
+
 import java.util.Collection;
 import java.util.Map;
-
-import com.datascience.core.base.Category;
-import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.CorrectLabel;
-import com.datascience.gal.MisclassificationCost;
 
 public class Data {
 
@@ -80,14 +79,14 @@ public class Data {
 	/**
 	 * @return Collection of generated labels
 	 */
-	public Collection<AssignedLabel> getLabels() {
+	public Collection<AssignedLabel<String>> getLabels() {
 		return labels;
 	}
 
 	/**
 	 * @param labels Collection of labels
 	 */
-	public void setLabels(Collection<AssignedLabel> labels) {
+	public void setLabels(Collection<AssignedLabel<String>> labels) {
 		this.labels = labels;
 	}
 
@@ -193,7 +192,7 @@ public class Data {
 	/**
 	 * Collection of generated labels
 	 */
-	Collection<AssignedLabel> labels;
+	Collection<AssignedLabel<String>> labels;
 
 	/**
 	 * Collection of gold labels in request
