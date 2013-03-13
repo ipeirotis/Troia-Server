@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.storages.JSONUtils;
+import com.datascience.core.storages.serialization.json.JSONUtils;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.PredictionCommands;

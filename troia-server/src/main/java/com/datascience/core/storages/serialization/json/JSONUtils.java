@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import com.datascience.core.base.Category;
 import com.datascience.core.nominal.CategoryValue;
+import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
@@ -90,8 +91,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(categoryType, new CategoryJSON.CategoryDeserializer());
 		builder.registerTypeAdapter(categoryType, new CategoryJSON.CategorySerializer());
 		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
-		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.deserializer);
-		builder.registerTypeAdapter(confusionMatrixType, MultinomialConfusionMatrix.serializer);
+		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
+		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
 
 		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
 		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
