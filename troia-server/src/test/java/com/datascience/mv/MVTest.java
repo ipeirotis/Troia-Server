@@ -4,7 +4,7 @@ import com.datascience.core.base.*;
 import com.datascience.core.base.Category;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.results.Results;
-import com.datascience.gal.DatumResult;
+import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
 import static org.junit.Assert.*;

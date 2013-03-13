@@ -4,7 +4,7 @@ import com.datascience.core.base.Algorithm;
 import com.datascience.core.base.Category;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
-import com.datascience.gal.DatumResult;
+import com.datascience.core.results.DatumResult;
 
 import java.util.Collection;
 
