@@ -12,8 +12,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 	private static Logger logger = Logger.getLogger(ContinuousIpeirotis.class);
 
 	public ContinuousIpeirotis(){
-		initWorkers();
-		initObjectZetas();
+
 	}
 
 	protected Double getLabel(AssignedLabel<ContValue> assign){
@@ -264,6 +263,8 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 
 	@Override
 	public void compute(){
+		initWorkers();
+		initObjectZetas();
 		estimate(0.0000001, 50);
 		// TODO FIXME XXX this should be on some variable
 	}
