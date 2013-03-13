@@ -1,4 +1,4 @@
-package com.datascience.galc;
+package com.datascience.galc.main;
 
 import junit.framework.TestCase;
 

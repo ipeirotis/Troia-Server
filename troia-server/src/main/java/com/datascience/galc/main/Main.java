@@ -1,7 +1,5 @@
-package com.datascience.galc;
+package com.datascience.galc.main;
 
-import com.datascience.galc.engine.Engine;
-import com.datascience.galc.engine.EngineContext;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 

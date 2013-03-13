@@ -1,12 +1,12 @@
-package com.datascience.galc;
+package com.datascience.galc.main;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.datascience.galc.engine.Engine;
-import com.datascience.galc.engine.EngineContext;
+import com.datascience.galc.main.Engine;
+import com.datascience.galc.main.EngineContext;
 import org.junit.Ignore;
 
 /**

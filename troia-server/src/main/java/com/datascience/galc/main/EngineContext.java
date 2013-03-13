@@ -1,4 +1,4 @@
-package com.datascience.galc.engine;
+package com.datascience.galc.main;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
