@@ -3,11 +3,10 @@ package com.datascience.core.commands;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
-import com.datascience.core.storages.serialization.json.DataJSON.ShallowGoldObject;
-import com.datascience.core.storages.serialization.json.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.executor.JobCommand;
 
 import java.util.Collection;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,20 +14,21 @@ import java.util.Collection;
  */
 public class GoldObjectsCommands {
 	
-	static public class AddGoldObjects<T> extends JobCommand<Object, Project> {
+	static public class AddGoldObjects extends JobCommand<Object, Project> {
 
-		ShallowGoldObjectCollection<T> goldObjects;
-		public AddGoldObjects(ShallowGoldObjectCollection<T> goldObjects){
+		Collection<LObject> goldObjects;
+		public AddGoldObjects(Collection<LObject> goldObjects){
 			super(true);
 			this.goldObjects = goldObjects;
 		}
 		
 		@Override
 		protected void realExecute() {
-			Data<T> data = project.getData();
-			for (ShallowGoldObject<T> obj : goldObjects.objects){
-				LObject<T> object = data.getOrCreateObject(obj.object);
-				object.setGoldLabel(obj.label);
+			Data data = project.getData();
+			for (LObject obj : goldObjects){
+				Logger.getAnonymousLogger().warning(obj.toString());
+				LObject object = data.getOrCreateObject(obj.getName());
+				object.setGoldLabel(obj.getGoldLabel());
 				data.addGoldObject(object);
 			}
 			setResult("Gold objects added");			

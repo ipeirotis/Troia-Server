@@ -91,23 +91,12 @@ public class DataJSON {
 			return je;
 		}
 	}
-	
-	@XmlRootElement
-	@XmlSeeAlso(ContValue.class)
-	public static class ShallowAssign<T>{
-		
-		@XmlElement
-		public String worker;
 
-		@XmlElement
+	public static class ShallowAssign<T>{
+
+		public String worker;
 		public String object;
-		
-		@XmlAnyElement(lax = true)
 		public T label;
-		
-		public ShallowAssign(){
-			
-		}
 
 		public ShallowAssign(AssignedLabel<T> assign){
 			worker = assign.getWorker().getName();
@@ -116,40 +105,6 @@ public class DataJSON {
 		}
 	}
 
-	@XmlRootElement
-	public static class ShallowAssignCollection<T> {
-		public Collection<ShallowAssign<T>> assigns;
-		
-		public ShallowAssignCollection(){
-			
-		}
-	}
-	
-	@XmlRootElement
-	@XmlSeeAlso(ContValue.class)
-	public static class ShallowGoldObject<T>{
-		@XmlElement
-		public String object;
-		
-		@XmlAnyElement(lax = true)
-		public T label;
-		
-		public ShallowGoldObject(){}
-	}
-	
-	@XmlRootElement
-	public static class ShallowGoldObjectCollection<T> {
-		public Collection<ShallowGoldObject<T>> objects;
-		
-		public ShallowGoldObjectCollection() {}
-	}
-	
-	@XmlRootElement
-	public static class ShallowObjectCollection {
-		public Collection<String> objects;
-		
-		public ShallowObjectCollection(){}
-	}
 
 	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {
 

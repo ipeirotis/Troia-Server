@@ -10,14 +10,16 @@
 package com.datascience.core.storages.serialization.json;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.logging.Logger;
 
 import com.datascience.core.base.Category;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.base.CategoryPair;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.LObject;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.base.Data;
@@ -25,11 +27,7 @@ import com.datascience.galc.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
 import com.datascience.core.storages.serialization.Serialized;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -48,12 +46,6 @@ public class JSONUtils {
 	} .getType();
 	public static final Type stringSetType = new TypeToken<Collection<String>>() {
 	} .getType();
-	public static final Type categoryProbMapType = new TypeToken<Map<Category, Double>>() {
-	} .getType();
-	public static final Type stringDoubleMapType = new TypeToken<Map<String, Double>>() {
-	} .getType();
-	public static final Type misclassificationCostSetType = new TypeToken<Collection<MisclassificationCost>>() {
-	} .getType();
 	public static final Type categoryType = new TypeToken<Category>() {
 	} .getType();
 	public static final Type misclassificationCostType = new TypeToken<MisclassificationCost>() {
@@ -64,26 +56,18 @@ public class JSONUtils {
 	} .getType();
 	public static final Type continuousProject = new TypeToken<ContinuousProject>() {
 	} .getType();
-	public static final Type categoryPairType = new TypeToken<CategoryPair>() {
-	} .getType();
 	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
 	} .getType();
 	public static final Type confusionMatrixType = new TypeToken<MultinomialConfusionMatrix>() {
 	} .getType();
-	public static final Type stringIntegerMapType = new TypeToken<Map<String, Integer>>() {
-	} .getType();
-	public static final Type stringCategoryMapType = new TypeToken<Map<String, Category>>() {
-	} .getType();
-	public static final Type stringStringMapType = new TypeToken<Map<String, String>>() {
-	} .getType();
-	public static final Type booleanType = new TypeToken<Boolean>() {
-	} .getType();
-	public static final Type stringStringSetMapType = new TypeToken<Map<String, Set<String>>>() {
-	} .getType();
-	public static final Type stringStringDoubleMapType = new TypeToken<Map<String, Map<String, Double>>>() {
-	} .getType();
 	public static final Type dawidSkeneType = new TypeToken<AbstractDawidSkene>() {
 	} .getType();
+
+	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
+	public static final Type objectsContValueType = new TypeToken<Collection<LObject<ContValue>>>() {}.getType();
+	public static final Type assignsStringType = new TypeToken<Collection<DataJSON.ShallowAssign<String>>>(){}.getType();
+	public static final Type assignsContValueType = new TypeToken<Collection<DataJSON.ShallowAssign<ContValue>>>(){}.getType();
+
 
 	public JSONUtils() {
 		GsonBuilder builder = getFilledDefaultGsonBuilder();
@@ -114,10 +98,50 @@ public class JSONUtils {
 
 		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
-		builder.registerTypeAdapter(com.datascience.core.base.AssignedLabel.class, new DataJSON.AssignSerializer());
+		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
 		builder.registerTypeAdapter(workerContResultsType, new DataJSON.WorkerContResultsSerializer());
+
+		builder.registerTypeAdapter(objectsStringType,
+				new GenericCollectionDeserializer<LObject<String>>(
+						"objects",
+						new TypeToken<LObject<String>>(){}.getType()));
+		builder.registerTypeAdapter(objectsContValueType,
+				new GenericCollectionDeserializer<LObject<ContValue>>(
+						"objects",
+						new TypeToken<LObject<ContValue>>(){}.getType()));
+		builder.registerTypeAdapter(assignsStringType,
+				new GenericCollectionDeserializer<DataJSON.ShallowAssign<String>>(
+						"assigns",
+						new TypeToken<DataJSON.ShallowAssign<String>>(){}.getType()));
+		builder.registerTypeAdapter(assignsContValueType,
+				new GenericCollectionDeserializer<DataJSON.ShallowAssign<ContValue>>(
+						"assigns",
+						new TypeToken<DataJSON.ShallowAssign<ContValue>>(){}.getType()));
+
 		return builder;
+	}
+
+	public static class GenericCollectionDeserializer<T> implements JsonDeserializer<Collection<T>> {
+
+		private String collectionName;
+		private Type type;
+
+		public GenericCollectionDeserializer(String collectionName, Type type){
+			this.collectionName = collectionName;
+			this.type = type;
+		}
+
+		@Override
+		public Collection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+			Logger.getAnonymousLogger().warning(jsonElement.toString());
+			Collection<T> ret = new ArrayList<T>();
+			for (JsonElement je : jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray()){
+				ret.add((T)context.deserialize(je, this.type));
+			}
+			return ret;
+		}
+
 	}
 
 //	public static Gson getOldGson(){

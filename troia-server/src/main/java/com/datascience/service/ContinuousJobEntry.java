@@ -4,6 +4,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+
+import com.datascience.core.storages.JSONUtils;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.PredictionCommands;
@@ -16,6 +18,8 @@ public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
 	public ContinuousJobEntry(){
 		expectedClass = ContinuousProject.class;
+		objectsType = JSONUtils.objectsContValueType;
+		assignsType = JSONUtils.assignsContValueType;
 	}
 
 	@Path("objects/{oid:[a-zA-Z_0-9/:.-]+}/prediction")

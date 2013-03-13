@@ -4,6 +4,8 @@
  */
 package com.datascience.service;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -13,7 +15,7 @@ import javax.ws.rs.core.*;
 
 import com.datascience.core.Job;
 import com.datascience.core.JobsManager;
-import com.datascience.core.base.ContValue;
+import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
 import com.datascience.core.storages.serialization.json.DataJSON;
@@ -42,6 +44,9 @@ public abstract class JobEntryBase<T extends Project> {
 	CommandStatusesContainer statusesContainer;
 	IJobStorage jobStorage;
 	JobsManager jobsManager;
+
+	Type objectsType;
+	Type assignsType;
 
 	protected abstract JobCommand getPredictionZipCommand(String path);
 
@@ -99,7 +104,8 @@ public abstract class JobEntryBase<T extends Project> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("objects")
 	@POST
-	public Response addObjects(DataJSON.ShallowObjectCollection objects){
+	public Response addObjects(String json){
+		Collection<LObject> objects = serializer.parse(json, objectsType);
 		return buildResponseOnCommand(new ObjectCommands.AddObjects(objects));
 	}
 
@@ -118,7 +124,8 @@ public abstract class JobEntryBase<T extends Project> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("goldObjects")
 	@POST
-	public Response addGoldObjects(DataJSON.ShallowGoldObjectCollection<ContValue> goldObjects){
+	public Response addGoldObjects(String json){
+		Collection<LObject> goldObjects = serializer.parse(json, objectsType);
 		return buildResponseOnCommand(new GoldObjectsCommands.AddGoldObjects(goldObjects));
 	}
 
@@ -137,7 +144,8 @@ public abstract class JobEntryBase<T extends Project> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("evaluationObjects")
 	@POST
-	public Response addEvaluationObjects(DataJSON.ShallowGoldObjectCollection<ContValue> goldObjects){
+	public Response addEvaluationObjects(String json){
+		Collection<LObject> goldObjects = serializer.parse(json, objectsType);
 		return buildResponseOnCommand(new EvaluationObjectsCommands.AddEvaluationObjects(goldObjects));
 	}
 
@@ -168,7 +176,15 @@ public abstract class JobEntryBase<T extends Project> {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("assigns")
 	@POST
-	public Response addAssigns(DataJSON.ShallowAssignCollection<T> assigns){
-		return buildResponseOnCommand(new AssignsCommands.AddAssigns<T>(assigns));
+	public Response addAssigns(String json){
+		Collection<DataJSON.ShallowAssign> assigns = serializer.parse(json, assignsType);
+		return buildResponseOnCommand(new AssignsCommands.AddAssigns(assigns));
 	}
+
+	@Path("compute/")
+	@POST
+	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
+		return buildResponseOnCommand(new PredictionCommands.Compute( iterations));
+	}
+
 }

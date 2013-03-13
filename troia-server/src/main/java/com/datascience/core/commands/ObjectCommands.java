@@ -1,7 +1,6 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
-import com.datascience.core.storages.serialization.json.DataJSON.ShallowObjectCollection;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.commands.ParamChecking;
 
@@ -15,9 +14,9 @@ public class ObjectCommands {
 	
 	static public class AddObjects<T> extends JobCommand<Object, Project> {
 
-		ShallowObjectCollection objects;
+		Collection<LObject> objects;
 
-		public AddObjects(ShallowObjectCollection objects){
+		public AddObjects(Collection<LObject> objects){
 			super(true);
 			this.objects = objects;
 		}
@@ -25,10 +24,8 @@ public class ObjectCommands {
 		@Override
 		protected void realExecute() {
 			Data<T> data = project.getData();
-			for (String objectId : objects.objects){
-				if (null == data.getObject(objectId)){
-					data.addObject(new LObject<T>(objectId));
-				}
+			for (LObject objectId : objects){
+				data.addObject(new LObject<T>(objectId.getName()));
 			}
 			setResult("Objects without labels added");
 		}

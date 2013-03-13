@@ -3,8 +3,6 @@ package com.datascience.core.commands;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
-import com.datascience.core.storages.serialization.json.DataJSON.ShallowGoldObject;
-import com.datascience.core.storages.serialization.json.DataJSON.ShallowGoldObjectCollection;
 import com.datascience.executor.JobCommand;
 
 import java.util.Collection;
@@ -15,20 +13,20 @@ import java.util.Collection;
  */
 public class EvaluationObjectsCommands {
 	
-	static public class AddEvaluationObjects<T> extends JobCommand<Object, Project> {
+	static public class AddEvaluationObjects extends JobCommand<Object, Project> {
 
-		ShallowGoldObjectCollection<T> evalObjects;
-		public AddEvaluationObjects(ShallowGoldObjectCollection<T> evalObjects){
+		Collection<LObject> evalObjects;
+		public AddEvaluationObjects(Collection<LObject> evalObjects){
 			super(true);
 			this.evalObjects = evalObjects;
 		}
 		
 		@Override
 		protected void realExecute() {
-			Data<T> data = project.getData();
-			for (ShallowGoldObject<T> obj : evalObjects.objects){
-				LObject<T> object = data.getOrCreateObject(obj.object);
-				object.setEvaluationLabel(obj.label);
+			Data data = project.getData();
+			for (LObject obj : evalObjects){
+				LObject object = data.getOrCreateObject(obj.getName());
+				object.setEvaluationLabel(obj.getEvaluationLabel());
 				data.addEvaluationObject(object);
 			}
 			setResult("Evaluation objects added");

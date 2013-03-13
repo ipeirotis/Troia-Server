@@ -2,7 +2,6 @@ package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
 import com.datascience.core.storages.serialization.json.DataJSON.ShallowAssign;
-import com.datascience.core.storages.serialization.json.DataJSON.ShallowAssignCollection;
 import com.datascience.executor.JobCommand;
 import com.datascience.galc.commands.ParamChecking;
 
@@ -15,22 +14,22 @@ import java.util.Collection;
  */
 public class AssignsCommands {
 	
-	static public class AddAssigns<T> extends JobCommand<Object, Project> {
+	static public class AddAssigns extends JobCommand<Object, Project> {
 
-		ShallowAssignCollection<T> assigns;
+		Collection<ShallowAssign> assigns;
 		
-		public AddAssigns(ShallowAssignCollection<T> assigns){
+		public AddAssigns(Collection<ShallowAssign> assigns){
 			super(true);
 			this.assigns = assigns;
 		}
 		
 		@Override
 		protected void realExecute() {
-			for (ShallowAssign<T> al : assigns.assigns){
-				Data<T> data = project.getData();
-				Worker<T> worker = data.getOrCreateWorker(al.worker);
-				LObject<T> object = data.getOrCreateObject(al.object);
-				data.addAssign(new AssignedLabel<T>(worker, object, al.label));
+			Data data = project.getData();
+			for (ShallowAssign al : assigns){
+				Worker worker = data.getOrCreateWorker(al.worker);
+				LObject object = data.getOrCreateObject(al.object);
+				data.addAssign(new AssignedLabel(worker, object, al.label));
 				setResult("Assigns added");
 			}
 		}
