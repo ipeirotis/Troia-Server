@@ -23,4 +23,9 @@ public class AssignCountPriorityCalculator<T> implements IPriorityCalculator<T> 
 	public void setProject(Project<T, ?, ?, ?> project) {
 		this.data = project.getData();
 	}
+
+	@Override
+	public String getId(){
+		return "countassigns";
+	}
 }

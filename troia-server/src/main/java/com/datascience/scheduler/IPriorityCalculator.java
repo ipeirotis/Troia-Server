@@ -11,4 +11,6 @@ public interface IPriorityCalculator<T> {
 	double getPriority(LObject<T> object);
 
 	void setProject(Project<T, ?, ?, ?> project);
+
+	public String getId();
 }

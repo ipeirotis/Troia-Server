@@ -78,4 +78,9 @@ public class CachedScheduler<T> extends Scheduler<T> {
 			}
 		};
 	}
+
+	@Override
+	public String getId(){
+		return "cachedscheduler";
+	}
 }

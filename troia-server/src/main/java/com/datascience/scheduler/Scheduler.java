@@ -59,4 +59,9 @@ public class Scheduler<T> implements IScheduler<T> {
 	public IPriorityCalculator<T> getCalculator() {
 		return calculator;
 	}
+
+	@Override
+	public String getId(){
+		return "scheduler";
+	}
 }

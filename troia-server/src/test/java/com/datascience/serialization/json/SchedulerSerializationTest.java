@@ -1,4 +1,4 @@
-package com.datascience.core.storages;
+package com.datascience.serialization.json;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.scheduler.AssignCountPriorityCalculator;
@@ -53,10 +53,10 @@ public class SchedulerSerializationTest {
 	}
 
 	private static void registerSerializer(Type type, GsonBuilder builder) {
-		builder.registerTypeAdapter(type, new SchedulerSerialization.Serializer());
+		builder.registerTypeAdapter(type, new SchedulerJSON.Serializer());
 	}
 
 	private static void registerDeserializer(Type type, GsonBuilder builder) {
-		builder.registerTypeAdapter(type, new SchedulerSerialization.Deserializer());
+		builder.registerTypeAdapter(type, new SchedulerJSON.Deserializer());
 	}
 }

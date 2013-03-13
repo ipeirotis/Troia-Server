@@ -1,4 +1,4 @@
-package com.datascience.core.storages;
+package com.datascience.serialization.json;
 
 import com.datascience.scheduler.IScheduler;
 import com.datascience.scheduler.CachedScheduler;
@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SchedulerSerialization {
+public class SchedulerJSON {
 
 	public static class Deserializer<T> implements JsonDeserializer<IScheduler<T>> {
 
@@ -29,8 +29,8 @@ public class SchedulerSerialization {
 		@Override
 		public JsonElement serialize(IScheduler<T> scheduler, Type type, JsonSerializationContext context) {
 			JsonObject jsonObject = new JsonObject();
-			jsonObject.addProperty("scheduler", scheduler.getClass().getName());
-			jsonObject.addProperty("calculator", scheduler.getCalculator().getClass().getName());
+			jsonObject.addProperty("scheduler", scheduler.getId());
+			jsonObject.addProperty("calculator", scheduler.getCalculator().getId());
 			if (scheduler instanceof CachedScheduler) {
 				CachedScheduler<T> cachedScheduler = (CachedScheduler<T>) scheduler;
 				jsonObject.addProperty("pauseDuration", cachedScheduler.getPauseDuration());
