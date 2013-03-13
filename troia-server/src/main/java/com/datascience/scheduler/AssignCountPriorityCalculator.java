@@ -6,13 +6,12 @@ import com.datascience.core.base.Project;
 
 public class AssignCountPriorityCalculator<T> implements IPriorityCalculator<T> {
 
-	private Data<T> data;
+	protected Data<T> data;
 
 	public AssignCountPriorityCalculator() { }
 
 	public AssignCountPriorityCalculator(Project<T, ?, ?, ?> project) {
 		setProject(project);
-		data = project.getData();
 	}
 
 	@Override

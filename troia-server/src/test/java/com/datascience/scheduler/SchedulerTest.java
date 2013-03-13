@@ -97,22 +97,10 @@ public class SchedulerTest {
 	}
 
 
-	public static class DummyPriorityCalculator<T> implements IPriorityCalculator<T> {
-
-		private Data<T> data;
+	public static class DummyPriorityCalculator<T> extends AssignCountPriorityCalculator<T> {
 
 		public DummyPriorityCalculator(Data<T> data) {
 			this.data = data;
-		}
-
-		@Override
-		public double getPriority(LObject<T> object) {
-			return data.getAssignsForObject(object).size();
-		}
-
-		@Override
-		public void setProject(Project<T, ?, ?, ?> project) {
-			data = project.getData();
 		}
 	}
 }
