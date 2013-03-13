@@ -1,7 +1,7 @@
 package com.datascience.gal.commands;
 
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.WorkerResult;
+import com.datascience.core.results.WorkerResult;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.stats.ConfusionMatrix;
