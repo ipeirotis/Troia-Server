@@ -1,7 +1,6 @@
 package com.datascience.scheduler;
 
 import com.datascience.core.base.LObject;
-import com.google.common.collect.ComparisonChain;
 
 import java.util.Comparator;
 
@@ -15,8 +14,6 @@ public class ObjectComparator<T> implements Comparator<LObject<T>> {
 
 	@Override
 	public int compare(LObject<T> lObject1, LObject<T> lObject2) {
-		return ComparisonChain.start()
-				.compare(calculator.getPriority(lObject1), calculator.getPriority(lObject2))
-				.result();
+		return ((Double) calculator.getPriority(lObject1)).compareTo(calculator.getPriority(lObject2));
 	}
 }

@@ -6,54 +6,84 @@ import java.util.concurrent.TimeUnit;
 
 public class SchedulerFactory<T> {
 
-	protected interface ICreator<T> {
+	protected interface ISchedulerCreator<T> {
 
 		IScheduler<T> create(Map<String, String> params);
 	}
 
-	final static Map<String, ICreator> CREATORS = new HashMap<String, ICreator>();
-	{
-		CREATORS.put(Scheduler.class.getName(), new ICreator<T>() {
-
+	protected ISchedulerCreator<T> getNormalSchedulerCreator(){
+		return new ISchedulerCreator<T>() {
 			@Override
 			public IScheduler<T> create(Map<String, String> params) {
 				Scheduler<T> scheduler = new Scheduler<T>();
-				scheduler.setUpQueue(CALCULATORS.get(params.get("calculator")));
+				scheduler.setUpQueue(createPriorityCalculator(params));
 				return scheduler;
 			}
-		});
-		CREATORS.put(CachedScheduler.class.getName(), new ICreator<T>() {
+		};
+	}
 
+	protected ISchedulerCreator<T> getCachedSchedulerCreator(){
+		return new ISchedulerCreator<T>() {
 			@Override
 			public IScheduler<T> create(Map<String, String> params) {
 				CachedScheduler<T> scheduler = new CachedScheduler<T>();
-				scheduler.setUpQueue(CALCULATORS.get(params.get("calculator")));
+				scheduler.setUpQueue(createPriorityCalculator(params));
 				scheduler.setUpCache(
 						Long.parseLong(params.get("pauseDuration")),
-						PAUSE_UNITS.get(params.get("pauseUnit"))
+						PAUSE_UNITS.get(params.get("pauseUnit").toLowerCase())
 				);
 				return scheduler;
 			}
-		});
+		};
+	}
+
+	final static Map<String, ISchedulerCreator> SCHEDULER_CREATORS = new HashMap<String, ISchedulerCreator>();
+	{
+		SCHEDULER_CREATORS.put("scheduler", getNormalSchedulerCreator());
+		SCHEDULER_CREATORS.put("cachedscheduler", getCachedSchedulerCreator());
 	};
 
-	final static Map<String, IPriorityCalculator> CALCULATORS = new HashMap();
+
+	protected interface IPriorityCalculatorCreator<T> {
+
+		IPriorityCalculator<T> create(Map<String, String> params);
+	}
+
+	protected IPriorityCalculatorCreator<T> getPCAssignsCount(){
+		return new IPriorityCalculatorCreator<T>() {
+			@Override
+			public IPriorityCalculator<T> create(Map<String, String> params) {
+				return new AssignCountPriorityCalculator<T>();
+			}
+		};
+	}
+
+	final static Map<String, IPriorityCalculatorCreator> CALCULATORS = new HashMap();
 	{
-		CALCULATORS.put(AssignCountPriorityCalculator.class.getName(), new AssignCountPriorityCalculator<T>());
+		CALCULATORS.put("countassigns", getPCAssignsCount());
 	};
 
 	final static Map<String, TimeUnit> PAUSE_UNITS = new HashMap<String, TimeUnit>();
 	{
-		PAUSE_UNITS.put("SECONDS", TimeUnit.SECONDS);
-		PAUSE_UNITS.put("MINUTES", TimeUnit.MINUTES);
-		PAUSE_UNITS.put("HOURS", TimeUnit.HOURS);
+		PAUSE_UNITS.put("seconds", TimeUnit.SECONDS);
+		PAUSE_UNITS.put("minutes", TimeUnit.MINUTES);
+		PAUSE_UNITS.put("hours", TimeUnit.HOURS);
 	}
 
 	public IScheduler<T> create(Map<String, String> params) {
-		String type = params.get("scheduler");
-		ICreator<T> creator = CREATORS.get(type);
+		String type = params.get("scheduler").toLowerCase();
+		ISchedulerCreator<T> creator = SCHEDULER_CREATORS.get(type);
 		if (creator == null) {
-			throw new IllegalArgumentException("Unknown type: " + type);
+			throw new IllegalArgumentException("Unknown scheduler type: " + type);
+		}
+		return creator.create(params);
+	}
+
+	public IPriorityCalculator<T> createPriorityCalculator(Map<String, String> params){
+		String pcKind = params.get("calculator").toLowerCase();
+		IPriorityCalculatorCreator<T> creator = CALCULATORS.get(pcKind);
+		if (creator == null){
+			throw new IllegalArgumentException("Unknown priority calculator: " + pcKind);
 		}
 		return creator.create(params);
 	}
