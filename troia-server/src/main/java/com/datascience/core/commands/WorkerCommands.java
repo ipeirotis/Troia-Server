@@ -3,7 +3,6 @@ package com.datascience.core.commands;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.executor.JobCommand;
-import com.datascience.galc.commands.ParamChecking;
 
 import java.util.Collection;
 
