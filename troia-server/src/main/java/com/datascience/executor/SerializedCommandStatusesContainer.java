@@ -1,6 +1,6 @@
 package com.datascience.executor;
 
-import com.datascience.service.IRandomUniqIDGenerator;
+import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.core.storages.serialization.ISerializer;
 import com.datascience.core.storages.serialization.Serialized;
 

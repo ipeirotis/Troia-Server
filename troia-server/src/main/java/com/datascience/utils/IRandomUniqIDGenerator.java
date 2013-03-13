@@ -1,4 +1,4 @@
-package com.datascience.service;
+package com.datascience.utils;
 
 /**
  *

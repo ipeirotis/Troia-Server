@@ -2,7 +2,7 @@ package com.datascience.executor;
 
 import java.util.concurrent.TimeUnit;
 
-import com.datascience.service.IRandomUniqIDGenerator;
+import com.datascience.utils.IRandomUniqIDGenerator;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
