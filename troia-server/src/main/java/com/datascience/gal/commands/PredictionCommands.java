@@ -1,8 +1,10 @@
 package com.datascience.gal.commands;
 
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.WorkerResult;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.*;
 import com.datascience.gal.decision.*;
@@ -16,7 +18,23 @@ import java.util.Map.Entry;
  */
 public class PredictionCommands {
 
-	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue>, NominalProject> {
+	static public class GetWorkersConfusionMatrix extends JobCommand<Collection<WorkerValue<ConfusionMatrix>>, NominalProject> {
+
+		public GetWorkersConfusionMatrix(){
+			super(false);
+		}
+
+		@Override
+		protected void realExecute() {
+			Collection<WorkerValue<ConfusionMatrix>> wq = new ArrayList<WorkerValue<ConfusionMatrix>>();
+			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults().entrySet()){
+				wq.add(new WorkerValue<ConfusionMatrix>(e.getKey().getName(), e.getValue().cm));
+			}
+			setResult(wq);
+		}
+	}
+
+	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
 		private WorkerQualityCalculator wqc;
 
 		public GetWorkersQuality(WorkerQualityCalculator wqc){
@@ -27,12 +45,12 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Map<String, Double> result = new HashMap<String, Double>();
-			Collection<WorkerValue> wq = new ArrayList<WorkerValue>();
+			Collection<WorkerValue<Double>> wq = new ArrayList<WorkerValue<Double>>();
 			for (Worker<String> w : project.getData().getWorkers()){
 				result.put(w.getName(), wqc.getCost(project, w));
 			}
 			for (Entry<String, Double> e : Quality.fromCosts(project, result).entrySet()){
-				wq.add(new WorkerValue(e.getKey(), e.getValue()));
+				wq.add(new WorkerValue<Double>(e.getKey(), e.getValue()));
 			}
 			setResult(wq);
 		}
@@ -58,11 +76,11 @@ public class PredictionCommands {
 		}
 	}
 
-	static public class GetCost extends JobCommand<Collection<DatumValue>, NominalProject> {
+	static public class GetDataCost extends JobCommand<Collection<DatumValue>, NominalProject> {
 		
 		private DecisionEngine decisionEngine;
 		
-		public GetCost(ILabelProbabilityDistributionCalculator lpd,
+		public GetDataCost(ILabelProbabilityDistributionCalculator lpd,
 				ILabelProbabilityDistributionCostCalculator lca){
 			super(false);
 			decisionEngine = new DecisionEngine(lpd, lca, null);
@@ -78,11 +96,11 @@ public class PredictionCommands {
 		}
 	}
 	
-	static public class GetQuality extends JobCommand<Collection<DatumValue>, NominalProject> {
+	static public class GetDataQuality extends JobCommand<Collection<DatumValue>, NominalProject> {
 		
 		private DecisionEngine decisionEngine;
 		
-		public GetQuality(ILabelProbabilityDistributionCalculator lpd,
+		public GetDataQuality(ILabelProbabilityDistributionCalculator lpd,
 				ILabelProbabilityDistributionCostCalculator lca){
 			super(false);
 			decisionEngine = new DecisionEngine(lpd, lca, null);

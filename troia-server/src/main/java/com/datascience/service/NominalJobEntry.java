@@ -68,7 +68,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		return buildResponseOnCommand(new PredictionCommands.GetCost( lpdc, lpdcc));
+		return buildResponseOnCommand(new PredictionCommands.GetDataCost( lpdc, lpdcc));
 	}
 	
 	@Path("objects/quality/estimated/")
@@ -77,7 +77,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		return buildResponseOnCommand(new PredictionCommands.GetQuality( lpdc, lpdcc));
+		return buildResponseOnCommand(new PredictionCommands.GetDataQuality( lpdc, lpdcc));
 	}
 
 	@Path("objects/cost/evaluated/")
@@ -86,7 +86,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		return buildResponseOnCommand(new EvaluationCommands.GetCost( dataEvaluator));
+		return buildResponseOnCommand(new EvaluationCommands.GetDataCost( dataEvaluator));
 	}
 	
 	@Path("objects/quality/evaluated/")
@@ -95,7 +95,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
 		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		return buildResponseOnCommand(new EvaluationCommands.GetQuality( dataEvaluator));
+		return buildResponseOnCommand(new EvaluationCommands.GetDataQuality( dataEvaluator));
 	}
 	
 	@Path("workers/quality/evaluated/")
@@ -110,6 +110,12 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
+	}
+
+	@Path("workers/quality/matrix/")
+	@GET
+	public Response getWorkersConfusionMatrices(){
+		return buildResponseOnCommand(new PredictionCommands.GetWorkersConfusionMatrix());
 	}
 
 	@Override
