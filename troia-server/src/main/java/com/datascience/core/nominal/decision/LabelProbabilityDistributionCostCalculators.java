@@ -1,4 +1,4 @@
-package com.datascience.gal.decision;
+package com.datascience.core.nominal.decision;
 
 import com.datascience.utils.CostMatrix;
 import com.datascience.utils.ProbabilityDistributions;

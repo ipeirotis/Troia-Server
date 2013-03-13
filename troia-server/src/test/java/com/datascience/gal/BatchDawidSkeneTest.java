@@ -13,9 +13,9 @@ import com.datascience.core.base.Worker;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.datascience.gal.decision.DecisionEngine;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.LabelProbabilityDistributionCostCalculators;
+import com.datascience.core.nominal.decision.DecisionEngine;
+import com.datascience.core.nominal.decision.LabelProbabilityDistributionCalculators;
+import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 
 public class BatchDawidSkeneTest {
 

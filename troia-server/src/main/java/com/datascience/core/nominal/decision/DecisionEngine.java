@@ -1,4 +1,4 @@
-package com.datascience.gal.decision;
+package com.datascience.core.nominal.decision;
 
 import java.util.Collection;
 import java.util.HashMap;

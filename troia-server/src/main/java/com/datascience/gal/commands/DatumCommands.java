@@ -9,7 +9,7 @@ import com.datascience.core.commands.ParamChecking;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.executor.JobCommand;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
+import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCalculator;
 
 /**
  *

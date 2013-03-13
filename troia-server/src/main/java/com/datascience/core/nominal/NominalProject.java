@@ -6,10 +6,10 @@ import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.core.results.DatumResult;
-import com.datascience.gal.decision.DecisionEngine;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.gal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.gal.decision.ObjectLabelDecisionAlgorithms;
+import com.datascience.core.nominal.decision.DecisionEngine;
+import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCalculator;
+import com.datascience.core.nominal.decision.LabelProbabilityDistributionCalculators;
+import com.datascience.core.nominal.decision.ObjectLabelDecisionAlgorithms;
 import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;

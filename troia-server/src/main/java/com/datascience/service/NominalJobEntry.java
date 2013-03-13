@@ -6,7 +6,7 @@ import com.datascience.executor.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.gal.commands.*;
-import com.datascience.gal.decision.*;
+import com.datascience.core.nominal.decision.*;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 

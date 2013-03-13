@@ -7,7 +7,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.*;
-import com.datascience.gal.decision.*;
+import com.datascience.core.nominal.decision.*;
 
 import java.util.*;
 import java.util.Map.Entry;

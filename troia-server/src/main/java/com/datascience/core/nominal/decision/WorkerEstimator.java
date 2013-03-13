@@ -1,4 +1,4 @@
-package com.datascience.gal.decision;
+package com.datascience.core.nominal.decision;
 
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.base.Worker;

@@ -3,8 +3,8 @@ package com.datascience.gal.evaluation;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
-import com.datascience.gal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.gal.decision.WorkerQualityCalculator;
+import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.core.nominal.decision.WorkerQualityCalculator;
 
 public class WorkerEvaluator extends WorkerQualityCalculator{
 
