@@ -1,9 +1,8 @@
-package com.datascience.core.commands;
+package com.datascience.core.storages;
 
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
-import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.SynchronizedCommand;
 import com.datascience.core.JobsManager;
 
