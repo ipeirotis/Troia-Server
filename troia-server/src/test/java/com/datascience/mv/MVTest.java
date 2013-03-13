@@ -58,7 +58,6 @@ public class MVTest {
 
 
 	protected void fillNominalData(NominalData data){
-		data.addCategories(categories);
 		for (LObject<String> gold: goldObjects){
 			data.addGoldObject(gold);
 		}
@@ -92,6 +91,7 @@ public class MVTest {
 	public void testBatchMV(){
 		BatchMV mv = new BatchMV();
 		NominalProject np = new NominalProject(mv);
+		np.initializeCategories(categories);
 		NominalData nd = np.getData();
 		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
@@ -105,6 +105,7 @@ public class MVTest {
 	public void testIncrementalMV(){
 		IncrementalMV mv = new IncrementalMV();
 		NominalProject np = new NominalProject(mv);
+		np.initializeCategories(categories);
 		NominalData nd = np.getData();
 		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
