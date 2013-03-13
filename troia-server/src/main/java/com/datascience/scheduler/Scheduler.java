@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class Scheduler<T> implements IScheduler<T> {
 
-	public static int INITIAL_QUEUE_SIZE = 10;
+	protected static final int INITIAL_QUEUE_SIZE = 10;
 
 	protected Queue<LObject<T>> queue;
 	protected Data<T> data;

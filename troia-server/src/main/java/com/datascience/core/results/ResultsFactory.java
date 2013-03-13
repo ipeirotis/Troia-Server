@@ -34,7 +34,7 @@ public class  ResultsFactory {
 
 	public static class WorkerResultNominalFactory implements IWorkerResultCreator<String, WorkerResult> {
 
-		protected static Collection<Category> categories;
+		protected Collection<Category> categories;
 
 		public WorkerResultNominalFactory(Collection<Category> categories){
 			this.categories = categories;
