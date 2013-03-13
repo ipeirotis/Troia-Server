@@ -1,4 +1,4 @@
-package com.datascience.core.storages.serialization.json;
+package com.datascience.serialization.json;
 
 import java.lang.reflect.Type;
 import java.util.HashSet;

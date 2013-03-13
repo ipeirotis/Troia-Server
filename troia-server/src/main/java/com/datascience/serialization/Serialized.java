@@ -1,4 +1,4 @@
-package com.datascience.core.storages.serialization;
+package com.datascience.serialization;
 
 /**
  * @Author: konrad

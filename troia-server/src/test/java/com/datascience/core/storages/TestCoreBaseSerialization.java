@@ -1,7 +1,7 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.base.*;
-import com.datascience.core.storages.serialization.ISerializer;
+import com.datascience.serialization.ISerializer;
 import com.datascience.service.GSONSerializer;
 import org.junit.Test;
 

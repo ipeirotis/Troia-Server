@@ -1,4 +1,4 @@
-package com.datascience.core.storages.serialization.json;
+package com.datascience.serialization.json;
 
 import com.datascience.core.base.CategoryPair;
 import com.datascience.core.nominal.CategoryValue;

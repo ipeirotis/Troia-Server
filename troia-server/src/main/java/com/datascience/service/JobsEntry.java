@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 
 import com.datascience.core.Job;
 import com.datascience.core.base.Category;
-import com.datascience.core.storages.serialization.json.JSONUtils;
+import com.datascience.serialization.json.JSONUtils;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**

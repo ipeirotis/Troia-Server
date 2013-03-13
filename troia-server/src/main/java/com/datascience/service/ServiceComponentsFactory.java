@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.datascience.core.JobsManager;
 import com.datascience.core.storages.*;
-import com.datascience.core.storages.serialization.ISerializer;
+import com.datascience.serialization.ISerializer;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
 import org.apache.log4j.Logger;

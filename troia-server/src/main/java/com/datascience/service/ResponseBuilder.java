@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.storages.serialization.ISerializer;
+import com.datascience.serialization.ISerializer;
 import com.datascience.executor.CommandStatus;
 import org.joda.time.DateTime;
 

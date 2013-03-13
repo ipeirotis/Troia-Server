@@ -14,8 +14,8 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.datascience.core.base.Project;
-import com.datascience.core.storages.serialization.ISerializer;
-import com.datascience.core.storages.serialization.json.JSONUtils;
+import com.datascience.serialization.ISerializer;
+import com.datascience.serialization.json.JSONUtils;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
