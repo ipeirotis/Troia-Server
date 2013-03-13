@@ -49,7 +49,7 @@ public abstract class WorkerQualityCalculator {
 			double soft = 0.;
 			if (worker_prior.get(label) > 0){
 				double error = getError(project, w, source.getName(), label);
-				//TODO
+				//TODO XXX FIXME
 				soft = ((AbstractDawidSkene)project.getAlgorithm()).prior(source.getName()) * error / worker_prior.get(label);
 			}
 			result.put(source.getName(), soft);
