@@ -15,7 +15,6 @@ import com.datascience.core.algorithms.IUpdatableAlgorithm;
 import com.datascience.core.base.*;
 import com.datascience.core.base.Category;
 import com.datascience.core.stats.ErrorRateCalculators;
-import org.apache.log4j.Logger;
 
 /**
  * fully incremental version of DS- adjustments to the data structures are made
