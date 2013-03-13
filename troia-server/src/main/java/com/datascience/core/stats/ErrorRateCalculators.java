@@ -1,8 +1,5 @@
 package com.datascience.core.stats;
 
-import com.datascience.core.stats.ConfusionMatrix;
-import com.datascience.core.stats.IErrorRateCalculator;
-
 /**
  * User: artur
  * Date: 3/12/13
