@@ -1,4 +1,4 @@
-package com.datascience.executor;
+package com.datascience.core.commands;
 
 
 /**

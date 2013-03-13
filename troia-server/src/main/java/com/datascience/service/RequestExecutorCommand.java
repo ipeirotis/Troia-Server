@@ -2,7 +2,7 @@ package com.datascience.service;
 
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
-import com.datascience.executor.ProjectCommand;
+import com.datascience.core.commands.ProjectCommand;
 import com.datascience.executor.SynchronizedCommand;
 import com.google.common.base.Stopwatch;
 
