@@ -2,16 +2,13 @@ package com.datascience.gal.dataGenerator;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Category;
+import com.datascience.core.base.LObject;
 import com.datascience.gal.MisclassificationCost;
 
 import java.util.Collection;
 import java.util.Map;
 
 public class Data {
-
-
-
-
 
 	/**
 	 * @return Request identifier
@@ -93,14 +90,14 @@ public class Data {
 	/**
 	 * @return Collection of gold labels in request
 	 */
-	public Collection<CorrectLabel> getGoldLabels() {
+	public Collection<LObject<String>> getGoldLabels() {
 		return goldLabels;
 	}
 
 	/**
 	 * @param goldLabels Collection of gold labels in request
 	 */
-	public void setGoldLabels(Collection<CorrectLabel> goldLabels) {
+	public void setGoldLabels(Collection<LObject<String>> goldLabels) {
 		this.goldLabels = goldLabels;
 	}
 
@@ -197,7 +194,7 @@ public class Data {
 	/**
 	 * Collection of gold labels in request
 	 */
-	Collection<CorrectLabel> goldLabels;
+	Collection<LObject<String>> goldLabels;
 
 	/**
 	 * Collection of misclassification costs

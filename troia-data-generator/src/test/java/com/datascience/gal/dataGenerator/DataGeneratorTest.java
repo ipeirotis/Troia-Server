@@ -1,6 +1,7 @@
 package com.datascience.gal.dataGenerator;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -182,7 +183,7 @@ public class DataGeneratorTest extends TestCase {
 		DataGenerator generator = DataGenerator.getInstance();
 		Collection<String> categories = generator.generateCategoryNames(categoriesCount);
 		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categories);
-		Collection<CorrectLabel> goldLabels = generator.generateGoldLabels(objects, goldCoverage);
+		Collection<LObject<String>> goldLabels = generator.generateGoldLabels(objects, goldCoverage);
 		assertEquals(goldLabels.size(), (int)(objectsCount * goldCoverage));
 	}
 

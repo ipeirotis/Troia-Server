@@ -272,14 +272,14 @@ public class DataManager {
 	 * @throws IOException
 	 */
 	public void saveGoldLabelsToFile(String filename,
-									 Collection<CorrectLabel> labels) throws IOException {
+									 Collection<LObject<String>> labels) throws IOException {
 		logger.info("Saving gold labels objects to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (CorrectLabel label : labels) {
+		for (LObject<String> label : labels) {
 //			out.write(label.getObjectName() + '\t' + label.getCorrectCategory()
 //					  + '\n');
-			out.write(label.getObjectName() + '\t' + label.getCorrectLabel() + '\n');
+			out.write(label.getName() + '\t' + label.getGoldLabel() + '\n');
 		}
 		out.close();
 	}
@@ -291,19 +291,21 @@ public class DataManager {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public Collection<CorrectLabel> loadGoldLabelsFromFile(String filename)
+	public Collection<LObject<String>> loadGoldLabelsFromFile(String filename)
 	throws FileNotFoundException {
 		logger.info("Loading gold labels from file");
 		FileInputStream stream = new FileInputStream(filename);
 		Scanner scanner = new Scanner(stream);
 		String line, objectName, objectCategory;
-		Collection<CorrectLabel> goldLabels = new ArrayList<CorrectLabel>();
+		Collection<LObject<String>> goldLabels = new ArrayList<LObject<String>>();
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			objectName = line.substring(0, line.indexOf('\t'));
 			objectCategory = line.substring(line.indexOf('\t') + 1,
 											line.length());
-			goldLabels.add(new CorrectLabel(objectName, objectCategory));
+			LObject<String> object = new LObject<String>(objectName);
+			object.setGoldLabel(objectCategory);
+			goldLabels.add(object);
 		}
 		scanner.close();
 		return goldLabels;

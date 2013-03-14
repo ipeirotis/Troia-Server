@@ -252,16 +252,18 @@ public class DataGenerator {
 	 *            Fraction of objects that will have gold label
 	 * @return Collection of gold labels.
 	 */
-	public Collection<CorrectLabel> generateGoldLabels(
+	public Collection<LObject<String>> generateGoldLabels(
 		TroiaObjectCollection objects, double goldCoverage) {
 		int goldCount = (int) (objects.size() * goldCoverage);
-		Collection<CorrectLabel> goldLabels = new ArrayList<CorrectLabel>();
+		Collection<LObject<String>> goldLabels = new ArrayList<LObject<String>>();
 		Iterator<String> objectsIterator = objects.iterator();
 		for (int i = 0; i < goldCount; i++) {
 			String objectName;
 			if (objectsIterator.hasNext()) {
 				objectName = objectsIterator.next();
-				goldLabels.add(new CorrectLabel(objectName, objects.getCategory(objectName)));
+				LObject<String> goldObject = new LObject<String>(objectName);
+				goldObject.setGoldLabel(objects.getCategory(objectName));
+				goldLabels.add(goldObject);
 			} else {
 				break;
 			}
@@ -274,7 +276,7 @@ public class DataGenerator {
 			TroiaObjectCollection objects,
 			Collection<ArtificialWorker> workers,
 			Collection<AssignedLabel<String>> labels,
-			Collection<CorrectLabel> goldLabels) {
+			Collection<LObject<String>> goldLabels) {
 		// Objects conversion.
 		Collection<Category> tsCategories =
 				new ArrayList<Category>();
@@ -286,11 +288,12 @@ public class DataGenerator {
 		for (AssignedLabel<String> label : labels) {
 			tsLabels.add(new AssignedLabel<String>(label.getWorker(), label.getLobject(), label.getLabel()));
 		}
-		Collection<CorrectLabel> tsCorrectLabels =
-				new ArrayList<CorrectLabel>();
+		Collection<LObject<String>> tsCorrectLabels =
+				new ArrayList<LObject<String>>();
 		for (String objectName : objects.testObject.keySet()) {
-			tsCorrectLabels.add(new CorrectLabel(objectName,
-					objects.getCategory(objectName)));
+			LObject<String> goldObject = new LObject<String>(objectName);
+			goldObject.setGoldLabel(objects.getCategory(objectName));
+			tsCorrectLabels.add(goldObject);
 		}
 
 //		com.datascience.gal.DawidSkene dawidSkene =
@@ -326,7 +329,7 @@ public class DataGenerator {
 				categoryNames);
 		Collection<MisclassificationCost> misclassificationCost = MisclassificationCostFactory
 				.getInstance().getMisclassificationCosts(categories);
-		Collection<CorrectLabel> goldLabels = this.generateGoldLabels(objects,
+		Collection<LObject<String>> goldLabels = this.generateGoldLabels(objects,
 				goldRatio);
 		Collection<ArtificialWorker> workers = null;
 		Collection<AssignedLabel<String>> labels = null;
