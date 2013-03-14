@@ -45,7 +45,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	@Override
 	public double prior(String categoryName) {
-		if (fixedPriors || priorDenominator == 0)
+		if (data.arePriorsFixed() || priorDenominator == 0)
 			return 1. / (double) data.getCategories().size();
 		else
 			return data.getCategory(categoryName).getPrior() / priorDenominator;

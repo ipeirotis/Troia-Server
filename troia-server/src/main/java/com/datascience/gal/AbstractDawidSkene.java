@@ -26,8 +26,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	private static Logger logger = Logger.getLogger(AbstractDawidSkene.class);
 
-	protected boolean fixedPriors;
-
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
 		super(errorRateCalculator);
 	}
@@ -124,7 +122,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	}
 
 	protected void updatePriors() {
-		if (fixedPriors)
+		if (data.arePriorsFixed())
 			return;
 
 		HashMap<String, Double> priors = new HashMap<String, Double>();
