@@ -45,10 +45,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		Map<String, Double> probabilities = getObjectClassProbabilities(obj, null);
 		if (probabilities == null)
 			return;
-		for (String category : probabilities.keySet()) {
-			double probability = probabilities.get(category);
-			results.getOrCreateDatumResult(obj).getCategoryProbabilites().put(category, probability);
-		}
+		results.getOrCreateDatumResult(obj).setCategoryProbabilites(probabilities);
 	}
 
 	private void rebuildWorkerConfusionMatrices() {

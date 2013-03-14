@@ -75,11 +75,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 	}
 
-//	@Override
-//	public boolean fixedPriors() {
-//		return fixedPriors;
-//	}
-
 //OBJECT PROBS
 //	@Override
 //	public Map<String, Double> getObjectProbs(String objectName) {
