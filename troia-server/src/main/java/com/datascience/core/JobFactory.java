@@ -91,6 +91,9 @@ public class JobFactory {
 		algorithm = algorithm.toUpperCase();
 		type = type.toLowerCase();
 		Creator creator = ALG_FACTORY.get(new AlgorithmType(algorithm, type));
+		if (creator == null){
+			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s or type: %s", algorithm, type));
+		}
 		NominalProject np = new NominalProject(creator.create());
 		np.initializeCategories(categories);
 		return np;
