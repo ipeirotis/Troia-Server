@@ -13,19 +13,13 @@ public class ProjectCommands {
 	
 	static public class Compute extends JobCommand<Object, Project> {
 
-		int iterations;
-		double epsilon;
-		
-		public Compute(int iterations, double epsilon){
+		public Compute(){
 			super(true);
-			this.iterations = iterations;
-			this.epsilon = epsilon;
 		}
 		
 		@Override
 		protected void realExecute() {
-			project.getAlgorithm().compute(); //estimate(epsilon, iterations);
-			// TODO FIXME XXX maybe we should use Visitor Pattern to set parameters from Map<String, Object>?
+			project.getAlgorithm().compute();
 			setResult("Computation done");
 		}
 	}

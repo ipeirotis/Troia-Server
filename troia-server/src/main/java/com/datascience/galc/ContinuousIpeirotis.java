@@ -11,9 +11,8 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 
 	private static Logger logger = Logger.getLogger(ContinuousIpeirotis.class);
 
-	public ContinuousIpeirotis(){
-
-	}
+	protected int iterations = 10;
+	protected double  epsilon = 1e-6;
 
 	protected Double getLabel(AssignedLabel<ContValue> assign){
 		return assign.getLabel().getValue();
@@ -261,11 +260,18 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		return results.getWorkerResults();
 	}
 
+	public void setIterations(int iterations){
+		this.iterations = iterations;
+	}
+
+	public void setEpsilon(double epsilon){
+		this.epsilon = epsilon;
+	}
+
 	@Override
 	public void compute(){
 		initWorkers();
 		initObjectZetas();
-		estimate(0.0000001, 50);
-		// TODO FIXME XXX this should be on some variable
+		estimate(epsilon, iterations);
 	}
 }

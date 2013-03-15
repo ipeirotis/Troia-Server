@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	private static Logger logger = Logger.getLogger(AbstractDawidSkene.class);
+	protected int iterations;
+	protected double epsilon;
 
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
 		super(errorRateCalculator);
@@ -263,7 +265,14 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	@Override
 	public void compute(){
-		estimate(0.0000001, 50);
-		// TODO XXX FIXME ^^^ those should be set on some variable
+		estimate(epsilon, iterations);
+	}
+
+	public void setIterations(int iterations){
+		this.iterations = iterations;
+	}
+
+	public void setEpsilon(double epsilon){
+		this.epsilon = epsilon;
 	}
 }

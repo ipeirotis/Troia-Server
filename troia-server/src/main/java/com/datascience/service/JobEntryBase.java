@@ -24,6 +24,8 @@ import com.datascience.serialization.ISerializer;
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  *
@@ -183,8 +185,8 @@ public abstract class JobEntryBase<T extends Project> {
 
 	@Path("compute/")
 	@POST
-	public Response compute(@DefaultValue("10") @FormParam("iterations") int iterations){
-		return buildResponseOnCommand(new PredictionCommands.Compute( iterations));
+	public Response compute(){
+		return buildResponseOnCommand(new ProjectCommands.Compute());
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.datascience.core.commands;
 
-import com.datascience.core.base.Project;
 import com.datascience.executor.JobCommand;
 import com.google.common.base.Joiner;
 import org.joda.time.DateTime;
@@ -19,23 +18,6 @@ import java.util.zip.ZipOutputStream;
  * User: artur
  */
 public class PredictionCommands {
-
-	static public class Compute extends JobCommand<Object, Project> {
-
-		private int iterations;
-
-		public Compute(int iterations){
-			super(true);
-			this.iterations = iterations;
-		}
-
-		@Override
-		protected void realExecute() {
-			//TODO: add iterations
-			project.getAlgorithm().compute();
-			setResult("Computation done");
-		}
-	}
 
 	static public abstract class AbstractGetPredictionZip<T> extends JobCommand<String, T> {
 

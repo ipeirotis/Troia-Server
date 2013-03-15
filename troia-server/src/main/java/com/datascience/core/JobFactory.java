@@ -32,7 +32,7 @@ public class JobFactory {
 	}
 
 	protected interface Creator{
-		NominalAlgorithm create();
+		NominalAlgorithm create(JsonObject jo);
 	}
 
 	public static class AlgorithmType{
@@ -60,41 +60,45 @@ public class JobFactory {
 	final static Map<AlgorithmType, Creator> ALG_FACTORY = new HashMap();
 	{
 		ALG_FACTORY.put(new AlgorithmType("DS", "batch"), new Creator() {
-
 			@Override
-			public NominalAlgorithm create() {
-				return new BatchDawidSkene();
+			public NominalAlgorithm create(JsonObject jo) {
+				BatchDawidSkene alg = new BatchDawidSkene();
+				alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
+				alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
+				return alg;
 			}
 		});
 		ALG_FACTORY.put(new AlgorithmType("DS", "incremental"), new Creator() {
 			@Override
-			public NominalAlgorithm create() {
-				return new IncrementalDawidSkene();
+			public NominalAlgorithm create(JsonObject jo) {
+				IncrementalDawidSkene alg = new IncrementalDawidSkene();
+				alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
+				alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
+				return alg;
 			}
 		});
 		ALG_FACTORY.put(new AlgorithmType("MV", "batch"), new Creator() {
-
 			@Override
-			public NominalAlgorithm create() {
+			public NominalAlgorithm create(JsonObject jo) {
 				return new BatchMV();
 			}
 		});
 		ALG_FACTORY.put(new AlgorithmType("MV", "incremental"), new Creator() {
 			@Override
-			public NominalAlgorithm create() {
+			public NominalAlgorithm create(JsonObject jo) {
 				return new IncrementalMV();
 			}
 		});
 	};
 
-	protected NominalProject getNominalProject(Collection<Category> categories, String algorithm, String type){
+	protected NominalProject getNominalProject(Collection<Category> categories, String algorithm, String type, JsonObject jo){
 		algorithm = algorithm.toUpperCase();
 		type = type.toLowerCase();
 		Creator creator = ALG_FACTORY.get(new AlgorithmType(algorithm, type));
 		if (creator == null){
 			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s or type: %s", algorithm, type));
 		}
-		NominalProject np = new NominalProject(creator.create());
+		NominalProject np = new NominalProject(creator.create(jo));
 		np.initializeCategories(categories);
 		return np;
 	}
@@ -109,11 +113,15 @@ public class JobFactory {
 			getNominalProject(
 				categories,
 				jo.has("algorithm") ? jo.get("algorithm").getAsString() : "DS",
-				jo.has("type") ? jo.get("type").getAsString() : "batch"),
+				jo.has("type") ? jo.get("type").getAsString() : "batch",
+				jo),
 			id);
 	}
 	
 	public Job createContinuousJob(JsonObject jo, String id){
-		return new Job(new ContinuousProject(new ContinuousIpeirotis()), id);
+		ContinuousIpeirotis alg = new ContinuousIpeirotis();
+		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
+		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
+		return new Job(new ContinuousProject(alg), id);
 	}
 }
