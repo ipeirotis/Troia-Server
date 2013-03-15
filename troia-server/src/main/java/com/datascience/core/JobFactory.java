@@ -5,15 +5,27 @@ import com.datascience.core.base.Category;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
+import com.datascience.serialization.ISerializer;
+import com.datascience.serialization.json.JSONUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Konrad Kurdej
  */
 public class JobFactory {
+
+	protected ISerializer serializer;
+
+	public JobFactory(ISerializer serializer){
+		this.serializer = serializer;
+	}
 
 	protected interface Creator{
 		NominalProject create(Collection<Category> categories);
@@ -50,12 +62,17 @@ public class JobFactory {
 		return creator;
 	}
 
-	public Job createNominalJob(String type, String id, Collection<Category> categories){
-		Creator creator = getCreator(type);
+
+	public Job createNominalJob(JsonObject jo, String id){
+		Creator creator = getCreator(jo.has("type") ? jo.get("type").getAsString() : "batch");
+		if (!jo.has("categories")){
+			throw new IllegalArgumentException("You should provide categories list");
+		}
+		Collection<Category> categories = serializer.parse(jo.get("categories").toString(), JSONUtils.categorySetType);
 		return new Job(creator.create(categories), id);
 	}
 	
-	public Job createContinuousJob(String id){
+	public Job createContinuousJob(JsonObject jo, String id){
 		return new Job(new ContinuousProject(new ContinuousIpeirotis()), id);
 	}
 }

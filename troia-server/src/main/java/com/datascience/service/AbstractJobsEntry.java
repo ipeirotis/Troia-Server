@@ -11,7 +11,11 @@ import com.datascience.core.Job;
 import com.datascience.core.JobFactory;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.utils.IRandomUniqIDGenerator;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.jersey.spi.resource.Singleton;
+
+import java.util.logging.Logger;
 
 @Singleton
 public abstract class AbstractJobsEntry {
@@ -29,13 +33,13 @@ public abstract class AbstractJobsEntry {
 		jidGenerator = (IRandomUniqIDGenerator) context.getAttribute(Constants.ID_GENERATOR);
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
-		jobFactory = new JobFactory();
+		jobFactory = new JobFactory(responser.getSerializer());
 	}
 	
 	protected boolean empty_jid(String jid){
 		return jid == null || "".equals(jid);
 	}
-	
+
 	@DELETE
 	public Response deleteJob(@FormParam("id") String jid) throws Exception{
 		if (empty_jid(jid)) {
@@ -47,5 +51,19 @@ public abstract class AbstractJobsEntry {
 		}
 		jobStorage.remove(job);
 		return responser.makeOKResponse("Removed job with ID: " + jid);
+	}
+
+	protected abstract Job createJob(JsonObject jo, String jid);
+
+	public Response createJob(String json) throws Exception{
+		JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+
+		String jid = jo.has("id") ? jo.get("id").getAsString() : jidGenerator.getID();
+		Job job_old = jobStorage.get(jid);
+		if (job_old != null) {
+			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
+		}
+		jobStorage.add(createJob(jo, jid));
+		return responser.makeOKResponse("New job created with ID: " + jid);
 	}
 }
