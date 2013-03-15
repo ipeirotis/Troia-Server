@@ -85,7 +85,7 @@ public class Data <T>{
 		LObject<T> object = getObject(objectId);
 		if (object == null) {
 			object = new LObject<T>(objectId);
-			//addObject(object);
+			addObject(object);
 		}
 		return object;
 	}
