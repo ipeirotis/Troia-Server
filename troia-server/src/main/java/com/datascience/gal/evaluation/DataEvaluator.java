@@ -22,14 +22,12 @@ public class DataEvaluator {
 	protected IObjectLabelDecisionAlgorithm olda;
 
 	public DataEvaluator(String method) {
-		labelChoosingMethod = method;
-		if (Strings.isNullOrEmpty(labelChoosingMethod)) {
-			labelChoosingMethod = "soft";
+		if (Strings.isNullOrEmpty(method)) {
+			method = "soft";
 		}
-		else{
-			labelChoosingMethod = labelChoosingMethod.toLowerCase();
+		labelChoosingMethod = method.toLowerCase();
+		if (!labelChoosingMethod.equals("soft"))
 			olda = ObjectLabelDecisionAlgorithms.get(labelChoosingMethod);
-		}
 	}
 
 	protected double evaluate(NominalProject project, LObject<String> datum) {
