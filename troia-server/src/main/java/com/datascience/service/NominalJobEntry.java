@@ -31,13 +31,6 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	public Response getCategories(){
 		return buildResponseOnCommand(new CategoriesCommands.GetCategories());
 	}
-
-//	@Path("costs/")
-//	@POST
-//	public Response setCosts(@FormParam("costs") String sCosts){
-//		Collection<MisclassificationCost> costs = serializer.parse(sCosts, JSONUtils.misclassificationCostSetType);
-//		return buildResponseOnCommand(new CostsCommands.SetCosts(costs));
-//	}
 	
 	@Path("costs/")
 	@GET
@@ -47,55 +40,38 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
 	@Path("objects/{oid:[a-zA-Z_0-9/:.-]+}/categoryProbability")
 	@GET
-	public Response getDatumCategoryProbability(@PathParam("oid") String did,
-			@DefaultValue("DS") @QueryParam("type") String type){
-		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(type);
-		return buildResponseOnCommand(new DatumCommands.GetDatumCategoryProbability( did, lpdc));
+	public Response getDatumCategoryProbability(@PathParam("oid") String did){
+		return buildResponseOnCommand(new DatumCommands.GetDatumCategoryProbability( did));
 	}
 
 	@Path("objects/prediction/")
 	@GET
-	public Response getPredictionData(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
-		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(lda);
-		return buildResponseOnCommand(new PredictionCommands.GetPredictedCategory( lpdc, olda));
+	public Response getPredictionData(@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
+		return buildResponseOnCommand(new PredictionCommands.GetPredictedCategory(ObjectLabelDecisionAlgorithms.get(lda)));
 	}
 	
 	@Path("objects/cost/estimated")
 	@GET
-	public Response getEstimatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
-		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		return buildResponseOnCommand(new PredictionCommands.GetDataCost( lpdc, lpdcc));
+	public Response getEstimatedDataCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		return buildResponseOnCommand(new PredictionCommands.GetDataCost(LabelProbabilityDistributionCostCalculators.get(lca)));
 	}
 	
 	@Path("objects/quality/estimated/")
 	@GET
-	public Response getEstimatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
-		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
-		return buildResponseOnCommand(new PredictionCommands.GetDataQuality( lpdc, lpdcc));
+	public Response getEstimatedDataQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		return buildResponseOnCommand(new PredictionCommands.GetDataQuality(LabelProbabilityDistributionCostCalculators.get(lca)));
 	}
 
 	@Path("objects/cost/evaluated/")
 	@GET
-	public Response getEvaluatedDataCost(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
-		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		return buildResponseOnCommand(new EvaluationCommands.GetDataCost( dataEvaluator));
+	public Response getEvaluatedDataCost(@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
+		return buildResponseOnCommand(new EvaluationCommands.GetDataCost(new DataEvaluator(lda)));
 	}
 	
 	@Path("objects/quality/evaluated/")
 	@GET
-	public Response getEvaluatedDataQuality(@DefaultValue("DS") @QueryParam("algorithm") String lpd,
-			@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
-		ILabelProbabilityDistributionCalculator lpdc = LabelProbabilityDistributionCalculators.get(lpd);
-		DataEvaluator dataEvaluator= DataEvaluator.get(lda, lpdc);
-		return buildResponseOnCommand(new EvaluationCommands.GetDataQuality( dataEvaluator));
+	public Response getEvaluatedDataQuality(@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
+		return buildResponseOnCommand(new EvaluationCommands.GetDataQuality(new DataEvaluator(lda)));
 	}
 	
 	@Path("workers/quality/evaluated/")

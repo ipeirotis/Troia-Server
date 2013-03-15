@@ -5,10 +5,6 @@ import com.datascience.core.results.Results;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.results.DatumResult;
-import com.datascience.core.nominal.decision.DecisionEngine;
-import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCalculator;
-import com.datascience.core.nominal.decision.LabelProbabilityDistributionCalculators;
-import com.datascience.core.nominal.decision.ObjectLabelDecisionAlgorithms;
 
 import java.util.Collection;
 
@@ -24,6 +20,11 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 		nomAlgorithm = (NominalAlgorithm) algorithm1; // just to skip casting over and over
 		data = new NominalData();
 		algorithm.setData(data);
+	}
+
+	@Override
+	public NominalAlgorithm getAlgorithm(){
+		return nomAlgorithm;
 	}
 
 	public void initializeCategories(Collection<Category> categories){

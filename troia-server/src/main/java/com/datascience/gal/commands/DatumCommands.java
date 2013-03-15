@@ -9,7 +9,6 @@ import com.datascience.core.commands.ParamChecking;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.executor.JobCommand;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCalculator;
 
 /**
  *
@@ -20,20 +19,17 @@ public class DatumCommands {
 	static public class GetDatumCategoryProbability extends JobCommand<Collection<CategoryValue>, NominalProject> {
 		
 		private String datumId;
-		private ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
-		
-		public GetDatumCategoryProbability(String datumId,
-				ILabelProbabilityDistributionCalculator type){
+
+		public GetDatumCategoryProbability(String datumId){
 			super(false);
 			this.datumId = datumId;
-			labelProbabilityDistributionCalculator = type;
 		}
 		
 		@Override
 		protected void realExecute() {
 			LObject<String> datum = ParamChecking.datum(project, datumId);
 			Collection<CategoryValue> cp = new ArrayList<CategoryValue>();
-			for (Entry<String, Double> e : labelProbabilityDistributionCalculator.calculateDistribution(datum, project).entrySet()){
+			for (Entry<String, Double> e : project.getAlgorithm().calculateDistribution(datum).entrySet()){
 				cp.add(new CategoryValue(e.getKey(), e.getValue()));
 			}
 			setResult(cp);

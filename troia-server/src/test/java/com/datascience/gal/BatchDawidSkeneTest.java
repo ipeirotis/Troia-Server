@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.datascience.core.nominal.decision.DecisionEngine;
-import com.datascience.core.nominal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 
 public class BatchDawidSkeneTest {
@@ -52,9 +51,7 @@ public class BatchDawidSkeneTest {
 		LObject<String> obj = new LObject<String>("object1");
 		project.getData().addObject(obj);
 
-		DecisionEngine de = new DecisionEngine(
-			new LabelProbabilityDistributionCalculators.DS(),
-			LabelProbabilityDistributionCostCalculators.get(""), null);
+		DecisionEngine de = new DecisionEngine(LabelProbabilityDistributionCostCalculators.get(""), null);
 		try{
 			de.estimateMissclassificationCost(project, obj);
 			fail("trying to get estimated value for not computed object");

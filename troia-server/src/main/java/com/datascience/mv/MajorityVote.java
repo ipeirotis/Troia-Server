@@ -2,11 +2,13 @@ package com.datascience.mv;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
+import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
 import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,10 +22,11 @@ public abstract class MajorityVote extends NominalAlgorithm {
 
 	public void computeResultsForObject(LObject<String> object){
 		DatumResult dr = results.getOrCreateDatumResult(object);
-		dr.setCategoryProbabilites(objectLabelDistribution(object));
+		dr.setCategoryProbabilites(calculateDistribution(object));
 	}
 
-	public Map<String, Double> objectLabelDistribution(LObject<String> object){
+	@Override
+	public Map<String, Double> calculateDistribution(LObject<String> object){
 		Collection<String> categories = data.getCategoriesNames();
 		if (object.isGold()) {
 			return ProbabilityDistributions.generateGoldDistribution(categories, object.getGoldLabel());

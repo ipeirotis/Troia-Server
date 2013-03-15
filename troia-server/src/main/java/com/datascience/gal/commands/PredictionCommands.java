@@ -60,10 +60,9 @@ public class PredictionCommands {
 		
 		private DecisionEngine decisionEngine;
 
-		public GetPredictedCategory(ILabelProbabilityDistributionCalculator lpd,
-				IObjectLabelDecisionAlgorithm lda){
+		public GetPredictedCategory(IObjectLabelDecisionAlgorithm lda){
 			super(false);
-			decisionEngine = new DecisionEngine(lpd, null, lda);
+			decisionEngine = new DecisionEngine(null, lda);
 		}
 		
 		@Override
@@ -80,10 +79,9 @@ public class PredictionCommands {
 		
 		private DecisionEngine decisionEngine;
 		
-		public GetDataCost(ILabelProbabilityDistributionCalculator lpd,
-				ILabelProbabilityDistributionCostCalculator lca){
+		public GetDataCost(ILabelProbabilityDistributionCostCalculator lca){
 			super(false);
-			decisionEngine = new DecisionEngine(lpd, lca, null);
+			decisionEngine = new DecisionEngine(lca, null);
 		}
 		
 		@Override
@@ -100,10 +98,9 @@ public class PredictionCommands {
 		
 		private DecisionEngine decisionEngine;
 		
-		public GetDataQuality(ILabelProbabilityDistributionCalculator lpd,
-				ILabelProbabilityDistributionCostCalculator lca){
+		public GetDataQuality(ILabelProbabilityDistributionCostCalculator lca){
 			super(false);
-			decisionEngine = new DecisionEngine(lpd, lca, null);
+			decisionEngine = new DecisionEngine(lca, null);
 		}
 		
 		@Override
@@ -130,28 +127,24 @@ public class PredictionCommands {
 
 			@Override
 			public List<List<Object>> call(){
-				String[] lpdcs = new String[]{"DS", "MV"};
 				String[] lda = new String[]{"MaxLikelihood", "MinCost"};
 				List<List<Object>> ret = new ArrayList<List<Object>>();
 
 				List<Object> header = new ArrayList<Object>();
 				header.add("");
-				for (String lpd : lpdcs)
-					for (String la : lda)
-						header.add(lpd+" "+la);
+				for (String la : lda)
+					header.add(la);
 				ret.add(header);
 
 				for (LObject<String> d : project.getData().getObjects()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(d.getName());
-					for (String lpdc : lpdcs)
-						for (String la : lda){
-							DecisionEngine decisionEngine = new DecisionEngine(
-									LabelProbabilityDistributionCalculators.get(lpdc),
-									null,
-									ObjectLabelDecisionAlgorithms.get(la));
-							line.add(decisionEngine.predictLabel(project, d));
-						}
+					for (String la : lda){
+						DecisionEngine decisionEngine = new DecisionEngine(
+							null,
+							ObjectLabelDecisionAlgorithms.get(la));
+						line.add(decisionEngine.predictLabel(project, d));
+					}
 					ret.add(line);
 				}
 

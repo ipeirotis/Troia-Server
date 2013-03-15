@@ -6,8 +6,10 @@ import java.util.Map;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Category;
+import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.nominal.decision.DecisionEngine;
 
 /**
  * @author Konrad Kurdej
@@ -89,6 +91,16 @@ public class ProbabilityDistributions {
 			String label = assign.getLabel();
 			pd.put(label, pd.get(label) + base);
 		}
+		return pd;
+	}
+
+	static public Map<String, Double> generateOneLabelDistribution(LObject<String> datum, NominalProject project, DecisionEngine decisionEngine) {
+		String label = decisionEngine.predictLabel(project, datum);
+		Map<String, Double> pd = new HashMap<String, Double>();
+		for (Category c: project.getData().getCategories()) {
+			pd.put(c.getName(), 0.);
+		}
+		pd.put(label, 1.);
 		return pd;
 	}
 }

@@ -4,10 +4,9 @@ import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.DecisionEngine;
-import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCalculator;
 import com.datascience.core.nominal.decision.IObjectLabelDecisionAlgorithm;
-import com.datascience.core.nominal.decision.LabelProbabilityDistributionCalculators;
 import com.datascience.core.nominal.decision.ObjectLabelDecisionAlgorithms;
+import com.datascience.utils.ProbabilityDistributions;
 import com.google.common.base.Strings;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,14 +18,25 @@ import java.util.Map;
  */
 public class DataEvaluator {
 	
-	protected ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
-	
-	public DataEvaluator(ILabelProbabilityDistributionCalculator lpdc) {
-		this.labelProbabilityDistributionCalculator = lpdc;
+	protected String labelChoosingMethod;
+	protected IObjectLabelDecisionAlgorithm olda;
+
+	public DataEvaluator(String method) {
+		labelChoosingMethod = method;
+		if (Strings.isNullOrEmpty(labelChoosingMethod)) {
+			labelChoosingMethod = "soft";
+		}
+		else{
+			labelChoosingMethod = labelChoosingMethod.toLowerCase();
+			olda = ObjectLabelDecisionAlgorithms.get(labelChoosingMethod);
+		}
 	}
-	
+
 	protected double evaluate(NominalProject project, LObject<String> datum) {
-		Map<String, Double> dest_probabilities = labelProbabilityDistributionCalculator.calculateDistribution(datum, project);
+		Map<String, Double> dest_probabilities = project.getAlgorithm().calculateDistribution(datum);
+		if (!labelChoosingMethod.equals("soft"))
+			dest_probabilities = ProbabilityDistributions.generateOneLabelDistribution(
+					datum, project, new DecisionEngine(null, olda));
 		Category fromCostVector = project.getData().getCategory(datum.getEvaluationLabel());
 		double cost = 0.0;
 		for (Map.Entry<String, Double> e : dest_probabilities.entrySet()) {
@@ -43,19 +53,5 @@ public class DataEvaluator {
 			ret.put(cl.getName(), evaluate(project, cl));
 		}
 		return ret;
-	}
-
-	public static DataEvaluator get(String labelChoosingMethod,
-			ILabelProbabilityDistributionCalculator lpdc){
-		if (Strings.isNullOrEmpty(labelChoosingMethod)) {
-			labelChoosingMethod = "soft";
-		}
-		labelChoosingMethod = labelChoosingMethod.toLowerCase();
-		if ("soft".equals(labelChoosingMethod)) {
-			return new DataEvaluator(lpdc);
-		}
-		IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(labelChoosingMethod);
-		DecisionEngine decisionEngine = new DecisionEngine(lpdc, null, olda);
-		return new DataEvaluator(new LabelProbabilityDistributionCalculators.OnlyOneLabel(decisionEngine));
 	}
 }

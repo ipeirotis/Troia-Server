@@ -15,21 +15,18 @@ import com.datascience.utils.ProbabilityDistributions;
  */
 public class DecisionEngine {
 
-	ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator;
 	ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator;
 	IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm;
 
-	public DecisionEngine(ILabelProbabilityDistributionCalculator labelProbabilityDistributionCalculator,
-			ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
+	public DecisionEngine(ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
 			IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm){
-		this.labelProbabilityDistributionCalculator = labelProbabilityDistributionCalculator;
 		this.labelProbabilityDistributionCostCalculator = labelProbabilityDistributionCostCalculator;
 		this.objectLabelDecisionAlgorithm = objectLabelDecisionAlgorithm;
 	}
 
 
 	public Map<String, Double> getPD(LObject<String> datum, NominalProject project){
-		return labelProbabilityDistributionCalculator.calculateDistribution(datum, project);
+		return project.getAlgorithm().calculateDistribution(datum);
 	}
 
 	public String predictLabel(NominalProject project, LObject<String> datum, CostMatrix<String> cm) {
