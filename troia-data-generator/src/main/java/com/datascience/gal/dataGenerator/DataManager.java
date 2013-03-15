@@ -311,6 +311,33 @@ public class DataManager {
 		return goldLabels;
 	}
 
+	/**
+	 * Loads evaluation labels from file
+	 *
+	 * @param filename
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public Collection<LObject<String>> loadEvaluationLabelsFromFile(String filename)
+			throws FileNotFoundException {
+		logger.info("Loading evaluation labels from file");
+		FileInputStream stream = new FileInputStream(filename);
+		Scanner scanner = new Scanner(stream);
+		String line, objectName, objectCategory;
+		Collection<LObject<String>> evaluationLabels = new ArrayList<LObject<String>>();
+		while (scanner.hasNextLine()) {
+			line = scanner.nextLine();
+			objectName = line.substring(0, line.indexOf('\t'));
+			objectCategory = line.substring(line.indexOf('\t') + 1,
+					line.length());
+			LObject<String> object = new LObject<String>(objectName);
+			object.setEvaluationLabel(objectCategory);
+			evaluationLabels.add(object);
+		}
+		scanner.close();
+		return evaluationLabels;
+	}
+
 
 	/**
 	 * Loads category names with probabilities of their occurence from file
