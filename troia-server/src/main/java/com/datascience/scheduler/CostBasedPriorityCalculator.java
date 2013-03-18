@@ -33,6 +33,10 @@ public class CostBasedPriorityCalculator implements IPriorityCalculator<String> 
 
 	@Override
 	public void setProject(Project<String, ?, ?, ?> project) {
+		if (!(project instanceof NominalProject)) {
+			throw new IllegalArgumentException(this.getClass().toString() +
+					" supports only NominalProjects, not " + project.getClass().toString());
+		}
 		this.project = (NominalProject) project;
 	}
 
