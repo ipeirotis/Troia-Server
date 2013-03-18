@@ -115,10 +115,10 @@ public class SchedulerTest {
 
 		public SchedulerSerializationTest() {
 			GsonBuilder builder = new GsonBuilder();
-			registerSerializer(new TypeToken<Scheduler>(){}.getType(), builder);
-			registerDeserializer(new TypeToken<Scheduler>(){}.getType(), builder);
-			registerSerializer(new TypeToken<CachedScheduler>(){}.getType(), builder);
-			registerDeserializer(new TypeToken<CachedScheduler>(){}.getType(), builder);
+			registerSerializer(Scheduler.class, builder);
+			registerDeserializer(Scheduler.class, builder);
+			registerSerializer(CachedScheduler.class, builder);
+			registerDeserializer(CachedScheduler.class, builder);
 			gson = builder.create();
 		}
 
