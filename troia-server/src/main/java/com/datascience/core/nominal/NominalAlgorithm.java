@@ -27,5 +27,4 @@ public abstract class NominalAlgorithm extends Algorithm<String, NominalData, Da
 
 	public abstract void initializeOnCategories(Collection<Category> categories);
 
-	public abstract Map<String, Double> calculateDistribution(LObject<String> datum);
 }

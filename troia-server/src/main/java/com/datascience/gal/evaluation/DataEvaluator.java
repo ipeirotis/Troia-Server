@@ -31,7 +31,7 @@ public class DataEvaluator {
 	}
 
 	protected double evaluate(NominalProject project, LObject<String> datum) {
-		Map<String, Double> dest_probabilities = project.getAlgorithm().calculateDistribution(datum);
+		Map<String, Double> dest_probabilities = project.getObjectResults(datum).getCategoryProbabilites();
 		if (!labelChoosingMethod.equals("soft"))
 			dest_probabilities = ProbabilityDistributions.generateOneLabelDistribution(
 					datum, project, new DecisionEngine(null, olda));

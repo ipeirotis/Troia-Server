@@ -28,6 +28,14 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 		return results;
 	}
 
+	public W getWorkerResults(Worker<T> worker){
+		return results.getWorkerResult(worker);
+	}
+
+	public V getObjectResults(LObject<T> object){
+		return results.getDatumResult(object);
+	}
+
 	public Algorithm<T, U, V, W> getAlgorithm(){
 		return algorithm;
 	}

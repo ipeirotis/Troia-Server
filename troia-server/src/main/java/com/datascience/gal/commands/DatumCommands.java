@@ -29,7 +29,7 @@ public class DatumCommands {
 		protected void realExecute() {
 			LObject<String> datum = ParamChecking.datum(project, datumId);
 			Collection<CategoryValue> cp = new ArrayList<CategoryValue>();
-			for (Entry<String, Double> e : project.getAlgorithm().calculateDistribution(datum).entrySet()){
+			for (Entry<String, Double> e : project.getResults().getDatumResult(datum).getCategoryProbabilites().entrySet()){
 				cp.add(new CategoryValue(e.getKey(), e.getValue()));
 			}
 			setResult(cp);

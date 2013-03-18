@@ -26,7 +26,7 @@ public class DecisionEngine {
 
 
 	public Map<String, Double> getPD(LObject<String> datum, NominalProject project){
-		return project.getAlgorithm().calculateDistribution(datum);
+		return project.getObjectResults(datum).getCategoryProbabilites();
 	}
 
 	public String predictLabel(NominalProject project, LObject<String> datum, CostMatrix<String> cm) {

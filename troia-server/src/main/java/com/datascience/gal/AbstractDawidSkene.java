@@ -17,7 +17,6 @@ import java.util.Set;
 import com.datascience.core.base.*;
 import com.datascience.core.base.Category;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
@@ -31,14 +30,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
 		super(errorRateCalculator);
-	}
-
-	@Override
-	public Map<String, Double> calculateDistribution(LObject<String> datum) {
-		if (datum.isGold()) {
-			return ProbabilityDistributions.generateGoldDistribution(getData().getCategoriesNames(), datum.getGoldLabel());
-		}
-		return getResults().getDatumResult(datum).getCategoryProbabilites();
 	}
 
 	@Override
