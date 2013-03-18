@@ -25,8 +25,8 @@ import org.apache.log4j.Logger;
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	private static Logger logger = Logger.getLogger(AbstractDawidSkene.class);
-	protected int iterations;
-	protected double epsilon;
+	protected int iterations = 10;
+	protected double epsilon = 1e-6;
 
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
 		super(errorRateCalculator);
