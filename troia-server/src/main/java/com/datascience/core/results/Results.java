@@ -48,6 +48,10 @@ public class Results<T, U, V> {
 		return ret;
 	}
 
+	public boolean hasDatumResult(LObject<T> obj){
+		return datumResults.containsKey(obj);
+	}
+
 	public void addDatumResult(LObject<T> obj, U result){
 		datumResults.put(obj, result);
 	}
@@ -66,6 +70,10 @@ public class Results<T, U, V> {
 		if (ret == null)
 			throw new IllegalArgumentException("You have not run compute or there is no worker named " + worker.getName());
 		return ret;
+	}
+
+	public boolean hasWorkerResult(Worker<T> worker){
+		return workerResults.containsKey(worker);
 	}
 
 	public void addWorkerResult(Worker<T> worker, V result){
