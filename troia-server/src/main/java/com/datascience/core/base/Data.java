@@ -95,9 +95,15 @@ public class Data <T>{
 	}
 
 	public void addGoldObject(LObject<T> object){
-		goldObjects.add(object);
-		addObjectNoNotify(object);
-		notifyNewGoldObject(object);
+		LObject<T> oldObject = getObject(object.getName());
+		if (oldObject != null) {
+			oldObject.setGoldLabel(object.getGoldLabel());
+			goldObjects.add(oldObject);
+		} else {
+			addObjectNoNotify(object);
+			goldObjects.add(object);
+			notifyNewGoldObject(object);
+		}
 	}
 
 	public LObject<T> getGoldObject(String objectId){
@@ -113,8 +119,14 @@ public class Data <T>{
 	}
 
 	public void addEvaluationObject(LObject<T> object){
-		evaluationObjects.add(object);
-		addObject(object);
+		LObject<T> oldObject = getObject(object.getName());
+		if (oldObject != null) {
+			oldObject.setEvaluationLabel(object.getEvaluationLabel());
+			evaluationObjects.add(oldObject);
+		} else {
+			addObject(object);
+			evaluationObjects.add(object);
+		}
 	}
 
 	public Set<LObject<T>> getEvaluationObjects(){
