@@ -6,6 +6,7 @@ import java.util.*;
 
 /**
  * Observable - notifies updatable algorithms about new data
+ * Also it is factory for new objects and workers
  * @Author: konrad
  */
 public class Data <T>{
