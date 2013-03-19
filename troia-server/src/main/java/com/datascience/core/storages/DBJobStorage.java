@@ -172,7 +172,7 @@ public class DBJobStorage implements IJobStorage {
 	 * Added hoping that this will sometime turn out to be useful
 	 */
 	@Override
-	protected void finalize() throws SQLException, Throwable {
+	protected void finalize() throws Throwable {
 		super.finalize();
 		close();
 	}
