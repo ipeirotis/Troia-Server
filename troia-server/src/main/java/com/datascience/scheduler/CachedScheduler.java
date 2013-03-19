@@ -2,6 +2,7 @@ package com.datascience.scheduler;
 
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
@@ -42,11 +43,23 @@ public class CachedScheduler<T> extends Scheduler<T> {
 
 	@Override
 	public LObject<T> nextObject() {
+		polled.cleanUp();
 		LObject<T> object = queue.poll();
 		if (object != null) {
 			polled.put(object.getName(), object);
 		}
 		return object;
+	}
+
+	@Override
+	public LObject<T> nextObject(Worker<T> worker) {
+		polled.cleanUp();
+//		LObject<T> object = super.nextObject(worker);
+//		polled.put(object.getName(), object);
+//		return object;
+		// TODO XXX this is harder because we should remove this object
+		// from queue and it might not be at the top
+		return super.nextObject(worker);
 	}
 
 	public void setUpCache(long pauseDuration, TimeUnit pauseUnit) {
