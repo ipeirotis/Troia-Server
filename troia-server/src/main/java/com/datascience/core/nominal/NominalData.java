@@ -42,6 +42,14 @@ public class NominalData extends Data<String> {
 		return fixedPriors;
 	}
 
+	public void setPriorFixed(boolean fixedPriors){
+		this.fixedPriors = fixedPriors;
+	}
+
+	public void setCategories(Set<Category> categories){
+		this.categories = categories;
+	}
+
 	/*
 		@returns: fixedPriors
 	 */

@@ -1,6 +1,5 @@
 package com.datascience.core.storages;
 
-import java.lang.reflect.Type;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,21 +7,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import com.datascience.core.JobFactory;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.serialization.ISerializer;
-import com.datascience.serialization.json.JSONUtils;
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
-import org.apache.log4j.varia.StringMatchFilter;
 
 /**
  * From old class DawidSkeneCache.
@@ -33,11 +28,6 @@ import org.apache.log4j.varia.StringMatchFilter;
 public class DBJobStorage implements IJobStorage {
 
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
-	protected static Map<String, Type> typesMap = new HashMap<String, Type>();
-	static {
-		typesMap.put("CONTINUOUS", JSONUtils.continuousProject);
-		typesMap.put("NOMINAL", JSONUtils.nominalProject);
-	}
 
 	protected <T> String getKind(T object) {
 		if (object instanceof ContinuousProject){
@@ -60,7 +50,8 @@ public class DBJobStorage implements IJobStorage {
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 
 	private ISerializer serializer;
-	
+	private JobFactory jobFactory;
+
 	public DBJobStorage(String user, String password, String db, String url,
 			ISerializer serializer) throws ClassNotFoundException, SQLException,
 			IOException {
@@ -76,6 +67,7 @@ public class DBJobStorage implements IJobStorage {
 		connectDB();
 		
 		this.serializer = serializer;
+		jobFactory = new JobFactory(serializer);
 	}
 	
 	private void connectDB() throws SQLException {
@@ -111,14 +103,13 @@ public class DBJobStorage implements IJobStorage {
 			if (!dsResults.next()) {
 				return null;
 			}
-			String dsJson = dsResults.getString("data");
+			String data = dsResults.getString("data");
 			String kind = dsResults.getString("kind");
 			String results = dsResults.getString("results");
 			String scheduler = dsResults.getString("scheduler");
 			String initializationData = dsResults.getString("initializationData");
 			dsStatement.close();
-			T project = serializer.parse(dsJson, typesMap.get(kind));
-			return new Job<T>(project, id);
+			return jobFactory.create(kind, initializationData, data, results, scheduler, id);
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();

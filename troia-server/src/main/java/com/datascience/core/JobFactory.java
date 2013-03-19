@@ -1,8 +1,11 @@
 package com.datascience.core;
 
+import com.datascience.core.base.Data;
+import com.datascience.core.base.Project;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Category;
+import com.datascience.core.results.Results;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
@@ -11,6 +14,7 @@ import com.datascience.mv.IncrementalMV;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.json.JSONUtils;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,13 +31,34 @@ public class JobFactory {
 		this.serializer = serializer;
 	}
 
-	protected interface Creator{
+	protected interface AlgorithmCreator {
 		NominalAlgorithm create(JsonObject jo);
 	}
 
-	final static Map<String, Creator> ALG_FACTORY = new HashMap();
+	protected interface JobCreator{
+		Job create(JsonObject jo, String id);
+	}
+
+	final static Map<String, JobCreator> JOB_FACTORY = new HashMap();
 	{
-		Creator bds = new Creator() {
+		JOB_FACTORY.put("NOMINAL", new JobCreator(){
+			@Override
+			public Job create(JsonObject jo, String id){
+				return createNominalJob(jo, id);
+			}
+		});
+
+		JOB_FACTORY.put("CONTINUOUS", new JobCreator(){
+			@Override
+			public Job create(JsonObject jo, String id){
+				return createContinuousJob(jo, id);
+			}
+		});
+	}
+
+	final static Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
+	{
+		AlgorithmCreator bds = new AlgorithmCreator() {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
 				BatchDawidSkene alg = new BatchDawidSkene();
@@ -42,7 +67,7 @@ public class JobFactory {
 				return alg;
 			}
 		};
-		Creator ids =  new Creator() {
+		AlgorithmCreator ids =  new AlgorithmCreator() {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
 				IncrementalDawidSkene alg = new IncrementalDawidSkene();
@@ -52,14 +77,14 @@ public class JobFactory {
 			}
 		};
 
-		Creator bmv = new Creator() {
+		AlgorithmCreator bmv = new AlgorithmCreator() {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
 				return new BatchMV();
 			}
 		};
 
-		Creator imv = new Creator() {
+		AlgorithmCreator imv = new AlgorithmCreator() {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
 				return new IncrementalMV();
@@ -77,7 +102,7 @@ public class JobFactory {
 	};
 
 	protected NominalProject getNominalProject(Collection<Category> categories, String algorithm, JsonObject jo){
-		Creator creator = ALG_FACTORY.get(algorithm);
+		AlgorithmCreator creator = ALG_FACTORY.get(algorithm);
 		if (creator == null){
 			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s", algorithm));
 		}
@@ -108,5 +133,13 @@ public class JobFactory {
 		ContinuousProject cp = new ContinuousProject(alg);
 		cp.setInitializationData(jo);
 		return new Job(cp, id);
+	}
+
+	public <T extends Project> Job<T> create(String type, String initializationData, String jsonData,
+											 String jsonResults, String jsonScheduler, String id){
+		Job<T> job = JOB_FACTORY.get(type).create(new JsonParser().parse(initializationData).getAsJsonObject(), id);
+		job.getProject().setData(serializer.<Data>parse(jsonData, Data.class));
+		job.getProject().setResults(serializer.<Results>parse(jsonResults, Results.class));
+		return job;
 	}
 }

@@ -4,10 +4,8 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Data;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
+import com.datascience.core.base.*;
+import com.datascience.core.nominal.NominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
 import com.google.gson.Gson;
@@ -32,21 +30,15 @@ public class DataJSON {
 		public Data<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 			Data<T> data = new Data<T>();
 			JsonObject jo = jsonElement.getAsJsonObject();
-			for (JsonElement je: jo.get("workers").getAsJsonArray()){
-				Worker<T> worker = new Worker<T>(je.getAsString());
-				data.addWorker(worker);
-			}
 			for (JsonElement je: jo.get("objects").getAsJsonArray()){
 				LObject<T> object = jsonDeserializationContext.deserialize(je, LObject.class);
 				data.addObject((object));
-			}
-			for (JsonElement je: jo.get("goldObjects").getAsJsonArray()){
-				LObject<T> object = jsonDeserializationContext.deserialize(je, LObject.class);
-				data.addGoldObject((object));
-			}
-			for (JsonElement je: jo.get("evaluationObjects").getAsJsonArray()){
-				LObject<T> object = jsonDeserializationContext.deserialize(je, LObject.class);
-				data.addEvaluationObject((object));
+				if (object.getEvaluationLabel() != null){
+					data.addEvaluationObject(object);
+				}
+				if (object.getGoldLabel() != null){
+					data.addGoldObject(object);
+				}
 			}
 
 			for (JsonElement je: jo.get("assigns").getAsJsonArray()){
@@ -61,28 +53,42 @@ public class DataJSON {
 		}
 	}
 
+	public static class NominalDeserializer implements JsonDeserializer<NominalData> {
+
+		@Override
+		public NominalData deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+			Deserializer<String> deserializer = new Deserializer<String>();
+			NominalData ret = (NominalData) deserializer.deserialize(jsonElement, type, jsonDeserializationContext);
+			ret.setPriorFixed(jsonElement.getAsJsonObject().get("fixedPriors").getAsBoolean());
+			ret.setCategories((Set<Category>)jsonDeserializationContext.deserialize(
+					jsonElement.getAsJsonObject().get("categories"), JSONUtils.categorySetType));
+			return ret;
+		}
+	}
+
 	public static class Serializer<T> implements JsonSerializer<Data<T>> {
 
 		@Override
 		public JsonElement serialize(Data<T> data, Type type, JsonSerializationContext jsonSerializationContext) {
-			Set<String> workers = new HashSet<String>();
-			for (Worker<T> worker: data.getWorkers()){
-				workers.add(worker.getName());
-			}
-			JsonElement jworkers = jsonSerializationContext.serialize(workers);
 			JsonElement objects = jsonSerializationContext.serialize(data.getObjects());
-			JsonElement goldObjects = jsonSerializationContext.serialize(data.getGoldObjects());
-			JsonElement evaluationObjects = jsonSerializationContext.serialize(data.getEvaluationObjects());
 			JsonElement assigns = jsonSerializationContext.serialize(data.getAssigns());
 
 			JsonObject je = new JsonObject();
-			je.add("workers", jworkers);
 			je.add("objects", objects);
-			je.add("goldObjects", goldObjects);
-			je.add("evaluationObjects", evaluationObjects);
 			je.add("assigns", assigns);
 
 			return je;
+		}
+	}
+
+	public static class NominalSerializer implements JsonSerializer<NominalData>{
+		@Override
+		public JsonElement serialize(NominalData data, Type type, JsonSerializationContext jsonSerializationContext) {
+			Serializer<String> serializer = new Serializer<String>();
+			JsonObject ret = serializer.serialize(data, type, jsonSerializationContext).getAsJsonObject();
+			ret.addProperty("fixedPriors", data.arePriorsFixed());
+			ret.add("categories", jsonSerializationContext.serialize(data.getCategories()));
+			return ret;
 		}
 	}
 
@@ -107,25 +113,8 @@ public class DataJSON {
 			return jsonSerializationContext.serialize(new ShallowAssign<T>(tAssignedLabel));
 		}
 	}
-
-	public static class WorkerContResultsSerializer implements JsonSerializer<WorkerContResults> {
-
-		private static final Gson serializer;
-		
-		static {
-			GsonBuilder builder = JSONUtils.getDefaultGsonBuilder();
-			builder.registerTypeAdapter(Worker.class, new SimpleWorkerSerializer());
-			builder.registerTypeAdapter(AssignedLabel.class, new AssignSerializer());
-			serializer = builder.create();
-		}
-		
-		@Override
-		public JsonElement serialize(WorkerContResults wcr, Type type, JsonSerializationContext jsonSerializationContext) {
-			return serializer.toJsonTree(wcr);
-		}
-	}
 	
-	private static class SimpleWorkerSerializer<T> implements JsonSerializer<Worker<T>> {
+	public static class WorkerSerializer<T> implements JsonSerializer<Worker<T>> {
 		@Override
 		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());

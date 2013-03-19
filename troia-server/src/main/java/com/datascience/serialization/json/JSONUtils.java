@@ -13,18 +13,15 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.datascience.core.base.Category;
+import com.datascience.core.base.*;
 import com.datascience.core.nominal.CategoryValue;
+import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.LObject;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousProject;
-import com.datascience.core.base.Data;
 import com.datascience.core.results.WorkerContResults;
 import com.datascience.galc.serialization.GenericWorkerDeserializer;
 import com.datascience.galc.serialization.GenericWorkerSerializer;
@@ -54,15 +51,9 @@ public class JSONUtils {
 	} .getType();
 	public static final Type workerGenericType = new TypeToken<com.datascience.core.base.Worker>() {
 	} .getType();
-	public static final Type workerContResultsType = new TypeToken<WorkerContResults>() {
-	} .getType();
-	public static final Type continuousProject = new TypeToken<ContinuousProject>() {
-	} .getType();
 	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
 	} .getType();
 	public static final Type confusionMatrixType = new TypeToken<MultinomialConfusionMatrix>() {
-	} .getType();
-	public static final Type nominalProject = new TypeToken<NominalProject>() {
 	} .getType();
 
 	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
@@ -95,14 +86,17 @@ public class JSONUtils {
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
 
-		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
-		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
+//		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
+//		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
 
+		builder.registerTypeAdapter(NominalData.class, new DataJSON.NominalDeserializer());
+		builder.registerTypeAdapter(NominalData.class, new DataJSON.NominalSerializer());
 		builder.registerTypeAdapter(Data.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(Data.class, new DataJSON.Serializer());
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
+		builder.registerTypeAdapter(Worker.class, new DataJSON.WorkerSerializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
-		builder.registerTypeAdapter(workerContResultsType, new DataJSON.WorkerContResultsSerializer());
+
 		builder.registerTypeAdapter(ResultsFactory.DatumResultCreator.class, new DataJSON.DatumCreatorDeserializer());
 		builder.registerTypeAdapter(ResultsFactory.WorkerResultCreator.class, new DataJSON.WorkerCreatorDeserializer());
 
@@ -146,10 +140,4 @@ public class JSONUtils {
 		}
 
 	}
-
-//	public static Gson getOldGson(){
-//		GsonBuilder builder = getFilledDefaultGsonBuilder();
-//		builder.registerTypeAdapter(com.datascience.gal.Worker.class, Worker.deserializer);
-//		return builder.create();
-//	}
 }

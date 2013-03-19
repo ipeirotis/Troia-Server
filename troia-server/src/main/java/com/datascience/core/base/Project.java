@@ -46,6 +46,14 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 		initializationData = jo;
 	}
 
+	public void setData(U data){
+		this.data = data;
+	}
+
+	public void setResults(Results<T, V, W> results){
+		this.results = results;
+	}
+
 	public JsonObject getInitializationData(){
 		return initializationData;
 	}
