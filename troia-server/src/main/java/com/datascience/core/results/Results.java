@@ -4,6 +4,8 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,11 +18,17 @@ public class Results<T, U, V> {
 	protected ResultsFactory.DatumResultCreator datumCreator;
 	protected ResultsFactory.WorkerResultCreator workerCreator;
 
+	protected List<INewResultsListener<T, U, V>> newResultsListeners;
+	protected boolean notifyEnabled;
+
 	public Results(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
 		this.datumCreator = datumCreator;
 		this.workerCreator = workerCreator;
 		datumResults = new HashMap<LObject<T>, U>();
 		workerResults = new HashMap<Worker<T>, V>();
+
+		newResultsListeners = new LinkedList<INewResultsListener<T, U, V>>();
+		notifyEnabled = false;
 	}
 
 	public ResultsFactory.DatumResultCreator getDatumCreator(){
@@ -62,6 +70,7 @@ public class Results<T, U, V> {
 
 	public void addDatumResult(LObject<T> obj, U result){
 		datumResults.put(obj, result);
+		if (notifyEnabled) notifyNewObjectResults(obj, result);
 	}
 
 	public V getOrCreateWorkerResult(Worker<T> wor){
@@ -86,5 +95,37 @@ public class Results<T, U, V> {
 
 	public void addWorkerResult(Worker<T> worker, V result){
 		workerResults.put(worker, result);
+		if (notifyEnabled) notifyNewWorkerResults(worker, result);
+	}
+
+	public void addNewResultsListener(INewResultsListener<T, U, V> newResultsListener){
+		newResultsListeners.add(newResultsListener);
+	}
+
+	public void disableNotify(){
+		notifyEnabled = false;
+	}
+
+	public void enableNotify(){
+		notifyEnabled = true;
+	}
+
+	protected void notifyNewWorkerResults(Worker<T> worker, V result){
+		for (INewResultsListener<T, U, V> newResultsListener: newResultsListeners){
+			newResultsListener.newResultsForWorker(worker, result);
+		}
+	}
+
+	protected void notifyNewObjectResults(LObject<T> object, U result){
+		for (INewResultsListener<T, U, V> newResultsListener: newResultsListeners){
+			newResultsListener.newResultsForObject(object, result);
+		}
+	}
+
+	public void notifyAllNewResults(){
+		if (!notifyEnabled) return;
+		for (INewResultsListener<T, U, V> newResultsListener: newResultsListeners){
+			newResultsListener.newResultsForAll();
+		}
 	}
 }
