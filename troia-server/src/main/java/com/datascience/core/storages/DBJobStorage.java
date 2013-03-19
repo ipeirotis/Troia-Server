@@ -187,6 +187,8 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(1, jid);
 			dsStatement.setString(2, "TEST_KIND");
 			dsStatement.setString(3, content);
+			dsStatement.setString(4, content);
+			dsStatement.setString(5, content);
 			dsStatement.executeUpdate();
 			dsStatement.close();
 
