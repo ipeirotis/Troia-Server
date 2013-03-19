@@ -44,7 +44,7 @@ public class DataJSON {
 			for (JsonElement je: jo.get("assigns").getAsJsonArray()){
 				ShallowAssign<T> sassign = jsonDeserializationContext.deserialize(je, ShallowAssign.class);
 
-				Worker<T> worker = data.getWorker(sassign.worker);
+				Worker<T> worker = data.getOrCreateWorker(sassign.worker);
 				LObject<T> object = data.getObject(sassign.object);
 				data.addAssign(new AssignedLabel<T>(worker, object, sassign.label));
 			}
