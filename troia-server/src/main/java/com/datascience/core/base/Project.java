@@ -2,6 +2,7 @@ package com.datascience.core.base;
 
 
 import com.datascience.core.results.Results;
+import com.datascience.scheduler.Scheduler;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 	protected U data;
 	protected Results<T, V, W> results;
 	protected JsonObject initializationData;
+	protected Scheduler<T> scheduler;
 
 
 	public Project(Algorithm<T, U, V, W> alg){
@@ -56,6 +58,14 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 
 	public JsonObject getInitializationData(){
 		return initializationData;
+	}
+
+	public void setScheduler(Scheduler<T> scheduler){
+		this.scheduler = scheduler;
+	}
+
+	public Scheduler<T> getScheduler(){
+		return scheduler;
 	}
 
 	public Map<String, String> getInfo() {

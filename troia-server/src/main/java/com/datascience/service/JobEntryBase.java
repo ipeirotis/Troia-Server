@@ -18,6 +18,7 @@ import com.datascience.core.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
+import com.datascience.scheduler.SchedulerCommands;
 import com.datascience.serialization.json.DataJSON;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.serialization.ISerializer;
@@ -189,4 +190,15 @@ public abstract class JobEntryBase<T extends Project> {
 		return buildResponseOnCommand(new ProjectCommands.Compute());
 	}
 
+	@Path("nextObject/")
+	@GET
+	public Response schedulerNextObject(){
+		return buildResponseOnCommand(new SchedulerCommands.GetNextObject<T>());
+	}
+
+	@Path("nextObject/{wid:[a-zA-Z_0-9/:.-]+}")
+	@GET
+	public Response schedulerNextObject(@PathParam("wid") String worker){
+		return buildResponseOnCommand(new SchedulerCommands.GetNextObjectForWorker<T>(worker));
+	}
 }
