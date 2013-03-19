@@ -74,10 +74,6 @@ public class DataManagerTest {
 		// Load
 		DataManager managerL = DataManager.getInstance();
 		Collection<ArtificialWorker> workersL = managerL.loadArtificialWorkersFromFile(filename);
-		// TODO redirect output to a file, extract this collections with grep
-		// and and check with diff.
-		logger.debug("ArtificialWorkersSaved:  " + workersS);
-		logger.debug("ArtificialWorkersLoaded: " + workersL);
 		assertTrue(workersS.equals(workersL));
 	}
 
@@ -136,8 +132,6 @@ public class DataManagerTest {
 	private static final String ARTIFICIAL_WORKERS_FILE = RESULTS_ROOT + separator + "artificialWorkers.txt";
 	private static final String LABELS_FILE = RESULTS_ROOT + separator + "labels.txt";
 	private static final String FILENAME_BASE = RESULTS_ROOT + separator + "test";
-
-	private static Logger logger = Logger.getLogger(DataManagerTest.class);
 }
 
 /*

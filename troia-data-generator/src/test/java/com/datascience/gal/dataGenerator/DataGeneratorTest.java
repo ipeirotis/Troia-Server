@@ -188,8 +188,6 @@ public class DataGeneratorTest extends TestCase {
 	}
 
 	public final static double PRIOR_EPSILON = 1E-1;
-
-	private static Logger logger = Logger.getLogger(DataGeneratorTest.class);
 }
 
 /*

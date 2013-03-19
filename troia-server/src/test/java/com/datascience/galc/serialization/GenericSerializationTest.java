@@ -62,7 +62,6 @@ public class GenericSerializationTest {
 		String label = "label";
 		String json = gson.toJson(label);
 		String deserialized = gson.fromJson(json, new TypeToken<String>(){}.getType());
-		System.out.println(label + " = " + deserialized);
 		assertEquals(label, deserialized);
 	}
 
@@ -71,7 +70,6 @@ public class GenericSerializationTest {
 		Double label = 12.0;
 		String json = gson.toJson(label);
 		Double deserialized = gson.fromJson(json, new TypeToken<Double>(){}.getType());
-		System.out.println(label + " = " + deserialized);
 		assertEquals(label, deserialized);
 	}
 
@@ -99,7 +97,6 @@ public class GenericSerializationTest {
 			data.addWorker(worker);
 		}
 		String json = gson.toJson(data);
-		System.out.println(json);
 		Data deserialized = gson.fromJson(json, new TypeToken<Data>(){}.getType());
 		
 		assertTrue(deserialized.getAssigns().containsAll(data.getAssigns()));
@@ -115,7 +112,6 @@ public class GenericSerializationTest {
 		AssignedLabel<String> assignedLabel = new AssignedLabel<String>(worker, null, label);
 		String json = gson.toJson(assignedLabel);
 		AssignedLabel<String> deserialized = gson.fromJson(json, new TypeToken<AssignedLabel<String>>(){}.getType());
-		System.out.println(assignedLabel + " = " + deserialized);
 		assertEquals(assignedLabel, deserialized);
 	}
 
@@ -127,7 +123,6 @@ public class GenericSerializationTest {
 		}
 		String json = gson.toJson(assignedLabels);
 		Collection<AssignedLabel<String>> deserialized = gson.fromJson(json, new TypeToken<Collection<AssignedLabel<String>>>(){}.getType());
-		System.out.println(deserialized);
 		assertEquals(assignedLabels, deserialized);
 	}
 }
