@@ -19,7 +19,11 @@ public class ProjectCommands {
 		
 		@Override
 		protected void realExecute() {
+			boolean notifyState = project.getResults().isNotifyEnabled();
+			project.getResults().setNotifyEnabled(false);
 			project.getAlgorithm().compute();
+			project.getResults().setNotifyEnabled(notifyState);
+			project.getResults().notifyAllNewResults();
 			setResult("Computation done");
 		}
 	}

@@ -102,12 +102,12 @@ public class Results<T, U, V> {
 		newResultsListeners.add(newResultsListener);
 	}
 
-	public void disableNotify(){
-		notifyEnabled = false;
+	public void setNotifyEnabled(boolean enabled){
+		notifyEnabled = enabled;
 	}
 
-	public void enableNotify(){
-		notifyEnabled = true;
+	public boolean isNotifyEnabled(){
+		return notifyEnabled;
 	}
 
 	protected void notifyNewWorkerResults(Worker<T> worker, V result){
