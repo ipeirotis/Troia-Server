@@ -46,7 +46,7 @@ public class DBJobStorage implements IJobStorage {
 	private String databaseUrl;
 	
 	private static final String GET_DS = "SELECT kind, data FROM projects WHERE id IN (?);";
-	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data, results, scheduler, initializationData) VALUES (?, ?, ?, ?, ?, ?);";
+	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data, results, initializationData) VALUES (?, ?, ?, ?, ?, ?);";
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 
 	private ISerializer serializer;
@@ -106,10 +106,9 @@ public class DBJobStorage implements IJobStorage {
 			String data = dsResults.getString("data");
 			String kind = dsResults.getString("kind");
 			String results = dsResults.getString("results");
-			String scheduler = dsResults.getString("scheduler");
 			String initializationData = dsResults.getString("initializationData");
 			dsStatement.close();
-			return jobFactory.create(kind, initializationData, data, results, scheduler, id);
+			return jobFactory.create(kind, initializationData, data, results, id);
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -131,8 +130,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(2, getKind(job.getProject()));
 			dsStatement.setString(3, serializer.serialize(job.getProject().getData()));
 			dsStatement.setString(4, serializer.serialize(job.getProject().getResults()));
-			dsStatement.setString(5, "TODO");
-			dsStatement.setString(6, serializer.serialize(job.getProject().getInitializationData()));
+			dsStatement.setString(5, serializer.serialize(job.getProject().getInitializationData()));
 			dsStatement.executeUpdate();
 		} finally {
 			if (dsStatement != null) {

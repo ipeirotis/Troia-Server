@@ -9,7 +9,6 @@ id varchar(100) NOT NULL PRIMARY KEY,
 kind varchar(25) NOT NULL, 
 data LONGTEXT NOT NULL,
 results LONGTEXT,
-scheduler LONGTEXT, 
 initializationData LONGTEXT,
 last_use TIMESTAMP) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 

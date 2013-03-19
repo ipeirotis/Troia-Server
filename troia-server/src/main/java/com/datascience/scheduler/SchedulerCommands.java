@@ -16,8 +16,8 @@ public class SchedulerCommands {
 			super(true); // because we modify scheduler state
 		}
 
-		protected Scheduler<T> checkAndgetScheduler(){
-			Scheduler<T> scheduler = project.getScheduler();
+		protected IScheduler<T> checkAndgetScheduler(){
+			IScheduler<T> scheduler = project.getScheduler();
 			if (scheduler == null) {
 				throw new IllegalArgumentException("This job don't have scheduler enabled!");
 			}

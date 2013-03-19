@@ -9,9 +9,13 @@ import com.datascience.core.results.INewResultsListener;
  */
 public class SchedulerNotificator<T, U, V> implements INewResultsListener<T, U, V> {
 
-	protected Scheduler<T> scheduler;
+	protected IScheduler<T> scheduler;
 
-	public void setScheduler(Scheduler<T> scheduler){
+	public SchedulerNotificator(IScheduler<T> scheduler){
+		this.scheduler = scheduler;
+	}
+
+	public void setScheduler(IScheduler<T> scheduler){
 		this.scheduler = scheduler;
 	}
 

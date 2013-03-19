@@ -1,5 +1,6 @@
 package com.datascience.core;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.NominalAlgorithm;
@@ -11,6 +12,7 @@ import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
+import com.datascience.scheduler.SchedulerFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.json.JSONUtils;
 import com.google.gson.JsonObject;
@@ -108,6 +110,7 @@ public class JobFactory {
 		}
 		NominalProject np = new NominalProject(creator.create(jo));
 		np.initializeCategories(categories);
+		np.setScheduler(new SchedulerFactory<String>().create(jo));
 		np.setInitializationData(jo);
 		return np;
 	}
@@ -131,15 +134,18 @@ public class JobFactory {
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
 		ContinuousProject cp = new ContinuousProject(alg);
+		cp.setScheduler(new SchedulerFactory<ContValue>().create(jo));
 		cp.setInitializationData(jo);
 		return new Job(cp, id);
 	}
 
 	public <T extends Project> Job<T> create(String type, String initializationData, String jsonData,
-											 String jsonResults, String jsonScheduler, String id){
-		Job<T> job = JOB_FACTORY.get(type).create(new JsonParser().parse(initializationData).getAsJsonObject(), id);
+											 String jsonResults, String id){
+		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
+		Job<T> job = JOB_FACTORY.get(type).create(jo, id);
 		job.getProject().setData(serializer.<Data>parse(jsonData, Data.class));
 		job.getProject().setResults(serializer.<Results>parse(jsonResults, Results.class));
+		job.getProject().setScheduler(new SchedulerFactory<T>().create(jo));
 		return job;
 	}
 }
