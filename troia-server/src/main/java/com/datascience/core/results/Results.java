@@ -13,14 +13,22 @@ public class Results<T, U, V> {
 
 	protected Map<LObject<T>, U> datumResults;
 	protected Map<Worker<T>, V> workerResults;
-	protected ResultsFactory.IDatumResultCreator datumCreator;
-	protected ResultsFactory.IWorkerResultCreator workerCreator;
+	protected ResultsFactory.DatumResultCreator datumCreator;
+	protected ResultsFactory.WorkerResultCreator workerCreator;
 
-	public Results(ResultsFactory.IDatumResultCreator datumCreator, ResultsFactory.IWorkerResultCreator workerCreator){
+	public Results(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
 		this.datumCreator = datumCreator;
 		this.workerCreator = workerCreator;
 		datumResults = new HashMap<LObject<T>, U>();
 		workerResults = new HashMap<Worker<T>, V>();
+	}
+
+	public ResultsFactory.DatumResultCreator getDatumCreator(){
+		return datumCreator;
+	}
+
+	public ResultsFactory.WorkerResultCreator getWorkerCreator(){
+		return workerCreator;
 	}
 
 	public Map<Worker<T>, V> getWorkerResults(){

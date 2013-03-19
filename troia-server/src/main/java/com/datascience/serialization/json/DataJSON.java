@@ -8,6 +8,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -128,6 +129,26 @@ public class DataJSON {
 		@Override
 		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());
+		}
+	}
+
+	public static class DatumCreatorDeserializer<T, U> implements JsonDeserializer<ResultsFactory.DatumResultCreator<T, U>> {
+
+		@Override
+		public ResultsFactory.DatumResultCreator<T, U> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+			JsonObject jo = jsonElement.getAsJsonObject();
+			ResultsFactory.DatumResultFactoryCreator creator = new ResultsFactory.DatumResultFactoryCreator();
+			return creator.create(jo.get("clazz").getAsString());
+		}
+	}
+
+	public static class WorkerCreatorDeserializer<T, U> implements JsonDeserializer<ResultsFactory.WorkerResultCreator<T, U>> {
+
+		@Override
+		public ResultsFactory.WorkerResultCreator<T, U> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+			JsonObject jo = jsonElement.getAsJsonObject();
+			ResultsFactory.WorkerResultFactoryCreator creator = new ResultsFactory.WorkerResultFactoryCreator();
+			return creator.create(jo.get("clazz").getAsString());
 		}
 	}
 }

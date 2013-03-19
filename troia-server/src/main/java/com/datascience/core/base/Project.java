@@ -2,6 +2,7 @@ package com.datascience.core.base;
 
 
 import com.datascience.core.results.Results;
+import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 	protected Algorithm<T, U, V, W> algorithm;
 	protected U data;
 	protected Results<T, V, W> results;
+	protected JsonObject initializationData;
 
 
 	public Project(Algorithm<T, U, V, W> alg){
@@ -38,6 +40,14 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 
 	public Algorithm<T, U, V, W> getAlgorithm(){
 		return algorithm;
+	}
+
+	public void setInitializationData(JsonObject jo){
+		initializationData = jo;
+	}
+
+	public JsonObject getInitializationData(){
+		return initializationData;
 	}
 
 	public Map<String, String> getInfo() {

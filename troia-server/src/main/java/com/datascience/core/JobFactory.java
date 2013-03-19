@@ -83,6 +83,7 @@ public class JobFactory {
 		}
 		NominalProject np = new NominalProject(creator.create(jo));
 		np.initializeCategories(categories);
+		np.setInitializationData(jo);
 		return np;
 	}
 	
@@ -104,6 +105,8 @@ public class JobFactory {
 		ContinuousIpeirotis alg = new ContinuousIpeirotis();
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
-		return new Job(new ContinuousProject(alg), id);
+		ContinuousProject cp = new ContinuousProject(alg);
+		cp.setInitializationData(jo);
+		return new Job(cp, id);
 	}
 }

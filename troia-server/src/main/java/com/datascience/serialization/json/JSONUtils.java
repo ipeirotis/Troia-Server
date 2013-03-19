@@ -12,10 +12,11 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 import com.datascience.core.base.Category;
 import com.datascience.core.nominal.CategoryValue;
+import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
 import com.datascience.core.base.AssignedLabel;
@@ -61,7 +62,7 @@ public class JSONUtils {
 	} .getType();
 	public static final Type confusionMatrixType = new TypeToken<MultinomialConfusionMatrix>() {
 	} .getType();
-	public static final Type dawidSkeneType = new TypeToken<AbstractDawidSkene>() {
+	public static final Type nominalProject = new TypeToken<NominalProject>() {
 	} .getType();
 
 	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
@@ -83,7 +84,7 @@ public class JSONUtils {
 	}
 	
 	public static GsonBuilder getDefaultGsonBuilder() {
-		return new GsonBuilder().serializeSpecialFloatingPointValues();
+		return new GsonBuilder().serializeSpecialFloatingPointValues().enableComplexMapKeySerialization();
 	}
 
 	public static GsonBuilder getFilledDefaultGsonBuilder() {
@@ -102,6 +103,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
 		builder.registerTypeAdapter(workerContResultsType, new DataJSON.WorkerContResultsSerializer());
+		builder.registerTypeAdapter(ResultsFactory.DatumResultCreator.class, new DataJSON.DatumCreatorDeserializer());
+		builder.registerTypeAdapter(ResultsFactory.WorkerResultCreator.class, new DataJSON.WorkerCreatorDeserializer());
 
 		builder.registerTypeAdapter(objectsStringType,
 				new GenericCollectionDeserializer<LObject<String>>(
@@ -135,7 +138,6 @@ public class JSONUtils {
 
 		@Override
 		public Collection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
-			Logger.getAnonymousLogger().warning(jsonElement.toString());
 			Collection<T> ret = new ArrayList<T>();
 			for (JsonElement je : jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray()){
 				ret.add((T)context.deserialize(je, this.type));

@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.datascience.core.base.Project;
+import com.datascience.core.nominal.NominalProject;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.json.JSONUtils;
 import com.datascience.gal.AbstractDawidSkene;
@@ -21,6 +22,7 @@ import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
+import org.apache.log4j.varia.StringMatchFilter;
 
 /**
  * From old class DawidSkeneCache.
@@ -34,14 +36,14 @@ public class DBJobStorage implements IJobStorage {
 	protected static Map<String, Type> typesMap = new HashMap<String, Type>();
 	static {
 		typesMap.put("CONTINUOUS", JSONUtils.continuousProject);
-		typesMap.put("NOMINAL", JSONUtils.dawidSkeneType);
+		typesMap.put("NOMINAL", JSONUtils.nominalProject);
 	}
 
 	protected <T> String getKind(T object) {
 		if (object instanceof ContinuousProject){
 			return "CONTINUOUS";
 		}
-		if (object instanceof AbstractDawidSkene){
+		if (object instanceof NominalProject){
 			return "NOMINAL";
 		}
 		throw new IllegalArgumentException("Unknown job kind for class: " + object.getClass());
@@ -54,7 +56,7 @@ public class DBJobStorage implements IJobStorage {
 	private String databaseUrl;
 	
 	private static final String GET_DS = "SELECT kind, data FROM projects WHERE id IN (?);";
-	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data) VALUES (?, ?, ?);";
+	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data, results, scheduler, initializationData) VALUES (?, ?, ?, ?, ?, ?);";
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 
 	private ISerializer serializer;
@@ -111,6 +113,9 @@ public class DBJobStorage implements IJobStorage {
 			}
 			String dsJson = dsResults.getString("data");
 			String kind = dsResults.getString("kind");
+			String results = dsResults.getString("results");
+			String scheduler = dsResults.getString("scheduler");
+			String initializationData = dsResults.getString("initializationData");
 			dsStatement.close();
 			T project = serializer.parse(dsJson, typesMap.get(kind));
 			return new Job<T>(project, id);
@@ -132,10 +137,11 @@ public class DBJobStorage implements IJobStorage {
 		try {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
-			String dsString = serializer.serialize(job.getProject());
 			dsStatement.setString(2, getKind(job.getProject()));
-			dsStatement.setString(3, dsString);
-
+			dsStatement.setString(3, serializer.serialize(job.getProject().getData()));
+			dsStatement.setString(4, serializer.serialize(job.getProject().getResults()));
+			dsStatement.setString(5, "TODO");
+			dsStatement.setString(6, serializer.serialize(job.getProject().getInitializationData()));
 			dsStatement.executeUpdate();
 		} finally {
 			if (dsStatement != null) {

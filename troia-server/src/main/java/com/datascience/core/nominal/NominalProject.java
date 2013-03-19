@@ -34,9 +34,11 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 		algorithm.setResults(results);
 	}
 
-	public Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<Category> categories){
-		return new Results<String, DatumResult, WorkerResult>(
+	public static Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<Category> categories){
+		Results<String, DatumResult, WorkerResult> res = new Results<String, DatumResult, WorkerResult>(
 				new ResultsFactory.DatumResultFactory(),
-				new ResultsFactory.WorkerResultNominalFactory(categories));
+				new ResultsFactory.WorkerResultNominalFactory());
+		((ResultsFactory.WorkerResultNominalFactory)res.getWorkerCreator()).setCategories(categories);
+		return res;
 	}
 }
