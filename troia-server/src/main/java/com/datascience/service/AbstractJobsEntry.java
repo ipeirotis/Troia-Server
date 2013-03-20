@@ -56,7 +56,7 @@ public abstract class AbstractJobsEntry {
 	protected abstract Job createJob(JsonObject jo, String jid);
 
 	public Response createJob(String json) throws Exception{
-		JsonObject jo = new JsonParser().parse(json).getAsJsonObject();
+		JsonObject jo = json.isEmpty() ? new JsonObject() : new JsonParser().parse(json).getAsJsonObject();
 
 		String jid = jo.has("id") ? jo.get("id").getAsString() : jidGenerator.getID();
 		Job job_old = jobStorage.get(jid);
