@@ -1,7 +1,7 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -21,8 +21,8 @@ public class CachedScheduler<T> extends Scheduler<T> {
 
 	public CachedScheduler() { }
 
-	public CachedScheduler(Data<T> data, IPriorityCalculator<T> calculator, long pauseDuration, TimeUnit pauseUnit) {
-		super(data, calculator);
+	public CachedScheduler(Project<T, ?, ?, ?> project, IPriorityCalculator<T> calculator, long pauseDuration, TimeUnit pauseUnit) {
+		super(project, calculator);
 		setUpCache(pauseDuration, pauseUnit);
 	}
 

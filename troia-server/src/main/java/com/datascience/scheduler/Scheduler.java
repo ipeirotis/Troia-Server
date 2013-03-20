@@ -2,6 +2,7 @@ package com.datascience.scheduler;
 
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 
 import java.util.PriorityQueue;
@@ -17,9 +18,9 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	public Scheduler() { }
 
-	public Scheduler(Data<T> data, IPriorityCalculator<T> calculator) {
-		setData(data);
+	public Scheduler(Project<T, ?, ?, ?> project, IPriorityCalculator<T> calculator) {
 		setUpQueue(calculator);
+		setProject(project);
 	}
 
 	@Override
@@ -51,8 +52,9 @@ public class Scheduler<T> implements IScheduler<T> {
 	}
 
 	@Override
-	public void setData(Data<T> data) {
-		this.data = data;
+	public void setProject(Project<T, ?, ?, ?> project) {
+		data = project.getData();
+		calculator.setProject(project);
 	}
 
 	@Override

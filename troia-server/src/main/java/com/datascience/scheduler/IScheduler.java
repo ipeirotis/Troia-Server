@@ -2,6 +2,7 @@ package com.datascience.scheduler;
 
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 
 /**
@@ -16,7 +17,7 @@ public interface IScheduler<T> {
 	LObject<T> nextObject(Worker<T> worker);
 
 	void setUpQueue(IPriorityCalculator<T> calculator);
-	void setData(Data<T> data);
+	void setProject(Project<T, ?, ?, ?> project);
 	Data<T> getData();
 	IPriorityCalculator<T> getCalculator();
 

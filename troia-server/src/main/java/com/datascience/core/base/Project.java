@@ -3,7 +3,6 @@ package com.datascience.core.base;
 
 import com.datascience.core.results.Results;
 import com.datascience.scheduler.IScheduler;
-import com.datascience.scheduler.Scheduler;
 import com.datascience.scheduler.SchedulerNotificator;
 import com.google.gson.JsonObject;
 
@@ -65,9 +64,8 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 	public void setScheduler(IScheduler<T> scheduler){
 		this.scheduler = scheduler;
 		results.addNewResultsListener(new SchedulerNotificator<T, V, W>(this.scheduler));
-		if (data != null){
-			this.scheduler.setData(data);
-		}
+		assert data != null;
+		this.scheduler.setProject(this);
 	}
 
 	public IScheduler<T> getScheduler(){

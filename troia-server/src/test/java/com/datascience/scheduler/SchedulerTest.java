@@ -1,6 +1,11 @@
 package com.datascience.scheduler;
 
 import com.datascience.core.base.*;
+import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.WorkerContResults;
+import com.datascience.galc.ContinuousIpeirotis;
+import com.datascience.galc.ContinuousProject;
+import com.datascience.mv.IncrementalMV;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -20,7 +25,7 @@ public class SchedulerTest {
 		);
 	}
 
-	private Data<ContValue> populate(int objectsCount) {
+	private ContinuousProject populate(int objectsCount) {
 		Data<ContValue> data = new Data<ContValue>();
 		data.addObject(new LObject<ContValue>("object0"));
 		for (int i = 0; i < objectsCount; i++) {
@@ -28,14 +33,17 @@ public class SchedulerTest {
 				addAssign(data, "worker" + j, "object" + i);
 			}
 		}
-		return data;
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis());
+		cp.setData(data);
+		return cp;
 	}
 
 	@Test
 	public void schedulerTest() {
 		final int objectsCount = 5;
-		Data<ContValue> data = populate(objectsCount);
-		Scheduler<ContValue> scheduler = new Scheduler(data, new DummyPriorityCalculator(data));
+		ContinuousProject cp = populate(objectsCount);
+		Data<ContValue> data = cp.getData();
+		Scheduler<ContValue> scheduler = new Scheduler(cp, new DummyPriorityCalculator(data));
 		scheduler.update();
 		for (int i = 0; i < objectsCount; i++) {
 			assertEquals(data.getObject("object0"), scheduler.nextObject());
@@ -45,8 +53,9 @@ public class SchedulerTest {
 	@Test
 	public void cachedSchedulerOrderTest() {
 		final int objectsCount = 5;
-		Data<ContValue> data = populate(objectsCount);
-		CachedScheduler<ContValue> scheduler = new CachedScheduler(data, new DummyPriorityCalculator(data), 10,
+		ContinuousProject cp = populate(objectsCount);
+		Data<ContValue> data = cp.getData();
+		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
 		// Check if objects are returned in proper order.
@@ -59,8 +68,9 @@ public class SchedulerTest {
 	@Test
 	public void cachedSchedulerExpirationTest() {
 		final int objectsCount = 5;
-		Data<ContValue> data = populate(objectsCount);
-		CachedScheduler<ContValue> scheduler = new CachedScheduler(data, new DummyPriorityCalculator(data), 10,
+		ContinuousProject cp = populate(objectsCount);
+		Data<ContValue> data = cp.getData();
+		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
 		// Cache all objects.
@@ -77,8 +87,9 @@ public class SchedulerTest {
 	@Test
 	public void cachedSchedulerUpdateTest() {
 		final int objectsCount = 5;
-		Data<ContValue> data = populate(objectsCount);
-		CachedScheduler<ContValue> scheduler = new CachedScheduler(data, new DummyPriorityCalculator(data), 10,
+		ContinuousProject cp = populate(objectsCount);
+		Data<ContValue> data = cp.getData();
+		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
 		// Cache all objects.

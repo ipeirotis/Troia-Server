@@ -45,11 +45,10 @@ public class CostBasedPriorityCalculatorTest {
 		ILabelProbabilityDistributionCostCalculator lpdcc =
 				LabelProbabilityDistributionCostCalculators.get(costMethod);
 		IPriorityCalculator<String> pc = new CostBasedPriorityCalculator(lpdcc);
-		pc.setProject(project);
 		scheduler.setUpQueue(pc);
 		Worker<String> worker = new Worker<String>("Worker1");
 		NominalData data = project.getData();
-		scheduler.setData(data);
+		scheduler.setProject(project);
 		LObject<String> object1 = data.getOrCreateObject("object1");
 		LObject<String> object2 = data.getOrCreateObject("object2");
 		int w = 0;
