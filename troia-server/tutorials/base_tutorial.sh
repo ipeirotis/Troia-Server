@@ -1,25 +1,25 @@
 #!/bin/bash
 
-#URL="http://localhost:8080/troia-server-1.0"
-URL="http://project-troia.com/api"
+URL="http://localhost:8080/troia-server-1.0"
+#URL="http://project-troia.com/api"
 redirectId=0
 noIterations=20
-algorithm=DS
+costAlgorithm=ExpectedCost
 labelChoosingMethod=MaxLikelihood
 
 function createJob 
 {
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "type=batch&categories=[
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "{categories:[
     {"prior":"0.5", "name":"porn", "misclassificationCost": [{'categoryName': 'porn', 'value': 0}, {'categoryName': 'notporn', 'value': 1}]}, 
-    {"prior":"0.5", "name":"notporn", "misclassificationCost":[{'categoryName': 'porn', 'value': 1}, {'categoryName': 'notporn', 'value': 0}]}]")
- 
+    {"prior":"0.5", "name":"notporn", "misclassificationCost":[{'categoryName': 'porn', 'value': 1}, {'categoryName': 'notporn', 'value': 0}]}], algorithm:'BDS'}")
+
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   while [[ $status != "OK" ]]
     do
       sleep 5 
-      result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "type=batch&categories=[
+      result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d "{categories:[
       {"prior":"0.5","name":"porn","misclassification_cost":{"porn":"0","notporn":"1"}},
-      {"prior":"0.5","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}]")
+      {"prior":"0.5","name":"notporn","misclassification_cost":{"porn":"1","notporn":"0"}}], algorithm: 'BDS'}")
       status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
     done
   local jid=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 3 | cut -d '"' -f 1)
@@ -31,7 +31,6 @@ function deleteJob
 {
   echo "Deleting job with ID $1 ..."
   local result=$(curl -s1 -X DELETE -H "Content-Type: application/json" "$URL/jobs" -d "id=$1")
-  echo $result
   local status=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" == "OK" ]]
     then
@@ -46,33 +45,32 @@ function uploadAssignedLabels
 {
   #upload assigned labels
   echo "Uploading assignedLabels ... "
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$1/assignedLabels" -d 'labels=[
-    {"workerName":"worker1","objectName":"http://sunnyfun.com","categoryName":"porn"},
-    {"workerName":"worker1","objectName":"http://sex-mission.com","categoryName":"porn"},
-    {"workerName":"worker1","objectName":"http://google.com","categoryName":"porn"},
-    {"workerName":"worker1","objectName":"http://youporn.com","categoryName":"porn"},
-    {"workerName":"worker1","objectName":"http://yahoo.com","categoryName":"porn"},
-    {"workerName":"worker2","objectName":"http://sunnyfun.com","categoryName":"notporn"},
-    {"workerName":"worker2","objectName":"http://sex-mission.com","categoryName":"porn"},
-    {"workerName":"worker2","objectName":"http://google.com","categoryName":"notporn"},
-    {"workerName":"worker2","objectName":"http://youporn.com","categoryName":"porn"},
-    {"workerName":"worker2","objectName":"http://yahoo.com","categoryName":"porn"},
-    {"workerName":"worker3","objectName":"http://sunnyfun.com","categoryName":"notporn"},
-    {"workerName":"worker3","objectName":"http://sex-mission.com","categoryName":"porn"},
-    {"workerName":"worker3","objectName":"http://google.com","categoryName":"notporn"},
-    {"workerName":"worker3","objectName":"http://youporn.com","categoryName":"porn"},
-    {"workerName":"worker3","objectName":"http://yahoo.com","categoryName":"notporn"},
-    {"workerName":"worker4","objectName":"http://sunnyfun.com","categoryName":"notporn"},
-    {"workerName":"worker4","objectName":"http://sex-mission.com","categoryName":"porn"},
-    {"workerName":"worker4","objectName":"http://google.com","categoryName":"notporn"},
-    {"workerName":"worker4","objectName":"http://youporn.com","categoryName":"porn"},
-    {"workerName":"worker4","objectName":"http://yahoo.com","categoryName":"notporn"},
-    {"workerName":"worker5","objectName":"http://sunnyfun.com","categoryName":"porn"},
-    {"workerName":"worker5","objectName":"http://sex-mission.com","categoryName":"notporn"},
-    {"workerName":"worker5","objectName":"http://google.com","categoryName":"porn"},
-    {"workerName":"worker5","objectName":"http://youporn.com","categoryName":"notporn"},
-    {"workerName":"worker5","objectName":"http://yahoo.com","categoryName":"porn"}]')
-  echo $result
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$1/assigns" -d '{assigns:[
+    {"worker":"worker1","object":"http://sunnyfun.com","label":"porn"},
+    {"worker":"worker1","object":"http://sex-mission.com","label":"porn"},
+    {"worker":"worker1","object":"http://google.com","label":"porn"},
+    {"worker":"worker1","object":"http://youporn.com","label":"porn"},
+    {"worker":"worker1","object":"http://yahoo.com","label":"porn"},
+    {"worker":"worker2","object":"http://sunnyfun.com","label":"notporn"},
+    {"worker":"worker2","object":"http://sex-mission.com","label":"porn"},
+    {"worker":"worker2","object":"http://google.com","label":"notporn"},
+    {"worker":"worker2","object":"http://youporn.com","label":"porn"},
+    {"worker":"worker2","object":"http://yahoo.com","label":"porn"},
+    {"worker":"worker3","object":"http://sunnyfun.com","label":"notporn"},
+    {"worker":"worker3","object":"http://sex-mission.com","label":"porn"},
+    {"worker":"worker3","object":"http://google.com","label":"notporn"},
+    {"worker":"worker3","object":"http://youporn.com","label":"porn"},
+    {"worker":"worker3","object":"http://yahoo.com","label":"notporn"},
+    {"worker":"worker4","object":"http://sunnyfun.com","label":"notporn"},
+    {"worker":"worker4","object":"http://sex-mission.com","label":"porn"},
+    {"worker":"worker4","object":"http://google.com","label":"notporn"},
+    {"worker":"worker4","object":"http://youporn.com","label":"porn"},
+    {"worker":"worker4","object":"http://yahoo.com","label":"notporn"},
+    {"worker":"worker5","object":"http://sunnyfun.com","label":"porn"},
+    {"worker":"worker5","object":"http://sex-mission.com","label":"notporn"},
+    {"worker":"worker5","object":"http://google.com","label":"porn"},
+    {"worker":"worker5","object":"http://youporn.com","label":"notporn"},
+    {"worker":"worker5","object":"http://yahoo.com","label":"porn"}]}')
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
@@ -82,13 +80,11 @@ function uploadAssignedLabels
     else
       echo "Uploaded successfully the assigned labels"
   fi
-  echo $result
 }
 
 function getJobStatus {
   local result=$(curl -s1 -X GET "$URL/$1")
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
-
   if [[ "$status" != "$2" ]]
     then
       echo "$3 with status $status"
@@ -101,11 +97,11 @@ function getJobStatus {
 function loadGoldLabels {
   #load gold labels
   echo "Loading the gold labels ..."
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$1/goldData" -d 'labels=
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$1/goldObjects" -d '{objects:
   [{
-    "correctCategory": "notporn",
-    "objectName": "http://google.com"
-  }]')
+    "goldLabel": "notporn",
+    "name": "http://google.com"
+  }]}')
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
     then
@@ -150,40 +146,27 @@ function waitComputationToFinish {
   echo "-----------------"
 }
 
-function getWorkersScore {
-  echo "Getting the workers score ... "
-  local result=$(curl -s1 -X GET "$URL/jobs/$1/prediction/workersScore")
-  local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
-  if [[ "$status" != "OK" ]]
-    then
-      echo "ERROR: Get workers score job failed with status $status"
-      #exit 1
-    else
-      echo "Get workers score job finished successfully"
-  fi
-  echo "-----------------"
-}
 
-function getWorkersQuality {
-  #get the workers quality
-  echo "Getting the workers quality ... "
-  local result=$(curl -s1 -X GET "$URL/jobs/$1/prediction/workersQuality")
+function getEstimatedWorkersQuality {
+  #get the estimated workers quality
+  echo "Getting the estimated workers quality ... "
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/workers/quality/estimated" -d "{costAlgorithm: $costAlgorithm}")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
     then
-      echo "ERROR: Get workers quality job failed with status $status"
+      echo "ERROR: Get estimated workers quality job failed with status $status"
       #exit 1
     else
-      echo "Get workers quality job finished successfully"
+      echo "Get estimated workers quality job finished successfully"
   fi
 }
 
-function getWorkersQualityData {
+function getEstimatedWorkersQualityData {
   #get the job status and check that the data is correct
-  echo "Getting workers quality job status for redirect=$redirectId..."
+  echo "Getting estimated workers quality job status for redirect=$redirectId..."
   local result=$(curl -s1 -X GET "$URL/$redirectId")
-  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local workerQualityData=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 1)
   echo "Received: $workerQualityData"
 
@@ -206,9 +189,9 @@ function getWorkersQualityData {
   echo "-----------------"
 }
 
-function getPredictionData {
-  echo "Getting prediction data ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$1/prediction/data?algorithm=$algorithm&labelChoosing=$labelChoosingMethod")
+function getPredictedObjectsCategories {
+  echo "Getting predicted object categories ..."
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/objects/prediction")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
@@ -220,11 +203,11 @@ function getPredictionData {
   fi
 }
 
-function getActualPredictionData {
+function getActualPredictedObjectsCategories {
   #get the job status and check that the returned data is correct
   echo "Getting prediction data job status for redirect=$redirectId ..."
   local result=$(curl -s1 -X GET "$URL/$redirectId")
-  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local predictionData=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 1)
   echo "Received: $predictionData"
 
@@ -250,11 +233,11 @@ function getActualPredictionData {
 
 function getLabelProbabilityDistribution {
   echo "Getting label probability distributions for object $2 ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$1/data/$2/categoryProbability")
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/objects/$2/categoryProbability")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   
   local result=$(curl -s1 -X GET "$URL/$redirectId")
-  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2| cut -d ':' -f 2 | cut -d '"' -f 2)
+  local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   while [[ $status != "OK" ]]
     do
       echo The status is $status - waiting 5 seconds
@@ -285,25 +268,24 @@ function mainFlow {
   loadGoldLabels $JobID
   compute $JobID
   waitComputationToFinish
-  getWorkersScore $JobID
 
-  getWorkersQuality $JobID
+  getEstimatedWorkersQuality $JobID
   declare -A expectedWorkerQualities
   expectedWorkerQualities[worker1]=0.0
   expectedWorkerQualities[worker2]=0.4444444444444444
   expectedWorkerQualities[worker3]=1.0
   expectedWorkerQualities[worker4]=1.0
   expectedWorkerQualities[worker5]=1.0
-  getWorkersQualityData $expectedWorkerQualities
+  getEstimatedWorkersQualityData $expectedWorkerQualities
 
-  getPredictionData $JobID
+  getPredictedObjectsCategories $JobID
   declare -A expectedCategories
   expectedCategories[http://google.com]=notporn
   expectedCategories[http://sex-mission.com]=porn
   expectedCategories[http://sunnyfun.com]=notporn
   expectedCategories[http://yahoo.com]=notporn
   expectedCategories[http://youporn.com]=porn
-  getActualPredictionData $expectedCategories
+  getActualPredictedObjectsCategories $expectedCategories
   
   datumObject=http://sunnyfun.com
   declare -A expectedCategoryDistributions

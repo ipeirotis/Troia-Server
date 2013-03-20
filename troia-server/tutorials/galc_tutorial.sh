@@ -97,7 +97,7 @@ function loadGoldLabels {
 function loadUnassignedLabels {
   #load the unassigned labels
   echo "Loading the unassigned labels ..."
-  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs/$1/objects" -d '{"objects":["object1", "object2"]}')
+  local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs/$1/objects" -d '{"objects":[{"name":"object1"}, {"name":"object2"}]}')
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
     then
@@ -129,7 +129,6 @@ function waitComputationToFinish {
   #get the job status and check that the data is correct
   echo "Checking if the computation has ended - redirect=$redirectId..."
   local result=$(curl -s1 -X GET "$URL/$redirectId")
-  echo $result
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   while [[ $status != "Computation done" ]]
     do
@@ -149,6 +148,7 @@ function getPredictionObjects {
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   
   local result=$(curl -s1 -X GET "$URL/$redirectId")
+  echo $result
   local status=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 2 | cut -d ',' -f 3| cut -d ':' -f 2 | cut -d '"' -f 2 )
   local predictionObjects=$(echo $result| cut -d '[' -f 2 | cut -d ']' -f 1)
 
@@ -199,6 +199,7 @@ function getPredictionWorkers {
 function galcTutorial
 {
     JobID=$(createJob)
+    echo $JobID
     uploadAssignedLabels $JobID
     loadGoldLabels $JobID
     loadUnassignedLabels $JobID
@@ -212,7 +213,18 @@ function galcTutorial
     expectedPredictionObjects[4]='{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object1"}}'
     expectedPredictionObjects[5]='{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object2"}}'
     expectedPredictionObjects[6]='{"est_value":0.05636583076319032,"est_zeta":-0.2965350443548846,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://yahoo.com"}}'
+    
+    
+    #{"est_value":0.11456418171572877,"est_zeta":-0.1913547099132667,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://youporn.com"}},
+    #{"est_value":0.8039463988940113,"est_zeta":1.0545474672815522,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://sunnyfun.com"}},
+    #{"est_value":0.17414895890312143,"est_zeta":-0.08366872414864963,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://sex-mission.com"}},
+    #{"est_value":-0.046802809616951685,"est_zeta":-0.4829889888647511,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://google.com"}},
+    #{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object1"}},
+    #{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object2"}},
+    #{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{}},
+    #{"est_value":0.05636583076319032,"est_zeta":-0.2965350443548846,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://yahoo.com"}}],"executionTime":0.0,"status":"OK"}
 
+    
     getPredictionObjects $JobID $expectedPredictionObjects
     
     getPredictionWorkers $JobID 
