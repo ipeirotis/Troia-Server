@@ -146,6 +146,37 @@ function waitComputationToFinish {
   echo "-----------------"
 }
 
+function getWorkersConfusionMatrices {
+  #get workers confusion matrices
+  echo "Getting the workers confusion matrices ... "
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/workers/quality/matrix")
+  redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
+  if [[ "$status" != "OK" ]]
+    then
+      echo "ERROR: Get workers confusion matrices job failed with status $status"
+      #exit 1
+    else
+      echo "Get workers confusion matrices job finished successfully"
+  fi
+}
+
+function getWorkersConfusionMatricesData {
+  #get the job status and check that the data is correct
+  echo "Getting the confusion matrices data for redirect=$redirectId..."
+  local result=$(curl -s1 -X GET "$URL/$redirectId")
+
+  for i in "${!expectedConfusionMatrices[@]}"
+  do
+    if [[ "$result" != *"${expectedConfusionMatrices[$i]}"* ]]
+      then
+	echo "ERROR: Could not find object "${expectedConfusionMatrices[$i]}" into the worker confusion matrices data"
+	#exit 1
+    fi
+  done
+  echo "-----------------"
+}
+
 
 function getEstimatedWorkersQuality {
   #get the estimated workers quality
@@ -191,7 +222,7 @@ function getEstimatedWorkersQualityData {
 
 function getPredictedObjectsCategories {
   echo "Getting predicted object categories ..."
-  local result=$(curl -s1 -X GET "$URL/jobs/$1/objects/prediction")
+  local result=$(curl -s1 -X GET "$URL/jobs/$1/objects/prediction" -d "{labelChoosing: $labelChoosingMethod")
   redirectId=$(echo $result| cut -d ',' -f 3 | cut -d ':' -f 2 | cut -d '"' -f 2)
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
@@ -268,7 +299,16 @@ function mainFlow {
   loadGoldLabels $JobID
   compute $JobID
   waitComputationToFinish
-
+  
+  getWorkersConfusionMatrices $JobID
+  declare -A expectedConfusionMatrices
+  expectedConfusionMatrices[worker1]="{\"from\":\"notporn\",\"to\":\"notporn\",\"value\":0.0},{\"from\":\"porn\",\"to\":\"porn\",\"value\":1.0},{\"from\":\"notporn\",\"to\":\"porn\",\"value\":1.0},{\"from\":\"porn\",\"to\":\"notporn\",\"value\":0.0}"
+  expectedConfusionMatrices[worker2]="{\"from\":\"notporn\",\"to\":\"notporn\",\"value\":0.6666666666666666},{\"from\":\"porn\",\"to\":\"porn\",\"value\":1.0},{\"from\":\"notporn\",\"to\":\"porn\",\"value\":0.3333333333333333},{\"from\":\"porn\",\"to\":\"notporn\",\"value\":0.0}"
+  expectedConfusionMatrices[worker3]="{\"from\":\"notporn\",\"to\":\"notporn\",\"value\":1.0},{\"from\":\"porn\",\"to\":\"porn\",\"value\":1.0},{\"from\":\"notporn\",\"to\":\"porn\",\"value\":0.0},{\"from\":\"porn\",\"to\":\"notporn\",\"value\":0.0}"		    
+  expectedConfusionMatrices[worker4]="{\"from\":\"notporn\",\"to\":\"notporn\",\"value\":1.0},{\"from\":\"porn\",\"to\":\"porn\",\"value\":1.0},{\"from\":\"notporn\",\"to\":\"porn\",\"value\":0.0},{\"from\":\"porn\",\"to\":\"notporn\",\"value\":0.0}"
+  expectedConfusionMatrices[worker5]="{\"from\":\"notporn\",\"to\":\"notporn\",\"value\":0.0},{\"from\":\"porn\",\"to\":\"porn\",\"value\":0.0},{\"from\":\"notporn\",\"to\":\"porn\",\"value\":1.0},{\"from\":\"porn\",\"to\":\"notporn\",\"value\":1.0}"
+  getWorkersConfusionMatricesData $JobID
+  
   getEstimatedWorkersQuality $JobID
   declare -A expectedWorkerQualities
   expectedWorkerQualities[worker1]=0.0
