@@ -1,5 +1,7 @@
 package com.datascience.scheduler;
 
+import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -64,9 +66,23 @@ public class SchedulerFactory<T> {
 		};
 	}
 
+	protected IPriorityCalculatorCreator<T> getPCCostBased(){
+		return new IPriorityCalculatorCreator<T>() {
+			@Override
+			public IPriorityCalculator<T> create(JsonObject params) {
+				String costFun = params.get("costMethod").getAsString();
+				ILabelProbabilityDistributionCostCalculator ilpcc =
+						LabelProbabilityDistributionCostCalculators.get(costFun);
+				// XXX This is not safe ...
+				return (IPriorityCalculator<T>) new CostBasedPriorityCalculator(ilpcc);
+			}
+		};
+	}
+
 	final static Map<String, IPriorityCalculatorCreator> CALCULATORS = new HashMap();
 	{
 		CALCULATORS.put("countassigns", getPCAssignsCount());
+		CALCULATORS.put("costbased", getPCCostBased());
 	};
 
 	final static Map<String, TimeUnit> PAUSE_UNITS = new HashMap<String, TimeUnit>();
