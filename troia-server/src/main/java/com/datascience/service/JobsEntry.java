@@ -13,7 +13,6 @@ import com.sun.jersey.spi.resource.Singleton;
  */
 @Path("/jobs/")
 @Singleton
-@Consumes(MediaType.APPLICATION_JSON)
 public class JobsEntry extends AbstractJobsEntry{
 
 	@Override
@@ -22,6 +21,7 @@ public class JobsEntry extends AbstractJobsEntry{
 	}
 
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createJob(String json) throws Exception{
 		return super.createJob(json);
 	}

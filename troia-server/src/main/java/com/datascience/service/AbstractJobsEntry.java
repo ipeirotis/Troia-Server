@@ -15,8 +15,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.jersey.spi.resource.Singleton;
 
-import java.util.logging.Logger;
-
 @Singleton
 public abstract class AbstractJobsEntry {
 	

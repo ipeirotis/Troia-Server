@@ -16,7 +16,6 @@ import com.sun.jersey.spi.resource.Singleton;
  */
 @Path("/cjobs/")
 @Singleton
-@Consumes(MediaType.APPLICATION_JSON)
 public class ContinuousJobsEntry extends AbstractJobsEntry {
 
 	@Override
@@ -25,6 +24,7 @@ public class ContinuousJobsEntry extends AbstractJobsEntry {
 	}
 
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createJob(String json) throws Exception{
 		return super.createJob(json);
 	}
