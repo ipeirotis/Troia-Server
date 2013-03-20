@@ -27,7 +27,7 @@ public class EvaluationObjectsCommands {
 			for (LObject obj : evalObjects){
 				LObject object = data.getOrCreateObject(obj.getName());
 				object.setEvaluationLabel(obj.getEvaluationLabel());
-				data.addEvaluationObject(object);
+				data.addObject(object);
 			}
 			setResult("Evaluation objects added");
 		}

@@ -58,23 +58,19 @@ public class Data <T>{
 		return workers;
 	}
 
-	/**
-	 * @param object
-	 * @return whether object was added (no addition if it was already in)
-	 */
-	protected boolean addObjectNoNotify(LObject<T> object){
-		if (!datums.containsKey(object)) {
-			objects.add(object);
-			mapObjects.put(object.getName(), object);
-			datums.put(object, new HashSet<AssignedLabel<T>>());
-			return true;
-		}
-		return false;
-	}
-
 	public void addObject(LObject<T> object){
-		if (addObjectNoNotify(object)) {
-			notifyNewObject(object);
+		if (objects.contains(object)) return;
+
+		objects.add(object);
+		mapObjects.put(object.getName(), object);
+		datums.put(object, new HashSet<AssignedLabel<T>>());
+		notifyNewObject(object);
+
+		if (object.isGold()) {
+			addGoldObject(object);
+		}
+		if (object.isEvaluation()) {
+			addEvaluationObject(object);
 		}
 	}
 
@@ -95,39 +91,32 @@ public class Data <T>{
 		return objects;
 	}
 
-	public void addGoldObject(LObject<T> object){
-		LObject<T> oldObject = getObject(object.getName());
-		if (oldObject != null) {
-			oldObject.setGoldLabel(object.getGoldLabel());
-			goldObjects.add(oldObject);
-		} else {
-			addObjectNoNotify(object);
-			goldObjects.add(object);
-			notifyNewGoldObject(object);
-		}
+	private void addGoldObject(LObject<T> object){
+		goldObjects.add(object);
+		notifyNewGoldObject(object);
 	}
 
 	public LObject<T> getGoldObject(String objectId){
-		for (LObject<T> obj : goldObjects){
-			if (obj.getName().equals(objectId))
-				return obj;
+		LObject<T> object = mapObjects.get(objectId);
+		if (object == null || !object.isGold()){
+			throw new IllegalArgumentException("There is no gold object with id = " + objectId);
 		}
-		return null;
+		return object;
 	}
 
 	public Set<LObject<T>> getGoldObjects(){
 		return goldObjects;
 	}
 
-	public void addEvaluationObject(LObject<T> object){
-		LObject<T> oldObject = getObject(object.getName());
-		if (oldObject != null) {
-			oldObject.setEvaluationLabel(object.getEvaluationLabel());
-			evaluationObjects.add(oldObject);
-		} else {
-			addObject(object);
-			evaluationObjects.add(object);
+	public void markObjectAsGold(LObject<T> object, T label){
+		if (!objects.contains(object)) {
+			throw new IllegalArgumentException("Object %s is not in this Data".format(object.getName()));
 		}
+		object.setGoldLabel(label);
+	}
+
+	private void addEvaluationObject(LObject<T> object){
+		evaluationObjects.add(object);
 	}
 
 	public Set<LObject<T>> getEvaluationObjects(){
@@ -135,11 +124,11 @@ public class Data <T>{
 	}
 
 	public LObject<T> getEvaluationObject(String objectId){
-		for (LObject<T> obj : evaluationObjects){
-			if (obj.getName().equals(objectId))
-				return obj;
+		LObject<T> object = mapObjects.get(objectId);
+		if (object == null || !object.isEvaluation()){
+			throw new IllegalArgumentException("There is no evaluation object with id = " + objectId);
 		}
-		return null;
+		return object;
 	}
 
 	public void addAssign(AssignedLabel<T> assign){

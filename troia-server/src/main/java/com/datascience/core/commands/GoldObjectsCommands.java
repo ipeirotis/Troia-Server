@@ -27,7 +27,7 @@ public class GoldObjectsCommands {
 			for (LObject obj : goldObjects){
 				LObject object = data.getOrCreateObject(obj.getName());
 				object.setGoldLabel(obj.getGoldLabel());
-				data.addGoldObject(object);
+				data.addObject(object);
 			}
 			setResult("Gold objects added");			
 		}
@@ -55,6 +55,7 @@ public class GoldObjectsCommands {
 		
 		@Override
 		protected void realExecute() {
+
 			setResult(project.getData().getGoldObject(objectId));
 		}
 	}

@@ -41,7 +41,7 @@ public class DataTest {
 		String label = "goooooldLabel";
 		object2.setGoldLabel(label);
 		data.addObject(object1);
-		data.addGoldObject(object2);
+		data.addObject(object2);
 		assertEquals(1, data.getObjects().size());
 		assertEquals(label, data.getObject("Object1").getGoldLabel());
 	}
@@ -57,7 +57,7 @@ public class DataTest {
 		String label = "goooooldLabel";
 		object2.setEvaluationLabel(label);
 		data.addObject(object1);
-		data.addEvaluationObject(object2);
+		data.addObject(object2);
 		assertEquals(1, data.getObjects().size());
 		assertEquals(label, data.getObject("Object1").getEvaluationLabel());
 	}

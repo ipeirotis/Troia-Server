@@ -55,7 +55,7 @@ public class EmpiricalData extends Data<ContValue> {
 
 			LObject<ContValue> d = getOrCreateObject(objectname);
 			d.setGoldLabel(new ContValue(correctValue, correctZeta));
-			addGoldObject(d);
+			addObject(d);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class EmpiricalData extends Data<ContValue> {
 
 			LObject<ContValue> d = getOrCreateObject(objectname);
 			d.setEvaluationLabel(new ContValue(value, zeta));
-			addEvaluationObject(d);
+			addObject(d);
 		}
 	}
 }

@@ -59,7 +59,7 @@ public class MVTest {
 
 	protected void fillNominalData(NominalData data){
 		for (LObject<String> gold: goldObjects){
-			data.addGoldObject(gold);
+			data.addObject(gold);
 		}
 		for (AssignedLabel<String> assign: assigns) {
 			data.addAssign(assign);

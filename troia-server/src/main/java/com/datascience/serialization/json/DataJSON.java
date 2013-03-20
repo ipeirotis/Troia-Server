@@ -1,15 +1,11 @@
 package com.datascience.serialization.json;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
 import java.util.Set;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.results.ResultsFactory;
-import com.datascience.core.results.WorkerContResults;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -33,12 +29,6 @@ public class DataJSON {
 			for (JsonElement je: jo.get("objects").getAsJsonArray()){
 				LObject<T> object = jsonDeserializationContext.deserialize(je, LObject.class);
 				data.addObject((object));
-				if (object.getEvaluationLabel() != null){
-					data.addEvaluationObject(object);
-				}
-				if (object.getGoldLabel() != null){
-					data.addGoldObject(object);
-				}
 			}
 
 			for (JsonElement je: jo.get("assigns").getAsJsonArray()){

@@ -97,9 +97,10 @@ public class NominalData extends Data<String> {
 	}
 
 	@Override
-	public void addGoldObject(LObject<String> object){
-		checkForCategoryExist(object.getGoldLabel());
-		super.addGoldObject(object);
+	public void addObject(LObject<String> object){
+		if (object.isGold()) checkForCategoryExist(object.getGoldLabel());
+		if (object.isEvaluation()) checkForCategoryExist(object.getEvaluationLabel());
+		super.addObject(object);
 	}
 
 	private void checkForCategoryExist(String name){
