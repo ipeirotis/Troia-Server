@@ -21,6 +21,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	public void computeResultsForObject(LObject<String> object){
 		DatumResult dr = results.getOrCreateDatumResult(object);
 		dr.setCategoryProbabilites(calculateDistribution(object));
+		results.addDatumResult(object, dr);
 	}
 
 	public Map<String, Double> calculateDistribution(LObject<String> object){

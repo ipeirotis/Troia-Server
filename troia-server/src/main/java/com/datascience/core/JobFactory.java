@@ -1,5 +1,6 @@
 package com.datascience.core;
 
+import com.datascience.core.algorithms.IUpdatableAlgorithm;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.Project;
@@ -108,7 +109,11 @@ public class JobFactory {
 		if (creator == null){
 			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s", algorithm));
 		}
-		NominalProject np = new NominalProject(creator.create(jo));
+		NominalAlgorithm na = creator.create(jo);
+		NominalProject np = new NominalProject(na);
+		if (na instanceof IUpdatableAlgorithm) {
+			na.getData().addNewUpdatableAlgorithm((IUpdatableAlgorithm) na);
+		}
 		np.initializeCategories(categories);
 		if (jo.has("scheduler"))
 			np.setScheduler(new SchedulerFactory<String>().create(jo));
