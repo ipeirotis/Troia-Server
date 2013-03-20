@@ -16,15 +16,10 @@ import java.util.Collection;
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.NominalData;
-import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
 import com.datascience.gal.*;
-import com.datascience.galc.ContinuousProject;
-import com.datascience.core.results.WorkerContResults;
-import com.datascience.galc.serialization.GenericWorkerDeserializer;
-import com.datascience.galc.serialization.GenericWorkerSerializer;
 import com.datascience.serialization.Serialized;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -48,8 +43,6 @@ public class JSONUtils {
 	public static final Type categoryType = new TypeToken<Category>() {
 	} .getType();
 	public static final Type misclassificationCostType = new TypeToken<MisclassificationCost>() {
-	} .getType();
-	public static final Type workerGenericType = new TypeToken<com.datascience.core.base.Worker>() {
 	} .getType();
 	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
 	} .getType();
@@ -85,9 +78,6 @@ public class JSONUtils {
 		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
-
-//		builder.registerTypeAdapter(workerGenericType, new GenericWorkerDeserializer());
-//		builder.registerTypeAdapter(workerGenericType, new GenericWorkerSerializer());
 
 		builder.registerTypeAdapter(NominalData.class, new DataJSON.NominalDeserializer());
 		builder.registerTypeAdapter(NominalData.class, new DataJSON.NominalSerializer());

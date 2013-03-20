@@ -70,13 +70,9 @@ public class DataJSON {
 
 		@Override
 		public JsonElement serialize(Data<T> data, Type type, JsonSerializationContext jsonSerializationContext) {
-			JsonElement objects = jsonSerializationContext.serialize(data.getObjects());
-			JsonElement assigns = jsonSerializationContext.serialize(data.getAssigns());
-
 			JsonObject je = new JsonObject();
-			je.add("objects", objects);
-			je.add("assigns", assigns);
-
+			je.add("objects", jsonSerializationContext.serialize(data.getObjects()));
+			je.add("assigns", jsonSerializationContext.serialize(data.getAssigns()));
 			return je;
 		}
 	}

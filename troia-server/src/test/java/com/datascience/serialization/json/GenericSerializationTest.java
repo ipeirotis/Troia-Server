@@ -1,4 +1,4 @@
-package com.datascience.galc.serialization;
+package com.datascience.serialization.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
+import com.datascience.serialization.json.JSONUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,15 +31,9 @@ public class GenericSerializationTest {
 
 	private Gson gson;
 	private Random random = new Random();
-	private Type workerType = new TypeToken<Worker>(){}.getType();
-	private Type dataType = new TypeToken<Data>(){}.getType();
 
 	public GenericSerializationTest() {
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(workerType, new GenericWorkerDeserializer());
-		builder.registerTypeAdapter(workerType, new GenericWorkerSerializer());
-		builder.registerTypeAdapter(dataType, new GenericDataSerializer());
-		gson = builder.create();
+		gson = JSONUtils.getFilledDefaultGsonBuilder().create();
 	}
 
 	@BeforeClass
@@ -103,26 +98,5 @@ public class GenericSerializationTest {
 		assertTrue(deserialized.getObjects().containsAll(data.getObjects()));
 		assertTrue(deserialized.getWorkers().containsAll(data.getWorkers()));
 		assertTrue(deserialized.getGoldObjects().containsAll(data.getGoldObjects()));
-	}
-
-	@Test
-	public void assignedLabelStringJsonTest() {
-		String label = "label";
-		Worker<String> worker = new Worker<String>("Worker");
-		AssignedLabel<String> assignedLabel = new AssignedLabel<String>(worker, null, label);
-		String json = gson.toJson(assignedLabel);
-		AssignedLabel<String> deserialized = gson.fromJson(json, new TypeToken<AssignedLabel<String>>(){}.getType());
-		assertEquals(assignedLabel, deserialized);
-	}
-
-	@Test
-	public void assignedLabelStringCollectionJsonTest() {
-		Collection<AssignedLabel<String>> assignedLabels = new ArrayList<AssignedLabel<String>>();
-		for (int i = 0; i < 10; i++) {
-			assignedLabels.add(new AssignedLabel<String>(new Worker<String>("worker" + i), null, "label" + i));
-		}
-		String json = gson.toJson(assignedLabels);
-		Collection<AssignedLabel<String>> deserialized = gson.fromJson(json, new TypeToken<Collection<AssignedLabel<String>>>(){}.getType());
-		assertEquals(assignedLabels, deserialized);
 	}
 }
