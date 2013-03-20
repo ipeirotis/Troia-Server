@@ -80,8 +80,8 @@ function loadGoldLabels {
   #load gold labels
   echo "Loading the gold labels ..."
   local result=$(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs/$1/goldObjects" -d '{"objects":[
-   { "object":"http://google.com","label":{"value":10.219077484951955,"zeta":0.292643407722905}},
-   { "object":"http://sunnyfun.com","label":{"value":8.219077484951955,"zeta":0.343407722905}}
+   { "name":"http://google.com","goldLabel":{"value":10.219077484951955,"zeta":0.292643407722905}},
+   { "name":"http://sunnyfun.com","goldLabel":{"value":8.219077484951955,"zeta":0.343407722905}}
   ]}')
   local status=$(echo $result| cut -d ',' -f 2 | cut -d ':' -f 2 | cut -d '"' -f 2)
   if [[ "$status" != "OK" ]]
