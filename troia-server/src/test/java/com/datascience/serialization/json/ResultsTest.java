@@ -56,5 +56,6 @@ public class ResultsTest {
 		Assert.assertNotNull(deserialized.getDatumResult(obj));
 		DatumResult ddr = deserialized.getDatumResult(obj);
 		Assert.assertEquals(ddr.getCategoryProbabilites(), dr.getCategoryProbabilites());
+		Assert.assertEquals(gson.toJson(deserialized), serialized);
 	}
 }

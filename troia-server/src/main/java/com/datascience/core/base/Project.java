@@ -65,6 +65,9 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 	public void setScheduler(IScheduler<T> scheduler){
 		this.scheduler = scheduler;
 		results.addNewResultsListener(new SchedulerNotificator<T, V, W>(this.scheduler));
+		if (data != null){
+			this.scheduler.setData(data);
+		}
 	}
 
 	public IScheduler<T> getScheduler(){

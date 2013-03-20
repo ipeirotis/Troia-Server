@@ -17,6 +17,7 @@ public interface IScheduler<T> {
 
 	void setUpQueue(IPriorityCalculator<T> calculator);
 	void setData(Data<T> data);
+	Data<T> getData();
 	IPriorityCalculator<T> getCalculator();
 
 	String getId();

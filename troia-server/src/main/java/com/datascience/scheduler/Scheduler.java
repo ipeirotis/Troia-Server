@@ -56,6 +56,11 @@ public class Scheduler<T> implements IScheduler<T> {
 	}
 
 	@Override
+	public Data<T> getData(){
+		return data;
+	}
+
+	@Override
 	public IPriorityCalculator<T> getCalculator() {
 		return calculator;
 	}
