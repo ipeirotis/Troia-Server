@@ -6,7 +6,6 @@ import com.datascience.core.base.Project;
 import com.datascience.executor.JobCommand;
 
 import java.util.Collection;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,7 +25,6 @@ public class GoldObjectsCommands {
 		protected void realExecute() {
 			Data data = project.getData();
 			for (LObject obj : goldObjects){
-				Logger.getAnonymousLogger().warning(obj.toString());
 				LObject object = data.getOrCreateObject(obj.getName());
 				object.setGoldLabel(obj.getGoldLabel());
 				data.addGoldObject(object);
