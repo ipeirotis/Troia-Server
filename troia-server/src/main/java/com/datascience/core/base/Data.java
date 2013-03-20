@@ -59,7 +59,18 @@ public class Data <T>{
 	}
 
 	public void addObject(LObject<T> object){
-		if (objects.contains(object)) return;
+		if (objects.contains(object)) {
+			LObject oldObject = getObject(object.getName());
+			if (object.isGold() && !oldObject.isGold()) {
+				oldObject.setGoldLabel(object.getGoldLabel());
+				addGoldObject(oldObject);
+			}
+			if (object.isEvaluation() && !oldObject.isEvaluation()) {
+				oldObject.setEvaluationLabel(object.getEvaluationLabel());
+				addEvaluationObject(oldObject);
+			}
+			return;
+		}
 
 		objects.add(object);
 		mapObjects.put(object.getName(), object);
@@ -82,7 +93,7 @@ public class Data <T>{
 		LObject<T> object = getObject(objectId);
 		if (object == null) {
 			object = new LObject<T>(objectId);
-			addObject(object);
+			//addObject(object);
 		}
 		return object;
 	}
