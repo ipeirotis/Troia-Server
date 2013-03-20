@@ -77,8 +77,6 @@ public class SchedulerFactory<T> {
 	}
 
 	public IScheduler<T> create(JsonObject params) {
-		if (!params.has("scheduler"))
-			params.addProperty("scheduler", "scheduler");
 		String type = params.get("scheduler").getAsString().toLowerCase();
 		ISchedulerCreator<T> creator = SCHEDULER_CREATORS.get(type);
 		if (creator == null) {

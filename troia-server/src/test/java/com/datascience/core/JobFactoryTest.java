@@ -60,6 +60,7 @@ public class JobFactoryTest {
 			JsonObject jo = new JsonObject();
 			jo.addProperty("algorithm", e.getKey());
 			jo.add("categories", createCategoriesJsonArray());
+			jo.addProperty("scheduler", "scheduler");
 
 			Job job = jf.createNominalJob(jo, "test");
 			checkProjectDependecies(job, e.getValue());
@@ -70,6 +71,7 @@ public class JobFactoryTest {
 	public void createContinuousJob() throws Exception {
 		JobFactory jf = new JobFactory(new GSONSerializer());
 		JsonObject jo = new JsonObject();
+		jo.addProperty("scheduler", "scheduler");
 		Job job = jf.createContinuousJob(jo, "test");
 		checkProjectDependecies(job, ContinuousIpeirotis.class);
 	}

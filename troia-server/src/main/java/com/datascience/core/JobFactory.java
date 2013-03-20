@@ -110,7 +110,8 @@ public class JobFactory {
 		}
 		NominalProject np = new NominalProject(creator.create(jo));
 		np.initializeCategories(categories);
-		np.setScheduler(new SchedulerFactory<String>().create(jo));
+		if (jo.has("scheduler"))
+			np.setScheduler(new SchedulerFactory<String>().create(jo));
 		np.setInitializationData(jo);
 		return np;
 	}
@@ -134,7 +135,8 @@ public class JobFactory {
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
 		ContinuousProject cp = new ContinuousProject(alg);
-		cp.setScheduler(new SchedulerFactory<ContValue>().create(jo));
+		if (jo.has("scheduler"))
+			cp.setScheduler(new SchedulerFactory<ContValue>().create(jo));
 		cp.setInitializationData(jo);
 		return new Job(cp, id);
 	}
