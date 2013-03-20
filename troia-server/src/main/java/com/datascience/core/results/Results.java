@@ -100,6 +100,7 @@ public class Results<T, U, V> {
 
 	public void addNewResultsListener(INewResultsListener<T, U, V> newResultsListener){
 		newResultsListeners.add(newResultsListener);
+		notifyEnabled = true;
 	}
 
 	public void setNotifyEnabled(boolean enabled){
