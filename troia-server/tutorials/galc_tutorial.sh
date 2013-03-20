@@ -170,8 +170,6 @@ function getPredictionObjects {
   done
   
   echo "-----------------"
-  
-  
 }
 
 function getPredictionWorkers {
@@ -190,9 +188,7 @@ function getPredictionWorkers {
       echo "Got prediction workers"
   fi
   
-  echo "-----------------"
-  
-  
+  echo "-----------------" 
 }
 
 
@@ -213,18 +209,7 @@ function galcTutorial
     expectedPredictionObjects[4]='{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object1"}}'
     expectedPredictionObjects[5]='{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object2"}}'
     expectedPredictionObjects[6]='{"est_value":0.05636583076319032,"est_zeta":-0.2965350443548846,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://yahoo.com"}}'
-    
-    
-    #{"est_value":0.11456418171572877,"est_zeta":-0.1913547099132667,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://youporn.com"}},
-    #{"est_value":0.8039463988940113,"est_zeta":1.0545474672815522,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://sunnyfun.com"}},
-    #{"est_value":0.17414895890312143,"est_zeta":-0.08366872414864963,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://sex-mission.com"}},
-    #{"est_value":-0.046802809616951685,"est_zeta":-0.4829889888647511,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://google.com"}},
-    #{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object1"}},
-    #{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"object2"}},
-    #{"est_value":NaN,"est_zeta":NaN,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{}},
-    #{"est_value":0.05636583076319032,"est_zeta":-0.2965350443548846,"distributionMu":0.22044451213182,"distributionSigma":0.5533196986062296,"object":{"name":"http://yahoo.com"}}],"executionTime":0.0,"status":"OK"}
-
-    
+     
     getPredictionObjects $JobID $expectedPredictionObjects
     
     getPredictionWorkers $JobID 
