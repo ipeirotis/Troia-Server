@@ -17,7 +17,7 @@ public interface IScheduler<T> {
 	LObject<T> nextObject(Worker<T> worker);
 
 	void setUpQueue(IPriorityCalculator<T> calculator);
-	void setProject(Project<T, ?, ?, ?> project);
+	<V, W> void registerOnProject(Project<T, ?, V, W> project);
 	Data<T> getData();
 	IPriorityCalculator<T> getCalculator();
 

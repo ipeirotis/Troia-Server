@@ -20,7 +20,7 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	public Scheduler(Project<T, ?, ?, ?> project, IPriorityCalculator<T> calculator) {
 		setUpQueue(calculator);
-		setProject(project);
+		registerOnProject(project);
 	}
 
 	@Override
@@ -52,9 +52,12 @@ public class Scheduler<T> implements IScheduler<T> {
 	}
 
 	@Override
-	public void setProject(Project<T, ?, ?, ?> project) {
+	public <V, W> void registerOnProject(Project<T, ?, V, W> project) {
 		data = project.getData();
-		calculator.setProject(project);
+		calculator.registerOnProject(project);
+		ISchedulerNotificator<T> notificator = calculator.getSchedulerNotificator(project);
+		notificator.registerOnProject(project);
+		notificator.setScheduler(this);
 	}
 
 	@Override

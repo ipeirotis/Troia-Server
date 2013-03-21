@@ -11,7 +11,7 @@ public class AssignCountPriorityCalculator<T> implements IPriorityCalculator<T> 
 	public AssignCountPriorityCalculator() { }
 
 	public AssignCountPriorityCalculator(Project<T, ?, ?, ?> project) {
-		setProject(project);
+		registerOnProject(project);
 	}
 
 	@Override
@@ -20,12 +20,17 @@ public class AssignCountPriorityCalculator<T> implements IPriorityCalculator<T> 
 	}
 
 	@Override
-	public void setProject(Project<T, ?, ?, ?> project) {
+	public <V, W> void registerOnProject(Project<T, ?, V, W> project) {
 		this.data = project.getData();
 	}
 
 	@Override
 	public String getId(){
 		return "countassigns";
+	}
+
+	@Override
+	public <U extends Data<T>, V, W> ISchedulerNotificator<T> getSchedulerNotificator(Project<T, U, V, W> project) {
+		return new SchedulerNewDataNotificator<T>();
 	}
 }

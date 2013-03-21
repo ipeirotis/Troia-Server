@@ -1,5 +1,6 @@
 package com.datascience.scheduler;
 
+import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.NominalProject;
@@ -32,7 +33,7 @@ public class CostBasedPriorityCalculator implements IPriorityCalculator<String> 
 	}
 
 	@Override
-	public void setProject(Project<String, ?, ?, ?> project) {
+	public <V, W> void registerOnProject(Project<String, ?, V, W> project){
 		if (!(project instanceof NominalProject)) {
 			throw new IllegalArgumentException(this.getClass().toString() +
 					" supports only NominalProjects, not " + project.getClass().toString());
@@ -44,4 +45,10 @@ public class CostBasedPriorityCalculator implements IPriorityCalculator<String> 
 	public String getId() {
 		return "costbased";
 	}
+
+	@Override
+	public <U extends Data<String>, V, W> ISchedulerNotificator<String> getSchedulerNotificator(Project<String, U, V, W> project) {
+		return new SchedulerNewResultsNotificator<String, U, V>();
+	}
+
 }

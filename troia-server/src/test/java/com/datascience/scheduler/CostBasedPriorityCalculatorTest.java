@@ -48,7 +48,7 @@ public class CostBasedPriorityCalculatorTest {
 		scheduler.setUpQueue(pc);
 		Worker<String> worker = new Worker<String>("Worker1");
 		NominalData data = project.getData();
-		scheduler.setProject(project);
+		scheduler.registerOnProject(project);
 		LObject<String> object1 = data.getOrCreateObject("object1");
 		LObject<String> object2 = data.getOrCreateObject("object2");
 		int w = 0;

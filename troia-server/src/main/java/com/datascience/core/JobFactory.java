@@ -13,6 +13,7 @@ import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
+import com.datascience.scheduler.IScheduler;
 import com.datascience.scheduler.SchedulerFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.json.JSONUtils;
