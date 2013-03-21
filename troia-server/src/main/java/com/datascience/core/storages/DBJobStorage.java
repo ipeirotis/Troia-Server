@@ -45,7 +45,7 @@ public class DBJobStorage implements IJobStorage {
 	private Properties connectionProperties;
 	private String databaseUrl;
 	
-	private static final String GET_DS = "SELECT kind, data FROM projects WHERE id IN (?);";
+	private static final String GET_DS = "SELECT kind, data, results, initializationData FROM projects WHERE id IN (?);";
 	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data, results, initializationData) VALUES (?, ?, ?, ?, ?);";
 	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
 
