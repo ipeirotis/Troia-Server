@@ -8,7 +8,7 @@ import com.datascience.core.base.Worker;
 /**
  * @Author: konrad
  */
-public interface IUpdatableAlgorithm<T> {
+public interface INewDataObserver<T> {
 
 	void newAssign(AssignedLabel<T> assign);
 	void newGoldObject(LObject<T> object);

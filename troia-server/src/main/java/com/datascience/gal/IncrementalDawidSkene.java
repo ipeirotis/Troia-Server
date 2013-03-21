@@ -11,7 +11,7 @@ package com.datascience.gal;
 
 import java.util.*;
 
-import com.datascience.core.algorithms.IUpdatableAlgorithm;
+import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.*;
 import com.datascience.core.base.Category;
 import com.datascience.core.stats.ErrorRateCalculators;
@@ -27,7 +27,7 @@ import com.datascience.core.stats.ErrorRateCalculators;
  *
  */
 public class IncrementalDawidSkene extends AbstractDawidSkene
-			implements IUpdatableAlgorithm<String>{
+			implements INewDataObserver<String> {
 
 	private IncrementalDSMethod dsmethod = IncrementalDSMethod.UPDATEWORKERS;
 	private double priorDenominator;

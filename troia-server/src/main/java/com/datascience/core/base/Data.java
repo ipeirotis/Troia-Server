@@ -1,6 +1,6 @@
 package com.datascience.core.base;
 
-import com.datascience.core.algorithms.IUpdatableAlgorithm;
+import com.datascience.core.algorithms.INewDataObserver;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class Data <T>{
 	protected Set<LObject<T>> evaluationObjects;
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
 
-	protected List<IUpdatableAlgorithm<T>> observeringAlgorithms;
+	protected List<INewDataObserver<T>> newDataObservers;
 
 	public Data(){
 		assigns = new HashSet<AssignedLabel<T>>();
@@ -31,7 +31,7 @@ public class Data <T>{
 		datums = new HashMap<LObject<T>, Set<AssignedLabel<T>>>();
 		mapWorkers = new HashMap<String, Worker<T>>();
 		mapObjects = new HashMap<String, LObject<T>>();
-		observeringAlgorithms = new LinkedList<IUpdatableAlgorithm<T>>();
+		newDataObservers = new LinkedList<INewDataObserver<T>>();
 	}
 
 	public void addWorker(Worker<T> worker){
@@ -165,30 +165,30 @@ public class Data <T>{
 		return assigns;
 	}
 
-	public void addNewUpdatableAlgorithm(IUpdatableAlgorithm<T> updatableAlgorithm){
-		observeringAlgorithms.add(updatableAlgorithm);
+	public void addNewUpdatableAlgorithm(INewDataObserver<T> updatableAlgorithm){
+		newDataObservers.add(updatableAlgorithm);
 	}
 
 	protected void notifyNewAssign(AssignedLabel<T> assign){
-		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
 			updatableAlgorithm.newAssign(assign);
 		}
 	}
 
 	protected void notifyNewGoldObject(LObject<T> object){
-		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
 			updatableAlgorithm.newGoldObject(object);
 		}
 	}
 
 	protected void notifyNewObject(LObject<T> object){
-		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
 			updatableAlgorithm.newObject(object);
 		}
 	}
 
 	protected void notifyNewWorker(Worker<T> worker){
-		for (IUpdatableAlgorithm<T> updatableAlgorithm: observeringAlgorithms) {
+		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
 			updatableAlgorithm.newWorker(worker);
 		}
 	}

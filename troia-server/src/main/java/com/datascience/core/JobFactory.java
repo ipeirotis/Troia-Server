@@ -1,6 +1,6 @@
 package com.datascience.core;
 
-import com.datascience.core.algorithms.IUpdatableAlgorithm;
+import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.Project;
@@ -111,8 +111,8 @@ public class JobFactory {
 		}
 		NominalAlgorithm na = creator.create(jo);
 		NominalProject np = new NominalProject(na);
-		if (na instanceof IUpdatableAlgorithm) {
-			na.getData().addNewUpdatableAlgorithm((IUpdatableAlgorithm) na);
+		if (na instanceof INewDataObserver) {
+			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
 		np.initializeCategories(categories);
 		if (jo.has("scheduler"))
