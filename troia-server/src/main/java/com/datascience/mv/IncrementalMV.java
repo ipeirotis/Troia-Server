@@ -19,9 +19,16 @@ public class IncrementalMV extends MajorityVote implements INewDataObserver {
 		//There is nothing that we would make sense to do here
 	}
 
+	public void computeForNewAssign(AssignedLabel<String> assign){
+		computeResultsForObject(assign.getLobject());
+		for (AssignedLabel<String> al: getData().getAssignsForObject(assign.getLobject())){
+			computeWorkersConfusionMatrix(al.getWorker());
+		}
+	}
+
 	@Override
 	public void newAssign(AssignedLabel assign) {
-		computeResultsForObject(assign.getLobject());
+		computeForNewAssign(assign);
 	}
 
 	@Override

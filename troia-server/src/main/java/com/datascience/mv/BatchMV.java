@@ -1,6 +1,7 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 
 /**
  * @Author: konrad
@@ -24,7 +25,9 @@ public class BatchMV extends MajorityVote {
 	}
 
 	public void computeForWorkers(){
-		// TODO XXX FIXME what it should do here?
+		for (Worker<String> worker: getData().getWorkers()){
+			computeWorkersConfusionMatrix(worker);
+		}
 	}
 
 }
