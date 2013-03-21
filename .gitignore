@@ -1,12 +1,14 @@
 *~
 *.bak
 *.log
+*.swp
 
 *.class
 target/*
 
 .project
 .classpath
+*/.settings/*
 .settings/*
 *nb-configuration.xml
 .idea
@@ -23,3 +25,7 @@ target/*
 
 */target/*
 dependency-reduced-pom.xml
+
+# generated
+troia-data-generator/test-results/*
+
