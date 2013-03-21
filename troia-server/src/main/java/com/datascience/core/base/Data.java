@@ -20,7 +20,7 @@ public class Data <T>{
 	protected Set<LObject<T>> evaluationObjects;
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
 
-	protected List<INewDataObserver<T>> newDataObservers;
+	protected transient List<INewDataObserver<T>> newDataObservers;
 
 	public Data(){
 		assigns = new HashSet<AssignedLabel<T>>();

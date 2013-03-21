@@ -18,8 +18,8 @@ public class Results<T, U, V> {
 	protected ResultsFactory.DatumResultCreator datumCreator;
 	protected ResultsFactory.WorkerResultCreator workerCreator;
 
-	protected List<INewResultsListener<T, U, V>> newResultsListeners;
-	protected boolean notifyEnabled;
+	protected transient List<INewResultsListener<T, U, V>> newResultsListeners;
+	protected transient boolean notifyEnabled;
 
 	public Results(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
 		this.datumCreator = datumCreator;
