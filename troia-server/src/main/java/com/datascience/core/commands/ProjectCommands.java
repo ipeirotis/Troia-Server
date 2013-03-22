@@ -28,7 +28,7 @@ public class ProjectCommands {
 		}
 	}
 	
-	static public class GetProjectInfo extends JobCommand<Map<String, String>, Project> {
+	static public class GetProjectInfo extends JobCommand<Map<String, Object>, Project> {
 
 		public GetProjectInfo(){
 			super(false);

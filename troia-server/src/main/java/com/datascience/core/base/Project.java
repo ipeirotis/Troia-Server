@@ -69,12 +69,13 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 		return scheduler;
 	}
 
-	public Map<String, String> getInfo() {
-		Map<String, String> ret = new HashMap<String, String>();
-		ret.put("Number of assigns", String.valueOf(data.getAssigns().size()));
-		ret.put("Number of objects", String.valueOf(data.getObjects().size()));
-		ret.put("Number of gold objects", String.valueOf(data.getGoldObjects().size()));
-		ret.put("Number of workers", String.valueOf(data.getWorkers().size()));
+	public Map<String, Object> getInfo() {
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("Number of assigns", data.getAssigns().size());
+		ret.put("Number of objects", data.getObjects().size());
+		ret.put("Number of gold objects", data.getGoldObjects().size());
+		ret.put("Number of workers", data.getWorkers().size());
+		ret.put("Initialization data", getInitializationData());
 		return ret;
 	}
 }

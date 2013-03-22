@@ -90,6 +90,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(ResultsFactory.DatumResultCreator.class, new DataJSON.DatumCreatorDeserializer());
 		builder.registerTypeAdapter(ResultsFactory.WorkerResultCreator.class, new DataJSON.WorkerCreatorDeserializer());
 
+		builder.registerTypeAdapter(JsonObject.class, new DataJSON.JsonObjectSerializer());
+
 		builder.registerTypeAdapter(objectsStringType,
 				new GenericCollectionDeserializer<LObject<String>>(
 						"objects",

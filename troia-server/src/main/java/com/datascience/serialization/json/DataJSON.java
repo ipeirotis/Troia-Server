@@ -126,4 +126,11 @@ public class DataJSON {
 			return creator.create(jo.get("clazz").getAsString());
 		}
 	}
+
+	public static class JsonObjectSerializer implements JsonSerializer<JsonObject> {
+		@Override
+		public JsonElement serialize(JsonObject jo, Type type, JsonSerializationContext ctx) {
+			return jo;
+		}
+	}
 }
