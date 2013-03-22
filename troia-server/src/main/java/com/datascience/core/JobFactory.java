@@ -127,11 +127,12 @@ public class JobFactory {
 			throw new IllegalArgumentException("You should provide categories list");
 		}
 		Collection<Category> categories = serializer.parse(jo.get("categories").toString(), JSONUtils.categorySetType);
-
+		if (!jo.has("algorithm"))
+			jo.addProperty("algorithm", "BDS");
 		return new Job(
 			getNominalProject(
 				categories,
-				jo.has("algorithm") ? jo.get("algorithm").getAsString() : "BDS",
+				jo.get("algorithm").getAsString(),
 				jo),
 			id);
 	}
