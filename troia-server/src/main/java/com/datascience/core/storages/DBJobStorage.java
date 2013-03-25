@@ -92,7 +92,7 @@ public class DBJobStorage implements IJobStorage {
 	
 	@Override
 	public <T extends Project> Job<T>  get(String id) throws SQLException {
-		logger.info("Get job from DB: " + id);
+		logger.debug("Getting job from DB: " + id);
 		ResultSet dsResults = null;
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
@@ -108,6 +108,7 @@ public class DBJobStorage implements IJobStorage {
 			String results = dsResults.getString("results");
 			String initializationData = dsResults.getString("initializationData");
 			dsStatement.close();
+			logger.debug("Getting job from DB: " + id + " DONE");
 			return jobFactory.create(kind, initializationData, data, results, id);
 		} finally {
 			if (dsStatement != null) {
@@ -121,7 +122,7 @@ public class DBJobStorage implements IJobStorage {
 
 	@Override
 	public void add(Job job) throws SQLException{
-		logger.info("Adding job to DB: " + job.getId());
+		logger.debug("Adding job to DB: " + job.getId());
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
 		try {
@@ -132,6 +133,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(4, serializer.serialize(job.getProject().getResults()));
 			dsStatement.setString(5, job.getProject().getInitializationData().toString());
 			dsStatement.executeUpdate();
+			logger.debug("Adding job to DB: " + job.getId() + " DONE");
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -141,7 +143,7 @@ public class DBJobStorage implements IJobStorage {
 	
 	@Override
 	public void remove(Job job) throws Exception {
-		logger.info("Removing job from DB: " + job.getId());
+		logger.debug("Removing job from DB: " + job.getId());
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
 		try {
@@ -149,6 +151,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(1, job.getId());
 			dsStatement.executeUpdate();
 			dsStatement.close();
+			logger.debug("Removing job from DB: " + job.getId() + " DONE");
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
