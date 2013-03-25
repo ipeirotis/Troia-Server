@@ -129,7 +129,7 @@ public abstract class JobEntryBase<T extends Project> {
 	@POST
 	public Response addGoldObjects(String json){
 		Collection<LObject> goldObjects = serializer.parse(json, objectsType);
-		return buildResponseOnCommand(new GoldObjectsCommands.AddGoldObjects(goldObjects));
+		return buildResponseOnCommand(new ObjectCommands.AddObjects(goldObjects));
 	}
 
 	@Path("evaluationObjects")

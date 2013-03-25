@@ -4,7 +4,10 @@ import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.executor.JobCommand;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -12,7 +15,7 @@ import java.util.Collection;
  */
 public class WorkerCommands {
 	
-	static public class GetWorkers<T> extends JobCommand<Collection<Worker<T>>, Project> {
+	static public class GetWorkers<T> extends JobCommand<Collection<Map<String, Object>>, Project> {
 		
 		public GetWorkers(){
 			super(false);
@@ -20,11 +23,18 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(project.getData().getWorkers());
+			Collection<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+			for (Worker<T> w : (Collection<Worker<T>>) project.getData().getWorkers()){
+				Map<String, Object> workerMap = new HashMap<String, Object>();
+				workerMap.put("name", w.getName());
+				workerMap.put("assigns", w.getAssigns());
+				ret.add(workerMap);
+			}
+			setResult(ret);
 		}
 	}
 	
-	static public class GetWorker<T> extends JobCommand<Worker<T>, Project> {
+	static public class GetWorker<T> extends JobCommand<Map<String, Object>, Project> {
 				
 		String workerId;
 		public GetWorker(String workerId){
@@ -34,7 +44,11 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(ParamChecking.worker(project.getData(), workerId));
+			Worker<T> w = ParamChecking.worker(project.getData(), workerId);
+			Map<String, Object> ret = new HashMap<String, Object>();
+			ret.put("name", w.getName());
+			ret.put("assigns", w.getAssigns());
+			setResult(ret);
 		}
 	}
 }

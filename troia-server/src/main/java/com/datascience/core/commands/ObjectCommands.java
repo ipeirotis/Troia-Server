@@ -23,10 +23,10 @@ public class ObjectCommands {
 		@Override
 		protected void realExecute() {
 			Data<T> data = project.getData();
-			for (LObject objectId : objects){
-				data.addObject(new LObject<T>(objectId.getName()));
+			for (LObject obj : objects){
+				data.addObject(obj);
 			}
-			setResult("Objects without labels added");
+			setResult("Objects added");
 		}
 	}
 	
