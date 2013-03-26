@@ -66,12 +66,11 @@ public class IncrementalDawidSkeneTest {
 	}
 
 	@Test
-	@Ignore("TODO FIXME XXX - skiped to force other tests to run on jenkins")
 	public final void testGetObjectClassProbabilites(){
 		LObject<String> obj = new LObject<String>("object");
 		project.getData().addObject(obj);
 		for (Double val : ((AbstractDawidSkene)project.getAlgorithm()).getObjectClassProbabilities(obj).values()){
-			assertEquals(0., val, TestDataManager.DELTA_DOUBLE);
+			assertEquals(0.5, val, TestDataManager.DELTA_DOUBLE);
 		}
 
 		LObject<String> gold = new LObject<String>("gold_object");

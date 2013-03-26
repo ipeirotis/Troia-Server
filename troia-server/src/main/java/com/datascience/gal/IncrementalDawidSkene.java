@@ -74,7 +74,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	private void undoPriorInfluence(Map<String, Double> probabilites){
-		if (probabilites != null){
+		if (probabilites != null && probabilites.size() > 0){
 			priorDenominator--;
 			for (Category c : data.getCategories()){
 				c.setPrior(c.getPrior() - probabilites.get(c.getName()));
