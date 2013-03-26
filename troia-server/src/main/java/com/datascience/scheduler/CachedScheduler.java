@@ -44,7 +44,7 @@ public class CachedScheduler<T> extends Scheduler<T> {
 	@Override
 	public LObject<T> nextObject() {
 		polled.cleanUp();
-		LObject<T> object = queue.poll();
+		LObject<T> object = queue.pollFirst();
 		if (object != null) {
 			polled.put(object.getName(), object);
 		}

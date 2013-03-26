@@ -5,14 +5,12 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 public class Scheduler<T> implements IScheduler<T> {
 
-	protected static final int INITIAL_QUEUE_SIZE = 10;
-
-	protected Queue<LObject<T>> queue;
+	protected NavigableSet<LObject<T>> queue;
 	protected Data<T> data;
 	private IPriorityCalculator<T> calculator;
 
@@ -37,7 +35,7 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	@Override
 	public LObject<T> nextObject() {
-		return queue.peek();
+		return queue.first();
 	}
 
 	@Override
@@ -47,7 +45,7 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	@Override
 	public void setUpQueue(IPriorityCalculator<T> calculator) {
-		queue = new PriorityQueue<LObject<T>>(INITIAL_QUEUE_SIZE, new ObjectComparator<T>(calculator));
+		queue = new TreeSet<LObject<T>>(new ObjectComparator<T>(calculator));
 		this.calculator = calculator;
 	}
 
