@@ -16,8 +16,11 @@ import com.datascience.core.base.*;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
 import com.datascience.core.stats.ErrorRateCalculators;
+import org.apache.log4j.Logger;
 
 public class BatchDawidSkene extends AbstractDawidSkene {
+
+	private static Logger logger = Logger.getLogger(BatchDawidSkene.class);
 
 	public BatchDawidSkene() {
 		super(new ErrorRateCalculators.BatchErrorRateCalculator());
@@ -86,6 +89,26 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	}
 
 	@Override
+	public void compute(){
+		estimate(epsilon, iterations);
+	}
+
+	public void estimate(double epsilon, int maxIterations) {
+		double prevLogLikelihood = Double.POSITIVE_INFINITY;
+		double currLogLikelihood = 0d;
+		int iteration = 0;
+		for (;iteration < maxIterations && Math.abs(currLogLikelihood -
+				prevLogLikelihood) > epsilon; iteration++) {
+			prevLogLikelihood = currLogLikelihood;
+			estimateInner();
+			currLogLikelihood = getLogLikelihood();
+		}
+		double diffLogLikelihood = Math.abs(currLogLikelihood - prevLogLikelihood);
+		logger.info("Estimated: performed " + iteration + " / " +
+				maxIterations + " with log-likelihood difference " +
+				diffLogLikelihood);
+	}
+
 	protected void estimateInner() {
 		updateObjectClassProbabilities();
 		updatePriors();

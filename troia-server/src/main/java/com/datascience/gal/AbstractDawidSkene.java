@@ -53,7 +53,9 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
 	}
 
-	public abstract double prior(String categoryName);
+	public double prior(String categoryName) {
+		return data.getCategory(categoryName).getPrior();
+	}
 
 	protected double getLogLikelihood() {
 		double result = 0;
@@ -76,35 +78,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 			c.setPrior(priors.get(c.getName()));
 		}
 	}
-
-//OBJECT PROBS
-//	@Override
-//	public Map<String, Double> getObjectProbs(String objectName) {
-//		return getObjectClassProbabilities(objectName);
-//	}
-//
-//	@Override
-//	public Map<String, Map<String, Double>> getObjectProbs() {
-//		return getObjectProbs(objects.keySet());
-//	}
-//
-//	@Override
-//	public Map<String, Map<String, Double>> getObjectProbs(
-//		Collection<String> objectNames) {
-//		Map<String, Map<String, Double>> out = new HashMap<String, Map<String, Double>>(
-//			objectNames.size());
-//		for (String objectName : objectNames) {
-//			out.put(objectName, getObjectProbs(objectName));
-//		}
-//		return out;
-//	}
-
-//	@Override
-//	public void unsetFixedPriors() {
-//
-//		this.fixedPriors = false;
-//		updatePriors();
-//	}
 
 	protected double getEntropyForObject(LObject<String> obj){
 		DatumResult result = results.getDatumResult(obj);
@@ -156,11 +129,12 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		// except for the worker that we ignore
 		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
-		if (labels.isEmpty()){
-			return ProbabilityDistributions.getSpammerDistribution(getData());
-		}
 		if (workerToIgnore != null && labels.size() == 1 && labels.iterator().next().getWorker().equals(workerToIgnore)) {
 			return null;
+		}
+
+		if (labels.isEmpty()){
+			return ProbabilityDistributions.getSpammerDistribution(getData());
 		}
 
 		// If it is not gold, then we proceed to estimate the class
@@ -229,31 +203,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	public void addMisclassificationCosts(Collection<MisclassificationCost> cls) {
 		for (MisclassificationCost cl : cls)
 			addMisclassificationCost(cl);
-	}
-
-	// One pass of the incremental algorithm.
-	protected abstract void estimateInner();
-
-	public double estimate(double epsilon, int maxIterations) {
-		double prevLogLikelihood = Double.POSITIVE_INFINITY;
-		double currLogLikelihood = 0d;
-		int iteration = 0;
-		for (;iteration < maxIterations && Math.abs(currLogLikelihood -
-				prevLogLikelihood) > epsilon; iteration++) {
-			prevLogLikelihood = currLogLikelihood;
-			estimateInner();
-			currLogLikelihood = getLogLikelihood();
-		}
-		double diffLogLikelihood = Math.abs(currLogLikelihood - prevLogLikelihood);
-		logger.info("Estimated: performed " + iteration + " / " +
-				maxIterations + " with log-likelihood difference " +
-				diffLogLikelihood);
-		return 0;
-	}
-
-	@Override
-	public void compute(){
-		estimate(epsilon, iterations);
 	}
 
 	public void setIterations(int iterations){
