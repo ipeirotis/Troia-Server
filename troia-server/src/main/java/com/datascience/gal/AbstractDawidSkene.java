@@ -128,10 +128,11 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 
 		for (LObject<String> obj : data.getObjects()){
-			for (Category c : data.getCategories()){
-				priors.put(c.getName(), priors.get(c.getName()) +
-						results.getOrCreateDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
-			}
+			if (!data.getAssigns().isEmpty())
+				for (Category c : data.getCategories()){
+					priors.put(c.getName(), priors.get(c.getName()) +
+							results.getOrCreateDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
+				}
 		}
 
 		setPriors(priors);
@@ -156,14 +157,10 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
 		if (labels.isEmpty()){
-			ProbabilityDistributions.getSpammerDistribution(getData());
+			return ProbabilityDistributions.getSpammerDistribution(getData());
 		}
-		if (workerToIgnore != null && labels.size() == 1) {
-			for (AssignedLabel al : labels) {
-				if (al.getWorker().equals(workerToIgnore))
-					// if only the ignored labeler has labeled
-					return null;
-			}
+		if (workerToIgnore != null && labels.size() == 1 && labels.iterator().next().getWorker().equals(workerToIgnore)) {
+			return null;
 		}
 
 		// If it is not gold, then we proceed to estimate the class
