@@ -4,8 +4,6 @@ import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.NominalData;
-import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.DecisionEngine;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.Results;
@@ -28,9 +26,12 @@ public class SchedulersForWorker {
 
 		protected Results<String, DatumResult, WorkerResult> results;
 		protected DecisionEngine decisionEngine;
+		protected CostBasedPriorityCalculator costCalculator;
 
 		protected void setInitializationData(Results<String, DatumResult, WorkerResult> results, CostBasedPriorityCalculator priorityCalculator){
 
+			costCalculator = priorityCalculator;
+			// ^^ I know that this is nasty to use this as cost calculator ...
 			decisionEngine = priorityCalculator.dEngine;
 			this.results = results;
 		}
@@ -41,9 +42,25 @@ public class SchedulersForWorker {
 				return (objects.hasNext()) ? objects.next() : null;
 			}
 			WorkerResult wr = results.getWorkerResult(worker);
+			int i = NUMBER_OF_FIRST_OBJECTS_TO_CHECK;
+			double maxCostReduction = Double.MIN_VALUE;
+			LObject<String> bestObject = null;
+			while (i-- > 0 && objects.hasNext()) {
+				LObject<String> object = objects.next();
+				double currentObjectCost = costCalculator.getPriority(object);
+				if (currentObjectCost <= maxCostReduction) break;
+				double predictedNewCost = predictedNewCost(object, wr);
+				if (currentObjectCost - predictedNewCost > maxCostReduction) {
+					bestObject = object;
+					maxCostReduction = currentObjectCost - predictedNewCost;
+				}
+			}
+			return bestObject;
+		}
 
-			// TODO: finish this
-			return null;
+		protected double predictedNewCost(LObject<String> object, WorkerResult wr){
+			//TODO: implement this
+			return 0.;
 		}
 	}
 
