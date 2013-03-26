@@ -12,7 +12,8 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	protected NavigableSet<LObject<T>> queue;
 	protected Data<T> data;
-	private IPriorityCalculator<T> calculator;
+	protected IPriorityCalculator<T> calculator;
+	protected ISchedulerForWorker<T> workerScheduler;
 
 	public Scheduler() { }
 
@@ -40,13 +41,18 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	@Override
 	public LObject<T> nextObject(Worker<T> worker) {
-		throw new UnsupportedOperationException();
+		return workerScheduler.nextObjectForWorker(queue.iterator(), worker);
 	}
 
 	@Override
 	public void setUpQueue(IPriorityCalculator<T> calculator) {
 		queue = new TreeSet<LObject<T>>(new ObjectComparator<T>(calculator));
 		this.calculator = calculator;
+	}
+
+	@Override
+	public void setSchedulerForWorker(ISchedulerForWorker<T> schedulerForWorker){
+		workerScheduler = schedulerForWorker;
 	}
 
 	@Override

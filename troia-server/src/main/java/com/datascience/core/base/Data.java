@@ -153,6 +153,13 @@ public class Data <T>{
 		notifyNewAssign(assign);
 	}
 
+	/**
+	 * This assumes that assigns are compared only on object and worker
+	 */
+	public boolean hasAssign(LObject<T> object, Worker<T> worker){
+		AssignedLabel<T> assign = new AssignedLabel<T>(worker, object, null);
+		return assigns.contains(assign);
+	}
 
 	public Set<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject){
 		Set<AssignedLabel<T>> ret = datums.get(lObject);

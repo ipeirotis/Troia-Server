@@ -54,12 +54,10 @@ public class CachedScheduler<T> extends Scheduler<T> {
 	@Override
 	public LObject<T> nextObject(Worker<T> worker) {
 		polled.cleanUp();
-//		LObject<T> object = super.nextObject(worker);
-//		polled.put(object.getName(), object);
-//		return object;
-		// TODO XXX this is harder because we should remove this object
-		// from queue and it might not be at the top
-		return super.nextObject(worker);
+		LObject<T> object = super.nextObject(worker);
+		polled.put(object.getName(), object);
+		queue.remove(object);
+		return object;
 	}
 
 	public void setUpCache(long pauseDuration, TimeUnit pauseUnit) {
