@@ -36,6 +36,7 @@ public class DBJobStorage implements IJobStorage {
 		if (object instanceof NominalProject){
 			return "NOMINAL";
 		}
+		logger.warn("Unknown project kind: " + object.getClass());
 		throw new IllegalArgumentException("Unknown job kind for class: " + object.getClass());
 	}
 

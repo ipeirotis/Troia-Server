@@ -27,7 +27,7 @@ public class JobStorageCommands{
 
 		@Override
 		public void run() {
-			logger.info("EX_JS: adder " + job.getId());
+			logger.debug("EX_JS: adder " + job.getId());
 			try {
 				jobStorage.add(job);
 			} catch (Exception e) {
@@ -49,7 +49,7 @@ public class JobStorageCommands{
 
 		@Override
 		public void run() {
-			logger.info("EX_JS: remover " + job.getId());
+			logger.debug("EX_JS: remover " + job.getId());
 			try {
 				jobStorage.remove(job);
 			} catch (Exception e) {
