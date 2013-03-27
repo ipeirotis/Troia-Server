@@ -1,5 +1,6 @@
 package com.datascience.gal;
 
+import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.utils.ProbabilityDistributions;
@@ -32,7 +33,7 @@ public class Quality {
 			for (String c2 : probabilities.keySet()) {
 				// With probability p2 it actually belongs to class c2
 				double p2 = probabilities.get(c2);
-				Double cost = data.getCategory(c1).getCost(c2);
+				Double cost = data.getCostMatrix().getCost(c1, c2);
 				costfor_c2 += p2 * cost;
 
 			}
@@ -48,15 +49,13 @@ public class Quality {
 	 *
 	 * @return The expected cost of a spammer worker
 	 */
-	static public double getMinSpammerCost(NominalData data) {
-		Map<String, Double> prior = ProbabilityDistributions.getSpammerDistribution(data);
-
+	static public double getMinSpammerCost(NominalData data, NominalAlgorithm alg) {
+		Map<String, Double> prior = ProbabilityDistributions.getSpammerDistribution(data, alg);
 		return getMinSoftLabelCost(prior, data);
 	}
 
 	static public double fromCost(NominalProject project, double cost){
-		NominalData data = project.getData();
-		return 1. - cost / getMinSpammerCost(data);
+		return 1. - cost / getMinSpammerCost(project.getData(), project.getAlgorithm());
 	}
 	
 	static public Map<String, Double> fromCosts(NominalProject project, Map<String, Double> costs){

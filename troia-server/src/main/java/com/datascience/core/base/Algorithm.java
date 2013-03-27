@@ -1,6 +1,10 @@
 package com.datascience.core.base;
 
+import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.Results;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 /**
  * User: artur
@@ -25,5 +29,18 @@ public abstract class Algorithm<T, U extends Data<T>, V, W> {
 	public Results<T, V, W> getResults(){
 		return  results;
 	}
+
+	public Object getModel(){
+		return null;
+	}
+
+	public Type getModelType(){
+		return new TypeToken<Object>() {} .getType();
+	}
+
+	public void setModel(Object o){
+
+	}
+
 	public abstract void compute();
 }

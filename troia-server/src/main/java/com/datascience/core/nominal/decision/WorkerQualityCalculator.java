@@ -3,7 +3,6 @@ package com.datascience.core.nominal.decision;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.datascience.core.base.Category;
 import com.datascience.core.base.Worker;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.core.nominal.NominalProject;
@@ -25,12 +24,12 @@ public abstract class WorkerQualityCalculator {
 	
 	public double getCost(NominalProject project, Worker w){
 		Map<String, Double> workerPriors = project.getResults().getWorkerResult(w).getPrior(
-				w.getAssigns(), project.getData().getCategoriesNames());
+				w.getAssigns(), project.getData().getCategories());
 
 		double cost = 0.;
-		for (Category c : project.getData().getCategories()) {
-			Map<String, Double> softLabel = getSoftLabelForHardCategoryLabel(project, w, c.getName());
-			cost += labelProbabilityDistributionCostCalculator.predictedLabelCost(softLabel, ProbabilityDistributions.getCategoriesCostMatrix(project)) * workerPriors.get(c.getName());
+		for (String c : project.getData().getCategories()) {
+			Map<String, Double> softLabel = getSoftLabelForHardCategoryLabel(project, w, c);
+			cost += labelProbabilityDistributionCostCalculator.predictedLabelCost(softLabel, project.getData().getCostMatrix()) * workerPriors.get(c);
 		}
 		return cost;
 	}
@@ -43,16 +42,16 @@ public abstract class WorkerQualityCalculator {
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 		Map<String, Double> worker_prior = project.getResults().getWorkerResult(w).getPrior(
 				w.getAssigns(),
-				project.getData().getCategoriesNames());
+				project.getData().getCategories());
 		Map<String, Double> result = new HashMap<String, Double>();
-		for (Category source : project.getData().getCategories()) {
+		for (String source : project.getData().getCategories()) {
 			double soft = 0.;
 			if (worker_prior.get(label) > 0){
-				double error = getError(project, w, source.getName(), label);
+				double error = getError(project, w, source, label);
 				//TODO XXX FIXME
-				soft = ((AbstractDawidSkene)project.getAlgorithm()).prior(source.getName()) * error / worker_prior.get(label);
+				soft = ((AbstractDawidSkene)project.getAlgorithm()).prior(source) * error / worker_prior.get(label);
 			}
-			result.put(source.getName(), soft);
+			result.put(source, soft);
 		}
 
 		return result;

@@ -4,19 +4,19 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.Project;
+import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.core.base.Category;
 import com.datascience.core.results.Results;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
-import com.datascience.scheduler.IScheduler;
 import com.datascience.scheduler.SchedulerFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.json.JSONUtils;
+import com.datascience.utils.CostMatrix;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -105,7 +105,10 @@ public class JobFactory {
 		ALG_FACTORY.put("onlineMV", imv);
 	};
 
-	protected NominalProject getNominalProject(Collection<Category> categories, String algorithm, JsonObject jo){
+	protected NominalProject getNominalProject(Collection<String> categories,
+											   Collection<CategoryValue> categoryPriors,
+											   CostMatrix<String> costMatrix,
+											   String algorithm, JsonObject jo){
 		AlgorithmCreator creator = ALG_FACTORY.get(algorithm);
 		if (creator == null){
 			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s", algorithm));
@@ -115,7 +118,7 @@ public class JobFactory {
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
-		np.initializeCategories(categories);
+		np.initializeCategories(categories, categoryPriors, costMatrix);
 		if (jo.has("scheduler"))
 			np.setScheduler(new SchedulerFactory<String>().create(jo));
 		np.setInitializationData(jo);
@@ -126,12 +129,18 @@ public class JobFactory {
 		if (!jo.has("categories")){
 			throw new IllegalArgumentException("You should provide categories list");
 		}
-		Collection<Category> categories = serializer.parse(jo.get("categories").toString(), JSONUtils.categorySetType);
+		Collection<String> categories = serializer.parse(jo.get("categories").toString(), JSONUtils.stringSetType);
+		Collection<CategoryValue> categoryPriors = jo.has("categoryPriors") ?
+				(Collection<CategoryValue>) serializer.parse(jo.get("categoryPriors").toString(), JSONUtils.categoryValuesCollectionType) : null;
+		CostMatrix<String> costMatrix = jo.has("costMatrix") ?
+				(CostMatrix<String>) serializer.parse(jo.get("costMatrix").toString(), CostMatrix.class) : null;
 		if (!jo.has("algorithm"))
 			jo.addProperty("algorithm", "BDS");
 		return new Job(
 			getNominalProject(
 				categories,
+				categoryPriors,
+				costMatrix,
 				jo.get("algorithm").getAsString(),
 				jo),
 			id);
@@ -149,12 +158,13 @@ public class JobFactory {
 	}
 
 	public <T extends Project> Job<T> create(String type, String initializationData, String jsonData,
-											 String jsonResults, String id){
+											 String jsonResults, String model, String id){
 		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
 		Job<T> job = JOB_FACTORY.get(type).create(jo, id);
 		job.getProject().setData(serializer.<Data>parse(jsonData, Data.class));
 		job.getProject().setResults(serializer.<Results>parse(jsonResults, Results.class));
 		job.getProject().setScheduler(new SchedulerFactory<T>().create(jo));
+		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));
 		return job;
 	}
 }

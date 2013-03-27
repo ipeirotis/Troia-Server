@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
+import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.DecisionEngine;
@@ -60,27 +60,15 @@ public class ProbabilityDistributions {
 		return ret;
 	}
 
-	static public CostMatrix<String> getCategoriesCostMatrix(NominalProject project) {
-		CostMatrix<String> cm = new CostMatrix<String>();
-		for (Category c: project.getData().getCategories()) {
-			String name = c.getName();
-			for (Map.Entry<String, Double> entry: c.getMisclassificationCosts().entrySet()) {
-				cm.add(name, entry.getKey(), entry.getValue());
-			}
-		}
-		return cm;
+	static public Map<String, Double> getSpammerDistribution(NominalData data, NominalAlgorithm alg){
+		return getPriorBasedDistribution(data, alg);
 	}
 
-	static public Map<String, Double> getSpammerDistribution(NominalData data){
-		return getPriorBasedDistribution(data);
-	}
-
-	static public Map<String, Double> getPriorBasedDistribution(NominalData data){
-		Map<String, Double> pd = new HashMap<String, Double>();
-		for (Category c: data.getCategories()) {
-			pd.put(c.getName(), c.getPrior());
-		}
-		return pd;
+	static public Map<String, Double> getPriorBasedDistribution(NominalData data, NominalAlgorithm alg){
+		if (data.arePriorsFixed())
+			return data.getCategoryPriors();
+		else
+			return alg.getModel().categoryPriors;
 	}
 
 	public static Map<String, Double> generateMV_PD(Collection<String> categories,
@@ -97,8 +85,8 @@ public class ProbabilityDistributions {
 	static public Map<String, Double> generateOneLabelDistribution(LObject<String> datum, NominalProject project, DecisionEngine decisionEngine) {
 		String label = decisionEngine.predictLabel(project, datum);
 		Map<String, Double> pd = new HashMap<String, Double>();
-		for (Category c: project.getData().getCategories()) {
-			pd.put(c.getName(), 0.);
+		for (String c: project.getData().getCategories()) {
+			pd.put(c, 0.);
 		}
 		pd.put(label, 1.);
 		return pd;

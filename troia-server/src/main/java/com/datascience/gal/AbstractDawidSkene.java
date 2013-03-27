@@ -9,17 +9,19 @@
  ******************************************************************************/
 package com.datascience.gal;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
-import com.datascience.core.base.Category;
 import com.datascience.core.nominal.NominalAlgorithm;
+import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
+import com.google.gson.reflect.TypeToken;
 import org.apache.log4j.Logger;
 
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
@@ -30,6 +32,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
 		super(errorRateCalculator);
+		model = new NominalModel();
 	}
 
 	@Override
@@ -38,15 +41,26 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	}
 
 	@Override
-	public void initializeOnCategories(Collection<Category> categories){
-		if (data.arePriorsFixed()) {
+	public Type getModelType() {
+		return new TypeToken<NominalModel>() {} .getType();
+	}
+
+	@Override
+	public void setModel(Object o){
+		model = (NominalModel) o;
+	}
+
+	@Override
+	public void initializeOnCategories(Collection<String> categories){
+		if (!data.arePriorsFixed()) {
 			initializePriors();
 		}
 	}
 
 	public void initializePriors() {
-		for (Category c : data.getCategories())
-			c.setPrior(1. / data.getCategories().size());
+		for (String c : data.getCategories()){
+			model.categoryPriors.put(c, 1. / data.getCategories().size());
+		}
 	}
 
 	public double getErrorRateForWorker(Worker<String> worker, String from, String to){
@@ -54,7 +68,10 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	}
 
 	public double prior(String categoryName) {
-		return data.getCategory(categoryName).getPrior();
+		if (data.arePriorsFixed())
+			return data.getCategoryPrior(categoryName);
+		else
+			return model.categoryPriors.get(categoryName);
 	}
 
 	protected double getLogLikelihood() {
@@ -71,12 +88,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 			}
 		}
 		return result;
-	}
-
-	protected void setPriors(Map<String, Double> priors) {
-		for (Category c : data.getCategories()){
-			c.setPrior(priors.get(c.getName()));
-		}
 	}
 
 	protected double getEntropyForObject(LObject<String> obj){
@@ -96,19 +107,19 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 			return;
 
 		HashMap<String, Double> priors = new HashMap<String, Double>();
-		for (Category c : data.getCategories()) {
-			priors.put(c.getName(), 0.0);
+		for (String c : data.getCategories()) {
+			priors.put(c, 0.);
 		}
 
 		for (LObject<String> obj : data.getObjects()){
 			if (!data.getAssigns().isEmpty())
-				for (Category c : data.getCategories()){
-					priors.put(c.getName(), priors.get(c.getName()) +
-							results.getOrCreateDatumResult(obj).getCategoryProbability(c.getName()) / data.getObjects().size());
+				for (String c : data.getCategories()){
+					priors.put(c, priors.get(c) +
+						results.getOrCreateDatumResult(obj).getCategoryProbability(c) / data.getObjects().size());
 				}
 		}
 
-		setPriors(priors);
+		model.categoryPriors = priors;
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object) {
@@ -122,7 +133,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		// 1.0
 		// for the correct class
 		if (object.isGold()) {
-			return ProbabilityDistributions.generateGoldDistribution(data.getCategoriesNames(), object.getGoldLabel());
+			return ProbabilityDistributions.generateGoldDistribution(data.getCategories(), object.getGoldLabel());
 		}
 
 		// Let's check first if we have any workers who have labeled this item,
@@ -134,7 +145,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 
 		if (labels.isEmpty()){
-			return ProbabilityDistributions.getSpammerDistribution(getData());
+			return ProbabilityDistributions.getSpammerDistribution(getData(), this);
 		}
 
 		// If it is not gold, then we proceed to estimate the class
@@ -150,10 +161,10 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		// compute them
 		Map<String, Double> categoryNominators = new HashMap<String, Double>();
 
-		for (Category category : data.getCategories()) {
+		for (String category : data.getCategories()) {
 
 			// We estimate now Equation 2.5 of Dawid & Skene
-			double categoryNominator = prior(category.getName());
+			double categoryNominator = prior(category);
 
 			// We go through all the labels assigned to the d object
 			for (AssignedLabel<String> al : data.getAssignsForObject(object)) {
@@ -169,40 +180,29 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 					continue;
 
 				String assigned_category = al.getLabel();
-				double evidence_for_category = getErrorRateForWorker(w,
-					category.getName(), assigned_category);
+				double evidence_for_category = getErrorRateForWorker(w, category, assigned_category);
 				if (Double.isNaN(evidence_for_category))
 					continue;
 				categoryNominator *= evidence_for_category;
 			}
 
-			categoryNominators.put(category.getName(), categoryNominator);
+			categoryNominators.put(category, categoryNominator);
 			denominator += categoryNominator;
 		}
 
-		for (Category c : data.getCategories()) {
-			double nominator = categoryNominators.get(c.getName());
+		for (String c : data.getCategories()) {
+			double nominator = categoryNominators.get(c);
 			if (denominator == 0.0) {
 				// result.put(category, 0.0);
 				return null;
 			} else {
 				double probability = com.datascience.utils.Utils.round(nominator / denominator, 5);
-				result.put(c.getName(), probability);
+				result.put(c, probability);
 			}
 		}
 
 		return result;
 
-	}
-
-	public void addMisclassificationCost(MisclassificationCost cl) {
-		data.getCategory(cl.getCategoryFrom()).setCost(cl.getCategoryTo(), cl.getCost());
-	}
-
-
-	public void addMisclassificationCosts(Collection<MisclassificationCost> cls) {
-		for (MisclassificationCost cl : cls)
-			addMisclassificationCost(cl);
 	}
 
 	public void setIterations(int iterations){

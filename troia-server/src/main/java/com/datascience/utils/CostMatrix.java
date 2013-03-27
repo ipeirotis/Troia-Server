@@ -28,6 +28,10 @@ public class CostMatrix<T> {
 		entryMap.put(predictedValue, cost);
 	}
 
+	public boolean hasCost(T trueValue, T predictedValue){
+		return costMatrix.containsKey(trueValue) && costMatrix.get(trueValue).containsKey(predictedValue);
+	}
+
 	public Double getCost(T trueValue, T predictedValue) {
 		// I won't check if this "request" is correct - it should fail if not
 		return costMatrix.get(trueValue).get(predictedValue);

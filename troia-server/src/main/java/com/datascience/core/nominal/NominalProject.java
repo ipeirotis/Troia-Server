@@ -5,8 +5,10 @@ import com.datascience.core.results.Results;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.results.DatumResult;
+import com.datascience.utils.CostMatrix;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * User: artur
@@ -27,14 +29,19 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 		return nomAlgorithm;
 	}
 
-	public void initializeCategories(Collection<Category> categories){
-		data.addCategories(categories);
+	@Override
+	public String getKind(){
+		return "NOMINAL";
+	}
+
+	public void initializeCategories(Collection<String> categories, Collection<CategoryValue> categoryPriors, CostMatrix<String> costMatrix){
+		data.initialize(categories, categoryPriors, costMatrix);
 		nomAlgorithm.initializeOnCategories(categories);
 		results = createResultsInstance(categories);
 		algorithm.setResults(results);
 	}
 
-	public static Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<Category> categories){
+	public static Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<String> categories){
 		Results<String, DatumResult, WorkerResult> res = new Results<String, DatumResult, WorkerResult>(
 				new ResultsFactory.DatumResultFactory(),
 				new ResultsFactory.WorkerResultNominalFactory());

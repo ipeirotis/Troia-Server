@@ -1,18 +1,10 @@
 package com.datascience.serialization.json;
 
-import com.datascience.core.base.Category;
-import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.Results;
-import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
-import com.datascience.scheduler.AssignCountPriorityCalculator;
-import com.datascience.scheduler.CachedScheduler;
-import com.datascience.scheduler.IPriorityCalculator;
-import com.datascience.scheduler.Scheduler;
-import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -35,11 +27,9 @@ public class ResultsTest {
 
 	@Test
 	public void schedulerSerializationTest() {
-		ArrayList<Category> categories = new ArrayList<Category>();
-		Category category1 = new Category("category1");
-		Category category2 = new Category("category2");
-		categories.add(category1);
-		categories.add(category2);
+		ArrayList<String> categories = new ArrayList<String>();
+		categories.add("category1");
+		categories.add("category2");
 
 		Results<String, DatumResult, WorkerResult> results = NominalProject.createResultsInstance(categories);
 		LObject<String> obj = new LObject<String>("obj");

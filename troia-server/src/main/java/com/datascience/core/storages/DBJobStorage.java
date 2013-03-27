@@ -18,6 +18,7 @@ import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
+import org.apache.log4j.varia.StringMatchFilter;
 
 /**
  * From old class DawidSkeneCache.
@@ -29,25 +30,15 @@ public class DBJobStorage implements IJobStorage {
 
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
 
-	protected <T> String getKind(T object) {
-		if (object instanceof ContinuousProject){
-			return "CONTINUOUS";
-		}
-		if (object instanceof NominalProject){
-			return "NOMINAL";
-		}
-		throw new IllegalArgumentException("Unknown job kind for class: " + object.getClass());
-	}
-
 	private int VALIDATION_TIMEOUT = 2;
 
 	private Connection connection;
 	private Properties connectionProperties;
 	private String databaseUrl;
 	
-	private static final String GET_DS = "SELECT kind, data, results, initializationData FROM projects WHERE id IN (?);";
-	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data, results, initializationData) VALUES (?, ?, ?, ?, ?);";
-	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
+	private static final String GET_DS = "SELECT kind, data, results, initializationData FROM Projects WHERE id IN (?);";
+	private static final String INSERT_DS = "REPLACE INTO Projects (id, kind, data, results, initializationData, model) VALUES (?, ?, ?, ?, ?, ?);";
+	private static final String DELETE_DS = "DELETE FROM Projects WHERE id = (?);";
 
 	private ISerializer serializer;
 	private JobFactory jobFactory;
@@ -107,9 +98,10 @@ public class DBJobStorage implements IJobStorage {
 			String kind = dsResults.getString("kind");
 			String results = dsResults.getString("results");
 			String initializationData = dsResults.getString("initializationData");
+			String model = dsResults.getString("model");
 			dsStatement.close();
 			logger.debug("Getting job from DB: " + id + " DONE");
-			return jobFactory.create(kind, initializationData, data, results, id);
+			return jobFactory.create(kind, initializationData, data, results, model, id);
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -128,10 +120,11 @@ public class DBJobStorage implements IJobStorage {
 		try {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
-			dsStatement.setString(2, getKind(job.getProject()));
+			dsStatement.setString(2, job.getProject().getKind());
 			dsStatement.setString(3, serializer.serialize(job.getProject().getData()));
 			dsStatement.setString(4, serializer.serialize(job.getProject().getResults()));
 			dsStatement.setString(5, job.getProject().getInitializationData().toString());
+			dsStatement.setString(6, serializer.serialize(job.getProject().getAlgorithm().getModel()));
 			dsStatement.executeUpdate();
 			logger.debug("Adding job to DB: " + job.getId() + " DONE");
 		} finally {
@@ -192,6 +185,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(3, content);
 			dsStatement.setString(4, content);
 			dsStatement.setString(5, content);
+			dsStatement.setString(6, content);
 			dsStatement.executeUpdate();
 			dsStatement.close();
 

@@ -1,7 +1,6 @@
 package com.datascience.core.results;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
 import com.datascience.core.base.CategoryPair;
 import com.datascience.core.stats.*;
 
@@ -20,7 +19,7 @@ public class WorkerResult {
 	//The confusion matrix for the worker based on evaluation data
 	protected ConfusionMatrix eval_cm;
 
-	public WorkerResult(Collection<Category> categories){
+	public WorkerResult(Collection<String> categories){
 		cm = new MultinomialConfusionMatrix(categories);
 	}
 
@@ -73,7 +72,7 @@ public class WorkerResult {
 		}
 	}
 
-	public void computeEvalConfusionMatrix(Collection<Category> categories,
+	public void computeEvalConfusionMatrix(Collection<String> categories,
 										   Collection<AssignedLabel<String>> workerAssigns) {
 		eval_cm = new MultinomialConfusionMatrix(categories, new HashMap<CategoryPair, Double>());
 		for (AssignedLabel<String> l : workerAssigns) {

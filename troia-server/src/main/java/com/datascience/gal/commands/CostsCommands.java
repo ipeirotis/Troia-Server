@@ -3,7 +3,6 @@ package com.datascience.gal.commands;
 import java.util.Collection;
 
 import com.datascience.executor.JobCommand;
-import com.datascience.core.base.Category;
 import com.datascience.core.nominal.NominalProject;
 
 /**
@@ -12,25 +11,9 @@ import com.datascience.core.nominal.NominalProject;
  */
 public class CostsCommands {
 	
-//	static public class SetCosts extends JobCommand<Object, NominalProject> {
-//
-//		private Collection<MisclassificationCost> costs;
-//
-//		public SetCosts(Collection<MisclassificationCost> costs){
-//			super(true);
-//			this.costs = costs;
-//		}
-//
-//		@Override
-//		protected void realExecute() {
-//			project.addMisclassificationCosts(costs);
-//			setResult("Costs set");
-//		}
-//	}
-	
 	/** This is not a bug - we are using categories here as they gsoned gives us costs
 	 * */
-	static public class GetCosts extends JobCommand<Collection<Category>, NominalProject> {
+	static public class GetCosts extends JobCommand<Collection<String>, NominalProject> {
 		
 		public GetCosts(){
 			super(false);
