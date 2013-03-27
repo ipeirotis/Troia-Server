@@ -17,6 +17,7 @@ public abstract class NominalAlgorithm extends Algorithm<String, NominalData, Da
 
 	public NominalAlgorithm(IErrorRateCalculator errorRateCalculator){
 		this.errorRateCalculator = errorRateCalculator;
+		model = new NominalModel();
 	}
 
 	public IErrorRateCalculator getErrorRateCalculator(){

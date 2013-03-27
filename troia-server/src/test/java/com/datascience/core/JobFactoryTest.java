@@ -8,6 +8,7 @@ import com.datascience.mv.IncrementalMV;
 import com.datascience.service.GSONSerializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -25,12 +26,8 @@ public class JobFactoryTest {
 
 	private JsonArray createCategoriesJsonArray(){
 		JsonArray cat = new JsonArray();
-		JsonObject cat1 = new JsonObject();
-		cat1.addProperty("name", "cat1");
-		JsonObject cat2 = new JsonObject();
-		cat2.addProperty("name", "cat1");
-		cat.add(cat1);
-		cat.add(cat2);
+		cat.add(new JsonPrimitive("cat1"));
+		cat.add(new JsonPrimitive("cat2"));
 		return cat;
 	}
 

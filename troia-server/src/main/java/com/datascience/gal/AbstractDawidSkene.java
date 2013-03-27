@@ -32,7 +32,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
 		super(errorRateCalculator);
-		model = new NominalModel();
 	}
 
 	@Override
