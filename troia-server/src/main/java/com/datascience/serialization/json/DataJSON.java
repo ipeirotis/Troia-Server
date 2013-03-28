@@ -2,6 +2,7 @@ package com.datascience.serialization.json;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
@@ -17,6 +18,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * @Author: konrad
@@ -110,6 +112,21 @@ public class DataJSON {
 		@Override
 		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());
+		}
+	}
+
+	public static class CostMatrixSerializer<T> implements JsonSerializer<CostMatrix<T>> {
+		@Override
+		public JsonElement serialize(CostMatrix<T> w, Type type, JsonSerializationContext ctx) {
+			return ctx.serialize(w.getCostMatrix());
+		}
+	}
+
+	public static class CostMatrixDeserializer<T> implements JsonDeserializer<CostMatrix<T>> {
+
+		@Override
+		public CostMatrix<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+			return new CostMatrix<T>((Map<T, Map<T, Double>>) context.deserialize(element, new TypeToken<Map<T, Map<T, Double>>>() {}.getType()));
 		}
 	}
 

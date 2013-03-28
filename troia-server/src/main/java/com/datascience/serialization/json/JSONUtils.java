@@ -21,6 +21,7 @@ import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
 import com.datascience.gal.*;
 import com.datascience.serialization.Serialized;
+import com.datascience.utils.CostMatrix;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
@@ -77,6 +78,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
 		builder.registerTypeAdapter(Worker.class, new DataJSON.WorkerSerializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
+		builder.registerTypeAdapter(CostMatrix.class, new DataJSON.CostMatrixDeserializer<String>());
+		builder.registerTypeAdapter(CostMatrix.class, new DataJSON.CostMatrixSerializer<String>());
 
 		builder.registerTypeAdapter(ResultsFactory.DatumResultCreator.class, new DataJSON.DatumCreatorDeserializer());
 		builder.registerTypeAdapter(ResultsFactory.WorkerResultCreator.class, new DataJSON.WorkerCreatorDeserializer());
