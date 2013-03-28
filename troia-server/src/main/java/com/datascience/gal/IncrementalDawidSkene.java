@@ -9,12 +9,16 @@
  ******************************************************************************/
 package com.datascience.gal;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.*;
+import com.datascience.core.nominal.CategoryValue;
+import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ErrorRateCalculators;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * fully incremental version of DS- adjustments to the data structures are made
@@ -27,25 +31,42 @@ import com.datascience.core.stats.ErrorRateCalculators;
 public class IncrementalDawidSkene extends AbstractDawidSkene
 			implements INewDataObserver<String> {
 
-	private int priorDenominator;
+	private IncrementalNominalModel model;
 
 	public IncrementalDawidSkene() {
 		super(new ErrorRateCalculators.IncrementalErrorRateCalculator());
+		model = new IncrementalNominalModel();
+	}
+
+	@Override
+	public IncrementalNominalModel getModel() {
+		return model;
+	}
+
+	@Override
+	public Type getModelType() {
+		return new TypeToken<IncrementalNominalModel>() {} .getType();
+	}
+
+	@Override
+	public void setModel(Object o){
+		model = (IncrementalNominalModel) o;
 	}
 
 	@Override
 	public void initializePriors() {
-		for (Category c : data.getCategories())
-			c.setPrior(0);
-		priorDenominator = 0;
+		for (String c : data.getCategories()){
+			model.categoryPriors.put(c, 0.);
+		}
+		model.priorDenominator = 0;
 	}
 
 	@Override
 	public double prior(String categoryName) {
-		if (data.arePriorsFixed() || priorDenominator == 0)
+		if (data.arePriorsFixed() || model.priorDenominator == 0)
 			return 1. / (double) data.getCategories().size();
 		else
-			return data.getCategory(categoryName).getPrior() / priorDenominator;
+			return model.categoryPriors.get(categoryName) / model.priorDenominator;
 	}
 
 	@Override
@@ -75,18 +96,18 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	private void undoPriorInfluence(Map<String, Double> probabilites){
 		if (probabilites != null && probabilites.size() > 0){
-			priorDenominator--;
-			for (Category c : data.getCategories()){
-				c.setPrior(c.getPrior() - probabilites.get(c.getName()));
+			model.priorDenominator--;
+			for (Map.Entry<String, Double> e : model.categoryPriors.entrySet()){
+				e.setValue(e.getValue() - probabilites.get(e.getKey()));
 			}
 		}
 	}
 
 	private void makePriorInfluence(Map<String, Double> probabilites){
 		if (probabilites != null){
-			priorDenominator++;
-			for (Category c : data.getCategories()){
-				c.setPrior(c.getPrior() + probabilites.get(c.getName()));
+			model.priorDenominator++;
+			for (Map.Entry<String, Double> e : model.categoryPriors.entrySet()){
+				e.setValue(e.getValue() + probabilites.get(e.getKey()));
 			}
 		}
 	}
@@ -103,3 +124,4 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	public void newWorker(Worker<String> worker) {
 	}
 }
+

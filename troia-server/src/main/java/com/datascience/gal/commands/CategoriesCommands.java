@@ -19,7 +19,7 @@ public class CategoriesCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(project.getData().getCategoriesNames());
+			setResult(project.getData().getCategories());
 		}
 	}
 }

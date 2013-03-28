@@ -39,5 +39,8 @@ public class ContinuousProject extends Project<ContValue, Data<ContValue>, Datum
 		return ((ContinuousIpeirotis)algorithm).getWorkersResults();
 	}
 
-
+	@Override
+	public String getKind(){
+		return "CONTINUOUS";
+	}
 }
