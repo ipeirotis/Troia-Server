@@ -9,19 +9,19 @@ public class Constants {
 		return def.toLowerCase();
 	}
 
-	public static String SCHEDULER = t("Scheduler");
-	public static String PRIORITY_CALCULATOR = t("PriorityCalculator");
-	public static String SCHEDULER_FOR_WORKERS = t("SchedulerForWorkers");
+	public static final String SCHEDULER = t("Scheduler");
+	public static final String PRIORITY_CALCULATOR = t("PriorityCalculator");
+	public static final String SCHEDULER_FOR_WORKERS = t("SchedulerForWorkers");
 
-	public static String SCHEDULER_NORMAL = t("NormalScheduler");
-	public static String SCHEDULER_CACHED = t("CachedScheduler");
+	public static final String SCHEDULER_NORMAL = t("NormalScheduler");
+	public static final String SCHEDULER_CACHED = t("CachedScheduler");
 
-	public static String PC_ASSIGN_COUNT = t("ByAssigns");
-	public static String PC_BY_COST = t("ByCost");
+	public static final String PC_ASSIGN_COUNT = t("ByAssigns");
+	public static final String PC_BY_COST = t("ByCost");
 
-	public static String FOR_WORKERS_CM_BASED = t("ConfusionMatrixBased");
-	public static String FOR_WORKERS_FIRST_NOT_SEEN = t("FirstNotSeen");
+	public static final String FOR_WORKERS_CM_BASED = t("ConfusionMatrixBased");
+	public static final String FOR_WORKERS_FIRST_NOT_SEEN = t("FirstNotSeen");
 
-	public static String COST_METHOD = t("CostMethod");
+	public static final String COST_METHOD = t("CostMethod");
 
 }
