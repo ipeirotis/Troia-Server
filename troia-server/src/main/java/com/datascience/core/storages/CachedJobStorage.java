@@ -3,6 +3,7 @@ package com.datascience.core.storages;
 import java.util.concurrent.ExecutionException;
 
 import com.datascience.core.base.Project;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
@@ -63,7 +64,7 @@ public class CachedJobStorage implements IJobStorage {
 	
 	@Override
 	public <T extends Project> Job<T> get(String id) throws Exception {
-		logger.info("CACHED_JS: get " + id);
+		logger.debug("CACHED_JS: get " + id);
 		try {
 			return cache.get(id).get();
 		} catch (ExecutionException ex){
@@ -72,6 +73,9 @@ public class CachedJobStorage implements IJobStorage {
 			} else {
 				throw ex;
 			}
+		} catch (UncheckedExecutionException ex) {
+			logger.fatal("CachedJobStorage", ex.getCause());
+			throw ex;
 		}
 	}
 
@@ -81,7 +85,7 @@ public class CachedJobStorage implements IJobStorage {
 	 */
 	@Override
 	public void add(Job job) throws Exception {
-		logger.info("CACHED_JS: add " + job.getId());
+		logger.debug("CACHED_JS: add " + job.getId());
 		cache.put(job.getId(), Optional.of(job));
 	}
 
@@ -92,7 +96,7 @@ public class CachedJobStorage implements IJobStorage {
 	 */
 	@Override
 	public void remove(Job job) throws Exception {
-		logger.info("CACHED_JS: rm " + job.getId());
+		logger.debug("CACHED_JS: rm " + job.getId());
 		String id = job.getId();
 		cache.invalidate(id);
 		cachedJobStorage.remove(job);

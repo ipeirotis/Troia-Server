@@ -18,7 +18,7 @@ public class RandomUniqIDGenerators {
 
 		@Override
 		public String getID() {
-			return "" + System.currentTimeMillis() + numberGenerator.getID();
+			return "" + System.currentTimeMillis() + "_" + numberGenerator.getID();
 		}
 	}
 	

@@ -105,6 +105,11 @@ public class JobFactory {
 		ALG_FACTORY.put("onlineMV", imv);
 	};
 
+	protected void handleSchedulerLoading(JsonObject settings, Project project){
+		if (settings.has("scheduler"))
+			project.setScheduler(new SchedulerFactory<ContValue>().create(settings));
+	}
+
 	protected NominalProject getNominalProject(Collection<String> categories,
 											   Collection<CategoryValue> categoryPriors,
 											   CostMatrix<String> costMatrix,
@@ -119,8 +124,7 @@ public class JobFactory {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
 		np.initializeCategories(categories, categoryPriors, costMatrix);
-		if (jo.has("scheduler"))
-			np.setScheduler(new SchedulerFactory<String>().create(jo));
+		handleSchedulerLoading(jo, np);
 		np.setInitializationData(jo);
 		return np;
 	}
@@ -151,8 +155,7 @@ public class JobFactory {
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
 		ContinuousProject cp = new ContinuousProject(alg);
-		if (jo.has("scheduler"))
-			cp.setScheduler(new SchedulerFactory<ContValue>().create(jo));
+		handleSchedulerLoading(jo, cp);
 		cp.setInitializationData(jo);
 		return new Job(cp, id);
 	}
@@ -163,7 +166,7 @@ public class JobFactory {
 		Job<T> job = JOB_FACTORY.get(type).create(jo, id);
 		job.getProject().setData(serializer.<Data>parse(jsonData, Data.class));
 		job.getProject().setResults(serializer.<Results>parse(jsonResults, Results.class));
-		job.getProject().setScheduler(new SchedulerFactory<T>().create(jo));
+		handleSchedulerLoading(jo, job.getProject());
 		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));
 		return job;
 	}
