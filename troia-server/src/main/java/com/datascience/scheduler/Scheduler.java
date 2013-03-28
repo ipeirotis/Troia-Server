@@ -19,6 +19,7 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	public Scheduler(Project<T, ?, ?, ?> project, IPriorityCalculator<T> calculator) {
 		setUpQueue(calculator);
+		setSchedulerForWorker(new SchedulersForWorker.FirstNotSeen<T>());
 		registerOnProject(project);
 	}
 
@@ -59,6 +60,7 @@ public class Scheduler<T> implements IScheduler<T> {
 	public <V, W> void registerOnProject(Project<T, ?, V, W> project) {
 		data = project.getData();
 		calculator.registerOnProject(project);
+		workerScheduler.setProject(project);
 		ISchedulerNotificator<T> notificator = calculator.getSchedulerNotificator(project);
 		notificator.registerOnProject(project);
 		notificator.setScheduler(this);

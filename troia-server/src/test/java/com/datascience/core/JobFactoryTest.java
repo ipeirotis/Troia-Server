@@ -5,6 +5,7 @@ import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
+import com.datascience.scheduler.Constants;
 import com.datascience.service.GSONSerializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,7 +60,7 @@ public class JobFactoryTest {
 			JsonObject jo = new JsonObject();
 			jo.addProperty("algorithm", e.getKey());
 			jo.add("categories", createCategoriesJsonArray());
-			jo.addProperty("scheduler", "scheduler");
+			jo.addProperty(Constants.SCHEDULER, Constants.SCHEDULER_NORMAL);
 
 			Job job = jf.createNominalJob(jo, "test");
 			checkProjectDependecies(job, e.getValue(), true);
@@ -70,7 +71,7 @@ public class JobFactoryTest {
 	public void createContinuousJob() throws Exception {
 		JobFactory jf = new JobFactory(new GSONSerializer());
 		JsonObject jo = new JsonObject();
-		jo.addProperty("scheduler", "scheduler");
+		jo.addProperty(Constants.SCHEDULER, Constants.SCHEDULER_NORMAL);
 		Job job = jf.createContinuousJob(jo, "test");
 		checkProjectDependecies(job, ContinuousIpeirotis.class, false);
 	}

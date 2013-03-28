@@ -8,20 +8,49 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class SchedulerFactory<T> {
 
-	protected interface ISchedulerCreator<T> {
-
-		IScheduler<T> create(JsonObject params);
+	protected interface Creator<U> {
+		U create(JsonObject params);
 	}
+
+	protected interface ISchedulerCreator<T> extends Creator<IScheduler<T>>{}
+	protected interface IPriorityCalculatorCreator<T> extends Creator<IPriorityCalculator<T>>{}
+	protected interface ISchedulerForWorkerCreator<T> extends Creator<ISchedulerForWorker<T>>{}
+
+	protected Map<String, ISchedulerCreator<T>> SCHEDULER_CREATORS = new HashMap<String, ISchedulerCreator<T>>();
+	protected Map<String, IPriorityCalculatorCreator<T>> CALCULATORS = new HashMap<String, IPriorityCalculatorCreator<T>>();
+	protected Map<String, ISchedulerForWorkerCreator<T>> SCHEDULERS_FOR_WORKERS = new HashMap<String, ISchedulerForWorkerCreator<T>>();
+
+	{
+		SCHEDULER_CREATORS.put(Constants.SCHEDULER_NORMAL, getNormalSchedulerCreator());
+		SCHEDULER_CREATORS.put(Constants.SCHEDULER_CACHED, getCachedSchedulerCreator());
+
+		CALCULATORS.put(Constants.PC_ASSIGN_COUNT, getPCAssignsCount());
+		CALCULATORS.put(Constants.PC_BY_COST, getPCCostBased());
+
+		SCHEDULERS_FOR_WORKERS.put(Constants.FOR_WORKERS_FIRST_NOT_SEEN, getFirstNotSeen());
+		SCHEDULERS_FOR_WORKERS.put(Constants.FOR_WORKERS_CM_BASED, getCostMatrixBased());
+	};
+
+	protected String getID(JsonObject params, String arg){
+		return Constants.t(params.get(arg).getAsString());
+	}
+
+	protected void ensureDefault(JsonObject params, String paramName, String paramValue){
+		if (!params.has(paramName)){
+			params.addProperty(paramName, paramValue);
+		}
+	}
+
 
 	protected ISchedulerCreator<T> getNormalSchedulerCreator(){
 		return new ISchedulerCreator<T>() {
 			@Override
 			public IScheduler<T> create(JsonObject params) {
-				Scheduler<T> scheduler = new Scheduler<T>();
-				scheduler.setUpQueue(createPriorityCalculator(params));
-				return scheduler;
+				return new Scheduler<T>();
 			}
 		};
 	}
@@ -35,7 +64,6 @@ public class SchedulerFactory<T> {
 				if (!params.has("pauseUnit"))
 					params.addProperty("pauseUnit", "minutes");
 				CachedScheduler<T> scheduler = new CachedScheduler<T>();
-				scheduler.setUpQueue(createPriorityCalculator(params));
 				scheduler.setUpCache(
 						params.get("pauseDuration").getAsLong(),
 						PAUSE_UNITS.get(params.get("pauseUnit").getAsString().toLowerCase())
@@ -45,17 +73,6 @@ public class SchedulerFactory<T> {
 		};
 	}
 
-	final static Map<String, ISchedulerCreator> SCHEDULER_CREATORS = new HashMap<String, ISchedulerCreator>();
-	{
-		SCHEDULER_CREATORS.put("scheduler", getNormalSchedulerCreator());
-		SCHEDULER_CREATORS.put("cachedscheduler", getCachedSchedulerCreator());
-	};
-
-
-	protected interface IPriorityCalculatorCreator<T> {
-
-		IPriorityCalculator<T> create(JsonObject params);
-	}
 
 	protected IPriorityCalculatorCreator<T> getPCAssignsCount(){
 		return new IPriorityCalculatorCreator<T>() {
@@ -70,7 +87,7 @@ public class SchedulerFactory<T> {
 		return new IPriorityCalculatorCreator<T>() {
 			@Override
 			public IPriorityCalculator<T> create(JsonObject params) {
-				String costFun = params.get("costMethod").getAsString();
+				String costFun = getID(params, Constants.COST_METHOD);
 				ILabelProbabilityDistributionCostCalculator ilpcc =
 						LabelProbabilityDistributionCostCalculators.get(costFun);
 				// XXX This is not safe ...
@@ -79,11 +96,27 @@ public class SchedulerFactory<T> {
 		};
 	}
 
-	final static Map<String, IPriorityCalculatorCreator> CALCULATORS = new HashMap();
-	{
-		CALCULATORS.put("countassigns", getPCAssignsCount());
-		CALCULATORS.put("costbased", getPCCostBased());
-	};
+
+	protected ISchedulerForWorkerCreator<T> getCostMatrixBased(){
+		return new ISchedulerForWorkerCreator<T>() {
+
+			@Override
+			public ISchedulerForWorker<T> create(JsonObject params) {
+				return (ISchedulerForWorker<T>) new SchedulersForWorker.ConfusionMatrixBased();
+			}
+		};
+	}
+
+	protected ISchedulerForWorkerCreator<T> getFirstNotSeen(){
+		return new ISchedulerForWorkerCreator<T>() {
+
+			@Override
+			public ISchedulerForWorker<T> create(JsonObject params) {
+				return new SchedulersForWorker.FirstNotSeen<T>();
+			}
+		};
+	}
+
 
 	final static Map<String, TimeUnit> PAUSE_UNITS = new HashMap<String, TimeUnit>();
 	{
@@ -92,24 +125,37 @@ public class SchedulerFactory<T> {
 		PAUSE_UNITS.put("hours", TimeUnit.HOURS);
 	}
 
+
 	public IScheduler<T> create(JsonObject params) {
-		String type = params.get("scheduler").getAsString().toLowerCase();
+		String type = getID(params, Constants.SCHEDULER);
 		ISchedulerCreator<T> creator = SCHEDULER_CREATORS.get(type);
 		if (creator == null) {
 			throw new IllegalArgumentException("Unknown scheduler type: " + type);
 		}
+		IScheduler<T> scheduler = creator.create(params);
+		scheduler.setUpQueue(createPriorityCalculator(params));
+		scheduler.setSchedulerForWorker(createSchedulerForWorker(params));
+		return scheduler;
+	}
+
+	protected  <U> U createWithDefault(JsonObject params, String paramName, String defaultValue, Map<String, ? extends Creator<U>> creators, String name){
+		ensureDefault(params, paramName, defaultValue);
+		String kind = getID(params, paramName);
+		Creator<U> creator = creators.get(kind);
+		checkArgument(creator != null, "Unknown %s: %s", name, kind);
 		return creator.create(params);
 	}
 
 	public IPriorityCalculator<T> createPriorityCalculator(JsonObject params){
-		if (!params.has("calculator")){
-			params.addProperty("calculator", "countassigns");
-		}
-		String pcKind = params.get("calculator").getAsString().toLowerCase();
-		IPriorityCalculatorCreator<T> creator = CALCULATORS.get(pcKind);
-		if (creator == null){
-			throw new IllegalArgumentException("Unknown priority calculator: " + pcKind);
-		}
-		return creator.create(params);
+		return createWithDefault(params, Constants.PRIORITY_CALCULATOR, Constants.PC_ASSIGN_COUNT,
+				CALCULATORS, "priority calculator");
 	}
+
+	public ISchedulerForWorker<T> createSchedulerForWorker(JsonObject params){
+		return createWithDefault(params, Constants.SCHEDULER_FOR_WORKERS, Constants.FOR_WORKERS_FIRST_NOT_SEEN,
+				SCHEDULERS_FOR_WORKERS, "scheduler for workers");
+	}
+
+
+
 }

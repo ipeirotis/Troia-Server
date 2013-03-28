@@ -40,10 +40,10 @@ public class CostBasedPriorityCalculatorTest {
 	public void testCorrectness(){
 		String costMethod = "MAXLIKELIHOOD";
 		NominalProject project = setUpNominalProject();
-		Scheduler<String> scheduler = new Scheduler<String>();
 		ILabelProbabilityDistributionCostCalculator lpdcc =
 				LabelProbabilityDistributionCostCalculators.get(costMethod);
 		IPriorityCalculator<String> pc = new CostBasedPriorityCalculator(lpdcc);
+		Scheduler<String> scheduler = new Scheduler<String>(project, pc);
 		scheduler.setUpQueue(pc);
 		Worker<String> worker = new Worker<String>("Worker1");
 		NominalData data = project.getData();
