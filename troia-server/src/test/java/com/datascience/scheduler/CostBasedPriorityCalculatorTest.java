@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class CostBasedPriorityCalculatorTest {
 
-	public NominalProject setUpNominalProject(){
+	public static NominalProject setUpNominalProject(){
 		IncrementalMV imv = new IncrementalMV();
 		NominalProject project = new NominalProject(imv);
 		project.initializeCategories(Arrays.asList(
@@ -44,10 +44,8 @@ public class CostBasedPriorityCalculatorTest {
 				LabelProbabilityDistributionCostCalculators.get(costMethod);
 		IPriorityCalculator<String> pc = new CostBasedPriorityCalculator(lpdcc);
 		Scheduler<String> scheduler = new Scheduler<String>(project, pc);
-		scheduler.setUpQueue(pc);
 		Worker<String> worker = new Worker<String>("Worker1");
 		NominalData data = project.getData();
-		scheduler.registerOnProject(project);
 		LObject<String> object1 = data.getOrCreateObject("object1");
 		LObject<String> object2 = data.getOrCreateObject("object2");
 		int w = 0;

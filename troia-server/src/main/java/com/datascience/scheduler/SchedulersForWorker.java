@@ -60,15 +60,21 @@ public class SchedulersForWorker {
 			return Constants.FOR_WORKERS_CM_BASED;
 		}
 
+		public void setInitializationData(CostBasedPriorityCalculator costCalculator,
+										  Results<String, DatumResult, WorkerResult> results){
+			this.costCalculator = costCalculator;
+			// ^^^ I know this is dirty to use this, but it is easier in use
+			this.results = results;
+		}
+
 		@Override
 		public void setProject(Project<String, ?, ?, ?> project) {
 			checkArgument(project.getScheduler() != null, "Wrong configuration order");
 			checkArgument(!(project.getScheduler().getCalculator() instanceof CostBasedPriorityCalculator),
 					"This scheduler for worker works only with cost calculator");
 
-			costCalculator = (CostBasedPriorityCalculator) project.getScheduler().getCalculator();
-			// ^^^ I know this is dirty to use this, but it is easier in use
-			results = (Results<String, DatumResult, WorkerResult>) project.getResults();
+			setInitializationData((CostBasedPriorityCalculator) project.getScheduler().getCalculator(),
+					(Results<String, DatumResult, WorkerResult>) project.getResults());
 		}
 	}
 
