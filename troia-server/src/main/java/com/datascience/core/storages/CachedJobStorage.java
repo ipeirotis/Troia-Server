@@ -3,6 +3,7 @@ package com.datascience.core.storages;
 import java.util.concurrent.ExecutionException;
 
 import com.datascience.core.base.Project;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
@@ -72,6 +73,9 @@ public class CachedJobStorage implements IJobStorage {
 			} else {
 				throw ex;
 			}
+		} catch (UncheckedExecutionException ex) {
+			logger.fatal("CachedJobStorage", ex.getCause());
+			throw ex;
 		}
 	}
 
