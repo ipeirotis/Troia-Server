@@ -1,9 +1,9 @@
 package com.datascience.gal.dataGenerator;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.utils.CostMatrix;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -116,20 +116,18 @@ public class DataManager {
 	 *
 	 * @param filename
 	 *            Target file
-	 * @param categories
-	 *            Collection of categories
 	 * @throws IOException
 	 *             Thrown if program was unable to save workers to file
 	 */
-	public void saveMisclassificationCost(String filename,
-			Collection<Category> categories) throws IOException {
-		logger.info("Saving misclassification cost matrix to file");
+	public void saveCostMatrix(String filename,
+			CostMatrix<String> cm, Collection<String> categories) throws IOException {
+		logger.info("Saving cost matrix to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (Category c0 : categories) {
-			for (Category c1 : categories) {
-				out.append(c0.getName() + " " + c1.getName() + " "
-						+ c1.getCost(c0.getName()) + "\n");
+		for (String c0 : categories) {
+			for (String c1 : categories) {
+				out.append(c0 + " " + c1 + " "
+						+ cm.getCost(c0, c1) + "\n");
 			}
 		}
 
@@ -143,8 +141,6 @@ public class DataManager {
 	 * user. For files in with user can define workers you should see
 	 * "loadBasicWorkers" function.
 	 *
-	 * @see saveArtificialWorkers
-	 * @see loadBasicWorkers
 	 * @param filename
 	 *            Name of file containing JSONified artificial workers
 	 * @return Collection of artificial workers fetched from file
@@ -377,8 +373,8 @@ public class DataManager {
 									   + FILE_EXTENSION, data.getArtificialWorkerQualities());
 		}
 		if(data.getCategories()!=null) {
-			this.saveMisclassificationCost(filename_base + MISCLASSIFICATION_COST_TAG
-									   + FILE_EXTENSION, data.getCategories());
+			this.saveCostMatrix(filename_base + MISCLASSIFICATION_COST_TAG
+									   + FILE_EXTENSION, data.getCostMatrix(), data.getCategories());
 		}
 		if(data.getGoldLabels()!=null) {
 			this.saveGoldLabelsToFile(filename_base + GOLD_LABELS_TAG
@@ -407,8 +403,7 @@ public class DataManager {
 		data.setObjectCollection(this.loadTestObjectsFromFile(filename_base
 								 + OBJECTS_TAG + FILE_EXTENSION));
 		data.setWorkers(this.extractWorkerNamesFromLabels(data.getLabels()));
-		data.setCategories(CategoryFactory.getInstance().createCategories(
-							   this.extractCategoryNamesFromLabels(data.getLabels())));
+		data.setCategories(this.extractCategoryNamesFromLabels(data.getLabels()));
 		return data;
 	}
 

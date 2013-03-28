@@ -1,9 +1,8 @@
 package com.datascience.gal.dataGenerator;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
-import com.datascience.gal.MisclassificationCost;
+import com.datascience.utils.CostMatrix;
 
 import java.util.Collection;
 import java.util.Map;
@@ -16,6 +15,7 @@ public class Data {
 	public String getRequestId() {
 		return requestId;
 	}
+
 
 	/**
 	 * @param requestId Request identifier
@@ -62,14 +62,14 @@ public class Data {
 	/**
 	 * @return Collection of category names
 	 */
-	public Collection<Category> getCategories() {
+	public Collection<String> getCategories() {
 		return categories;
 	}
 
 	/**
 	 * @param categories Collection of category names
 	 */
-	public void setCategories(Collection<Category> categories) {
+	public void setCategories(Collection<String> categories) {
 		this.categories = categories;
 	}
 
@@ -102,23 +102,13 @@ public class Data {
 	}
 
 
-
-	/**
-	 * @return Collection of misclassification costs
-	 */
-	public Collection<MisclassificationCost> getMisclassificationCost() {
-		return misclassificationCost;
+	public CostMatrix<String> getCostMatrix() {
+		return costMatrix;
 	}
 
-	/**
-	 * @param misclassificationCost Collection of misclassification costs
-	 */
-	public void setMisclassificationCost(
-		Collection<MisclassificationCost> misclassificationCost) {
-		this.misclassificationCost = misclassificationCost;
+	public void setCostMatrix(CostMatrix<String> misclassificationCost) {
+		this.costMatrix = misclassificationCost;
 	}
-
-
 
 	/**
 	 * @return the artificialWorkers
@@ -162,7 +152,7 @@ public class Data {
 			   "categories = " + categories + ", " +
 			   "labels = " + labels + ", " +
 			   "goldLabels = " + goldLabels + ", " +
-			   "misclassificationCost = " + misclassificationCost + ", " +
+			   "costMatrix = " + costMatrix + ", " +
 			   "artificialWorkers = " + artificialWorkers + ", " + "}";
 	}
 
@@ -184,7 +174,7 @@ public class Data {
 	/**
 	 * Collection of category names
 	 */
-	Collection<Category> categories;
+	Collection<String> categories;
 
 	/**
 	 * Collection of generated labels
@@ -199,7 +189,7 @@ public class Data {
 	/**
 	 * Collection of misclassification costs
 	 */
-	Collection<MisclassificationCost> misclassificationCost;
+	CostMatrix<String> costMatrix;
 
 	Collection<ArtificialWorker> artificialWorkers;
 

@@ -38,8 +38,6 @@ public class JSONUtils {
 	} .getType();
 	public static final Type stringSetType = new TypeToken<Collection<String>>() {
 	} .getType();
-	public static final Type misclassificationCostType = new TypeToken<MisclassificationCost>() {
-	} .getType();
 	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
 	} .getType();
 	public static final Type confusionMatrixType = new TypeToken<MultinomialConfusionMatrix>() {
@@ -69,7 +67,6 @@ public class JSONUtils {
 
 	public static GsonBuilder getFilledDefaultGsonBuilder() {
 		GsonBuilder builder = getDefaultGsonBuilder();
-		builder.registerTypeAdapter(misclassificationCostType,MisclassificationCost.deserializer);
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
 

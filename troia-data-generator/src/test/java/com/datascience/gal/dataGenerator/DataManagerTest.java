@@ -1,14 +1,11 @@
 package com.datascience.gal.dataGenerator;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.io.File.separator;
@@ -27,17 +24,6 @@ import static org.junit.Assert.assertTrue;
  * @version $Revision$
  */
 public class DataManagerTest {
-
-	/**
-	 * Construct new test instance
-	 *
-	 * @param name
-	 *            the test name
-	 */
-//	public DataManagerTest(String name) {
-//		// Create results directory.
-//		new File(RESULTS_ROOT).mkdir();
-//	}
 
 	@Before
 	public void setUp() {
@@ -122,7 +108,7 @@ public class DataManagerTest {
 		//assertTrue(dataS.getMisclassificationCost().equals(dataL.getMisclassificationCost()));
 		//assertTrue(dataS.getRequestId().equals(dataL.getRequestId()));
 		//assertTrue(dataS.size() == dataL.size());
-		for (Category c : dataL.getCategories()) {
+		for (String c : dataL.getCategories()) {
 			assertTrue(dataS.getCategories().contains(c));
 		}
 	}
