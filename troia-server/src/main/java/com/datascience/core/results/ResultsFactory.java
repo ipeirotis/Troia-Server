@@ -1,6 +1,5 @@
 package com.datascience.core.results;
 
-import com.datascience.core.base.Category;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
@@ -92,9 +91,9 @@ public class  ResultsFactory {
 
 	public static class WorkerResultNominalFactory extends WorkerResultCreator<String, WorkerResult> {
 
-		protected Collection<Category> categories;
+		protected Collection<String> categories;
 
-		public void setCategories(Collection<Category> categories){
+		public void setCategories(Collection<String> categories){
 			this.categories = categories;
 		}
 

@@ -1,6 +1,5 @@
 package com.datascience.gal.evaluation;
 
-import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.DecisionEngine;
@@ -35,10 +34,9 @@ public class DataEvaluator {
 		if (!labelChoosingMethod.equals("soft"))
 			dest_probabilities = ProbabilityDistributions.generateOneLabelDistribution(
 					datum, project, new DecisionEngine(null, olda));
-		Category fromCostVector = project.getData().getCategory(datum.getEvaluationLabel());
 		double cost = 0.0;
 		for (Map.Entry<String, Double> e : dest_probabilities.entrySet()) {
-			Double misclassification_cost = fromCostVector.getCost(e.getKey());
+			Double misclassification_cost = project.getData().getCostMatrix().getCost(datum.getEvaluationLabel(), e.getKey());
 			cost += e.getValue() * misclassification_cost;
 		}
 		return cost;

@@ -39,16 +39,16 @@ public class DecisionEngine {
 	}
 
 	public String predictLabel(NominalProject project, LObject<String> datum) {
-		return predictLabel(project, datum, ProbabilityDistributions.getCategoriesCostMatrix(project));
+		return predictLabel(project, datum, project.getData().getCostMatrix());
 	}
 
 	public double estimateMissclassificationCost(NominalProject project, LObject<String> datum) {
-		return estimateMissclassificationCost(project, datum, ProbabilityDistributions.getCategoriesCostMatrix(project));
+		return estimateMissclassificationCost(project, datum, project.getData().getCostMatrix());
 	}
 
 	public Map<String, String> predictLabels(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
-		CostMatrix<String> cm = ProbabilityDistributions.getCategoriesCostMatrix(project);
+		CostMatrix<String> cm = project.getData().getCostMatrix();
 		Map<String, String> ret = new HashMap<String, String>();
 		for (LObject<String> e: datums) {
 			ret.put(e.getName(), predictLabel(project, e, cm));
@@ -58,7 +58,7 @@ public class DecisionEngine {
 
 	public Map<String, Double> estimateMissclassificationCosts(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
-		CostMatrix<String> cm = ProbabilityDistributions.getCategoriesCostMatrix(project);
+		CostMatrix<String> cm = project.getData().getCostMatrix();
 		Map<String, Double> ret = new HashMap<String, Double>();
 		for (LObject<String> e: datums) {
 			ret.put(e.getName(), estimateMissclassificationCost(project, e, cm));

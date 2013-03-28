@@ -8,6 +8,7 @@ import com.datascience.mv.IncrementalMV;
 import com.datascience.service.GSONSerializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -25,18 +26,16 @@ public class JobFactoryTest {
 
 	private JsonArray createCategoriesJsonArray(){
 		JsonArray cat = new JsonArray();
-		JsonObject cat1 = new JsonObject();
-		cat1.addProperty("name", "cat1");
-		JsonObject cat2 = new JsonObject();
-		cat2.addProperty("name", "cat1");
-		cat.add(cat1);
-		cat.add(cat2);
+		cat.add(new JsonPrimitive("cat1"));
+		cat.add(new JsonPrimitive("cat2"));
 		return cat;
 	}
 
-	private void checkProjectDependecies(Job job, Class clazz){
+	private void checkProjectDependecies(Job job, Class clazz, boolean nominal){
 		assertNotNull(job.getProject());
 		assertNotNull(job.getProject().getAlgorithm());
+		if (nominal)
+			assertNotNull(job.getProject().getAlgorithm().getModel());
 		assertNotNull(job.getProject().getData());
 		assertNotNull(job.getProject().getResults());
 		assertNotNull(job.getProject().getScheduler());
@@ -63,7 +62,7 @@ public class JobFactoryTest {
 			jo.addProperty("scheduler", "scheduler");
 
 			Job job = jf.createNominalJob(jo, "test");
-			checkProjectDependecies(job, e.getValue());
+			checkProjectDependecies(job, e.getValue(), true);
 		}
 	}
 
@@ -73,6 +72,6 @@ public class JobFactoryTest {
 		JsonObject jo = new JsonObject();
 		jo.addProperty("scheduler", "scheduler");
 		Job job = jf.createContinuousJob(jo, "test");
-		checkProjectDependecies(job, ContinuousIpeirotis.class);
+		checkProjectDependecies(job, ContinuousIpeirotis.class, false);
 	}
 }

@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
@@ -29,18 +28,16 @@ import com.datascience.utils.auxl.TestDataManager;
 public class IncrementalDawidSkeneTest {
 
 	NominalProject project;
-	ArrayList<Category> categories;
+	ArrayList<String> categories;
 
 	@Before
 	public void setUp(){
-		categories = new ArrayList<Category>();
-		Category category1 = new Category("category1");
-		Category category2 = new Category("category2");
-		categories.add(category1);
-		categories.add(category2);
+		categories = new ArrayList<String>();
+		categories.add("category1");
+		categories.add("category2");
 
 		project = new NominalProject(new IncrementalDawidSkene());
-		project.initializeCategories(categories);
+		project.initializeCategories(categories, null, null);
 	}
 
 	@After
@@ -49,7 +46,7 @@ public class IncrementalDawidSkeneTest {
 
 	@Test
 	public final void testInitializePriors() {
-		double actual = ((AbstractDawidSkene)project.getAlgorithm()).prior(categories.get(0).getName());
+		double actual = ((AbstractDawidSkene)project.getAlgorithm()).prior(categories.get(0));
 		double expected = 1. / project.getData().getCategories().size();
 		assertEquals(expected, actual, TestDataManager.DELTA_DOUBLE);
 	}
@@ -60,8 +57,8 @@ public class IncrementalDawidSkeneTest {
 		project.getData().addWorker(w);
 		double errorRate = ((AbstractDawidSkene)project.getAlgorithm()).getErrorRateForWorker(
 				w,
-				categories.get(0).getName(),
-				categories.get(1).getName());
+				categories.get(0),
+				categories.get(1));
 		assertTrue(errorRate>=0 && errorRate<=1);
 	}
 
@@ -70,7 +67,7 @@ public class IncrementalDawidSkeneTest {
 		LObject<String> obj = new LObject<String>("object");
 		project.getData().addObject(obj);
 		for (Double val : ((AbstractDawidSkene)project.getAlgorithm()).getObjectClassProbabilities(obj).values()){
-			assertEquals(0.5, val, TestDataManager.DELTA_DOUBLE);
+			assertEquals(0.0, val, TestDataManager.DELTA_DOUBLE);
 		}
 
 		LObject<String> gold = new LObject<String>("gold_object");

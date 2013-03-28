@@ -1,41 +1,29 @@
 package com.datascience.core.nominal;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.utils.CostMatrix;
 import com.google.common.math.DoubleMath;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: artur
  */
 public class NominalData extends Data<String> {
 
-	protected Set<Category> categories;
+	protected Set<String> categories;
 	protected boolean fixedPriors;
+	protected Map<String, Double> categoryPriors;
+	protected CostMatrix<String> costMatrix;
 
-	public Set<Category> getCategories(){
+	public Set<String> getCategories(){
 		return categories;
 	}
 
-	public Collection<String> getCategoriesNames(){
-		Collection<String> ret = new ArrayList<String>();
-		for (Category c : categories){
-			ret.add(c.getName());
-		}
-		return ret;
-	}
-
-	public Category getCategory(String name){
-		for (Category c : categories)
-			if (c.getName().equals(name))
-				return c;
-		return null;
+	public void setCategories(Set<String> categories){
+		this.categories = categories;
 	}
 
 	public boolean arePriorsFixed(){
@@ -46,48 +34,59 @@ public class NominalData extends Data<String> {
 		this.fixedPriors = fixedPriors;
 	}
 
-	public void setCategories(Set<Category> categories){
-		this.categories = categories;
+	public double getCategoryPrior(String name){
+		return categoryPriors.get(name);
 	}
 
-	/*
-		@returns: fixedPriors
-	 */
-	public void addCategories(Collection<Category> categories){
-		double priorSum = 0.;
-		int priorCnt = 0;
-		fixedPriors = false;
+	public Map<String, Double> getCategoryPriors(){
+		return categoryPriors;
+	}
 
-		this.categories = new HashSet<Category>();
-		if (categories.size() < 2){
+	public void setCategoryPriors(Collection<CategoryValue> priors){
+		double priorSum = 0.;
+		for (CategoryValue cv : priors){
+			priorSum += cv.value;
+		}
+		if (priors.size() == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6)){
+			fixedPriors = true;
+			categoryPriors = new HashMap<String, Double>();
+			for (CategoryValue cv : priors)
+				categoryPriors.put(cv.categoryName, cv.value);
+		}
+		else
+			throw new IllegalArgumentException(
+				"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
+	}
+
+	public CostMatrix<String> getCostMatrix(){
+		return costMatrix;
+	}
+
+	public void setCostMatrix(CostMatrix<String> cm){
+		this.costMatrix = cm;
+	}
+
+	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){
+		if (categories == null || categories.size() < 2){
 			throw new IllegalArgumentException("There should be at least two categories");
 		}
-		for (Category c : categories) {
-			this.categories.add(c);
-			if (c.hasPrior()) {
-				priorCnt += 1;
-				priorSum += c.getPrior();
-			}
-		}
-		if (!(priorCnt == 0 || (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6)))){
-			throw new IllegalArgumentException(
-					"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
-		}
-		if (priorCnt == 0){
-			for (Category c : this.categories)
-				c.setPrior(1. / categories.size());
-		}
-		if (priorCnt == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6))
-			fixedPriors = true;
+		this.categories = new HashSet<String>();
+		this.categories.addAll(categories);
 
-		//set cost matrix values if not provided
-		for (Category from : this.categories) {
-			for (Category to : this.categories) {
-				if (from.getCost(to.getName()) == null){
-					from.setCost(to.getName(), from.getName().equals(to.getName()) ? 0. : 1.);
-				}
-			}
+		fixedPriors = false;
+
+		if (priors != null){
+			setCategoryPriors(priors);
 		}
+
+		this.costMatrix = costMatrix;
+		if (this.costMatrix == null)
+			this.costMatrix = new CostMatrix<String>();
+		for (String c1 : categories)
+			for (String c2 : categories){
+				if (!this.costMatrix.hasCost(c1, c2))
+					this.costMatrix.add(c1, c2, c1.equals(c2) ? 0. : 1.);
+			}
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public class NominalData extends Data<String> {
 	}
 
 	private void checkForCategoryExist(String name){
-		if (!getCategoriesNames().contains(name))
+		if (!categories.contains(name))
 			throw new IllegalArgumentException("There is no category named: " + name);
 	}
 }

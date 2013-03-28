@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Category;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
@@ -23,14 +22,12 @@ public class BatchDawidSkeneTest {
 
 	@Before
 	public void setUp(){
-		ArrayList<Category> categories = new ArrayList<Category>();
-		Category category1 = new Category("category1");
-		Category category2 = new Category("category2");
-		categories.add(category1);
-		categories.add(category2);
+		ArrayList<String> categories = new ArrayList<String>();
+		categories.add("category1");
+		categories.add("category2");
 
 		project = new NominalProject(new BatchDawidSkene());
-		project.initializeCategories(categories);
+		project.initializeCategories(categories, null, null);
 	}
 
 	@Test

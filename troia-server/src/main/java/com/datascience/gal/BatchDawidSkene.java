@@ -9,7 +9,6 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
@@ -24,18 +23,6 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 
 	public BatchDawidSkene() {
 		super(new ErrorRateCalculators.BatchErrorRateCalculator());
-	}
-
-	public Map<String, Double> getCategoryPriors() {
-		Map<String, Double> out = new HashMap<String, Double>(data.getCategories().size());
-		for (Category cat : data.getCategories())
-			out.put(cat.getName(), cat.getPrior());
-		return out;
-	}
-	
-	@Override
-	public double prior(String categoryName) {
-		return data.getCategory(categoryName).getPrior();
 	}
 
 	private void updateObjectClassProbabilities() {

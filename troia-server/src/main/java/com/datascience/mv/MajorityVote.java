@@ -28,7 +28,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	}
 
 	public Map<String, Double> calculateDistribution(LObject<String> object){
-		Collection<String> categories = data.getCategoriesNames();
+		Collection<String> categories = data.getCategories();
 		if (object.isGold()) {
 			return ProbabilityDistributions.generateGoldDistribution(categories, object.getGoldLabel());
 		}
@@ -40,7 +40,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	}
 
 	public Map<String, Double> generateLabelForNonAssignedObject(){
-		return ProbabilityDistributions.getPriorBasedDistribution(data);
+		return ProbabilityDistributions.getPriorBasedDistribution(data, this);
 	}
 
 	public Map<String, Double> generateLabelDistribution(Collection<String> categories,
@@ -77,6 +77,6 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	}
 
 	@Override
-	public void initializeOnCategories(Collection<Category> categories){
+	public void initializeOnCategories(Collection<String> categories){
 	}
 }

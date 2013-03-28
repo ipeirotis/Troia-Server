@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.datascience.core.base.Category;
 import com.datascience.core.base.CategoryPair;
 import com.google.common.base.Objects;
 
@@ -38,21 +37,16 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 		this.rowDenominator = rowDenominator;
 	}
 	
-	public MultinomialConfusionMatrix(Collection<Category> categories, Map<CategoryPair, Double> matrix) {
+	public MultinomialConfusionMatrix(Collection<String> categories, Map<CategoryPair, Double> matrix) {
 		this.categories = new HashSet<String>();
+		this.categories.addAll(categories);
 		this.matrix = matrix;
 		rowDenominator = new HashMap<String, Double>();
-		for (Category c : categories) {
-			this.categories.add(c.getName());
-		}
 	}
 
-	public MultinomialConfusionMatrix(Collection<Category> categories) {
+	public MultinomialConfusionMatrix(Collection<String> categories) {
 		this.categories = new HashSet<String>();
-		for (Category c : categories) {
-			this.categories.add(c.getName());
-		}
-
+		this.categories.addAll(categories);
 		this.matrix = new HashMap<CategoryPair, Double>();
 		rowDenominator = new HashMap<String, Double>();
 

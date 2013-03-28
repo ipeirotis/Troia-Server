@@ -1,7 +1,6 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
-import com.datascience.core.base.Category;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.results.Results;
 import com.datascience.core.results.DatumResult;
@@ -19,7 +18,7 @@ import java.util.Map;
  */
 public class MVTest {
 
-	protected ArrayList<Category> categories;
+	protected ArrayList<String> categories;
 	protected ArrayList<Worker<String>> workers;
 	protected ArrayList<LObject<String>> objects;
 	protected ArrayList<LObject<String>> goldObjects;
@@ -30,9 +29,9 @@ public class MVTest {
 	public void setUp(){
 		int nAssigns = nWorkers * (nObjects + nGold);
 		int i;
-		categories = new ArrayList<Category>();
-		categories.add(new Category("AAA"));
-		categories.add(new Category("BBB"));
+		categories = new ArrayList<String>();
+		categories.add("AAA");
+		categories.add("BBB");
 		workers = new ArrayList<Worker<String>>();
 		for (i=0;i<nWorkers;i++) {
 			workers.add(new Worker<String>("worker" + i));
@@ -52,7 +51,7 @@ public class MVTest {
 		for (i=0;i<nAssigns;i++) {
 			assigns.add(new AssignedLabel<String>(workers.get(i % nWorkers),
 					objects.get(i % (nObjects + nGold)),
-					categories.get(i % categories.size()).getName()));
+					categories.get(i % categories.size())));
 		}
 	}
 
@@ -91,7 +90,7 @@ public class MVTest {
 	public void testBatchMV(){
 		BatchMV mv = new BatchMV();
 		NominalProject np = new NominalProject(mv);
-		np.initializeCategories(categories);
+		np.initializeCategories(categories, null, null);
 		NominalData nd = np.getData();
 		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
@@ -105,7 +104,7 @@ public class MVTest {
 	public void testIncrementalMV(){
 		IncrementalMV mv = new IncrementalMV();
 		NominalProject np = new NominalProject(mv);
-		np.initializeCategories(categories);
+		np.initializeCategories(categories, null, null);
 		NominalData nd = np.getData();
 		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);

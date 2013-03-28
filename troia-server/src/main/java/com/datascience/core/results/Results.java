@@ -10,6 +10,9 @@ import java.util.Map;
 
 /**
  * User: artur
+ * T - object class
+ * U - datum results class
+ * V - worker results class
  */
 public class Results<T, U, V> {
 
