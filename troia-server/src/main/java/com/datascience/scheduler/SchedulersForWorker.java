@@ -4,7 +4,6 @@ import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.decision.DecisionEngine;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.Results;
 import com.datascience.core.results.WorkerResult;
@@ -27,7 +26,7 @@ public class SchedulersForWorker {
 		protected int NUMBER_OF_FIRST_OBJECTS_TO_CHECK = 100;
 
 		protected Results<String, DatumResult, WorkerResult> results;
-		protected DecisionEngine decisionEngine;
+		protected CostBasedPriorityCalculator costCalculator;
 
 		@Override
 		public LObject<String> nextObjectForWorker(Iterator<LObject<String>> objects, Worker<String> worker) {
@@ -36,8 +35,24 @@ public class SchedulersForWorker {
 			}
 			WorkerResult wr = results.getWorkerResult(worker);
 
-			// TODO: finish this
-			return null;
+			int objectsLeftToCheck = NUMBER_OF_FIRST_OBJECTS_TO_CHECK;
+			double maxCostReduction = Double.MIN_VALUE;
+			LObject<String> bestObject = null;
+			while (objectsLeftToCheck-- > 0 && objects.hasNext()){
+				LObject<String> object = objects.next();
+				double currentCost = costCalculator.getPriority(object);
+				if (currentCost < maxCostReduction) continue;
+				double costReduced = computeCostReduced(object, wr);
+				if (currentCost - costReduced > maxCostReduction){
+					bestObject = object;
+					maxCostReduction = currentCost - costReduced;
+				}
+			}
+			return bestObject;
+		}
+
+		private double computeCostReduced(LObject<String> object, WorkerResult wr) {
+			return 0;  // TODO XXX FIXME
 		}
 
 		@Override
@@ -51,9 +66,8 @@ public class SchedulersForWorker {
 			checkArgument(!(project.getScheduler().getCalculator() instanceof CostBasedPriorityCalculator),
 					"This scheduler for worker works only with cost calculator");
 
-
-			decisionEngine = ((CostBasedPriorityCalculator)
-					project.getScheduler().getCalculator()).dEngine;
+			costCalculator = (CostBasedPriorityCalculator) project.getScheduler().getCalculator();
+			// ^^^ I know this is dirty to use this, but it is easier in use
 			results = (Results<String, DatumResult, WorkerResult>) project.getResults();
 		}
 	}
