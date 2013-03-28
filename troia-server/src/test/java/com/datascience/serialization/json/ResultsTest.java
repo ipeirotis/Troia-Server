@@ -10,11 +10,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ResultsTest {
 
@@ -26,7 +23,7 @@ public class ResultsTest {
 	}
 
 	@Test
-	public void schedulerSerializationTest() {
+	public void resultsSerializationTest() {
 		ArrayList<String> categories = new ArrayList<String>();
 		categories.add("category1");
 		categories.add("category2");

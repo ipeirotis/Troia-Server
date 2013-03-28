@@ -31,9 +31,11 @@ public class JobFactoryTest {
 		return cat;
 	}
 
-	private void checkProjectDependecies(Job job, Class clazz){
+	private void checkProjectDependecies(Job job, Class clazz, boolean nominal){
 		assertNotNull(job.getProject());
 		assertNotNull(job.getProject().getAlgorithm());
+		if (nominal)
+			assertNotNull(job.getProject().getAlgorithm().getModel());
 		assertNotNull(job.getProject().getData());
 		assertNotNull(job.getProject().getResults());
 		assertNotNull(job.getProject().getScheduler());
@@ -60,7 +62,7 @@ public class JobFactoryTest {
 			jo.addProperty("scheduler", "scheduler");
 
 			Job job = jf.createNominalJob(jo, "test");
-			checkProjectDependecies(job, e.getValue());
+			checkProjectDependecies(job, e.getValue(), true);
 		}
 	}
 
@@ -70,6 +72,6 @@ public class JobFactoryTest {
 		JsonObject jo = new JsonObject();
 		jo.addProperty("scheduler", "scheduler");
 		Job job = jf.createContinuousJob(jo, "test");
-		checkProjectDependecies(job, ContinuousIpeirotis.class);
+		checkProjectDependecies(job, ContinuousIpeirotis.class, false);
 	}
 }
