@@ -16,6 +16,7 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.IncrementalNominalModel;
+import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ErrorRateCalculators;
 import com.google.gson.reflect.TypeToken;
@@ -75,10 +76,12 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	@Override
 	public void newAssign(AssignedLabel<String> assign) {
-		Map<String, Double> oldProbabilites = results.getOrCreateDatumResult(assign.getLobject()).getCategoryProbabilites();
+		DatumResult dr = results.getOrCreateDatumResult(assign.getLobject());
+		Map<String, Double> oldProbabilites = dr.getCategoryProbabilites();
 		//update object class probabilites
 		Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), assign.getWorker());
-		results.getOrCreateDatumResult(assign.getLobject()).setCategoryProbabilites(probabilities);
+		dr.setCategoryProbabilites(probabilities);
+		results.addDatumResult(assign.getLobject(), dr);
 		//update priors
 		if (!data.arePriorsFixed()){
 			undoPriorInfluence(oldProbabilites);
@@ -91,6 +94,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 				for (Map.Entry<String, Double> e : probabilities.entrySet()){
 					wr.addError(e.getKey(), al.getLabel(), e.getValue());
 				}
+				results.addWorkerResult(al.getWorker(), wr);
 			}
 	}
 

@@ -54,7 +54,6 @@ public class Results<T, U, V> {
 		U ret = datumResults.get(obj);
 		if (ret == null){
 			ret = (U) datumCreator.create(obj);
-			datumResults.put(obj, ret);
 		}
 		return ret;
 
@@ -80,7 +79,6 @@ public class Results<T, U, V> {
 		V ret = workerResults.get(wor);
 		if (ret == null){
 			ret = (V) workerCreator.create(wor);
-			workerResults.put(wor, ret);
 		}
 		return ret;
 	}

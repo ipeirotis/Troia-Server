@@ -74,6 +74,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 			}
 		}
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
+		results.addWorkerResult(worker, wr);
 	}
 
 	@Override

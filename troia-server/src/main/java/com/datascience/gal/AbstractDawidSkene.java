@@ -111,11 +111,13 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 
 		for (LObject<String> obj : data.getObjects()){
-			if (!data.getAssigns().isEmpty())
+			if (!data.getAssigns().isEmpty()){
+				DatumResult dr = results.getOrCreateDatumResult(obj);
 				for (String c : data.getCategories()){
 					priors.put(c, priors.get(c) +
-						results.getOrCreateDatumResult(obj).getCategoryProbability(c) / data.getObjects().size());
+						dr.getCategoryProbability(c) / data.getObjects().size());
 				}
+			}
 		}
 
 		model.categoryPriors = priors;

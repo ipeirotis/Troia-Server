@@ -12,6 +12,7 @@ package com.datascience.gal;
 import java.util.Map;
 
 import com.datascience.core.base.*;
+import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
 import com.datascience.core.stats.ErrorRateCalculators;
@@ -35,7 +36,9 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		Map<String, Double> probabilities = getObjectClassProbabilities(obj, null);
 		if (probabilities == null)
 			return;
-		results.getOrCreateDatumResult(obj).setCategoryProbabilites(probabilities);
+		DatumResult dr = results.getOrCreateDatumResult(obj);
+		dr.setCategoryProbabilites(probabilities);
+		results.addDatumResult(obj, dr);
 	}
 
 	private void rebuildWorkerConfusionMatrices() {
@@ -67,12 +70,8 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 				wr.addError(source, destination, error);
 			}
 		}
-//        System.out.println("before: "
-//                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
-////        System.out.println("after: "
-//                + ((MultinomialConfusionMatrix) w.cm).rowDenominator);
-
+		results.addWorkerResult(worker, wr);
 	}
 
 	@Override
