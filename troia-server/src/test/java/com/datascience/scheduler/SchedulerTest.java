@@ -6,6 +6,7 @@ import com.datascience.core.results.WorkerContResults;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.mv.IncrementalMV;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -47,6 +48,34 @@ public class SchedulerTest {
 		scheduler.update();
 		for (int i = 0; i < objectsCount; i++) {
 			assertEquals(data.getObject("object0"), scheduler.nextObject());
+		}
+	}
+
+	@Test
+	@Ignore
+	public void schedulerTestOnSmallUpdates() {
+		final int objectsCount = 5;
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis());
+		Data<ContValue> data = new Data<ContValue>();
+		cp.setData(data);
+		Scheduler<ContValue> scheduler = new Scheduler(cp, new DummyPriorityCalculator(data));
+
+		for (int i = 0; i < objectsCount; i++) {
+			LObject<ContValue> obj = new LObject<ContValue>("object" + i);
+			for (int j = 0; j <= i; j++) {
+				data.addAssign(
+						new AssignedLabel<ContValue>(
+								new Worker<ContValue>("worker" + j),
+								obj,
+								new ContValue(0.)
+						)
+				);
+				scheduler.update(obj);
+			}
+		}
+
+		for (int i = 0; i < objectsCount; i++) {
+			assertEquals(data.getObject("object"+i), scheduler.nextObject());
 		}
 	}
 
