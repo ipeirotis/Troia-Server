@@ -48,7 +48,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	}
 
 	private void rebuildWorkerConfusionMatrix(Worker<String> worker) {
-		WorkerResult wr = results.getWorkerResult(worker);
+		WorkerResult wr = results.getOrCreateWorkerResult(worker);
 		wr.empty();
 
 		// Scan all objects and change the confusion matrix for each worker
