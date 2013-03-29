@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ResultsTest {
@@ -32,9 +33,11 @@ public class ResultsTest {
 		LObject<String> obj = new LObject<String>("obj");
 		obj.setEvaluationLabel("category2");
 		DatumResult dr = results.getOrCreateDatumResult(obj);
-		Map<String, Double> categoryProb = dr.getCategoryProbabilites();
+		Map<String, Double> categoryProb = new HashMap<String, Double>();
 		categoryProb.put("category1", 0.3);
 		categoryProb.put("category2", 0.7);
+		dr.setCategoryProbabilites(categoryProb);
+		results.addDatumResult(obj, dr);
 		String serialized = gson.toJson(results);
 
 		Results<String, DatumResult, WorkerResult> deserialized = gson.fromJson(serialized, new TypeToken<Results<String, DatumResult, WorkerResult>>(){}.getType());
