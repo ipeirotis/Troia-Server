@@ -35,6 +35,10 @@ public class WorkerResult {
 		cm.empty();
 	}
 
+	public ConfusionMatrix getConfusionMatrix(){
+		return cm;
+	}
+
 	public Map<String, Double> getPrior(Collection<AssignedLabel<String>> workerAssigns, Collection<String> categories){
 		int sum = workerAssigns.size();
 		HashMap<String, Double> worker_prior = new HashMap<String, Double>();

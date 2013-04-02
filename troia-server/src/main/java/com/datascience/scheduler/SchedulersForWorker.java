@@ -8,6 +8,7 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.Results;
 import com.datascience.core.results.WorkerResult;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -52,7 +53,29 @@ public class SchedulersForWorker {
 		}
 
 		private double computeCostReduced(LObject<String> object, WorkerResult wr) {
-			return 0;  // TODO XXX FIXME
+			double expNewCost = 0;
+			DatumResult dr = results.getOrCreateDatumResult(object);
+			Collection<String> categories = dr.getCategoryProbabilites().keySet();
+			// What is the probability that the datum is really in true_category
+			for (String true_category: categories) {
+				double datumProb = dr.getCategoryProbability(true_category);
+				// If the datum is in c, then how the worker would label it?
+				for (String predicted_category : categories) {
+					// Calculate the probability of assigning label_to to the given datum
+					double labelProb = wr.getConfusionMatrix().getNormalizedErrorRate(true_category, predicted_category);
+
+					// TODO XXX FIXME - this involves algorithm :/
+					// Assuming that the worker assigned label_to, estimate the new cost of the example
+//					datum.addAssignedLabel(predicted_category);
+//					datum.updateObjectProbability();
+//					double costAfterLabeling = datum.calculateCost();
+//					expNewCost += datumProb * labelProb * costAfterLabeling;
+//					// clean up
+//					datum.removeAssignedLabel(label_to)
+//					datum.updateObjectProbability();
+				}
+			}
+			return expNewCost;
 		}
 
 		@Override
