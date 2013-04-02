@@ -8,6 +8,8 @@ import com.google.common.math.DoubleMath;
 
 import java.util.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * User: artur
  */
@@ -47,15 +49,12 @@ public class NominalData extends Data<String> {
 		for (CategoryValue cv : priors){
 			priorSum += cv.value;
 		}
-		if (priors.size() == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6)){
-			fixedPriors = true;
-			categoryPriors = new HashMap<String, Double>();
-			for (CategoryValue cv : priors)
-				categoryPriors.put(cv.categoryName, cv.value);
-		}
-		else
-			throw new IllegalArgumentException(
+		checkArgument(priors.size() == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6),
 				"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
+		fixedPriors = true;
+		categoryPriors = new HashMap<String, Double>();
+		for (CategoryValue cv : priors)
+			categoryPriors.put(cv.categoryName, cv.value);
 	}
 
 	public CostMatrix<String> getCostMatrix(){
@@ -67,21 +66,25 @@ public class NominalData extends Data<String> {
 	}
 
 	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){
-		if (categories == null || categories.size() < 2){
-			throw new IllegalArgumentException("There should be at least two categories");
-		}
+		checkArgument(categories != null && categories.size() >= 2, "There should be at least two categories");
 		this.categories = new HashSet<String>();
 		this.categories.addAll(categories);
-
+		checkArgument(this.categories.size() == categories.size(), "Category names should be different");
 		fixedPriors = false;
 
 		if (priors != null){
 			setCategoryPriors(priors);
 		}
 
-		this.costMatrix = costMatrix;
-		if (this.costMatrix == null)
+		if (costMatrix == null) {
 			this.costMatrix = new CostMatrix<String>();
+		}
+		else {
+			for (String s : costMatrix.getKnownValues()){
+				checkArgument(this.categories.contains(s), "Categories list does not contain category named %s", s);
+			}
+			this.costMatrix = costMatrix;
+		}
 		for (String c1 : categories)
 			for (String c2 : categories){
 				if (!this.costMatrix.hasCost(c1, c2))
