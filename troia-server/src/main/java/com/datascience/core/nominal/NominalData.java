@@ -49,12 +49,17 @@ public class NominalData extends Data<String> {
 		for (CategoryValue cv : priors){
 			priorSum += cv.value;
 		}
-		checkArgument(priors.size() == categories.size() && DoubleMath.fuzzyEquals(1., priorSum, 1e-6),
+		checkArgument(priors.size() == categories.size(),
+				"Different number of categories in categoryPriors and categories parameters");
+		checkArgument(DoubleMath.fuzzyEquals(1., priorSum, 1e-6),
 				"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
 		fixedPriors = true;
 		categoryPriors = new HashMap<String, Double>();
-		for (CategoryValue cv : priors)
+		for (CategoryValue cv : priors){
+			checkArgument(categories.contains(cv.categoryName),
+					"Categories list does not contain category named %s", cv.categoryName);
 			categoryPriors.put(cv.categoryName, cv.value);
+		}
 	}
 
 	public CostMatrix<String> getCostMatrix(){
@@ -66,7 +71,8 @@ public class NominalData extends Data<String> {
 	}
 
 	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){
-		checkArgument(categories != null && categories.size() >= 2, "There should be at least two categories");
+		checkArgument(categories != null, "There is no categories collection");
+		checkArgument(categories.size() >= 2, "There should be at least two categories");
 		this.categories = new HashSet<String>();
 		this.categories.addAll(categories);
 		checkArgument(this.categories.size() == categories.size(), "Category names should be different");
