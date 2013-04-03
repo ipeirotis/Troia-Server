@@ -50,6 +50,7 @@ public class ConfigEntry {
 		for (String s : new ArrayList<String>(new TreeSet<String>(properties.stringPropertyNames()))){
 			items.add(new NameValue(s, properties.get(s)));
 		}
+		model.put("freezed", scontext.getAttribute(Constants.IS_FREEZED));
 		model.put("items", items);
 		return Response.ok(new Viewable("/config", model)).build();
 	}
@@ -57,12 +58,18 @@ public class ConfigEntry {
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response setConfig(MultivaluedMap<String, String> form){
-		Map<String, String> simpleForm = new HashMap<String, String>();
-		for (String s : form.keySet()){
-			simpleForm.put(s, form.getFirst(s));
+		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
+			Map<String, String> simpleForm = new HashMap<String, String>();
+			for (String s : form.keySet()){
+				Logger.getAnonymousLogger().warning(s + " " + form.getFirst(s));
+				if (s.equals("freezed"))
+					scontext.setAttribute(Constants.IS_FREEZED, true);
+				else
+					simpleForm.put(s, form.getFirst(s));
+			}
+			InitializationSupport.destroyContext(scontext);
+			initializeContext(simpleForm);
 		}
-		InitializationSupport.destroyContext(scontext);
-		initializeContext(simpleForm);
 		return Response.ok().build();
 	}
 

@@ -41,6 +41,7 @@ public class InitializationSupport implements ServletContextListener {
 			scontext.setAttribute(Constants.PROPERTIES, props);
 
 			scontext.setAttribute(Constants.IS_INITIALIZED, false);
+			scontext.setAttribute(Constants.IS_FREEZED, false);
 
 			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
 

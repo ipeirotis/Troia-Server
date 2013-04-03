@@ -27,6 +27,11 @@
 			            <td><input type="text" name="${item.name}" value="${item.value}" /></td>
                     </tr>
                 </c:forEach>
+                <tr>
+                    <td colspan="2"><input type="checkbox" name="freezed"
+                        <c:if test="${it.freezed}">checked</c:if>
+                    >settings freezed?</td>
+                </tr>
 			</tbody>
 		</table>
 		<input type="submit" value="Submit">
