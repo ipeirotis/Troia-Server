@@ -30,14 +30,13 @@ import com.datascience.executor.ProjectCommandExecutor;
 public class InitializationSupport implements ServletContextListener {
 
 	private static Logger logger = Logger.getLogger(InitializationSupport.class);
-	private ServletContext scontext;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
 			logger.info("Initialization support started");
 
-			scontext = event.getServletContext();
+			ServletContext scontext = event.getServletContext();
 			Properties props = new Properties();
 			props.load(scontext.getResourceAsStream("/WEB-INF/classes/troia.properties"));
 			scontext.setAttribute(Constants.PROPERTIES, props);
@@ -53,27 +52,31 @@ public class InitializationSupport implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		destroyContext(event.getServletContext());
+		deregisterDrivers();
+	}
+
+	public static void destroyContext(ServletContext scontext){
 		logger.info("STARTED Cleaning service");
-		ServletContext scontext = event.getServletContext();
 		IJobStorage jobStorage =
-			(IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
+				(IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
 		ProjectCommandExecutor executor =
-			(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
+				(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
 		try {
-			jobStorage.stop();
+			if (jobStorage != null)
+				jobStorage.stop();
 		} catch (Exception ex) {
 			logger.error("FAILED Cleaning service - jobStorage", ex);
 		}
 		// executor might be already closed - if jobStorage was using it
 		try {
-			executor.stop();
+			if (executor != null)
+				executor.stop();
 		} catch (Exception ex) {
 			logger.error("FAILED Cleaning service - executor", ex);
 		}
-		deregisterDrivers();
 		logger.info("DONE Cleaning service");
 	}
-
 		
 	/**
 	 * This manually deregisters JDBC driver, which prevents

@@ -55,17 +55,15 @@ public class ConfigEntry {
 	}
 
 	@POST
-	@Produces("text/html")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response setConfig(MultivaluedMap<String, String> form){
-		StringBuilder sb = new StringBuilder();
 		Map<String, String> simpleForm = new HashMap<String, String>();
 		for (String s : form.keySet()){
-			sb.append(s + " " + form.getFirst(s) + "<br/>");
 			simpleForm.put(s, form.getFirst(s));
 		}
+		InitializationSupport.destroyContext(scontext);
 		initializeContext(simpleForm);
-		return Response.ok(sb.toString()).build();
+		return Response.ok().build();
 	}
 
 	private void initializeContext(Map<String, String> properties){
@@ -95,7 +93,7 @@ public class ConfigEntry {
 
 			scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
 		} catch (Exception e) {
-			Logger.getAnonymousLogger().warning("In context initialization support");
+			Logger.getAnonymousLogger().warning("In context initialization support: " + e.getLocalizedMessage());
 		}
 	}
 }

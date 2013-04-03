@@ -8,7 +8,7 @@
 <title>Troia config</title>
 </head>
 <body>
-	<form method="post" action="config">
+	<form method="post" action="config" id="form">
 		<table>
 			<thead>
 				<tr>
@@ -31,5 +31,14 @@
 		</table>
 		<input type="submit" value="Submit">
 	</form>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="http://malsup.github.com/jquery.form.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#form").ajaxForm(function() {
+                window.location.replace(location.href);
+            });
+        });
+    </script>
 </body>
 </html>
