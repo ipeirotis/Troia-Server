@@ -4,6 +4,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -29,42 +30,23 @@ import com.datascience.executor.ProjectCommandExecutor;
 public class InitializationSupport implements ServletContextListener {
 
 	private static Logger logger = Logger.getLogger(InitializationSupport.class);
+	private ServletContext scontext;
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
 			logger.info("Initialization support started");
-			ServletContext scontext = event.getServletContext();
+
+			scontext = event.getServletContext();
 			Properties props = new Properties();
 			props.load(scontext.getResourceAsStream("/WEB-INF/classes/troia.properties"));
+			scontext.setAttribute("properties", props);
 
-			scontext.setAttribute(Constants.DOWNLOADS_PATH, props.getProperty(Constants.DOWNLOADS_PATH));
-			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
-			
-			ISerializer serializer = factory.loadSerializer();
-			scontext.setAttribute(Constants.SERIALIZER, serializer);
-			
-			ResponseBuilder responser = factory.loadResponser(serializer);
-			scontext.setAttribute(Constants.RESPONSER, responser);
-			
-			ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
-			scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
-			
-			JobsManager jobsManager = factory.loadJobsManager();
-			scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
-			
-			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor, jobsManager);
-			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
-			
-			CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
-			scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
-			
 			scontext.setAttribute(Constants.DEPLOY_TIME, DateTime.now());
-			
-			scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
 
 			logger.info("Initialization support ended without complications");
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			logger.fatal("In context initialization support", e);
 		}
 	}

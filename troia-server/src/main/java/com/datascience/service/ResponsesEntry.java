@@ -2,7 +2,6 @@ package com.datascience.service;
 
 import java.util.NoSuchElementException;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,22 +19,21 @@ public class ResponsesEntry {
 
 	@Context ServletContext context;
 	
-	private ResponseBuilder responser;
-	private CommandStatusesContainer statusesContainer;
+	private ResponseBuilder getResponseBuilder(){
+		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
+	}
 
-	@PostConstruct
-	public void postConstruct(){
-		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
-		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
+	private CommandStatusesContainer getCommandStatusContainer(){
+		return (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 	}
 
 	@GET
 	@Path("/{id}/{res: .*}")
 	public Response getResponse(@PathParam("id") String sid) throws Exception {
-		CommandStatus status = statusesContainer.getCommandResult(sid);
+		CommandStatus status = getCommandStatusContainer().getCommandResult(sid);
 		if (status == null) {
 			throw new NoSuchElementException("No status with id: " + sid);
 		}
-		return responser.makeStatusResponse(status);
+		return getResponseBuilder().makeStatusResponse(status);
 	}
 }

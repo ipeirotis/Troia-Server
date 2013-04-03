@@ -20,7 +20,7 @@ public class ContinuousJobsEntry extends AbstractJobsEntry {
 
 	@Override
 	protected Job createJob(JsonObject jo, String jid) {
-		return jobFactory.createContinuousJob(jo, jid);
+		return getJobFactory().createContinuousJob(jo, jid);
 	}
 
 	@POST

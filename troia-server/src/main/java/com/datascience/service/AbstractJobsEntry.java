@@ -1,6 +1,5 @@
 package com.datascience.service;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -21,19 +20,29 @@ public abstract class AbstractJobsEntry {
 	
 	@Context ServletContext context;
 	
-	protected IJobStorage jobStorage;
-	protected IRandomUniqIDGenerator jidGenerator;
 	protected JobFactory jobFactory;
-	protected ResponseBuilder responser;
-	
-	@PostConstruct
-	public void postConstruct(){
-		jidGenerator = (IRandomUniqIDGenerator) context.getAttribute(Constants.ID_GENERATOR);
-		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
-		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
-		jobFactory = new JobFactory(responser.getSerializer());
+
+	private IJobStorage getJobStorage(){
+		return (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 	}
-	
+
+	private IRandomUniqIDGenerator getJidGenerator(){
+		return (IRandomUniqIDGenerator) context.getAttribute(Constants.ID_GENERATOR);
+	}
+
+	private ResponseBuilder getResponseBuilder(){
+		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
+	}
+
+	protected JobFactory getJobFactory(){
+		if (jobFactory != null)
+			return jobFactory;
+		ResponseBuilder responser = getResponseBuilder();
+		if (responser != null)
+			return new JobFactory(responser.getSerializer());
+		return null;
+	}
+
 	protected boolean empty_jid(String jid){
 		return jid == null || "".equals(jid);
 	}
@@ -43,12 +52,12 @@ public abstract class AbstractJobsEntry {
 		if (empty_jid(jid)) {
 			throw new IllegalArgumentException("No job ID given");
 		}
-		Job job = jobStorage.get(jid);
+		Job job = getJobStorage().get(jid);
 		if (job == null) {
 			throw new IllegalArgumentException("Job with ID " + jid + " does not exist");
 		}
-		jobStorage.remove(job);
-		return responser.makeOKResponse("Removed job with ID: " + jid);
+		getJobStorage().remove(job);
+		return getResponseBuilder().makeOKResponse("Removed job with ID: " + jid);
 	}
 
 	protected abstract Job createJob(JsonObject jo, String jid);
@@ -56,12 +65,12 @@ public abstract class AbstractJobsEntry {
 	public Response createJob(String json) throws Exception{
 		JsonObject jo = json.isEmpty() ? new JsonObject() : new JsonParser().parse(json).getAsJsonObject();
 
-		String jid = jo.has("id") ? jo.get("id").getAsString() : jidGenerator.getID();
-		Job job_old = jobStorage.get(jid);
+		String jid = jo.has("id") ? jo.get("id").getAsString() : getJidGenerator().getID();
+		Job job_old = getJobStorage().get(jid);
 		if (job_old != null) {
 			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
 		}
-		jobStorage.add(createJob(jo, jid));
-		return responser.makeOKResponse("New job created with ID: " + jid);
+		getJobStorage().add(createJob(jo, jid));
+		return getResponseBuilder().makeOKResponse("New job created with ID: " + jid);
 	}
 }
