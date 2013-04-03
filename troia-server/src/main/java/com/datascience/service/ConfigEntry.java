@@ -45,12 +45,10 @@ public class ConfigEntry {
 	@Produces("text/html")
 	public Response getConfig() {
 		Map<String, Object> model = new HashMap<String, Object>();
-		Properties properties = (Properties)scontext.getAttribute("properties");
+		Properties properties = (Properties)scontext.getAttribute(Constants.PROPERTIES);
 		List<NameValue> items = new ArrayList<NameValue>();
-		for (String s : properties.stringPropertyNames()){
-			NameValue nv = new NameValue(s, properties.get(s));
-			Logger.getAnonymousLogger().info(nv.toString());
-			items.add(nv);
+		for (String s : new ArrayList<String>(new TreeSet<String>(properties.stringPropertyNames()))){
+			items.add(new NameValue(s, properties.get(s)));
 		}
 		model.put("items", items);
 		return Response.ok(new Viewable("/config", model)).build();
@@ -61,21 +59,20 @@ public class ConfigEntry {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response setConfig(MultivaluedMap<String, String> form){
 		StringBuilder sb = new StringBuilder();
+		Map<String, String> simpleForm = new HashMap<String, String>();
 		for (String s : form.keySet()){
-			sb.append(s + " " + form.getFirst(s) + "\n");
+			sb.append(s + " " + form.getFirst(s) + "<br/>");
+			simpleForm.put(s, form.getFirst(s));
 		}
-
-		initializeContext(form);
-
+		initializeContext(simpleForm);
 		return Response.ok(sb.toString()).build();
 	}
 
-	public void initializeContext(MultivaluedMap<String, String> properties){
+	private void initializeContext(Map<String, String> properties){
 		try {
-			Properties props = (Properties) scontext.getAttribute("properties");
+			Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
 			props.putAll(properties);
 
-			scontext.setAttribute(Constants.DOWNLOADS_PATH, props.getProperty(Constants.DOWNLOADS_PATH));
 			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
 
 			ISerializer serializer = factory.loadSerializer();

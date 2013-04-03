@@ -40,7 +40,7 @@ public class InitializationSupport implements ServletContextListener {
 			scontext = event.getServletContext();
 			Properties props = new Properties();
 			props.load(scontext.getResourceAsStream("/WEB-INF/classes/troia.properties"));
-			scontext.setAttribute("properties", props);
+			scontext.setAttribute(Constants.PROPERTIES, props);
 
 			scontext.setAttribute(Constants.DEPLOY_TIME, DateTime.now());
 
