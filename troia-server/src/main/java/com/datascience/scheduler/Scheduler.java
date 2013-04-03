@@ -5,34 +5,50 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 
-import java.util.NavigableSet;
-import java.util.TreeSet;
+import java.util.Comparator;
 
 public class Scheduler<T> implements IScheduler<T> {
 
-	protected NavigableSet<LObject<T>> queue;
+	protected IIterablePriorityQueue<LObject<T>> queue;
 	protected Data<T> data;
 	protected IPriorityCalculator<T> calculator;
 	protected ISchedulerForWorker<T> workerScheduler;
 
-	public Scheduler() { }
+	public Scheduler() {
+		queue = new IterablePriorityQueue<LObject<T>>(getObjectComparator());
+	}
 
 	public Scheduler(Project<T, ?, ?, ?> project, IPriorityCalculator<T> calculator) {
+		this();
 		setUpQueue(calculator);
 		setSchedulerForWorker(new SchedulersForWorker.FirstNotSeen<T>());
 		registerOnProject(project);
 	}
 
+	protected Comparator<LObject<T>> getObjectComparator(){
+		return new Comparator<LObject<T>>() {
+			@Override
+			public int compare(LObject<T> object, LObject<T> object2) {
+				return object.getName().compareTo(object2.getName());
+			}
+		};
+	}
+
+	private double getPriority(LObject<T> object){
+		return calculator.getPriority(object);
+	}
+
 	@Override
 	public void update() {
 		queue.clear();
-		queue.addAll(data.getObjects());
+		for (LObject<T> object: data.getObjects()){
+			queue.addReplacing(object, getPriority(object));
+		}
 	}
 
 	@Override
 	public void update(LObject<T> object) {
-		queue.remove(object);
-		queue.add(object);
+		queue.addReplacing(object, getPriority(object));
 	}
 
 	@Override
@@ -47,7 +63,6 @@ public class Scheduler<T> implements IScheduler<T> {
 
 	@Override
 	public void setUpQueue(IPriorityCalculator<T> calculator) {
-		queue = new TreeSet<LObject<T>>(new ObjectComparator<T>(calculator));
 		this.calculator = calculator;
 	}
 

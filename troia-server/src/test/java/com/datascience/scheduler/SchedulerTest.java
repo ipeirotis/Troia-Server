@@ -1,12 +1,8 @@
 package com.datascience.scheduler;
 
 import com.datascience.core.base.*;
-import com.datascience.core.results.DatumContResults;
-import com.datascience.core.results.WorkerContResults;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
-import com.datascience.mv.IncrementalMV;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -52,13 +48,13 @@ public class SchedulerTest {
 	}
 
 	@Test
-	@Ignore
 	public void schedulerTestOnSmallUpdates() {
 		final int objectsCount = 5;
 		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis());
 		Data<ContValue> data = new Data<ContValue>();
 		cp.setData(data);
-		Scheduler<ContValue> scheduler = new Scheduler(cp, new DummyPriorityCalculator(data));
+		Scheduler<ContValue> scheduler =
+				new CachedScheduler<ContValue>(cp, new DummyPriorityCalculator(data), 10, TimeUnit.DAYS);
 
 		for (int i = 0; i < objectsCount; i++) {
 			LObject<ContValue> obj = new LObject<ContValue>("object" + i);
