@@ -71,19 +71,16 @@ public class ConfigEntry {
 			Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
 			props.putAll(properties);
 
+			scontext.setAttribute(Constants.IS_INITIALIZED, true);
 			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
-
-			ISerializer serializer = factory.loadSerializer();
-			scontext.setAttribute(Constants.SERIALIZER, serializer);
-
-			ResponseBuilder responser = factory.loadResponser(serializer);
-			scontext.setAttribute(Constants.RESPONSER, responser);
 
 			ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
 			scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
 
 			JobsManager jobsManager = factory.loadJobsManager();
 			scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
+
+			ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
 
 			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor, jobsManager);
 			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);

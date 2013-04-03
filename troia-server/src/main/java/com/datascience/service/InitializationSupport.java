@@ -4,21 +4,20 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import com.datascience.core.JobsManager;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * @author Konrad
@@ -41,7 +40,17 @@ public class InitializationSupport implements ServletContextListener {
 			props.load(scontext.getResourceAsStream("/WEB-INF/classes/troia.properties"));
 			scontext.setAttribute(Constants.PROPERTIES, props);
 
+			scontext.setAttribute(Constants.IS_INITIALIZED, false);
+
+			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
+
 			scontext.setAttribute(Constants.DEPLOY_TIME, DateTime.now());
+
+			ISerializer serializer = factory.loadSerializer();
+			scontext.setAttribute(Constants.SERIALIZER, serializer);
+
+			ResponseBuilder responser = factory.loadResponser(serializer);
+			scontext.setAttribute(Constants.RESPONSER, responser);
 
 			logger.info("Initialization support ended without complications");
 		}
@@ -94,5 +103,10 @@ public class InitializationSupport implements ServletContextListener {
 				logger.fatal(String.format("Error deregistering driver %s", driver), e);
 			}
 		}
+	}
+
+	public static void checkIsInitialized(ServletContext context){
+		checkState((Boolean) context.getAttribute(Constants.IS_INITIALIZED),
+				"You have not configure troia server. Go to /config page.");
 	}
 }

@@ -33,8 +33,9 @@ public class StatusEntry {
 		return (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 	}
 
-	@GET @Path("/")
+	@GET
 	public Response status(){
+		InitializationSupport.checkIsInitialized(context);
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("status", "OK");
 		content.put("deploy_time", getInitializationTimestamp().toString());

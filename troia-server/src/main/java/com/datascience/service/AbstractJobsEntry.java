@@ -49,6 +49,7 @@ public abstract class AbstractJobsEntry {
 
 	@DELETE
 	public Response deleteJob(@FormParam("id") String jid) throws Exception{
+		InitializationSupport.checkIsInitialized(context);
 		if (empty_jid(jid)) {
 			throw new IllegalArgumentException("No job ID given");
 		}
@@ -63,6 +64,7 @@ public abstract class AbstractJobsEntry {
 	protected abstract Job createJob(JsonObject jo, String jid);
 
 	public Response createJob(String json) throws Exception{
+		InitializationSupport.checkIsInitialized(context);
 		JsonObject jo = json.isEmpty() ? new JsonObject() : new JsonParser().parse(json).getAsJsonObject();
 
 		String jid = jo.has("id") ? jo.get("id").getAsString() : getJidGenerator().getID();
