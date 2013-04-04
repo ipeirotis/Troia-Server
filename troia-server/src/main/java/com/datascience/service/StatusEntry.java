@@ -3,7 +3,6 @@ package com.datascience.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -21,31 +20,34 @@ public class StatusEntry {
 
 	@Context ServletContext context;
 	
-	private IJobStorage jobStorage;
-	private ResponseBuilder responser;
-	private DateTime initializationTimestamp;
 
-	@PostConstruct
-	public void postConstruct(){
-		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
-		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
-		initializationTimestamp = (DateTime) context.getAttribute(Constants.DEPLOY_TIME);
+	private DateTime getInitializationTimestamp(){
+		return (DateTime) context.getAttribute(Constants.DEPLOY_TIME);
 	}
-	
-	@GET @Path("/")
+
+	private ResponseBuilder getResponseBuilder(){
+		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
+	}
+
+	private IJobStorage getJobStorage(){
+		return (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
+	}
+
+	@GET
 	public Response status(){
+		InitializationSupport.checkIsInitialized(context);
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("status", "OK");
-		content.put("deploy_time", initializationTimestamp.toString());
-		content.put("job_storage", jobStorage.toString());
+		content.put("deploy_time", getInitializationTimestamp().toString());
+		content.put("job_storage", getJobStorage().toString());
 		content.put("job_storage_status", getJobStorageStatus());
 		content.put("memory", getMemoryStats());
-		return responser.makeOKResponse(content);
+		return getResponseBuilder().makeOKResponse(content);
 	}
 
 	protected String getJobStorageStatus() {
 		try {
-			jobStorage.test();
+			getJobStorage().test();
 			return "OK";
 		} catch (Exception e) {
 			return "FAIL: " + e.getMessage();

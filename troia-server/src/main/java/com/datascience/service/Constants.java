@@ -15,4 +15,7 @@ public class Constants {
 	public static final String ID_GENERATOR = "ID_GENERATOR";
 	public static final String JOBS_MANAGER = "JOBS_MANAGER";
 	public static final String DOWNLOADS_PATH = "DOWNLOADS_PATH";
+	public static final String PROPERTIES = "PROPERTIES";
+	public static final String IS_INITIALIZED = "IS_INITIALIZED";
+	public static final String IS_FREEZED = "IS_FREEZED";
 }

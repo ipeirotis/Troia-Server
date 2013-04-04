@@ -32,20 +32,16 @@ public class ServiceComponentsFactory {
 	
 	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
 			throws IOException, ClassNotFoundException, SQLException {
-		String user = properties.getProperty("USER");
-		String password = properties.getProperty("PASSWORD");
-		String db = properties.getProperty("DB");
-		String url = properties.getProperty("URL");
-		int cachesize;
-		if (properties.containsKey("cacheSize")) {
-			cachesize = Integer.parseInt(properties.getProperty("cacheSize"));
-		} else {
-			cachesize = 15;
-		}
-		IJobStorage internalJobStorage = new DBJobStorage(user,
-			password, db, url, serializer);
+		String user = properties.getProperty("DB_USER");
+		String password = properties.getProperty("DB_PASSWORD");
+		String db = properties.getProperty("DB_NAME");
+		String url = properties.getProperty("DB_URL");
+		int cacheSize = Integer.parseInt(properties.getProperty("CACHE_SIZE"));
+		int cacheDumpTime = Integer.parseInt(properties.getProperty("CACHE_DUMP_TIME"));
+
+		IJobStorage internalJobStorage = new DBJobStorage(user, password, db, url, serializer);
 		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
-		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cachesize, 10, TimeUnit.MINUTES);
+		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}
@@ -55,11 +51,13 @@ public class ServiceComponentsFactory {
 	}
 
 	public CommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
-		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer);
+		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
+				Integer.valueOf(properties.getProperty("RESPONSES_CACHE_SIZE")),
+				Integer.valueOf(properties.getProperty("RESPONSES_DUMP_TIME")));
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){
-		return new ProjectCommandExecutor();
+		return new ProjectCommandExecutor(Integer.valueOf(properties.getProperty("EXECUTOR_THREADS_NUM")));
 	}
 
 	public ISerializer loadSerializer() {

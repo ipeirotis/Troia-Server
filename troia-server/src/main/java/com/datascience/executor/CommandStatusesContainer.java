@@ -15,10 +15,10 @@ public class CommandStatusesContainer {
 	Cache<String, CommandStatus> commandsResults;
 	IRandomUniqIDGenerator idGenerator;
 	
-	public CommandStatusesContainer(IRandomUniqIDGenerator idGenerator){
+	public CommandStatusesContainer(IRandomUniqIDGenerator idGenerator, int cacheSize, int expirationTime){
 		commandsResults = CacheBuilder.newBuilder()
-			.maximumSize(200)
-			.expireAfterWrite(1, TimeUnit.DAYS)
+			.maximumSize(cacheSize)
+			.expireAfterWrite(expirationTime, TimeUnit.SECONDS)
 			.build();
 		this.idGenerator = idGenerator;
 	}

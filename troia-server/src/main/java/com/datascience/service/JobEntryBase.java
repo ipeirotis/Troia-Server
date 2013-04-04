@@ -6,6 +6,7 @@ package com.datascience.service;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -77,7 +78,8 @@ public abstract class JobEntryBase<T extends Project> {
 	@Path("prediction/zip")
 	@GET
 	public Response getPredictionsZip(){
-		return buildResponseOnCommand(getPredictionZipCommand((String)context.getAttribute(Constants.DOWNLOADS_PATH)));
+		return buildResponseOnCommand(getPredictionZipCommand(
+				((Properties)context.getAttribute(Constants.PROPERTIES)).getProperty(Constants.DOWNLOADS_PATH)));
 	}
 
 	@Path("")
