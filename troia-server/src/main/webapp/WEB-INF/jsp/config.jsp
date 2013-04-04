@@ -36,14 +36,20 @@
                 </tr>
 			</tbody>
 		</table>
-		<input type="submit" value="Submit">
+		<c:if test="${!it.freezed}"><input type="submit" value="Submit"></c:if>
 	</form>
+	<div id="error"></div>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="http://malsup.github.com/jquery.form.js"></script>
     <script>
         $(document).ready(function() {
-            $("#form").ajaxForm(function() {
-                window.location.replace(location.href);
+            $("#form").ajaxForm({
+                success: function() {
+                    window.location.replace(location.href);
+                },
+                error: function(res) {
+                    $("#error").text(res.responseText);
+                }
             });
         });
     </script>

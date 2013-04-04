@@ -14,6 +14,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -70,36 +72,36 @@ public class ConfigEntry {
 					simpleForm.put(s, form.getFirst(s));
 			}
 			InitializationSupport.destroyContext(scontext);
-			initializeContext(simpleForm);
+			try{
+				initializeContext(simpleForm);
+			} catch(Exception e){
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
+			}
 		}
 		return Response.ok().build();
 	}
 
-	private void initializeContext(Map<String, String> properties){
-		try {
-			Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
-			props.putAll(properties);
+	private void initializeContext(Map<String, String> properties) throws SQLException, IOException, ClassNotFoundException {
+		Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
+		props.putAll(properties);
 
-			scontext.setAttribute(Constants.IS_INITIALIZED, true);
-			ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
+		scontext.setAttribute(Constants.IS_INITIALIZED, true);
+		ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
 
-			ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
-			scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
+		ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
+		scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
 
-			JobsManager jobsManager = factory.loadJobsManager();
-			scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
+		JobsManager jobsManager = factory.loadJobsManager();
+		scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
 
-			ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
+		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
 
-			IJobStorage jobStorage = factory.loadJobStorage(serializer, executor, jobsManager);
-			scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
+		IJobStorage jobStorage = factory.loadJobStorage(serializer, executor, jobsManager);
+		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 
-			CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
-			scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
+		CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
+		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
 
-			scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
-		} catch (Exception e) {
-			Logger.getAnonymousLogger().warning("In context initialization support: " + e.getLocalizedMessage());
-		}
+		scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
 	}
 }
