@@ -15,7 +15,7 @@ public class WorkerEvaluator extends WorkerQualityCalculator{
 	@Override
 	public double getError(NominalProject project, Worker<String> w, String from, String to) {
 		WorkerResult wr = project.getResults().getWorkerResult(w);
-		wr.computeEvalConfusionMatrix(project.getData().getCategories(), w.getAssigns());
+		wr.computeEvalConfusionMatrix(project.getData().getCategories(), project.getData().getWorkerAssigns(w));
 		return wr.getEvalErrorRate(from, to);
 	}
 

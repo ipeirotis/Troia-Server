@@ -76,7 +76,7 @@ class ReportGenerator {
 		sb.append("Name\tLabels\tEstMean\tEstStDev\tEstCorrelation\tTrueMean\tTrueStDev\tTrueCorrelation\n");
 		for (WorkerContResults wr : ip.getWorkersResults().values()) {
 			Worker<ContValue> w = wr.getWorker();
-			sb.append(w.getName() + "\t" + w.getAssigns().size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
+			sb.append(w.getName() + "\t" + ip.getData().getWorkerAssigns(w).size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
 			sb.append("\n");
 		}
 		

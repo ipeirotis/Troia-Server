@@ -14,7 +14,14 @@ import java.util.Map;
  * @author artur
  */
 public class WorkerCommands {
-	
+
+	protected static <T> Map<String, Object> getWorkerStats(Project project, Worker<T> worker){
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("name", worker.getName());
+		ret.put("assigns", project.getData().getWorkerAssigns(worker));
+		return ret;
+	}
+
 	static public class GetWorkers<T> extends JobCommand<Collection<Map<String, Object>>, Project> {
 		
 		public GetWorkers(){
@@ -25,10 +32,7 @@ public class WorkerCommands {
 		protected void realExecute() {
 			Collection<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
 			for (Worker<T> w : (Collection<Worker<T>>) project.getData().getWorkers()){
-				Map<String, Object> workerMap = new HashMap<String, Object>();
-				workerMap.put("name", w.getName());
-				workerMap.put("assigns", w.getAssigns());
-				ret.add(workerMap);
+				ret.add(getWorkerStats(project, w));
 			}
 			setResult(ret);
 		}
@@ -45,10 +49,7 @@ public class WorkerCommands {
 		@Override
 		protected void realExecute() {
 			Worker<T> w = ParamChecking.worker(project.getData(), workerId);
-			Map<String, Object> ret = new HashMap<String, Object>();
-			ret.put("name", w.getName());
-			ret.put("assigns", w.getAssigns());
-			setResult(ret);
+			setResult(getWorkerStats(project, w));
 		}
 	}
 }

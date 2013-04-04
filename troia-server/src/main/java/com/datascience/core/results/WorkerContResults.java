@@ -1,5 +1,6 @@
 package com.datascience.core.results;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,12 +55,11 @@ public class WorkerContResults {
 	}
 
 
-	public void computeZetaValues() {
-		Set<AssignedLabel<ContValue>> labels = worker.getAssigns();
-		int n = labels.size();
+	public void computeZetaValues(Collection<AssignedLabel<ContValue>> workersAssigns) {
+		int n = workersAssigns.size();
 		double mu_worker = 0.0;
 		double mu_square = 0.0;
-		for (AssignedLabel<ContValue> al : labels) {
+		for (AssignedLabel<ContValue> al : workersAssigns) {
 			double label = al.getLabel().getValue();
 			mu_worker += label;
 			mu_square += Math.pow(label, 2);
@@ -73,7 +73,7 @@ public class WorkerContResults {
 			logger.warn("[Single Label Worker: " + worker.getName()+"]");
 		}
 
-		for (AssignedLabel<ContValue> al : labels) {
+		for (AssignedLabel<ContValue> al : workersAssigns) {
 			double label = al.getLabel().getValue();
 			Double z = (label - getEst_mu()) / getEst_sigma();
 			AssignedLabel zl = new AssignedLabel<ContValue>(worker, al.getLobject(), new ContValue(z));

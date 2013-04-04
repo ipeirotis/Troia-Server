@@ -62,7 +62,6 @@ public class NominalModelTest {
 			Worker<String> worker = new Worker<String>("worker" + i);
 			for (LObject<String> lObject : lObjects) {
 				AssignedLabel<String> assign = new AssignedLabel<String>(worker, lObject, categories.get(random.nextInt(categories.size())));
-				worker.addAssign(assign);
 				ret.add(assign);
 			}
 		}

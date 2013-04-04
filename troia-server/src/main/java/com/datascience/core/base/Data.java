@@ -19,6 +19,7 @@ public class Data <T>{
 	protected Set<LObject<T>> goldObjects;
 	protected Set<LObject<T>> evaluationObjects;
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
+	protected Map<Worker<T>, Set<AssignedLabel<T>>> workersAssigns;
 
 	protected transient List<INewDataObserver<T>> newDataObservers;
 
@@ -29,6 +30,7 @@ public class Data <T>{
 		goldObjects = new HashSet<LObject<T>>();
 		evaluationObjects = new HashSet<LObject<T>>();
 		datums = new HashMap<LObject<T>, Set<AssignedLabel<T>>>();
+		workersAssigns = new HashMap<Worker<T>, Set<AssignedLabel<T>>>();
 		mapWorkers = new HashMap<String, Worker<T>>();
 		mapObjects = new HashMap<String, LObject<T>>();
 		newDataObservers = new LinkedList<INewDataObserver<T>>();
@@ -39,6 +41,7 @@ public class Data <T>{
 			workers.add(worker);
 			mapWorkers.put(worker.getName(), worker);
 			notifyNewWorker(worker);
+			workersAssigns.put(worker, new HashSet<AssignedLabel<T>>());
 		}
 	}
 
@@ -142,6 +145,10 @@ public class Data <T>{
 		return object;
 	}
 
+	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker){
+		return workersAssigns.get(worker);
+	}
+
 	public void addAssign(AssignedLabel<T> assign){
 		forceAddAssign(assign, assigns);
 		LObject<T> object = assign.getLobject();
@@ -149,7 +156,7 @@ public class Data <T>{
 		forceAddAssign(assign, datums.get(object));
 		Worker<T> worker = assign.getWorker();
 		addWorker(worker);
-		forceAddAssign(assign, worker.getAssigns());
+		forceAddAssign(assign, workersAssigns.get(worker));
 		notifyNewAssign(assign);
 	}
 

@@ -58,7 +58,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 
 		// Scan all objects and change the confusion matrix for each worker
 		// using the class probability for each object
-		for (AssignedLabel<String> al : worker.getAssigns()) {
+		for (AssignedLabel<String> al : data.getWorkerAssigns(worker)) {
 
 			// Get the name of the object and the category it
 			// is classified from this worker.

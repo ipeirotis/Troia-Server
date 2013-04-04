@@ -20,14 +20,14 @@ public class DataTest {
 		String label1 = "label1";
 		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object, label1);
 		data.addAssign(al1);
-		assertEquals(label1, w1.getAssigns().iterator().next().getLabel());
+		assertEquals(label1, data.getWorkerAssigns(w1).iterator().next().getLabel());
 		assertEquals(label1, data.getAssigns().iterator().next().getLabel());
 		String label2 = "label2";
 		AssignedLabel<String> al2 = new AssignedLabel<String>(w1, object, label2);
 		data.addAssign(al2);
-		assertEquals(label2, w1.getAssigns().iterator().next().getLabel());
+		assertEquals(label2, data.getWorkerAssigns(w1).iterator().next().getLabel());
 		assertEquals(label2, data.getAssigns().iterator().next().getLabel());
-		assertEquals(1, w1.getAssigns().size());
+		assertEquals(1, data.getWorkerAssigns(w1).size());
 	}
 
 	/**

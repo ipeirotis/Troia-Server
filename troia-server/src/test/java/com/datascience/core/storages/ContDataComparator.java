@@ -51,10 +51,10 @@ public class ContDataComparator {
 		assertEquals(worker1, d.getWorker(worker1.getName()));
 		assertEquals(worker2, d.getWorker(worker2.getName()));
 
-		assertEquals(1, d.getWorker("worker1").getAssigns().size());
-		assertTrue(d.getWorker("worker1").getAssigns().contains(assign1));
-		assertEquals(1, d.getWorker("worker2").getAssigns().size());
-		assertTrue(d.getWorker("worker2").getAssigns().contains(assign2));
+		assertEquals(1, d.getWorkerAssigns(d.getWorker("worker1")).size());
+		assertTrue(d.getWorkerAssigns(d.getWorker("worker1")).contains(assign1));
+		assertEquals(1, d.getWorkerAssigns(d.getWorker("worker2")).size());
+		assertTrue(d.getWorkerAssigns(d.getWorker("worker2")).contains(assign2));
 
 		assertEquals(3, d.getObjects().size());
 		assertEquals(object1, d.getObject(object1.getName()));

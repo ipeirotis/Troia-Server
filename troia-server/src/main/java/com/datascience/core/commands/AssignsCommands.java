@@ -57,7 +57,7 @@ public class AssignsCommands {
 		@Override
 		protected void realExecute() {
 			Worker w = ParamChecking.worker(project.getData(), workerId);
-			setResult(w.getAssigns());
+			setResult(project.getData().getWorkerAssigns(w));
 		}
 	}
 }

@@ -23,7 +23,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		for (Worker<ContValue> w : data.getWorkers()) {
 			WorkerContResults wcr = new WorkerContResults(w);
 			wcr.setEst_rho(initial_rho);
-			wcr.computeZetaValues();
+			wcr.computeZetaValues(getData().getWorkerAssigns(w));
 			results.addWorkerResult(w, wcr);
 		}
 	}

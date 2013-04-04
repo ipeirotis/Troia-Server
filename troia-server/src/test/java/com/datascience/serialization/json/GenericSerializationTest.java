@@ -86,7 +86,6 @@ public class GenericSerializationTest {
 			Worker<Double> worker = new Worker<Double>("worker" + i);
 			for (LObject<Double> lObject : lObjects) {
 				AssignedLabel<Double> assign = new AssignedLabel<Double>(worker, lObject, labels.get(random.nextInt(labels.size())));
-				worker.addAssign(assign);
 				data.addAssign(assign);
 			}
 			data.addWorker(worker);
