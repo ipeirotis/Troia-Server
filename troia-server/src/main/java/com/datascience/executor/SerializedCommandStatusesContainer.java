@@ -9,8 +9,9 @@ public class SerializedCommandStatusesContainer extends
 
 	protected ISerializer serializer;
 
-	public SerializedCommandStatusesContainer(IRandomUniqIDGenerator idGenerator, ISerializer serializer) {
-		super(idGenerator);
+	public SerializedCommandStatusesContainer(IRandomUniqIDGenerator idGenerator, ISerializer serializer,
+											  int cacheSize, int expirationTime) {
+		super(idGenerator, cacheSize, expirationTime);
 		this.serializer = serializer;
 	}
 	

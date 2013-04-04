@@ -17,7 +17,7 @@ public class JobsEntry extends AbstractJobsEntry{
 
 	@Override
 	protected Job createJob(JsonObject jo, String jid) {
-		return jobFactory.createNominalJob(jo, jid);
+		return getJobFactory().createNominalJob(jo, jid);
 	}
 
 	@POST
