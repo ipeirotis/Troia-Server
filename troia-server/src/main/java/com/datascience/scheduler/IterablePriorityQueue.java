@@ -1,5 +1,7 @@
 package com.datascience.scheduler;
 
+import com.google.common.base.Objects;
+
 import java.util.*;
 
 /**
@@ -75,6 +77,15 @@ public class IterablePriorityQueue<T> implements IIterablePriorityQueue<T> {
 				return comparator.compare(element, other.element);
 			}
 			return cmp;
+		}
+
+		@Override
+		public boolean equals(Object object){
+			if (object instanceof IterablePriorityQueue.ElementWithPriority){
+				ElementWithPriority other = (IterablePriorityQueue.ElementWithPriority) object;
+				return compareTo(other) == 0;
+			}
+			return false;
 		}
 	}
 
