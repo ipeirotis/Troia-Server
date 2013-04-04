@@ -70,6 +70,14 @@ public class ResponseBuilder {
 		Map<String, Object> init_content = initialResponseContent("NOT_READY", null);
 		return buildResponse(200, init_content);
 	}
+
+	public Response makeNotInitializedResponse(Map<String, Object> content){
+		Map<String, Object> init_content = initialResponseContent("NOT_INITIALIZED", null);
+		for (Map.Entry<String, Object> e : content.entrySet()){
+			init_content.put(e.getKey(), e.getValue());
+		}
+		return buildResponse(200, init_content);
+	}
 	
 	public Response makeRedirectResponse(String newAddress){
 		Map<String, Object> init_content = initialResponseContent("OK", null);

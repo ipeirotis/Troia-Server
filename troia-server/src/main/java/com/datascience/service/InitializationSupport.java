@@ -4,11 +4,14 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.ws.rs.core.Response;
 
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
@@ -16,8 +19,6 @@ import org.joda.time.DateTime;
 
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.ProjectCommandExecutor;
-
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * @author Konrad
@@ -106,8 +107,13 @@ public class InitializationSupport implements ServletContextListener {
 		}
 	}
 
-	public static void checkIsInitialized(ServletContext context){
-		checkState((Boolean) context.getAttribute(Constants.IS_INITIALIZED),
-				"You have not configure troia server. Go to /config page.");
+	public static boolean checkIsInitialized(ServletContext context){
+		return (Boolean) context.getAttribute(Constants.IS_INITIALIZED);
+	}
+
+	public static Response makeNotInitializedResponse(ServletContext context){
+		Map<String, Object> content = new HashMap<String, Object>();
+		content.put("deploy_time", context.getAttribute(Constants.DEPLOY_TIME).toString());
+		return ((ResponseBuilder) context.getAttribute(Constants.RESPONSER)).makeNotInitializedResponse(content);
 	}
 }

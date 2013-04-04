@@ -35,7 +35,8 @@ public class StatusEntry {
 
 	@GET
 	public Response status(){
-		InitializationSupport.checkIsInitialized(context);
+		if (!InitializationSupport.checkIsInitialized(context))
+			return InitializationSupport.makeNotInitializedResponse(context);
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("status", "OK");
 		content.put("deploy_time", getInitializationTimestamp().toString());
