@@ -64,7 +64,6 @@ public class ConfigEntry {
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
 			Map<String, String> simpleForm = new HashMap<String, String>();
 			for (String s : form.keySet()){
-				Logger.getAnonymousLogger().warning(s + " " + form.getFirst(s));
 				if (s.equals("freezed"))
 					scontext.setAttribute(Constants.IS_FREEZED, true);
 				else
