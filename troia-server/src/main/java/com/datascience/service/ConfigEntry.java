@@ -46,11 +46,14 @@ public class ConfigEntry {
 	public Response getConfig() {
 		Map<String, Object> model = new HashMap<String, Object>();
 		Properties properties = (Properties)scontext.getAttribute(Constants.PROPERTIES);
+		Boolean freezed = (Boolean) scontext.getAttribute(Constants.IS_FREEZED);
 		List<NameValue> items = new ArrayList<NameValue>();
 		for (String s : new ArrayList<String>(new TreeSet<String>(properties.stringPropertyNames()))){
+			if (freezed && (s.startsWith("DB") || s.endsWith("PATH")))
+				continue;
 			items.add(new NameValue(s, properties.get(s)));
 		}
-		model.put("freezed", scontext.getAttribute(Constants.IS_FREEZED));
+		model.put("freezed", freezed);
 		model.put("items", items);
 		return Response.ok(new Viewable("/config", model)).build();
 	}
