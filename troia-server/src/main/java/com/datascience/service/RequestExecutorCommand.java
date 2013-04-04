@@ -44,6 +44,6 @@ public class RequestExecutorCommand extends SynchronizedCommand{
 	public void run() {
 		Stopwatch stopwatch = new Stopwatch().start();
 		command.execute();
-		executionTimeInSeconds = stopwatch.elapsedTime(TimeUnit.MILLISECONDS) / 1000.;
+		executionTimeInSeconds = stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000.;
 	}
 }
