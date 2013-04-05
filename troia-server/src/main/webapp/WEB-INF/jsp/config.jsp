@@ -45,6 +45,7 @@
         $(document).ready(function() {
             $("#form").ajaxForm({
                 success: function() {
+                    alert("Settings successfully changed!");
                     window.location.replace(location.href);
                 },
                 error: function(res) {
