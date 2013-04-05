@@ -46,8 +46,11 @@ public class NominalData extends Data<String> {
 
 	public void setCategoryPriors(Collection<CategoryValue> priors){
 		double priorSum = 0.;
+		Set<String> categoryNames = new HashSet<String>();
 		for (CategoryValue cv : priors){
 			priorSum += cv.value;
+			checkArgument(categoryNames.add(cv.categoryName),
+				"CategoryPriors contains two categories with the same name");
 		}
 		checkArgument(priors.size() == categories.size(),
 				"Different number of categories in categoryPriors and categories parameters");

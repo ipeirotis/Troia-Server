@@ -10,10 +10,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import com.datascience.core.algorithms.INewDataObserver;
+import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.nominal.decision.DecisionEngine;
+import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
+import com.datascience.core.nominal.decision.IObjectLabelDecisionAlgorithm;
+import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,10 +28,6 @@ import org.junit.Test;
 
 import com.datascience.utils.auxl.TestDataManager;
 
-/**
- * @author Michael Arshynov
- *
- */
 public class IncrementalDawidSkeneTest {
 
 	NominalProject project;
@@ -36,7 +39,9 @@ public class IncrementalDawidSkeneTest {
 		categories.add("category1");
 		categories.add("category2");
 
-		project = new NominalProject(new IncrementalDawidSkene());
+		IncrementalDawidSkene alg = new IncrementalDawidSkene();
+		project = new NominalProject(alg);
+		project.getData().addNewUpdatableAlgorithm(alg);
 		project.initializeCategories(categories, null, null);
 	}
 

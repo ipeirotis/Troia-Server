@@ -17,7 +17,9 @@ public class Constants {
 	public static final String SCHEDULER_CACHED = t("CachedScheduler");
 
 	public static final String PC_ASSIGN_COUNT = t("ByAssigns");
+	public static final String PC_ASSIGN_COUNT2 = t("countassigns");
 	public static final String PC_BY_COST = t("ByCost");
+	public static final String PC_BY_COST2 = t("costbased");
 
 	public static final String FOR_WORKERS_CM_BASED = t("ConfusionMatrixBased");
 	public static final String FOR_WORKERS_FIRST_NOT_SEEN = t("FirstNotSeen");

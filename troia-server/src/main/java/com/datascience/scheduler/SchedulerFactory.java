@@ -29,7 +29,9 @@ public class SchedulerFactory<T> {
 		SCHEDULER_CREATORS.put(Constants.SCHEDULER_CACHED, getCachedSchedulerCreator());
 
 		CALCULATORS.put(Constants.PC_ASSIGN_COUNT, getPCAssignsCount());
+		CALCULATORS.put(Constants.PC_ASSIGN_COUNT2, getPCAssignsCount());
 		CALCULATORS.put(Constants.PC_BY_COST, getPCCostBased());
+		CALCULATORS.put(Constants.PC_BY_COST2, getPCCostBased());
 
 		SCHEDULERS_FOR_WORKERS.put(Constants.FOR_WORKERS_FIRST_NOT_SEEN, getFirstNotSeen());
 		SCHEDULERS_FOR_WORKERS.put(Constants.FOR_WORKERS_CM_BASED, getCostMatrixBased());
