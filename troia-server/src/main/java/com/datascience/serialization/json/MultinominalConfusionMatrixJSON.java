@@ -28,10 +28,10 @@ public class MultinominalConfusionMatrixJSON {
 					context.deserialize(jobject.get("categories"), JSONUtils.stringSetType);
 
 
-			Collection<MatrixValue> matrixValues =
+			Collection<MatrixValue<String>> matrixValues =
 					context.deserialize(jobject.get("matrix"), JSONUtils.matrixValuesCollectionType);
 			Map<CategoryPair, Double> matrix = new HashMap<CategoryPair, Double>();
-			for (MatrixValue mv : matrixValues){
+			for (MatrixValue<String> mv : matrixValues){
 				matrix.put(new CategoryPair(mv.from, mv.to), mv.value);
 			}
 

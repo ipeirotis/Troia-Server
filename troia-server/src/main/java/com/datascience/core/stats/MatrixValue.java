@@ -1,12 +1,12 @@
 package com.datascience.core.stats;
 
-public class MatrixValue {
+public class MatrixValue<T> {
 
-	public String from;
-	public String to;
+	public T from;
+	public T to;
 	public Double value;
 	
-	public MatrixValue(String from, String to, Double v){
+	public MatrixValue(T from, T to, Double v){
 		this.from = from;
 		this.to = to;
 		value = v;

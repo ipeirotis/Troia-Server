@@ -9,15 +9,9 @@ import com.datascience.core.base.*;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.NominalData;
 import com.datascience.core.results.ResultsFactory;
+import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -118,15 +112,24 @@ public class DataJSON {
 	public static class CostMatrixSerializer<T> implements JsonSerializer<CostMatrix<T>> {
 		@Override
 		public JsonElement serialize(CostMatrix<T> w, Type type, JsonSerializationContext ctx) {
-			return ctx.serialize(w.getCostMatrix());
+			JsonArray ja = new JsonArray();
+			for (T from : w.getKnownValues()){
+				for(T to: w.getKnownValues())
+					ja.add(ctx.serialize(new MatrixValue(from, to, w.getCost(from, to))));
+			}
+			return ja;
 		}
 	}
 
 	public static class CostMatrixDeserializer<T> implements JsonDeserializer<CostMatrix<T>> {
-
 		@Override
 		public CostMatrix<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-			return new CostMatrix<T>((Map<T, Map<T, Double>>) context.deserialize(element, new TypeToken<Map<T, Map<T, Double>>>() {}.getType()));
+			CostMatrix<T> cm = new CostMatrix<T>();
+			for (JsonElement je : element.getAsJsonArray()){
+				MatrixValue<T> mv = context.deserialize(je, MatrixValue.class);
+				cm.add(mv.from, mv.to, mv.value);
+			}
+			return cm;
 		}
 	}
 
