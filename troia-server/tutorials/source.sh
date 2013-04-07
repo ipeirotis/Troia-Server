@@ -10,22 +10,14 @@ function jsonStrip
 function jsonObjectProperty
 {
     local name=$1
-    local result=$($PYTHON -c "import json; import sys; print json.dumps(json.load(sys.stdin)['$name'], separators=(',', ':'))")
-    echo $(jsonStrip "$result")
-}
-
-# XXX nasty fix for very strange bug (reproduced within json_bug.sh).
-function jsonObjectPropertyFixed
-{
-    local name=$1
-    local result=$($PYTHON -c "import json; import sys; print json.dumps(json.load(sys.stdin)['$name'], separators=(', ', ':'))")
+    local result=$($PYTHON -c "import json; import sys; print json.dumps(json.load(sys.stdin)['$name'])")
     echo $(jsonStrip "$result")
 }
 
 function jsonArrayElement
 {
     local name=$1
-    local result=$($PYTHON -c "import json; import sys; print json.dumps(json.load(sys.stdin)[$name], separators=(',', ':'))")
+    local result=$($PYTHON -c "import json; import sys; print json.dumps(json.load(sys.stdin)[$name])")
     echo $(jsonStrip "$result")
 }
 
@@ -36,7 +28,7 @@ function jsonLength
 
 function jsonSorted
 {
-    local result=$($PYTHON -c "import json; import sys; print json.dumps(sorted(json.load(sys.stdin)), separators=(',', ':'))")
+    local result=$($PYTHON -c "import json; import sys; print json.dumps(sorted(json.load(sys.stdin)))")
     echo $(jsonStrip "$result")
 }
 
