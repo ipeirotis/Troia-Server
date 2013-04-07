@@ -40,6 +40,20 @@ function jsonSorted
     echo $(jsonStrip "$result")
 }
 
+function jsonEquals
+{
+    local json1=$1
+    local json2=$2
+    $($PYTHON -c "
+import json
+import sys
+if sorted(json.loads('''$json1''')) == sorted(json.loads('''$json2''')):
+    sys.exit(0)
+else:
+    sys.exit(1)
+    ")
+}
+
 function responseStatus
 {
     local response=$1
@@ -100,28 +114,32 @@ function awaitCompletion
     echo $result
 }
 
-# Test job call. 
+# TODO change the order of the arguments so that all arguments, that the
+# function needs, can be passed.
 function testAsyncJobCall
 {
     local cmd=$1
     local jid=$2
+    local expectedResult=$3
     local response=$($cmd $jid)
     assertStatus "$response"
     local result=$(awaitCompletion "$response")
     assertStatus "$result" 
-    if [ "$#" -gt 2 ]
-    then
-        local expectedResult=$3
-        assertResult "$result" "$expectedResult"
-    fi
+    assertResult "$result" "$expectedResult"
     echo $result
 }
 
-function testAsyncJobCallResults
+# TODO change the order of the arguments so that all arguments, that the
+# function needs, can be passed.
+function testAsyncJobCallResult
 {
     local cmd=$1
     local jid=$2
-    local tester=$3
-    local result=$(testAsyncJobCall "$cmd" "$jid")
-    echo $($tester $result)
+    local expected=$3
+    local response=$($cmd $jid)
+    assertStatus "$response"
+    local result=$(awaitCompletion "$response")
+    assertStatus "$result" 
+    local innerResult=$(echo $result | jsonObjectProperty 'result')
+    (jsonEquals "$innerResult" "$expected") || (echo "Assertion error:" && echo "Actual: $innerResult" && echo "Expected: $expected")
 }

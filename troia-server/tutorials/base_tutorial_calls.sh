@@ -3,7 +3,7 @@ source ./source.sh
 function createJob 
 {
     echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d '{
-        categories:["porn", "notporn"],
+        categories: ["porn", "notporn"],
         categoryPriors: [
             {"categoryName": "porn", "value": 0.5},
             {"categoryName": "notporn", "value": 0.5}],
