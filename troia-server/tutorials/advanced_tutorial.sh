@@ -23,11 +23,14 @@ function createJob
 
 function loadGoldLabels
 {
-    echo $(curl -X POST -H "Content-Type: application/json" "http://project-troia.com/api/jobs/<JOB_ID>/goldData" -d 'labels=
-        [{
-            "correctCategory": "porn",
-            "objectName": "http://sex-mission.com"
-        }]'
+    local jid=$1
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$jid/goldObjects" -d '{
+        objects:
+            [{
+                "correctCategory": "porn",
+                "objectName": "http://sex-mission.com"
+            }]
+        }'
     )
 }
 
@@ -44,6 +47,15 @@ loadAssignedLabelsExpected='
     "status": "OK", 
     "timestamp": "2013-04-08T17:33:54.660+02:00"
 }'
+
+loadGoldLabelsExpected='
+{
+    "executionTime": 0.0, 
+    "result": "Objects added", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T01:12:19.175+02:00"
+}'
+
 
 getObjectCategoryProbabilityExpected='
 {
@@ -77,15 +89,31 @@ getObjectsCategoriesExpected='
 
 getWorkersQualitiesExpected='
 {
+    "executionTime": 0.0, 
     "result": [
-        {"workerName":"worker1","value":0.8516375211366187},
-        {"workerName":"worker2","value":0.9011184676007533},
-        {"workerName":"worker3","value":0.9749015350602155},
-        {"workerName":"worker4","value":0.9749015350602155},
-        {"workerName":"worker5","value":0.8439714531050402}
-    ],
-    "status": "OK",
-    "timestamp": "2013-01-16T15:48:05.842+01:00"
+        {
+            "value": 0.12063846389805155, 
+            "workerName": "worker2"
+        }, 
+        {
+            "value": 0.2876931124396629, 
+            "workerName": "worker3"
+        }, 
+        {
+            "value": 0.48330514536747027, 
+            "workerName": "worker4"
+        }, 
+        {
+            "value": 0.13734139997114614, 
+            "workerName": "worker5"
+        }, 
+        {
+            "value": 0.10767027995295109, 
+            "workerName": "worker1"
+        }
+    ], 
+    "status": "OK", 
+    "timestamp": "2013-04-09T00:35:20.100+02:00"
 }'
 
 function advancedTutorialPart1
@@ -97,56 +125,14 @@ function advancedTutorialPart1
     # Extract job id from the response.
     jid=$(echo $response | cut -d ',' -f 2 | cut -d ':' -f 3 | cut -d '"' -f 1 | tr -d ' ')
 
-    testAsyncJobCallResponse "loadAssignedLabels"   "$jid" "$loadAssignedLabelsExpected" #"Assigns added"
+    testAsyncJobCallResponse "loadAssignedLabels"           "$jid" "$loadAssignedLabelsExpected"
     testAsyncJobCallResponse "getObjectCategoryProbability" "$jid" "$getObjectCategoryProbabilityExpected"
     testAsyncJobCallResponse "getObjectsCategories"         "$jid" "$getObjectsCategoriesExpected"
     testAsyncJobCallResponse "getWorkersQualities"          "$jid" "$getWorkersQualitiesExpected"
+    testAsyncJobCallResponse "loadGoldLabels"               "$jid" "$loadGoldLabelsExpected"
     exit
 
-    response=$(getObjectCategoryProbability $jid)
-    assertStatus "$response"
-    awaitCompletion "$response"
-    testAsyncJobCall "loadGoldLabels"       "$jid" "Objects added"
-    testAsyncJobCall "loadUnassignedLabels" "$jid" "Objects added"
-    testAsyncJobCall "compute"              "$jid" "Computation done"
-
-  JobID=$(createJob)
-  uploadAssignedLabels $JobID
-  getJobStatus $redirectId "Assigns added" "Get assigned labels failed" "Got successfully job status for assigned labels"
-
-  getPredictedObjectsCategories $JobID
-  declare -A expectedCategories
-  expectedCategories[http://google.com]=notporn
-  expectedCategories[http://sex-mission.com]=porn
-  expectedCategories[http://sunnyfun.com]=notporn
-  expectedCategories[http://yahoo.com]=notporn
-  expectedCategories[http://youporn.com]=porn
-  getActualPredictedObjectsCategories $expectedCategories
-
-  #getProbabilityDistribution $JobID
-  declare -A expectedProbabilities 
-  expectedProbabilities[notporn]=0.97945
-  expectedProbabilities[porn]=0.02055
-  #getCategoryProbabilities $expectedProbabilities
-
-  #getPredictedWorkersQuality $JobID
-  declare -A expectedWorkerQualities
-  expectedWorkerQualities[worker1]=0.8516375211366187
-  expectedWorkerQualities[worker2]=0.9011184676007533
-  expectedWorkerQualities[worker3]=0.9749015350602155
-  expectedWorkerQualities[worker4]=0.9749015350602155
-  expectedWorkerQualities[worker5]=0.8439714531050402
-  #getWorkersQualityData $expectedWorkerQualities
-
-  #compute $JobID
-  
-  #getProbabilityDistribution $JobID
-  declare -A expectedProbabilities 
-  expectedProbabilities[notporn]=0.97998
-  expectedProbabilities[porn]=0.02002
-  #getCategoryProbabilities $expectedProbabilities
-  
-  deleteJob $JobID
+    deleteJob $JobID
 }
 
 function advancedTutorialPart2 {

@@ -142,6 +142,20 @@ function testAsyncJobCall
 
 # TODO change the order of the arguments so that all arguments, that the
 # function needs, can be passed.
+function testAsyncJobCall
+{
+    local cmd=$1
+    local jid=$2
+    local expectedResult=$3
+    local response=$($cmd $jid)
+    assertStatus "$response"
+    local result=$(awaitCompletion "$response")
+    assertStatus "$result" 
+    echo $result
+}
+
+# TODO change the order of the arguments so that all arguments, that the
+# function needs, can be passed.
 function testAsyncJobCallResult
 {
     local cmd=$1
@@ -162,6 +176,23 @@ function testAsyncJobCallResult
     # echo "$expected"    | jsonFormat > exp.json
 }
 
+function fetchSyncJobCallResponse
+{
+    local cmd=$1
+    local jid=$2
+    local response=$($cmd $jid)
+    echo $response
+}
+
+function fetchAsyncJobCallResponse
+{
+    local cmd=$1
+    local jid=$2
+    local response=$(fetchSyncJobCallResponse "$cmd" "$jid")
+    assertStatus "$response"
+    local result=$(awaitCompletion "$response")
+    echo $result
+}
 
 function testAsyncJobCallResponse
 {
@@ -175,8 +206,8 @@ function testAsyncJobCallResponse
     local innerResult=$(echo $result | jsonObjectProperty "result")
     local expectedInnerResult=$(echo $expectedResult | jsonObjectProperty "result")
     (jsonEquals "$innerResult" "$expectedInnerResult") || (
-        echo "Assertion error:" &&
-        echo "Actual: |$innerResult|" &&
-        echo "Expected: |$expectedInnerResult|"
+        echo "Assertion error. Results are not the same:" &&
+        echo "Actual:   $innerResult" &&
+        echo "Expected: $expectedInnerResult"
     )
 }
