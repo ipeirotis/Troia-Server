@@ -19,15 +19,13 @@ import com.datascience.core.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
+import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
 import com.datascience.serialization.json.DataJSON;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.serialization.ISerializer;
-import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 /**
  *
@@ -45,7 +43,7 @@ public abstract class JobEntryBase<T extends Project> {
 	ResponseBuilder responser;
 	ProjectCommandExecutor executor;
 	ISerializer serializer;
-	CommandStatusesContainer statusesContainer;
+	ICommandStatusesContainer statusesContainer;
 	IJobStorage jobStorage;
 	JobsManager jobsManager;
 
@@ -59,7 +57,7 @@ public abstract class JobEntryBase<T extends Project> {
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
-		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
+		statusesContainer = (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
 		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 

@@ -7,13 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 import com.datascience.core.JobsManager;
 import com.datascience.core.storages.*;
+import com.datascience.executor.CachedCommandStatusesContainer;
+import com.datascience.executor.SerializedCachedCommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
 import org.apache.log4j.Logger;
 
-import com.datascience.executor.CommandStatusesContainer;
-import com.datascience.executor.SerializedCommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**
@@ -50,8 +50,8 @@ public class ServiceComponentsFactory {
 		return new RandomUniqIDGenerators.PrefixAdderDecorator("RANDOM__", new RandomUniqIDGenerators.NumberAndDate());
 	}
 
-	public CommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
-		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
+	public CachedCommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
+		return new SerializedCachedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
 				Integer.valueOf(properties.getProperty("RESPONSES_CACHE_SIZE")),
 				Integer.valueOf(properties.getProperty("RESPONSES_DUMP_TIME")));
 	}

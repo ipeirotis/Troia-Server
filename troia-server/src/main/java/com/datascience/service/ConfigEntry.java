@@ -2,7 +2,7 @@ package com.datascience.service;
 
 import com.datascience.core.JobsManager;
 import com.datascience.core.storages.IJobStorage;
-import com.datascience.executor.CommandStatusesContainer;
+import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
 import com.datascience.serialization.ISerializer;
 import com.sun.jersey.api.view.Viewable;
@@ -17,7 +17,6 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Logger;
 
 @Path("/config/")
 @Singleton
@@ -99,7 +98,7 @@ public class ConfigEntry {
 		IJobStorage jobStorage = factory.loadJobStorage(serializer, executor, jobsManager);
 		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 
-		CommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
+		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
 		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
 
 		scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
