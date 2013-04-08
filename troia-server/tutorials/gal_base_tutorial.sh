@@ -1,10 +1,56 @@
 #!/bin/bash
 
-source ./base_tutorial_calls.sh
+source ./gal_tutorial_commons.sh
 
 NO_ITERATIONS=20
 COST_ALGORITHM=ExpectedCost
 LABELCHOOSINGMETHOD=MaxLikelihood
+
+# Custom calls
+
+function createJob 
+{
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d '{
+        categories: ["porn", "notporn"],
+        categoryPriors: [
+            {"categoryName": "porn", "value": 0.5},
+            {"categoryName": "notporn", "value": 0.5}],
+        costMatrix: [
+            {"from": "porn", "to": "notporn", "value": 1.0},
+            {"from": "porn", "to": "porn", "value": 0.0},
+            {"from": "notporn", "to": "porn", "value": 1.0},
+            {"from": "notporn", "to": "notporn", "value": 0.0}],
+        algorithm: "BDS",
+        iterations: 10,
+        epsilon: 0.0001,
+        scheduler: "NormalScheduler",
+        calculator: "CostBased"
+    }')
+}
+
+function loadGoldLabels
+{
+    local jid=$1
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$jid/goldObjects" -d '{
+        objects:
+            [{
+                "goldLabel": "notporn",
+                "name": "http://google.com"
+            }]
+        }'
+    )
+}
+
+function getObjectCategoryProbability
+{
+    local jid=$1
+    # local oid=$2
+    local oid=http://sunnyfun.com
+    echo $(curl -s1 -X GET "$URL/jobs/$jid/objects/$oid/categoryProbability")
+}
+
+# Custom responses
+# TODO
 
 # Basic tutorial: main flow
 

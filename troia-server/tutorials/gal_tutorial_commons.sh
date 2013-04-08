@@ -1,24 +1,6 @@
-source ./source.sh
+source ./commons.sh
 
-function createJob 
-{
-    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d '{
-        categories: ["porn", "notporn"],
-        categoryPriors: [
-            {"categoryName": "porn", "value": 0.5},
-            {"categoryName": "notporn", "value": 0.5}],
-        costMatrix: [
-            {"from": "porn", "to": "notporn", "value": 1.0},
-            {"from": "porn", "to": "porn", "value": 0.0},
-            {"from": "notporn", "to": "porn", "value": 1.0},
-            {"from": "notporn", "to": "notporn", "value": 0.0}],
-        algorithm: "BDS",
-        iterations: 10,
-        epsilon: 0.0001,
-        scheduler: "NormalScheduler",
-        calculator: "CostBased"
-    }')
-}
+# Common calls
 
 function deleteJob 
 {
@@ -160,19 +142,6 @@ function loadAssignedLabels
     )
 }
 
-function loadGoldLabels
-{
-    local jid=$1
-    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$jid/goldObjects" -d '{
-        objects:
-            [{
-                "goldLabel": "notporn",
-                "name": "http://google.com"
-            }]
-        }'
-    )
-}
-
 function compute
 {
     local jid=$1
@@ -197,10 +166,21 @@ function getObjectsCategories
     echo $(curl -s1 -X GET "$URL/jobs/$1/objects/prediction" -d "{labelChoosing: $LABEL_CHOOSING_METHOD")
 }
 
-function getObjectCategoryProbability
+# Common responses
+
+loadAssignedLabelsExpected='
 {
-    local jid=$1
-    # local oid=$2
-    local oid=http://sunnyfun.com
-    echo $(curl -s1 -X GET "$URL/jobs/$jid/objects/$oid/categoryProbability")
-}
+    "executionTime": 0.002, 
+    "result": "Assigns added", 
+    "status": "OK", 
+    "timestamp": "2013-04-08T17:33:54.660+02:00"
+}'
+
+loadGoldLabelsExpected='
+{
+    "executionTime": 0.0, 
+    "result": "Objects added", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T01:12:19.175+02:00"
+}'
+

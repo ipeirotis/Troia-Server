@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./source.sh
+source ./commons.sh
 
 function createJob
 {
