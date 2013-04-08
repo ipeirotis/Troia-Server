@@ -1,5 +1,6 @@
 PYTHON=python2.7
 EXPECTED_STATUS="OK"
+URL="http://localhost:8080/troia-server-1.1"
 
 function jsonStrip
 {
@@ -39,11 +40,29 @@ function jsonEquals
     $($PYTHON -c "
 import json
 import sys
-if sorted(json.loads('''$json1''')) == sorted(json.loads('''$json2''')):
+
+def parse(js):
+    try:
+        result = json.loads(js)
+    except ValueError:
+        result = json.loads('\"' + js + '\"')
+    return result
+
+json1 = '''$json1'''
+json2 = '''$json2'''
+
+if json.dumps(sorted(parse(json1))) == json.dumps(sorted(parse(json2))):
     sys.exit(0)
 else:
     sys.exit(1)
     ")
+}
+
+function jsonFormat
+{
+    # echo $($PYTHON -mjson.tool)
+    local result=$($PYTHON -c "import json; import sys; print json.dumps(json.load(sys.stdin))")
+    echo $(jsonStrip "$result")
 }
 
 function responseStatus
@@ -132,6 +151,32 @@ function testAsyncJobCallResult
     assertStatus "$response"
     local result=$(awaitCompletion "$response")
     assertStatus "$result" 
-    local innerResult=$(echo $result | jsonObjectProperty 'result')
-    (jsonEquals "$innerResult" "$expected") || (echo "Assertion error:" && echo "Actual: $innerResult" && echo "Expected: $expected")
+    local innerResult=$(echo $result | jsonObjectProperty "result")
+    (jsonEquals "$innerResult" "$expected") || (
+        echo "Assertion error:" &&
+        echo "Actual: $innerResult" &&
+        echo "Expected: $expected"
+    )
+    # Simple debugging code
+    # echo "$innerResult" | jsonFormat > act.json
+    # echo "$expected"    | jsonFormat > exp.json
+}
+
+
+function testAsyncJobCallResponse
+{
+    local cmd=$1
+    local jid=$2
+    local expectedResult=$3
+    local response=$($cmd $jid)
+    assertStatus "$response"
+    local result=$(awaitCompletion "$response")
+    assertStatus "$result" 
+    local innerResult=$(echo $result | jsonObjectProperty "result")
+    local expectedInnerResult=$(echo $expectedResult | jsonObjectProperty "result")
+    (jsonEquals "$innerResult" "$expectedInnerResult") || (
+        echo "Assertion error:" &&
+        echo "Actual: |$innerResult|" &&
+        echo "Expected: |$expectedInnerResult|"
+    )
 }

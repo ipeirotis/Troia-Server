@@ -2,7 +2,6 @@
 
 source ./base_tutorial_calls.sh
 
-URL="http://localhost:8080/troia-server-1.1"
 NO_ITERATIONS=20
 COST_ALGORITHM=ExpectedCost
 LABELCHOOSINGMETHOD=MaxLikelihood
@@ -20,6 +19,7 @@ testAsyncJobCall "loadAssignedLabels" "$jid" "Assigns added"
 testAsyncJobCall "loadGoldLabels"     "$jid" "Objects added"
 testAsyncJobCall "compute"            "$jid" "Computation done"
 
+# Copy example response from the tutorial.
 expectedCategories='[
     {"objectName":"http://google.com","categoryName":"notporn"},
     {"objectName":"http://youporn.com","categoryName":"porn"},
@@ -28,6 +28,7 @@ expectedCategories='[
     {"objectName":"http://yahoo.com","categoryName":"notporn"}
 ]'
 
+# Copy example response from the tutorial.
 expectedQualities='[
     {"workerName":"worker2","value":0.4444444444444444},
     {"workerName":"worker3","value":1.0},
@@ -36,6 +37,7 @@ expectedQualities='[
     {"workerName":"worker1","value":0.0}
 ]'
 
+# Copy example response from the tutorial.
 expectedProbability='[
     {
         "categoryName": "notporn",
