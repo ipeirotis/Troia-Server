@@ -143,6 +143,7 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 
 	@Override
 	public boolean contains(K key) throws SQLException{
+		// TODO XXX FIXME rewrite this to run without deserialization (count results)
 		logger.debug("DBKV contains");
 		return get(key) != null;
 	}
