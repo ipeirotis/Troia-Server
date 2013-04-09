@@ -5,9 +5,9 @@ package com.datascience.utils.storage;
  */
 public interface IKVStorage<K, V> {
 
-	void put(K key, V value);
-	V get(K key);
-	void remove(K key);
-	boolean contains(K key);
-	void shutdown();
+	void put(K key, V value) throws Exception;
+	V get(K key) throws Exception;
+	void remove(K key) throws Exception;
+	boolean contains(K key) throws Exception;
+	void shutdown() throws Exception;
 }

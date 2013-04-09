@@ -1,29 +1,58 @@
 package com.datascience.utils.storage;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
+import com.google.common.cache.*;
+import org.apache.log4j.Logger;
+
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @Author: konrad
  */
 public class CachedKV<K, V> implements IKVStorage<K, V>{
 
+	protected static Logger log = Logger.getLogger(CachedKV.class);
+
 	protected final IKVStorage<K, V> wrapped;
-	protected Cache<K, V> cache;
+	protected LoadingCache<K, V> cache;
+
+	public CachedKV(IKVStorage<K, V> wrapped, CacheBuilder cacheBuilder){
+		this.wrapped = wrapped;
+		this.cache = cacheBuilder
+				.removalListener(getRemovalListener())
+				.build(getDataLoader());
+	}
 
 	public CachedKV(IKVStorage<K, V> wrapped, long cacheSize){
-		this.wrapped = wrapped;
-		cache = CacheBuilder.newBuilder()
-				.maximumSize(cacheSize)
-				.removalListener(new RemovalListener<K, V>() {
-					@Override
-					public void onRemoval(RemovalNotification<K, V> objectObjectRemovalNotification) {
-						CachedKV.wrapped.put(objectObjectRemovalNotification.getKey(), objectObjectRemovalNotification.getValue());
+		this(wrapped, CacheBuilder.newBuilder().maximumSize(cacheSize));
+	}
+
+	protected RemovalListener<K, V> getRemovalListener(){
+		return new RemovalListener<K, V>() {
+			@Override
+			public void onRemoval(RemovalNotification<K, V> objectObjectRemovalNotification) {
+				try{
+					if (objectObjectRemovalNotification.getCause() == RemovalCause.EXPLICIT){
+						wrapped.remove(objectObjectRemovalNotification.getKey());
+					} else {
+						wrapped.put(objectObjectRemovalNotification.getKey(), objectObjectRemovalNotification.getValue());
 					}
-				})
-				.build();
+				} catch (Exception ex){
+					log.error("CachedKV: onRemoval", ex);
+				}
+			}
+		};
+	}
+
+	protected CacheLoader<K, V> getDataLoader(){
+		return new CacheLoader<K, V>() {
+			@Override
+			public V load(K k) throws Exception {
+				V value = wrapped.get(k);
+				if (value != null) return wrapped.get(k);
+				throw new NotInCachedException();
+			}
+		};
 	}
 
 	@Override
@@ -32,8 +61,17 @@ public class CachedKV<K, V> implements IKVStorage<K, V>{
 	}
 
 	@Override
-	public V get(K key) {
-		return cache.get(key);
+	public V get(K key) throws ExecutionException {
+		try{
+			return cache.get(key);
+		} catch (ExecutionException ex){
+			if (ex.getCause() instanceof NotInCachedException) {
+				return null;
+			} else {
+				throw ex;
+			}
+		}
+
 	}
 
 	@Override
@@ -42,12 +80,17 @@ public class CachedKV<K, V> implements IKVStorage<K, V>{
 	}
 
 	@Override
-	public boolean contains(K key) {
-		return cache.get(key) != null;
+	public boolean contains(K key) throws ExecutionException {
+		return get(key) != null;
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown() throws Exception {
+		for (Map.Entry<K, V> entry: cache.asMap().entrySet()){
+			wrapped.put(entry.getKey(), entry.getValue());
+		}
 		cache.invalidateAll();
 	}
+
+	protected static class NotInCachedException extends Exception{}
 }
