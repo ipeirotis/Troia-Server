@@ -31,6 +31,7 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 		this.table = table;
 		this.serializer = serializer;
 		this.valueType = valueType;
+		this.dbUrl = dbUrl;
 		Class.forName(driverClass);
 		this.connectionProperties = connectionProperties;
 	}
