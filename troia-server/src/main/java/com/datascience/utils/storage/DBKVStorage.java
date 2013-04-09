@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * @Author: konrad
  */
-public class DBKVStorage<K, V> implements IKVStorage<K, V> {
+public class DBKVStorage<V> implements IKVStorage<V> {
 
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
 	protected static int VALIDATION_TIMEOUT = 2;
@@ -78,14 +78,14 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 	}
 
 	@Override
-	public void put(K key, V value) throws SQLException{
-		String logmsg = "DBKV put " + key.toString();
+	public void put(String key, V value) throws SQLException{
+		String logmsg = "DBKV put " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
 			sql = initStatement(INSERT);
 			sql.setString(1, table);
-			sql.setString(2, serializer.serialize(key));
+			sql.setString(2, key);
 			sql.setString(3, serializer.serialize(value));
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
@@ -97,8 +97,8 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 	}
 
 	@Override
-	public V get(K key) throws SQLException{
-		String logmsg = "DBKV get " + key.toString();
+	public V get(String key) throws SQLException{
+		String logmsg = "DBKV get " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		ResultSet result = null;
@@ -106,7 +106,7 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 		try {
 			sql = initStatement(GET);
 			sql.setString(1, table);
-			sql.setString(2, serializer.serialize(key));
+			sql.setString(2, key);
 			result = sql.executeQuery();
 			if (!result.next()) {
 				logger.debug(logmsg + " DONE no results");
@@ -124,14 +124,14 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 	}
 
 	@Override
-	public void remove(K key) throws SQLException{
-		String logmsg = "DBKV remove " + key.toString();
+	public void remove(String key) throws SQLException{
+		String logmsg = "DBKV remove " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
 			sql = initStatement(DELETE);
 			sql.setString(1, table);
-			sql.setString(2, serializer.serialize(key));
+			sql.setString(2, key);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
 		} catch (Exception ex) {
@@ -142,7 +142,7 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 	}
 
 	@Override
-	public boolean contains(K key) throws SQLException{
+	public boolean contains(String key) throws SQLException{
 		// TODO XXX FIXME rewrite this to run without deserialization (count results)
 		logger.debug("DBKV contains");
 		return get(key) != null;

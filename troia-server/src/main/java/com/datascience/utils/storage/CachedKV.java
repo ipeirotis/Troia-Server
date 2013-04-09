@@ -9,28 +9,28 @@ import java.util.concurrent.ExecutionException;
 /**
  * @Author: konrad
  */
-public class CachedKV<K, V> implements IKVStorage<K, V>{
+public class CachedKV<V> implements IKVStorage<V>{
 
 	protected static Logger log = Logger.getLogger(CachedKV.class);
 
-	protected final IKVStorage<K, V> wrapped;
-	protected LoadingCache<K, V> cache;
+	protected final IKVStorage<V> wrapped;
+	protected LoadingCache<String, V> cache;
 
-	public CachedKV(IKVStorage<K, V> wrapped, CacheBuilder cacheBuilder){
+	public CachedKV(IKVStorage<V> wrapped, CacheBuilder cacheBuilder){
 		this.wrapped = wrapped;
 		this.cache = cacheBuilder
 				.removalListener(getRemovalListener())
 				.build(getDataLoader());
 	}
 
-	public CachedKV(IKVStorage<K, V> wrapped, long cacheSize){
+	public CachedKV(IKVStorage<V> wrapped, long cacheSize){
 		this(wrapped, CacheBuilder.newBuilder().maximumSize(cacheSize));
 	}
 
-	protected RemovalListener<K, V> getRemovalListener(){
-		return new RemovalListener<K, V>() {
+	protected RemovalListener<String, V> getRemovalListener(){
+		return new RemovalListener<String, V>() {
 			@Override
-			public void onRemoval(RemovalNotification<K, V> objectObjectRemovalNotification) {
+			public void onRemoval(RemovalNotification<String, V> objectObjectRemovalNotification) {
 				try{
 					if (objectObjectRemovalNotification.getCause() == RemovalCause.EXPLICIT){
 						wrapped.remove(objectObjectRemovalNotification.getKey());
@@ -44,10 +44,10 @@ public class CachedKV<K, V> implements IKVStorage<K, V>{
 		};
 	}
 
-	protected CacheLoader<K, V> getDataLoader(){
-		return new CacheLoader<K, V>() {
+	protected CacheLoader<String, V> getDataLoader(){
+		return new CacheLoader<String, V>() {
 			@Override
-			public V load(K k) throws Exception {
+			public V load(String k) throws Exception {
 				V value = wrapped.get(k);
 				if (value != null) return wrapped.get(k);
 				throw new NotInCachedException();
@@ -56,12 +56,12 @@ public class CachedKV<K, V> implements IKVStorage<K, V>{
 	}
 
 	@Override
-	public void put(K key, V value) {
+	public void put(String key, V value) {
 		cache.put(key, value);
 	}
 
 	@Override
-	public V get(K key) throws ExecutionException {
+	public V get(String key) throws ExecutionException {
 		try{
 			return cache.get(key);
 		} catch (ExecutionException ex){
@@ -74,18 +74,18 @@ public class CachedKV<K, V> implements IKVStorage<K, V>{
 	}
 
 	@Override
-	public void remove(K key) {
+	public void remove(String key) {
 		cache.invalidate(key);
 	}
 
 	@Override
-	public boolean contains(K key) throws ExecutionException {
+	public boolean contains(String key) throws ExecutionException {
 		return get(key) != null;
 	}
 
 	@Override
 	public void shutdown() throws Exception {
-		for (Map.Entry<K, V> entry: cache.asMap().entrySet()){
+		for (Map.Entry<String, V> entry: cache.asMap().entrySet()){
 			wrapped.put(entry.getKey(), entry.getValue());
 		}
 		cache.invalidateAll();
