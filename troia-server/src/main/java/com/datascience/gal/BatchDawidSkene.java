@@ -14,6 +14,7 @@ import java.util.Map;
 import com.datascience.core.base.*;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerResult;
+import com.datascience.core.stats.CategoryPriorCalculators;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
 import com.datascience.core.stats.ErrorRateCalculators;
 import org.apache.log4j.Logger;
@@ -23,7 +24,9 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	private static Logger logger = Logger.getLogger(BatchDawidSkene.class);
 
 	public BatchDawidSkene() {
-		super(new ErrorRateCalculators.BatchErrorRateCalculator());
+		super(
+			new ErrorRateCalculators.BatchErrorRateCalculator(),
+			new CategoryPriorCalculators.BatchCategoryPriorCalculator());
 	}
 
 	private void updateObjectClassProbabilities() {

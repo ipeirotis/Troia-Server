@@ -36,7 +36,7 @@ public class NominalProject extends Project<String, NominalData, DatumResult, Wo
 
 	public void initializeCategories(Collection<String> categories, Collection<CategoryValue> categoryPriors, CostMatrix<String> costMatrix){
 		data.initialize(categories, categoryPriors, costMatrix);
-		nomAlgorithm.initializeOnCategories(categories);
+		nomAlgorithm.initializeOnCategories();
 		results = createResultsInstance(categories);
 		algorithm.setResults(results);
 	}
