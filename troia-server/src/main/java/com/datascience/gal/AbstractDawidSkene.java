@@ -19,6 +19,7 @@ import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.DatumResult;
+import com.datascience.core.stats.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
@@ -30,8 +31,8 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	protected int iterations = 10;
 	protected double epsilon = 1e-6;
 
-	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator){
-		super(errorRateCalculator);
+	public AbstractDawidSkene(IErrorRateCalculator errorRateCalculator, ICategoryPriorCalculator categoryPriorCalculator){
+		super(errorRateCalculator, categoryPriorCalculator);
 	}
 
 	@Override
@@ -47,19 +48,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	@Override
 	public void setModel(Object o){
 		model = (NominalModel) o;
-	}
-
-	@Override
-	public void initializeOnCategories(Collection<String> categories){
-		if (!data.arePriorsFixed()) {
-			initializePriors();
-		}
-	}
-
-	public void initializePriors() {
-		for (String c : data.getCategories()){
-			model.categoryPriors.put(c, 1. / data.getCategories().size());
-		}
 	}
 
 	public double getErrorRateForWorker(Worker<String> worker, String from, String to){

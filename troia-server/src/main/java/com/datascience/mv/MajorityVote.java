@@ -5,6 +5,7 @@ import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
+import com.datascience.core.stats.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
 import com.datascience.utils.ProbabilityDistributions;
@@ -18,8 +19,8 @@ import java.util.Map;
  */
 public abstract class MajorityVote extends NominalAlgorithm {
 
-	public MajorityVote(IErrorRateCalculator errorRateCalculator){
-		super(errorRateCalculator);
+	public MajorityVote(IErrorRateCalculator errorRateCalculator, ICategoryPriorCalculator categoryPriorCalculator){
+		super(errorRateCalculator, categoryPriorCalculator);
 	}
 
 	public void computeResultsForObject(LObject<String> object){
@@ -76,21 +77,5 @@ public abstract class MajorityVote extends NominalAlgorithm {
 		}
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
 		results.addWorkerResult(worker, wr);
-	}
-
-	public void computeCategoryPriorsIfNeeded(){
-		if (!data.arePriorsFixed()){
-			HashMap<String, Double> categoryPriors = new HashMap<String, Double>();
-			for (String c : data.getCategories())
-				categoryPriors.put(c, 0.);
-			for (AssignedLabel<String> al : data.getAssigns())
-				categoryPriors.put(al.getLabel(), categoryPriors.get(al.getLabel()) + 1);
-			for (String c : data.getCategories())
-				model.categoryPriors.put(c, categoryPriors.get(c) / data.getAssigns().size());
-		}
-	}
-
-	@Override
-	public void initializeOnCategories(Collection<String> categories){
 	}
 }
