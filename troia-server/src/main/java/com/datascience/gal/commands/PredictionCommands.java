@@ -5,6 +5,7 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
+import com.datascience.core.stats.MatrixValue;
 import com.datascience.executor.JobCommand;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
@@ -18,7 +19,7 @@ import java.util.Map.Entry;
  */
 public class PredictionCommands {
 
-	static public class GetWorkersConfusionMatrix extends JobCommand<Collection<WorkerValue<ConfusionMatrix>>, NominalProject> {
+	static public class GetWorkersConfusionMatrix extends JobCommand<Collection<WorkerValue<Collection<MatrixValue<String>>>>, NominalProject> {
 
 		public GetWorkersConfusionMatrix(){
 			super(false);
@@ -26,9 +27,14 @@ public class PredictionCommands {
 
 		@Override
 		protected void realExecute() {
-			Collection<WorkerValue<ConfusionMatrix>> wq = new ArrayList<WorkerValue<ConfusionMatrix>>();
+			Collection<WorkerValue<Collection<MatrixValue<String>>>> wq = new ArrayList<WorkerValue<Collection<MatrixValue<String>>>>();
 			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults().entrySet()){
-				wq.add(new WorkerValue<ConfusionMatrix>(e.getKey().getName(), e.getValue().cm));
+				Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
+				ConfusionMatrix confusionMatrix = e.getValue().getConfusionMatrix();
+				for (String c1 : confusionMatrix.getCategories())
+					for (String c2 : confusionMatrix.getCategories())
+						matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
+				wq.add(new WorkerValue<Collection<MatrixValue<String>>>(e.getKey().getName(), matrix));
 			}
 			setResult(wq);
 		}
