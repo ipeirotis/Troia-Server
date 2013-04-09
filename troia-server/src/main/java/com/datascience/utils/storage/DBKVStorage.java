@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.sql.*;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -16,6 +17,7 @@ public class DBKVStorage<V> implements IKVStorage<V> {
 	protected static int VALIDATION_TIMEOUT = 2;
 
 	private static final String GET = "SELECT value FROM (?) WHERE key = (?);";
+	private static final String GET_PREFIXED = "SELECT value FROM (?) WHERE key LIKE (?)%;";
 	private static final String INSERT = "REPLACE INTO (?) (key, value) VALUES (?, ?);";
 	private static final String DELETE = "DELETE FROM (?) WHERE key = (?);";
 
@@ -151,5 +153,11 @@ public class DBKVStorage<V> implements IKVStorage<V> {
 	@Override
 	public void shutdown() throws SQLException{
 		close();
+	}
+
+	@Override
+	public Collection<V> prefixedWith(String keyPrefix) throws Exception {
+		// TODO FIXME XXX
+		return null;
 	}
 }

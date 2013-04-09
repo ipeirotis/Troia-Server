@@ -1,5 +1,7 @@
 package com.datascience.utils.storage;
 
+import java.util.Collection;
+
 /**
  * @Author: konrad
  */
@@ -40,5 +42,10 @@ public class KVKeyPrefixingWrapper<V> implements IKVStorage<V> {
 	@Override
 	public void shutdown() throws Exception {
 		wrapped.shutdown();
+	}
+
+	@Override
+	public Collection<V> prefixedWith(String keyPrefix) throws Exception {
+		return wrapped.prefixedWith(k(keyPrefix));
 	}
 }
