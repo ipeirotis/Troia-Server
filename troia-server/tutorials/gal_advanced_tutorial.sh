@@ -109,10 +109,13 @@ function main
     testAsyncJobCallResponse "getObjectCategoryProbability" "$jid" "$getObjectCategoryProbabilityExpected"
     testAsyncJobCallResponse "getObjectsCategories"         "$jid" "$getObjectsCategoriesExpected"
     testAsyncJobCallResponse "getWorkersQualities"          "$jid" "$getWorkersQualitiesExpected"
+    testAsyncJobCallResponse "compute"                      "$jid" "$computeExpected"
+    testAsyncJobCallResponse "getObjectCategoryProbability" "$jid" "$getObjectCategoryProbabilityExpected"
     testAsyncJobCallResponse "loadGoldLabels"               "$jid" "$loadGoldLabelsExpected"
-    exit
+    testAsyncJobCallResponse "getWorkersQualities"          "$jid" "$getWorkersQualitiesExpected"
 
-    deleteJob $JobID
+    response=$(deleteJob $jid)
+    assertStatus "$response"
 }
 
 main

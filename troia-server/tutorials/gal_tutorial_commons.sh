@@ -163,7 +163,7 @@ function getWorkersQualities
 function getObjectsCategories
 {
     local jid=$1
-    echo $(curl -s1 -X GET "$URL/jobs/$1/objects/prediction" -d "{labelChoosing: $LABEL_CHOOSING_METHOD")
+    echo $(curl -s1 -X GET "$URL/jobs/$1/objects/prediction" -d "{labelChoosing: $LABEL_CHOOSING_METHOD}")
 }
 
 # Common responses
@@ -182,5 +182,13 @@ loadGoldLabelsExpected='
     "result": "Objects added", 
     "status": "OK", 
     "timestamp": "2013-04-09T01:12:19.175+02:00"
+}'
+
+computeExpected='
+{
+    "executionTime": 0.0, 
+    "result": "Computation done", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T14:09:56.741+02:00"
 }'
 
