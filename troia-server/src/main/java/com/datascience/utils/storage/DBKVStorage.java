@@ -142,6 +142,7 @@ public class DBKVStorage<K, V> implements IKVStorage<K, V> {
 
 	@Override
 	public boolean contains(K key) throws SQLException{
+		logger.debug("DBKV contains");
 		return get(key) != null;
 	}
 
