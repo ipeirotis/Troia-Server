@@ -1,6 +1,5 @@
 package com.datascience.core.base;
 
-import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.Results;
 import com.google.gson.reflect.TypeToken;
 

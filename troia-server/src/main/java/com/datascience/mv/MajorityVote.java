@@ -10,6 +10,7 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -75,6 +76,18 @@ public abstract class MajorityVote extends NominalAlgorithm {
 		}
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
 		results.addWorkerResult(worker, wr);
+	}
+
+	public void computeCategoryPriorsIfNeeded(){
+		if (!data.arePriorsFixed()){
+			HashMap<String, Double> categoryPriors = new HashMap<String, Double>();
+			for (String c : data.getCategories())
+				categoryPriors.put(c, 0.);
+			for (AssignedLabel<String> al : data.getAssigns())
+				categoryPriors.put(al.getLabel(), categoryPriors.get(al.getLabel()) + 1);
+			for (String c : data.getCategories())
+				model.categoryPriors.put(c, categoryPriors.get(c) / data.getAssigns().size());
+		}
 	}
 
 	@Override

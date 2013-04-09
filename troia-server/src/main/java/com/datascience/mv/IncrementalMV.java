@@ -4,6 +4,7 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.stats.ErrorRateCalculators;
 
 /**
  * @Author: konrad
@@ -11,7 +12,7 @@ import com.datascience.core.base.Worker;
 public class IncrementalMV extends MajorityVote implements INewDataObserver {
 
 	public IncrementalMV(){
-		super(null); // TODO FIXME XXX set proper error rate calculator
+		super(new ErrorRateCalculators.BatchErrorRateCalculator());
 	}
 
 	@Override
@@ -24,6 +25,12 @@ public class IncrementalMV extends MajorityVote implements INewDataObserver {
 		for (AssignedLabel<String> al: getData().getAssignsForObject(assign.getLobject())){
 			computeWorkersConfusionMatrix(al.getWorker());
 		}
+	}
+
+	@Override
+	public double prior(String categoryName) {
+		computeCategoryPriorsIfNeeded();
+		return super.prior(categoryName);
 	}
 
 	@Override

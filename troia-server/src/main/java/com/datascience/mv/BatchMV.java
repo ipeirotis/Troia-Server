@@ -2,6 +2,7 @@ package com.datascience.mv;
 
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.stats.ErrorRateCalculators;
 
 /**
  * @Author: konrad
@@ -9,13 +10,14 @@ import com.datascience.core.base.Worker;
 public class BatchMV extends MajorityVote {
 
 	public BatchMV(){
-		super(null); // TODO FIXME XXX set proper error rate calculator
+		super(new ErrorRateCalculators.BatchErrorRateCalculator());
 	}
 
 	@Override
 	public void compute() {
 		computeForObjects();
 		computeForWorkers();
+		computeCategoryPriorsIfNeeded();
 	}
 
 	public void computeForObjects(){
@@ -29,5 +31,4 @@ public class BatchMV extends MajorityVote {
 			computeWorkersConfusionMatrix(worker);
 		}
 	}
-
 }

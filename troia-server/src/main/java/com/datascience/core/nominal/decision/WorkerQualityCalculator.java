@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.Worker;
-import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.utils.ProbabilityDistributions;
 
 /*
  * @author: Artur Ambroziak
@@ -34,10 +32,6 @@ public abstract class WorkerQualityCalculator {
 		return cost;
 	}
 
-	protected String getCostStr(double cost, boolean inverse){
-		 return (Double.isNaN(cost)) ? "---" : Math.round(100 * (inverse ? 1. - cost : cost)) + "%";
-	}
-	
 	private Map<String, Double> getSoftLabelForHardCategoryLabel(NominalProject project, Worker<String> w, String label) {
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 		Map<String, Double> worker_prior = project.getResults().getWorkerResult(w).getPrior(
@@ -48,8 +42,7 @@ public abstract class WorkerQualityCalculator {
 			double soft = 0.;
 			if (worker_prior.get(label) > 0){
 				double error = getError(project, w, source, label);
-				//TODO XXX FIXME
-				soft = ((AbstractDawidSkene)project.getAlgorithm()).prior(source) * error / worker_prior.get(label);
+				soft = project.getAlgorithm().prior(source) * error / worker_prior.get(label);
 			}
 			result.put(source, soft);
 		}

@@ -66,13 +66,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
 	}
 
-	public double prior(String categoryName) {
-		if (data.arePriorsFixed())
-			return data.getCategoryPrior(categoryName);
-		else
-			return model.categoryPriors.get(categoryName);
-	}
-
 	protected double getLogLikelihood() {
 		double result = 0;
 		for (AssignedLabel<String> al : data.getAssigns()){

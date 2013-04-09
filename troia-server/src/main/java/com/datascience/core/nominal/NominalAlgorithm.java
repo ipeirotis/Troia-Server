@@ -31,4 +31,10 @@ public abstract class NominalAlgorithm extends Algorithm<String, NominalData, Da
 		return model;
 	}
 
+	public double prior(String categoryName) {
+		if (data.arePriorsFixed())
+			return data.getCategoryPrior(categoryName);
+		else
+			return model.categoryPriors.get(categoryName);
+	}
 }
