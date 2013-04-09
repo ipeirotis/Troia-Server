@@ -2,10 +2,9 @@ package com.datascience.core.nominal;
 
 import com.datascience.core.base.Algorithm;
 import com.datascience.core.results.WorkerResult;
+import com.datascience.core.stats.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
-
-import java.util.Collection;
 
 /**
  * @Author: konrad
@@ -13,10 +12,12 @@ import java.util.Collection;
 public abstract class NominalAlgorithm extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
 
 	protected IErrorRateCalculator errorRateCalculator;
+	protected ICategoryPriorCalculator priorCalculator;
 	protected NominalModel model;
 
-	public NominalAlgorithm(IErrorRateCalculator errorRateCalculator){
+	public NominalAlgorithm(IErrorRateCalculator errorRateCalculator, ICategoryPriorCalculator priorCalculator){
 		this.errorRateCalculator = errorRateCalculator;
+		this.priorCalculator = priorCalculator;
 		model = new NominalModel();
 	}
 
@@ -24,17 +25,18 @@ public abstract class NominalAlgorithm extends Algorithm<String, NominalData, Da
 		return errorRateCalculator;
 	}
 
-	public abstract void initializeOnCategories(Collection<String> categories);
+	public void initializeOnCategories(){
+		if (!data.arePriorsFixed()) {
+			priorCalculator.initializeModelPriors(data, getModel());
+		}
+	}
+
+	public double prior(String categoryName) {
+		return priorCalculator.getPrior(data, getModel(), categoryName);
+	}
 
 	@Override
 	public NominalModel getModel(){
 		return model;
-	}
-
-	public double prior(String categoryName) {
-		if (data.arePriorsFixed())
-			return data.getCategoryPrior(categoryName);
-		else
-			return model.categoryPriors.get(categoryName);
 	}
 }
