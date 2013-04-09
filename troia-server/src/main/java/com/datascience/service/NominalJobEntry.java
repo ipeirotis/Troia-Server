@@ -73,6 +73,12 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	public Response getEvaluatedDataQuality(@DefaultValue("MaxLikelihood") @QueryParam("labelChoosing") String lda){
 		return buildResponseOnCommand(new EvaluationCommands.GetDataQuality(new DataEvaluator(lda)));
 	}
+
+	@Path("objects/quality/summary/")
+	@GET
+	public Response getSummaryDataQuality(){
+		return buildResponseOnCommand(new PredictionCommands.GetDataQualitySummary());
+	}
 	
 	@Path("workers/quality/evaluated/")
 	@GET
@@ -86,6 +92,12 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	public Response getWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
+	}
+
+	@Path("workers/quality/summary/")
+	@GET
+	public Response getSummaryWorkersQuality(){
+		return buildResponseOnCommand(new PredictionCommands.GetWorkersQualitySummary());
 	}
 
 	@Path("workers/quality/matrix/")
