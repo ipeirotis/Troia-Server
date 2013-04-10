@@ -23,7 +23,7 @@ public class SerializationTransform<T> implements ITransformation<T, String> {
 	}
 
 	@Override
-	public T iverse(String object) {
+	public T inverse(String object) {
 		return serializer.parse(object, expectedType);
 	}
 }

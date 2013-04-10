@@ -6,5 +6,5 @@ package com.datascience.utils;
 public interface ITransformation<A, B> {
 
 	B transform(A object);
-	A iverse(B object);
+	A inverse(B object);
 }

@@ -25,7 +25,7 @@ public class VTransformingKVWrapper<V1, V2> implements IKVStorage<V1> {
 		V2 value = wrapped.get(key);
 		if (value == null)
 			return null;
-		return transformation.iverse(value);
+		return transformation.inverse(value);
 	}
 
 	@Override
