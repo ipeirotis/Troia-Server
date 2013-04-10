@@ -10,7 +10,7 @@ import java.util.Collection;
 /**
  * @Author: konrad
  */
-public abstract class NominalAlgorithm extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
+public abstract class NominalAlgorithm extends Algorithm<String, INominalData, DatumResult, WorkerResult> {
 
 	protected IErrorRateCalculator errorRateCalculator;
 	protected NominalModel model;

@@ -15,7 +15,7 @@ import java.util.Collection;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.nominal.NominalData;
+import com.datascience.core.nominal.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
@@ -70,8 +70,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
 		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
 
-		builder.registerTypeAdapter(NominalData.class, new DataJSON.NominalDeserializer());
-		builder.registerTypeAdapter(NominalData.class, new DataJSON.NominalSerializer());
+		builder.registerTypeAdapter(InMemoryNominalData.class, new DataJSON.NominalDeserializer());
+		builder.registerTypeAdapter(InMemoryNominalData.class, new DataJSON.NominalSerializer());
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Serializer());
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());

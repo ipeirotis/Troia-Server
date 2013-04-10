@@ -6,7 +6,7 @@ import java.util.Set;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.nominal.NominalData;
+import com.datascience.core.nominal.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
@@ -40,12 +40,12 @@ public class DataJSON {
 		}
 	}
 
-	public static class NominalDeserializer implements JsonDeserializer<NominalData> {
+	public static class NominalDeserializer implements JsonDeserializer<InMemoryNominalData> {
 
 		@Override
-		public NominalData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+		public InMemoryNominalData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
 			Deserializer<String> deserializer = new Deserializer<String>();
-			NominalData ret = (NominalData) deserializer.deserialize(element, type, context);
+			InMemoryNominalData ret = (InMemoryNominalData) deserializer.deserialize(element, type, context);
 			ret.setPriorFixed(element.getAsJsonObject().get("fixedPriors").getAsBoolean());
 			ret.setCategories((Set<String>) context.deserialize(element.getAsJsonObject().get("categories"), JSONUtils.stringSetType));
 			ret.setCategoryPriors((Collection<CategoryValue>) context.deserialize(element.getAsJsonObject().get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
@@ -65,9 +65,9 @@ public class DataJSON {
 		}
 	}
 
-	public static class NominalSerializer implements JsonSerializer<NominalData>{
+	public static class NominalSerializer implements JsonSerializer<InMemoryNominalData>{
 		@Override
-		public JsonElement serialize(NominalData data, Type type, JsonSerializationContext jsonSerializationContext) {
+		public JsonElement serialize(InMemoryNominalData data, Type type, JsonSerializationContext jsonSerializationContext) {
 			Serializer<String> serializer = new Serializer<String>();
 			JsonObject ret = serializer.serialize(data, type, jsonSerializationContext).getAsJsonObject();
 			ret.addProperty("fixedPriors", data.arePriorsFixed());

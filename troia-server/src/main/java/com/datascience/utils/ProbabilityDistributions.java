@@ -6,8 +6,8 @@ import java.util.Map;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.DecisionEngine;
 
@@ -60,11 +60,11 @@ public class ProbabilityDistributions {
 		return ret;
 	}
 
-	static public Map<String, Double> getSpammerDistribution(NominalData data, NominalAlgorithm alg){
+	static public Map<String, Double> getSpammerDistribution(INominalData data, NominalAlgorithm alg){
 		return getPriorBasedDistribution(data, alg);
 	}
 
-	static public Map<String, Double> getPriorBasedDistribution(NominalData data, NominalAlgorithm alg){
+	static public Map<String, Double> getPriorBasedDistribution(INominalData data, NominalAlgorithm alg){
 		if (data.arePriorsFixed())
 			return data.getCategoryPriors();
 		else

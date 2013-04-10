@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * User: artur
  */
-public class NominalData extends InMemoryData<String> implements INominalData{
+public class InMemoryNominalData extends InMemoryData<String> implements INominalData{
 
 	protected Collection<String> categories;
 	protected boolean fixedPriors;

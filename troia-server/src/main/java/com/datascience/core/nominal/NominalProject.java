@@ -8,19 +8,18 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.utils.CostMatrix;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * User: artur
  */
-public class NominalProject extends Project<String, NominalData, DatumResult, WorkerResult> {
+public class NominalProject extends Project<String, INominalData, DatumResult, WorkerResult> {
 
 	protected NominalAlgorithm nomAlgorithm;
 
 	public NominalProject(Algorithm algorithm1){
 		super(algorithm1);
 		nomAlgorithm = (NominalAlgorithm) algorithm1; // just to skip casting over and over
-		data = new NominalData();
+		data = new InMemoryNominalData(); // TODO XXX FIXME we need to pass this as parameter
 		algorithm.setData(data);
 	}
 

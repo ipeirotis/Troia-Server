@@ -1,7 +1,7 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
-import com.datascience.core.nominal.NominalData;
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.Results;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.NominalProject;
@@ -56,7 +56,7 @@ public class MVTest {
 	}
 
 
-	protected void fillNominalData(NominalData data){
+	protected void fillNominalData(INominalData data){
 		for (LObject<String> gold: goldObjects){
 			data.addObject(gold);
 		}
@@ -91,7 +91,7 @@ public class MVTest {
 		BatchMV mv = new BatchMV();
 		NominalProject np = new NominalProject(mv);
 		np.initializeCategories(categories, null, null);
-		NominalData nd = np.getData();
+		INominalData nd = np.getData();
 		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
@@ -105,7 +105,7 @@ public class MVTest {
 		IncrementalMV mv = new IncrementalMV();
 		NominalProject np = new NominalProject(mv);
 		np.initializeCategories(categories, null, null);
-		NominalData nd = np.getData();
+		INominalData nd = np.getData();
 		Results<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);

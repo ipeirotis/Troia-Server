@@ -3,7 +3,7 @@ package com.datascience.scheduler;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.NominalData;
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
@@ -45,7 +45,7 @@ public class CostBasedPriorityCalculatorTest {
 		IPriorityCalculator<String> pc = new CostBasedPriorityCalculator(lpdcc);
 		Scheduler<String> scheduler = new Scheduler<String>(project, pc);
 		Worker<String> worker = new Worker<String>("Worker1");
-		NominalData data = project.getData();
+		INominalData data = project.getData();
 		LObject<String> object1 = data.getOrCreateObject("object1");
 		LObject<String> object2 = data.getOrCreateObject("object2");
 		int w = 0;
