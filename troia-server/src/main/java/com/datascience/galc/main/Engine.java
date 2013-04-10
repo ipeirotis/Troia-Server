@@ -245,7 +245,9 @@ public class Engine {
 		data = edata;
 
 		ContinuousIpeirotis ip = new ContinuousIpeirotis();
-		ip.estimate(1e-5, 20);
+		ip.setIterations(20);
+		ip.setEpsilon(1e-5);
+		ip.compute();
 
 		ReportGenerator rpt = new ReportGenerator(ip, ctx);
 

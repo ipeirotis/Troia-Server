@@ -42,7 +42,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 		return sum / assigns.size();
 	}
 
-	public double estimate(double epsilon, int max_iters) {
+	private double estimate(double epsilon, int max_iters) {
 		logger.info("GALC estimate START");
 
 		double pastLogLikelihood = Double.POSITIVE_INFINITY;
