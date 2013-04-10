@@ -1,17 +1,18 @@
 package com.datascience.utils.storage;
 
+import com.google.common.base.Throwables;
 import org.apache.log4j.Logger;
 
 /**
  * @Author: konrad
  */
-public class SafeKVStorage<V> {
+public class DefaultSafeKVStorage<V> implements ISafeKVStorage<V>{
 
 	protected Logger logger;
 	protected IKVStorage<V> wrapped;
 	protected String prefix;
 
-	public SafeKVStorage(IKVStorage<V> wrapped, Logger logger, String prefix){
+	public DefaultSafeKVStorage(IKVStorage<V> wrapped, Logger logger, String prefix){
 		this.wrapped = wrapped;
 		this.logger = logger;
 		this.prefix = prefix + " ";
@@ -19,8 +20,10 @@ public class SafeKVStorage<V> {
 
 	protected void log(String cmd, Exception ex){
 		logger.error(prefix + cmd, ex);
+		Throwables.propagate(ex);
 	}
 
+	@Override
 	public void put(String key, V value){
 		try {
 			wrapped.put(key, value);
@@ -29,6 +32,7 @@ public class SafeKVStorage<V> {
 		}
 	}
 
+	@Override
 	public V get(String key){
 		try {
 			return wrapped.get(key);
@@ -38,6 +42,7 @@ public class SafeKVStorage<V> {
 		}
 	}
 
+	@Override
 	public void remove(String key){
 		try {
 			wrapped.remove(key);
@@ -46,6 +51,7 @@ public class SafeKVStorage<V> {
 		}
 	}
 
+	@Override
 	public boolean contains(String key){
 		try {
 			return wrapped.contains(key);
@@ -55,6 +61,7 @@ public class SafeKVStorage<V> {
 		}
 	}
 
+	@Override
 	public void shutdown(){
 		try {
 			wrapped.shutdown();

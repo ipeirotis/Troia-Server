@@ -4,7 +4,7 @@ import com.datascience.core.base.AbstractData;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.utils.storage.SafeKVStorage;
+import com.datascience.utils.storage.ISafeKVStorage;
 
 import java.util.Collection;
 
@@ -13,13 +13,13 @@ import java.util.Collection;
  */
 public class KVData<T> extends AbstractData<T> {
 
-	protected SafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns;
-	protected SafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns;
+	protected ISafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns;
+	protected ISafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns;
 
-	protected SafeKVStorage<Collection<LObject<T>>> objects;// SINGLE ROW!
-	protected SafeKVStorage<Collection<LObject<T>>> goldObjects;// SINGLE ROW
-	protected SafeKVStorage<Collection<LObject<T>>> evaluationObjects;// SINGLE ROW
-	protected SafeKVStorage<Collection<Worker<T>>> workers; //SINGLE ROW!
+	protected ISafeKVStorage<Collection<LObject<T>>> objects;// SINGLE ROW!
+	protected ISafeKVStorage<Collection<LObject<T>>> goldObjects;// SINGLE ROW
+	protected ISafeKVStorage<Collection<LObject<T>>> evaluationObjects;// SINGLE ROW
+	protected ISafeKVStorage<Collection<Worker<T>>> workers; //SINGLE ROW!
 
 
 	@Override
