@@ -2,7 +2,7 @@ package com.datascience.core;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
+import com.datascience.core.base.InMemoryData;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.NominalAlgorithm;
@@ -164,7 +164,7 @@ public class JobFactory {
 											 String jsonResults, String model, String id){
 		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
 		Job<T> job = JOB_FACTORY.get(type).create(jo, id);
-		job.getProject().setData(serializer.<Data>parse(jsonData, Data.class));
+		job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
 		job.getProject().setResults(serializer.<Results>parse(jsonResults, Results.class));
 		handleSchedulerLoading(jo, job.getProject());
 		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));

@@ -1,6 +1,6 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 
@@ -15,6 +15,6 @@ public interface IPriorityCalculator<T> {
 
 	public String getId();
 
-	<U extends Data<T>, V, W> ISchedulerNotificator<T>
+	<U extends IData<T>, V, W> ISchedulerNotificator<T>
 			getSchedulerNotificator(Project<T, U, V, W> project);
 }

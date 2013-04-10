@@ -1,6 +1,6 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.NominalProject;
@@ -47,7 +47,7 @@ public class CostBasedPriorityCalculator implements IPriorityCalculator<String> 
 	}
 
 	@Override
-	public <U extends Data<String>, V, W> ISchedulerNotificator<String> getSchedulerNotificator(Project<String, U, V, W> project) {
+	public <U extends IData<String>, V, W> ISchedulerNotificator<String> getSchedulerNotificator(Project<String, U, V, W> project) {
 		return new SchedulerNewResultsNotificator<String, U, V>();
 	}
 

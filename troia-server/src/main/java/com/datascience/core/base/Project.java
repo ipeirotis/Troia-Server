@@ -15,7 +15,7 @@ import java.util.Map;
  * V - datum results class
  * W - worker results class
  */
-public abstract class Project<T, U extends Data<T>, V, W> {
+public abstract class Project<T, U extends IData<T>, V, W> {
 
 	protected Algorithm<T, U, V, W> algorithm;
 	protected U data;

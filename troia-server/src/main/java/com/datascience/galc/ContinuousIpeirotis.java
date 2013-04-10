@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import java.util.*;
 
-public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, DatumContResults, WorkerContResults> {
+public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, DatumContResults, WorkerContResults> {
 
 	private static Logger logger = Logger.getLogger(ContinuousIpeirotis.class);
 
@@ -29,7 +29,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, Data<ContValue>, D
 	}
 
 	public Double getAverageLabel(LObject<ContValue> object) {
-		Set<AssignedLabel<ContValue>> assigns = data.getAssignsForObject(object);
+		Collection<AssignedLabel<ContValue>> assigns = data.getAssignsForObject(object);
 		return getAverageLabel(assigns);
 	}
 

@@ -7,14 +7,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * @Author: konrad
  */
-public class DataTest {
+public class InMemoryDataTest {
 
 	/**
 	 * Testing whether Data properly overrides assigns
 	 */
 	@Test
 	public void testAddAssigns(){
-		Data<String> data = new Data<String>();
+		InMemoryData<String> data = new InMemoryData<String>();
 		Worker<String> w1 = data.getOrCreateWorker("Worker1");
 		LObject<String> object = data.getOrCreateObject("Object1");
 		String label1 = "label1";
@@ -35,7 +35,7 @@ public class DataTest {
 	 */
 	@Test
 	public void testAddGold(){
-		Data<String> data = new Data<String>();
+		InMemoryData<String> data = new InMemoryData<String>();
 		LObject<String> object1 = data.getOrCreateObject("Object1");
 		LObject<String> object2 = data.getOrCreateObject("Object1");
 		String label = "goooooldLabel";
@@ -51,7 +51,7 @@ public class DataTest {
 	 */
 	@Test
 	public void testAddEvaluation(){
-		Data<String> data = new Data<String>();
+		InMemoryData<String> data = new InMemoryData<String>();
 		LObject<String> object1 = data.getOrCreateObject("Object1");
 		LObject<String> object2 = data.getOrCreateObject("Object1");
 		String label = "goooooldLabel";

@@ -1,6 +1,6 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
@@ -107,7 +107,7 @@ public class SchedulersForWorker {
 
 		@Override
 		public LObject<T> nextObjectForWorker(Iterator<LObject<T>> objects_it, Worker<T> worker) {
-			Data<T> data = project.getData();
+			IData<T> data = project.getData();
 			while (objects_it.hasNext()) {
 				LObject<T> object = objects_it.next();
 				if (data.hasAssign(object, worker)) {

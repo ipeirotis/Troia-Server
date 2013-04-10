@@ -1,7 +1,7 @@
 package com.datascience.core.nominal;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Data;
+import com.datascience.core.base.InMemoryData;
 import com.datascience.core.base.LObject;
 import com.datascience.utils.CostMatrix;
 import com.google.common.math.DoubleMath;
@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * User: artur
  */
-public class NominalData extends Data<String> implements INominalData{
+public class NominalData extends InMemoryData<String> implements INominalData{
 
 	protected Collection<String> categories;
 	protected boolean fixedPriors;

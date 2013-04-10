@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SchedulerTest {
 
-	private void addAssign(Data<ContValue> data, String worker, String object) {
+	private void addAssign(InMemoryData<ContValue> data, String worker, String object) {
 		data.addAssign(
 				new AssignedLabel<ContValue>(
 						new Worker<ContValue>(worker),
@@ -23,7 +23,7 @@ public class SchedulerTest {
 	}
 
 	private ContinuousProject populate(int objectsCount) {
-		Data<ContValue> data = new Data<ContValue>();
+		InMemoryData<ContValue> data = new InMemoryData<ContValue>();
 		data.addObject(new LObject<ContValue>("object0"));
 		for (int i = 0; i < objectsCount; i++) {
 			for (int j = 0; j < i; j++) {
@@ -39,7 +39,7 @@ public class SchedulerTest {
 	public void schedulerTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		Data<ContValue> data = cp.getData();
+		InMemoryData<ContValue> data = cp.getData();
 		Scheduler<ContValue> scheduler = new Scheduler(cp, new DummyPriorityCalculator(data));
 		scheduler.update();
 		for (int i = 0; i < objectsCount; i++) {
@@ -51,7 +51,7 @@ public class SchedulerTest {
 	public void schedulerTestOnSmallUpdates() {
 		final int objectsCount = 5;
 		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis());
-		Data<ContValue> data = new Data<ContValue>();
+		InMemoryData<ContValue> data = new InMemoryData<ContValue>();
 		cp.setData(data);
 		Scheduler<ContValue> scheduler =
 				new CachedScheduler<ContValue>(cp, new DummyPriorityCalculator(data), 10, TimeUnit.DAYS);
@@ -79,7 +79,7 @@ public class SchedulerTest {
 	public void cachedSchedulerOrderTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		Data<ContValue> data = cp.getData();
+		InMemoryData<ContValue> data = cp.getData();
 		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
@@ -94,7 +94,7 @@ public class SchedulerTest {
 	public void cachedSchedulerExpirationTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		Data<ContValue> data = cp.getData();
+		InMemoryData<ContValue> data = cp.getData();
 		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
@@ -113,7 +113,7 @@ public class SchedulerTest {
 	public void cachedSchedulerUpdateTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		Data<ContValue> data = cp.getData();
+		InMemoryData<ContValue> data = cp.getData();
 		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
@@ -134,7 +134,7 @@ public class SchedulerTest {
 
 	public static class DummyPriorityCalculator<T> extends AssignCountPriorityCalculator<T> {
 
-		public DummyPriorityCalculator(Data<T> data) {
+		public DummyPriorityCalculator(InMemoryData<T> data) {
 			this.data = data;
 		}
 	}

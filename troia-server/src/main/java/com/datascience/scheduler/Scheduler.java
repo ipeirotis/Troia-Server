@@ -1,6 +1,6 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
@@ -10,7 +10,7 @@ import java.util.Comparator;
 public class Scheduler<T> implements IScheduler<T> {
 
 	protected IIterablePriorityQueue<LObject<T>> queue;
-	protected Data<T> data;
+	protected IData<T> data;
 	protected IPriorityCalculator<T> calculator;
 	protected ISchedulerForWorker<T> workerScheduler;
 
@@ -82,7 +82,7 @@ public class Scheduler<T> implements IScheduler<T> {
 	}
 
 	@Override
-	public Data<T> getData(){
+	public IData<T> getData(){
 		return data;
 	}
 

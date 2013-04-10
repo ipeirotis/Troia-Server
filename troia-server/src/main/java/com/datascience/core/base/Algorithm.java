@@ -1,6 +1,5 @@
 package com.datascience.core.base;
 
-import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.Results;
 import com.google.gson.reflect.TypeToken;
 
@@ -9,7 +8,7 @@ import java.lang.reflect.Type;
 /**
  * User: artur
  */
-public abstract class Algorithm<T, U extends Data<T>, V, W> {
+public abstract class Algorithm<T, U extends IData<T>, V, W> {
 
 	protected U data;
 	protected Results<T, V, W> results;

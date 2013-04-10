@@ -24,7 +24,7 @@ public class AssignsCommands {
 		
 		@Override
 		protected void realExecute() {
-			Data data = project.getData();
+			IData data = project.getData();
 			for (ShallowAssign al : assigns){
 				Worker worker = data.getOrCreateWorker(al.worker);
 				LObject object = data.getOrCreateObject(al.object);

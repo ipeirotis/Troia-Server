@@ -9,7 +9,7 @@ import java.util.*;
  * Also it is factory for new objects and workers
  * @Author: konrad
  */
-public class Data<T> extends AbstractData<T>{
+public class InMemoryData<T> extends AbstractData<T>{
 
 	protected Set<AssignedLabel<T>> assigns;
 	protected Set<Worker<T>> workers;
@@ -21,7 +21,7 @@ public class Data<T> extends AbstractData<T>{
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
 	protected Map<Worker<T>, Set<AssignedLabel<T>>> workersAssigns;
 
-	public Data(){
+	public InMemoryData(){
 		assigns = new HashSet<AssignedLabel<T>>();
 		workers = new HashSet<Worker<T>>();
 		objects = new HashSet<LObject<T>>();

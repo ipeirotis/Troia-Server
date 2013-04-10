@@ -2,7 +2,6 @@ package com.datascience.serialization.json;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
@@ -12,18 +11,17 @@ import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * @Author: konrad
  */
 public class DataJSON {
 
-	public static class Deserializer<T> implements JsonDeserializer<Data<T>> {
+	public static class Deserializer<T> implements JsonDeserializer<InMemoryData<T>> {
 
 		@Override
-		public Data<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-			Data<T> data = new Data<T>();
+		public InMemoryData<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+			InMemoryData<T> data = new InMemoryData<T>();
 			JsonObject jo = jsonElement.getAsJsonObject();
 			for (JsonElement je: jo.get("objects").getAsJsonArray()){
 				LObject<T> object = jsonDeserializationContext.deserialize(je, LObject.class);
@@ -50,16 +48,16 @@ public class DataJSON {
 			NominalData ret = (NominalData) deserializer.deserialize(element, type, context);
 			ret.setPriorFixed(element.getAsJsonObject().get("fixedPriors").getAsBoolean());
 			ret.setCategories((Set<String>) context.deserialize(element.getAsJsonObject().get("categories"), JSONUtils.stringSetType));
-			ret.setCategoryPriors((Collection<CategoryValue>)context.deserialize(element.getAsJsonObject().get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
-			ret.setCostMatrix((CostMatrix<String>)context.deserialize(element.getAsJsonObject().get("costMatrix"), CostMatrix.class));
+			ret.setCategoryPriors((Collection<CategoryValue>) context.deserialize(element.getAsJsonObject().get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
+			ret.setCostMatrix((CostMatrix<String>) context.deserialize(element.getAsJsonObject().get("costMatrix"), CostMatrix.class));
 			return ret;
 		}
 	}
 
-	public static class Serializer<T> implements JsonSerializer<Data<T>> {
+	public static class Serializer<T> implements JsonSerializer<InMemoryData<T>> {
 
 		@Override
-		public JsonElement serialize(Data<T> data, Type type, JsonSerializationContext jsonSerializationContext) {
+		public JsonElement serialize(InMemoryData<T> data, Type type, JsonSerializationContext jsonSerializationContext) {
 			JsonObject je = new JsonObject();
 			je.add("objects", jsonSerializationContext.serialize(data.getObjects()));
 			je.add("assigns", jsonSerializationContext.serialize(data.getAssigns()));

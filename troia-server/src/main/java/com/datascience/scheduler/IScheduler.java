@@ -1,6 +1,6 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
@@ -19,7 +19,7 @@ public interface IScheduler<T> {
 	void setUpQueue(IPriorityCalculator<T> calculator);
 	void setSchedulerForWorker(ISchedulerForWorker<T> schedulerForWorker);
 	<V, W> void registerOnProject(Project<T, ?, V, W> project);
-	Data<T> getData();
+	IData<T> getData();
 	IPriorityCalculator<T> getCalculator();
 
 	String getId();

@@ -1,13 +1,13 @@
 package com.datascience.galc.dataGenerator;
 
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
+import com.datascience.core.base.InMemoryData;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SyntheticData extends Data<ContValue> {
+public class SyntheticData extends InMemoryData<ContValue> {
 	
 	private Set<WorkerContResults> workerContResults = new HashSet<WorkerContResults>();
 	private Set<DatumContResults> objectContResults = new HashSet<DatumContResults>();
