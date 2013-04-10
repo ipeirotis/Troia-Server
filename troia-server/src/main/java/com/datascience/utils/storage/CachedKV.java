@@ -3,7 +3,6 @@ package com.datascience.utils.storage;
 import com.google.common.cache.*;
 import org.apache.log4j.Logger;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -90,12 +89,6 @@ public class CachedKV<V> implements IKVStorage<V>{
 			wrapped.put(entry.getKey(), entry.getValue());
 		}
 		cache.invalidateAll();
-	}
-
-	@Override
-	public Collection<V> prefixedWith(String keyPrefix) throws Exception {
-		// I don't think we can use cache here ...
-		return wrapped.prefixedWith(keyPrefix);
 	}
 
 	protected static class NotInCachedException extends Exception{}
