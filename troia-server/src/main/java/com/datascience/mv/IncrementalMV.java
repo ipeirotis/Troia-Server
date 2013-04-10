@@ -50,8 +50,10 @@ public class IncrementalMV extends MajorityVote implements INewDataObserver {
 		for (AssignedLabel<String> al: getData().getAssignsForObject(assign.getLobject())){
 			computeWorkersConfusionMatrix(al.getWorker());
 		}
-		model.priorDenominator++;
-		model.categoryPriors.put(assign.getLabel(), model.categoryPriors.get(assign.getLabel()) + 1);
+		if (!data.arePriorsFixed()){
+			model.priorDenominator++;
+			model.categoryPriors.put(assign.getLabel(), model.categoryPriors.get(assign.getLabel()) + 1);
+		}
 	}
 
 	@Override
