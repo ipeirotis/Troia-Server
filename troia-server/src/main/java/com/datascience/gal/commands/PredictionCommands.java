@@ -143,7 +143,7 @@ public class PredictionCommands {
 		protected void realExecute() throws Exception {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
-				ILabelProbabilityDistributionCostCalculator lpdcc = null;
+				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
 				DecisionEngine de = new DecisionEngine(lpdcc, null);
 				ret.put(s, Quality.getAverage(project, de.estimateMissclassificationCosts(project)));
 			}
