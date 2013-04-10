@@ -9,7 +9,7 @@ import java.util.*;
  * Also it is factory for new objects and workers
  * @Author: konrad
  */
-public class Data <T>{
+public class Data<T> extends AbstractData<T>{
 
 	protected Set<AssignedLabel<T>> assigns;
 	protected Set<Worker<T>> workers;
@@ -20,8 +20,6 @@ public class Data <T>{
 	protected Set<LObject<T>> evaluationObjects;
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
 	protected Map<Worker<T>, Set<AssignedLabel<T>>> workersAssigns;
-
-	protected transient List<INewDataObserver<T>> newDataObservers;
 
 	public Data(){
 		assigns = new HashSet<AssignedLabel<T>>();
@@ -36,6 +34,7 @@ public class Data <T>{
 		newDataObservers = new LinkedList<INewDataObserver<T>>();
 	}
 
+	@Override
 	public void addWorker(Worker<T> worker){
 		if (!workers.contains(worker)){
 			workers.add(worker);
@@ -45,10 +44,12 @@ public class Data <T>{
 		}
 	}
 
+	@Override
 	public Worker<T> getWorker(String workerId){
 		return mapWorkers.get(workerId);
 	}
 
+	@Override
 	public Worker<T> getOrCreateWorker(String workerId){
 		Worker<T> worker = getWorker(workerId);
 		if (worker == null) {
@@ -57,10 +58,12 @@ public class Data <T>{
 		return worker;
 	}
 
+	@Override
 	public Set<Worker<T>> getWorkers() {
 		return workers;
 	}
 
+	@Override
 	public void addObject(LObject<T> object){
 		if (objects.contains(object)) {
 			LObject oldObject = getObject(object.getName());
@@ -88,10 +91,12 @@ public class Data <T>{
 		}
 	}
 
+	@Override
 	public LObject<T> getObject(String objectId){
 		return mapObjects.get(objectId);
 	}
 
+	@Override
 	public LObject<T> getOrCreateObject(String objectId){
 		LObject<T> object = getObject(objectId);
 		if (object == null) {
@@ -101,6 +106,7 @@ public class Data <T>{
 		return object;
 	}
 
+	@Override
 	public Set<LObject<T>> getObjects(){
 		return objects;
 	}
@@ -110,6 +116,7 @@ public class Data <T>{
 		notifyNewGoldObject(object);
 	}
 
+	@Override
 	public LObject<T> getGoldObject(String objectId){
 		LObject<T> object = mapObjects.get(objectId);
 		if (object == null || !object.isGold()){
@@ -118,10 +125,12 @@ public class Data <T>{
 		return object;
 	}
 
+	@Override
 	public Set<LObject<T>> getGoldObjects(){
 		return goldObjects;
 	}
 
+	@Override
 	public void markObjectAsGold(LObject<T> object, T label){
 		if (!objects.contains(object)) {
 			throw new IllegalArgumentException("Object %s is not in this Data".format(object.getName()));
@@ -133,10 +142,12 @@ public class Data <T>{
 		evaluationObjects.add(object);
 	}
 
+	@Override
 	public Set<LObject<T>> getEvaluationObjects(){
 		return evaluationObjects;
 	}
 
+	@Override
 	public LObject<T> getEvaluationObject(String objectId){
 		LObject<T> object = mapObjects.get(objectId);
 		if (object == null || !object.isEvaluation()){
@@ -145,10 +156,12 @@ public class Data <T>{
 		return object;
 	}
 
+	@Override
 	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker){
 		return workersAssigns.get(worker);
 	}
 
+	@Override
 	public void addAssign(AssignedLabel<T> assign){
 		forceAddAssign(assign, assigns);
 		LObject<T> object = assign.getLobject();
@@ -163,11 +176,13 @@ public class Data <T>{
 	/**
 	 * This assumes that assigns are compared only on object and worker
 	 */
+	@Override
 	public boolean hasAssign(LObject<T> object, Worker<T> worker){
 		AssignedLabel<T> assign = new AssignedLabel<T>(worker, object, null);
 		return assigns.contains(assign);
 	}
 
+	@Override
 	public Set<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject){
 		Set<AssignedLabel<T>> ret = datums.get(lObject);
 		if (ret != null)
@@ -175,36 +190,9 @@ public class Data <T>{
 		return new HashSet<AssignedLabel<T>>();
 	}
 
+	@Override
 	public Set<AssignedLabel<T>> getAssigns(){
 		return assigns;
-	}
-
-	public void addNewUpdatableAlgorithm(INewDataObserver<T> updatableAlgorithm){
-		newDataObservers.add(updatableAlgorithm);
-	}
-
-	protected void notifyNewAssign(AssignedLabel<T> assign){
-		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
-			updatableAlgorithm.newAssign(assign);
-		}
-	}
-
-	protected void notifyNewGoldObject(LObject<T> object){
-		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
-			updatableAlgorithm.newGoldObject(object);
-		}
-	}
-
-	protected void notifyNewObject(LObject<T> object){
-		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
-			updatableAlgorithm.newObject(object);
-		}
-	}
-
-	protected void notifyNewWorker(Worker<T> worker){
-		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
-			updatableAlgorithm.newWorker(worker);
-		}
 	}
 
 	private void forceAddAssign(AssignedLabel<T> assign, Set<AssignedLabel<T>> assigns) {

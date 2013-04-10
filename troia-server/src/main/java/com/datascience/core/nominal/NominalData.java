@@ -13,37 +13,44 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * User: artur
  */
-public class NominalData extends Data<String> {
+public class NominalData extends Data<String> implements INominalData{
 
-	protected Set<String> categories;
+	protected Collection<String> categories;
 	protected boolean fixedPriors;
 	protected Map<String, Double> categoryPriors;
 	protected CostMatrix<String> costMatrix;
 
-	public Set<String> getCategories(){
+	@Override
+	public Collection<String> getCategories(){
 		return categories;
 	}
 
-	public void setCategories(Set<String> categories){
+	@Override
+	public void setCategories(Collection<String> categories){
 		this.categories = categories;
 	}
 
+	@Override
 	public boolean arePriorsFixed(){
 		return fixedPriors;
 	}
 
+	@Override
 	public void setPriorFixed(boolean fixedPriors){
 		this.fixedPriors = fixedPriors;
 	}
 
+	@Override
 	public double getCategoryPrior(String name){
 		return categoryPriors.get(name);
 	}
 
+	@Override
 	public Map<String, Double> getCategoryPriors(){
 		return categoryPriors;
 	}
 
+	@Override
 	public void setCategoryPriors(Collection<CategoryValue> priors){
 		double priorSum = 0.;
 		Set<String> categoryNames = new HashSet<String>();
@@ -65,14 +72,17 @@ public class NominalData extends Data<String> {
 		}
 	}
 
+	@Override
 	public CostMatrix<String> getCostMatrix(){
 		return costMatrix;
 	}
 
+	@Override
 	public void setCostMatrix(CostMatrix<String> cm){
 		this.costMatrix = cm;
 	}
 
+	@Override
 	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){
 		checkArgument(categories != null, "There is no categories collection");
 		checkArgument(categories.size() >= 2, "There should be at least two categories");
