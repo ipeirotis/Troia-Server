@@ -50,15 +50,6 @@ public class Data<T> extends AbstractData<T>{
 	}
 
 	@Override
-	public Worker<T> getOrCreateWorker(String workerId){
-		Worker<T> worker = getWorker(workerId);
-		if (worker == null) {
-			worker = new Worker<T>(workerId);
-		}
-		return worker;
-	}
-
-	@Override
 	public Set<Worker<T>> getWorkers() {
 		return workers;
 	}
@@ -97,16 +88,6 @@ public class Data<T> extends AbstractData<T>{
 	}
 
 	@Override
-	public LObject<T> getOrCreateObject(String objectId){
-		LObject<T> object = getObject(objectId);
-		if (object == null) {
-			object = new LObject<T>(objectId);
-			//addObject(object);
-		}
-		return object;
-	}
-
-	@Override
 	public Set<LObject<T>> getObjects(){
 		return objects;
 	}
@@ -117,12 +98,8 @@ public class Data<T> extends AbstractData<T>{
 	}
 
 	@Override
-	public LObject<T> getGoldObject(String objectId){
-		LObject<T> object = mapObjects.get(objectId);
-		if (object == null || !object.isGold()){
-			throw new IllegalArgumentException("There is no gold object with id = " + objectId);
-		}
-		return object;
+	protected LObject<T> innerGetGoldObject(String objectId){
+		return mapObjects.get(objectId);
 	}
 
 	@Override
@@ -148,12 +125,8 @@ public class Data<T> extends AbstractData<T>{
 	}
 
 	@Override
-	public LObject<T> getEvaluationObject(String objectId){
-		LObject<T> object = mapObjects.get(objectId);
-		if (object == null || !object.isEvaluation()){
-			throw new IllegalArgumentException("There is no evaluation object with id = " + objectId);
-		}
-		return object;
+	protected LObject<T> innerGetEvaluationObject(String objectId){
+		return mapObjects.get(objectId);
 	}
 
 	@Override
