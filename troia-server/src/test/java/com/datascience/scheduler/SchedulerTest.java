@@ -1,6 +1,7 @@
 package com.datascience.scheduler;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import org.junit.Test;

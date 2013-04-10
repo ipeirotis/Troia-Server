@@ -2,7 +2,7 @@ package com.datascience.core;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.InMemoryData;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.NominalAlgorithm;

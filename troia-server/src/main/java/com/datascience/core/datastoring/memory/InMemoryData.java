@@ -1,6 +1,10 @@
-package com.datascience.core.base;
+package com.datascience.core.datastoring.memory;
 
 import com.datascience.core.algorithms.INewDataObserver;
+import com.datascience.core.base.AbstractData;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 
 import java.util.*;
 
@@ -9,7 +13,7 @@ import java.util.*;
  * Also it is factory for new objects and workers
  * @Author: konrad
  */
-public class InMemoryData<T> extends AbstractData<T>{
+public class InMemoryData<T> extends AbstractData<T> {
 
 	protected Set<AssignedLabel<T>> assigns;
 	protected Set<Worker<T>> workers;

@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.nominal.InMemoryNominalData;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;

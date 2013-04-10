@@ -1,6 +1,7 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

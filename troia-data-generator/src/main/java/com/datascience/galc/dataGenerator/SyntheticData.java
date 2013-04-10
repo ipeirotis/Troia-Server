@@ -1,7 +1,7 @@
 package com.datascience.galc.dataGenerator;
 
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.InMemoryData;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;
 import java.util.HashSet;

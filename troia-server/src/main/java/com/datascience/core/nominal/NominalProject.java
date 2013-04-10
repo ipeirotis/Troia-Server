@@ -1,6 +1,7 @@
 package com.datascience.core.nominal;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.results.Results;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;

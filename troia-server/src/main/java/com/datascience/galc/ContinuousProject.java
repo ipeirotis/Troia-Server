@@ -3,6 +3,7 @@ package com.datascience.galc;
 import java.util.Map;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.Results;
 import com.datascience.core.results.ResultsFactory;

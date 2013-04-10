@@ -1,6 +1,7 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.serialization.json.JSONUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
