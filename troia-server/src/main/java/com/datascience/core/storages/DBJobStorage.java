@@ -12,13 +12,10 @@ import java.util.UUID;
 
 import com.datascience.core.JobFactory;
 import com.datascience.core.base.Project;
-import com.datascience.core.nominal.NominalProject;
 import com.datascience.serialization.ISerializer;
-import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
-import org.apache.log4j.varia.StringMatchFilter;
 
 /**
  * From old class DawidSkeneCache.
