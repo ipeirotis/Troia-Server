@@ -98,7 +98,7 @@ public class Data<T> extends AbstractData<T>{
 	}
 
 	@Override
-	protected LObject<T> innerGetGoldObject(String objectId){
+	protected LObject<T> uncheckedGetGoldObject(String objectId){
 		return mapObjects.get(objectId);
 	}
 
@@ -125,7 +125,7 @@ public class Data<T> extends AbstractData<T>{
 	}
 
 	@Override
-	protected LObject<T> innerGetEvaluationObject(String objectId){
+	protected LObject<T> uncheckedGetEvaluationObject(String objectId){
 		return mapObjects.get(objectId);
 	}
 

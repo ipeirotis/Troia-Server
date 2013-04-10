@@ -35,21 +35,21 @@ public abstract class AbstractData<T> implements IData<T> {
 		return object;
 	}
 
-	abstract protected LObject<T> innerGetGoldObject(String objectId);
+	abstract protected LObject<T> uncheckedGetGoldObject(String objectId);
 
 	@Override
 	public LObject<T> getGoldObject(String objectId){
-		LObject<T> object = innerGetGoldObject(objectId);
+		LObject<T> object = uncheckedGetGoldObject(objectId);
 		checkArgument(object != null && object.isGold(),
 				"There is no gold object with id = " + objectId);
 		return object;
 	}
 
-	abstract protected LObject<T> innerGetEvaluationObject(String objectId);
+	abstract protected LObject<T> uncheckedGetEvaluationObject(String objectId);
 
 	@Override
 	public LObject<T> getEvaluationObject(String objectId){
-		LObject<T> object = innerGetEvaluationObject(objectId);
+		LObject<T> object = uncheckedGetEvaluationObject(objectId);
 		checkArgument(object != null && object.isEvaluation(),
 				"There is no evaluation object with id = " + objectId);
 		return object;
