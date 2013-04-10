@@ -32,12 +32,12 @@ public class ServiceComponentsFactory {
 	
 	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
 			throws IOException, ClassNotFoundException, SQLException {
-		String user = properties.getProperty("DB_USER");
-		String password = properties.getProperty("DB_PASSWORD");
-		String db = properties.getProperty("DB_NAME");
-		String url = properties.getProperty("DB_URL");
-		int cacheSize = Integer.parseInt(properties.getProperty("CACHE_SIZE"));
-		int cacheDumpTime = Integer.parseInt(properties.getProperty("CACHE_DUMP_TIME"));
+		String user = properties.getProperty(Constants.DB_USER);
+		String password = properties.getProperty(Constants.DB_PASSWORD);
+		String db = properties.getProperty(Constants.DB_NAME);
+		String url = properties.getProperty(Constants.DB_URL);
+		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
+		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
 
 		IJobStorage internalJobStorage = new DBJobStorage(user, password, db, url, serializer);
 		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
@@ -52,12 +52,12 @@ public class ServiceComponentsFactory {
 
 	public CachedCommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
 		return new SerializedCachedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
-				Integer.valueOf(properties.getProperty("RESPONSES_CACHE_SIZE")),
-				Integer.valueOf(properties.getProperty("RESPONSES_DUMP_TIME")));
+				Integer.valueOf(properties.getProperty(Constants.RESPONSES_CACHE_SIZE)),
+				Integer.valueOf(properties.getProperty(Constants.RESPONSES_DUMP_TIME)));
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){
-		return new ProjectCommandExecutor(Integer.valueOf(properties.getProperty("EXECUTOR_THREADS_NUM")));
+		return new ProjectCommandExecutor(Integer.valueOf(properties.getProperty(Constants.EXECUTOR_THREADS_NUM)));
 	}
 
 	public ISerializer loadSerializer() {

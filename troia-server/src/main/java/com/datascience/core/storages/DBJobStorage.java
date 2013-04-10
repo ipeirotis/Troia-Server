@@ -51,8 +51,8 @@ public class DBJobStorage implements IJobStorage {
 		if (password != null) {
 			connectionProperties.setProperty("password", password);
 		}
-		databaseUrl = "jdbc:mysql://" + url + "/" + db + "?useUnicode=true&characterEncoding=utf-8";
-		connectDB();
+		databaseUrl = url;//"jdbc:mysql://" + url + "/" + db + "?useUnicode=true&characterEncoding=utf-8";
+		//connectDB();
 		
 		this.serializer = serializer;
 		jobFactory = new JobFactory(serializer);

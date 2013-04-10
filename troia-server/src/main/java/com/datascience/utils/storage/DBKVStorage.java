@@ -10,7 +10,7 @@ import java.util.Properties;
 /**
  * @Author: konrad
  */
-public class DBKVStorage<V> implements IKVStorage<V> {
+public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
 	protected static int VALIDATION_TIMEOUT = 2;
@@ -28,44 +28,10 @@ public class DBKVStorage<V> implements IKVStorage<V> {
 
 	public DBKVStorage(String dbUrl, String table, Properties connectionProperties,
 					   String driverClass, ISerializer serializer, Type valueType) throws ClassNotFoundException {
+		super(dbUrl, driverClass, connectionProperties);
 		this.table = table;
 		this.serializer = serializer;
 		this.valueType = valueType;
-		this.dbUrl = dbUrl;
-		Class.forName(driverClass);
-		this.connectionProperties = connectionProperties;
-	}
-
-	protected void connectDB() throws SQLException {
-		logger.info("Trying to connect with: " + this.dbUrl);
-		connection = DriverManager.getConnection(this.dbUrl,
-				connectionProperties);
-		logger.info("Connected to " + this.dbUrl);
-	}
-
-	protected void ensureConnection() throws SQLException {
-		if (!connection.isValid(VALIDATION_TIMEOUT)) {
-			connectDB();
-		}
-	}
-
-	public void close() throws SQLException {
-		logger.info("closing db connections");
-		connection.close();
-	}
-
-	protected PreparedStatement initStatement(String command) throws SQLException {
-		ensureConnection();
-		return connection.prepareCall(command);
-	}
-
-	protected void cleanup(PreparedStatement sql, ResultSet result) throws SQLException {
-		if (sql != null) {
-			sql.close();
-		}
-		if (result != null) {
-			result.close();
-		}
 	}
 
 	/**

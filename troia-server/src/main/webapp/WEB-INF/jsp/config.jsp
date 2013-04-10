@@ -36,8 +36,15 @@
                 </tr>
 			</tbody>
 		</table>
-		<c:if test="${!it.freezed}"><input type="submit" value="Submit"></c:if>
+		<c:if test="${!it.freezed}">
+		    <input type="submit" value="Submit">
+        </c:if>
 	</form>
+	<c:if test="${!it.freezed}">
+        <form method="post" action="config/resetDB" id="db_form">
+            <input type="submit" value="recreate (drop and create) database"/>
+        </form>
+	</c:if>
 	<div id="error"></div>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="http://malsup.github.com/jquery.form.js"></script>
@@ -46,6 +53,15 @@
             $("#form").ajaxForm({
                 success: function() {
                     alert("Settings successfully changed!");
+                    window.location.replace(location.href);
+                },
+                error: function(res) {
+                    $("#error").text(res.responseText);
+                }
+            });
+            $("#db_form").ajaxForm({
+                success: function() {
+                    alert("Database successfully recreated!");
                     window.location.replace(location.href);
                 },
                 error: function(res) {
