@@ -31,6 +31,7 @@ public class DBHelper extends DBStorage {
 		createDatabase();
 		for (String tableName : new String[] {"ObjectAssigns", "WorkerAssigns", "Objects", "Workers"}){
 			createTable(tableName);
+			createIndex(tableName);
 		}
 		close();
 	}
@@ -38,6 +39,11 @@ public class DBHelper extends DBStorage {
 	protected void createTable(String tableName) throws SQLException{
 		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(100) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		logger.info("Table " + tableName + " successfully created");
+	}
+
+	protected void createIndex(String tableName) throws  SQLException{
+		executeSQL("CREATE INDEX " + tableName + "Index on " + tableName + " (id);");
+		logger.info("Index on table " + tableName + " successfully created");
 	}
 
 	protected void dropDatabase() throws SQLException {
