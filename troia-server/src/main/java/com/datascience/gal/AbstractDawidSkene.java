@@ -139,7 +139,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 		// Let's check first if we have any workers who have labeled this item,
 		// except for the worker that we ignore
-		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
+		Collection<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
 		if (workerToIgnore != null && labels.size() == 1 && labels.iterator().next().getWorker().equals(workerToIgnore)) {
 			return null;

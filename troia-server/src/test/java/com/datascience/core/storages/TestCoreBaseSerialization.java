@@ -17,7 +17,7 @@ public class TestCoreBaseSerialization {
 	@Test
 	public void testContData(){
 		ContDataComparator cdc = new ContDataComparator();
-		InMemoryData<ContValue> data = cdc.getContData();
+		IData<ContValue> data = cdc.getContData();
 
 		JSONUtils ju = new JSONUtils();
 		Gson gson = JSONUtils.getFilledDefaultGsonBuilder().create();

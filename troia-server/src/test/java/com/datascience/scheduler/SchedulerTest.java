@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 public class SchedulerTest {
 
-	private void addAssign(InMemoryData<ContValue> data, String worker, String object) {
+	private void addAssign(IData<ContValue> data, String worker, String object) {
 		data.addAssign(
 				new AssignedLabel<ContValue>(
 						new Worker<ContValue>(worker),
@@ -40,7 +40,7 @@ public class SchedulerTest {
 	public void schedulerTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		InMemoryData<ContValue> data = cp.getData();
+		IData<ContValue> data = cp.getData();
 		Scheduler<ContValue> scheduler = new Scheduler(cp, new DummyPriorityCalculator(data));
 		scheduler.update();
 		for (int i = 0; i < objectsCount; i++) {
@@ -80,7 +80,7 @@ public class SchedulerTest {
 	public void cachedSchedulerOrderTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		InMemoryData<ContValue> data = cp.getData();
+		IData<ContValue> data = cp.getData();
 		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
@@ -95,7 +95,7 @@ public class SchedulerTest {
 	public void cachedSchedulerExpirationTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		InMemoryData<ContValue> data = cp.getData();
+		IData<ContValue> data = cp.getData();
 		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
@@ -114,7 +114,7 @@ public class SchedulerTest {
 	public void cachedSchedulerUpdateTest() {
 		final int objectsCount = 5;
 		ContinuousProject cp = populate(objectsCount);
-		InMemoryData<ContValue> data = cp.getData();
+		IData<ContValue> data = cp.getData();
 		CachedScheduler<ContValue> scheduler = new CachedScheduler(cp, new DummyPriorityCalculator(data), 10,
 				TimeUnit.MINUTES);
 		scheduler.update();
@@ -135,7 +135,7 @@ public class SchedulerTest {
 
 	public static class DummyPriorityCalculator<T> extends AssignCountPriorityCalculator<T> {
 
-		public DummyPriorityCalculator(InMemoryData<T> data) {
+		public DummyPriorityCalculator(IData<T> data) {
 			this.data = data;
 		}
 	}
