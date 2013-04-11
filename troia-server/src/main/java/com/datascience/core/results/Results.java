@@ -23,36 +23,43 @@ public class Results<T, U, V> extends AbstractResults<T, U, V>{
 		workerResults = new HashMap<Worker<T>, V>();
 	}
 
+	@Override
 	public Map<Worker<T>, V> getWorkerResults(){
 		return workerResults;
 	}
 
+	@Override
 	public Map<LObject<T>, U> getDatumResults(){
 		return datumResults;
 	}
 
+	@Override
 	protected U uncheckedGetDatumResults(LObject<T> obj){
 		return datumResults.get(obj);
 	}
 
+	@Override
 	protected V uncheckedGetWorkerResult(Worker<T> worker){
 		return workerResults.get(worker);
 	}
 
+	@Override
 	public boolean hasDatumResult(LObject<T> obj){
 		return datumResults.containsKey(obj);
 	}
 
+	@Override
 	public void addDatumResult(LObject<T> obj, U result){
 		datumResults.put(obj, result);
 		if (notifyEnabled) notifyNewObjectResults(obj, result);
 	}
 
-
+	@Override
 	public boolean hasWorkerResult(Worker<T> worker){
 		return workerResults.containsKey(worker);
 	}
 
+	@Override
 	public void addWorkerResult(Worker<T> worker, V result){
 		workerResults.put(worker, result);
 		if (notifyEnabled) notifyNewWorkerResults(worker, result);
