@@ -42,10 +42,10 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 	}
 
 	public static Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<String> categories){
+		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
+		wrnf.setCategories(categories);
 		Results<String, DatumResult, WorkerResult> res = new Results<String, DatumResult, WorkerResult>(
-				new ResultsFactory.DatumResultFactory(),
-				new ResultsFactory.WorkerResultNominalFactory());
-		((ResultsFactory.WorkerResultNominalFactory)res.getWorkerCreator()).setCategories(categories);
+				new ResultsFactory.DatumResultFactory(), wrnf);
 		return res;
 	}
 }
