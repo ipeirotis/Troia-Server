@@ -5,7 +5,7 @@ import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
 import com.datascience.serialization.ISerializer;
-import com.datascience.utils.storage.DBHelper;
+import com.datascience.utils.DBHelper;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.resource.Singleton;
 

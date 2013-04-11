@@ -1,5 +1,6 @@
-package com.datascience.utils.storage;
+package com.datascience.utils;
 
+import com.datascience.utils.storage.DBStorage;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -12,12 +13,9 @@ import java.util.Properties;
 public class DBHelper extends DBStorage {
 
 	private static Logger logger = Logger.getLogger(DBHelper.class);
-	protected static int VALIDATION_TIMEOUT = 2;
 
-	protected String dbUrl;
 	protected String dbName;
 	protected Connection connection;
-	protected Properties connectionProperties;
 
 	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
 		super(dbUrl, driverClass, connectionProperties);
