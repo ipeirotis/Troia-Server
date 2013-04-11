@@ -2,7 +2,8 @@ package com.datascience.core.nominal;
 
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
-import com.datascience.core.results.Results;
+import com.datascience.core.datastoring.memory.InMemoryResults;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.results.DatumResult;
@@ -41,11 +42,12 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 		algorithm.setResults(results);
 	}
 
-	public static Results<String, DatumResult, WorkerResult> createResultsInstance(Collection<String> categories){
+	public static IResults<String, DatumResult, WorkerResult> createResultsInstance(Collection<String> categories){
 		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
 		wrnf.setCategories(categories);
-		Results<String, DatumResult, WorkerResult> res = new Results<String, DatumResult, WorkerResult>(
+		IResults<String, DatumResult, WorkerResult> res = new InMemoryResults<String, DatumResult, WorkerResult>(
 				new ResultsFactory.DatumResultFactory(), wrnf);
+		// ^^^ TODO FIXME XXX this have to be given
 		return res;
 	}
 }

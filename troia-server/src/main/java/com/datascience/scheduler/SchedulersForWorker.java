@@ -5,7 +5,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.DatumResult;
-import com.datascience.core.results.Results;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class SchedulersForWorker {
 
 		protected int NUMBER_OF_FIRST_OBJECTS_TO_CHECK = 100;
 
-		protected Results<String, DatumResult, WorkerResult> results;
+		protected IResults<String, DatumResult, WorkerResult> results;
 		protected CostBasedPriorityCalculator costCalculator;
 
 		@Override
@@ -84,7 +84,7 @@ public class SchedulersForWorker {
 		}
 
 		public void setInitializationData(CostBasedPriorityCalculator costCalculator,
-										  Results<String, DatumResult, WorkerResult> results){
+										  IResults<String, DatumResult, WorkerResult> results){
 			this.costCalculator = costCalculator;
 			// ^^^ I know this is dirty to use this, but it is easier in use
 			this.results = results;
@@ -97,7 +97,7 @@ public class SchedulersForWorker {
 					"This scheduler for worker works only with cost calculator");
 
 			setInitializationData((CostBasedPriorityCalculator) project.getScheduler().getCalculator(),
-					(Results<String, DatumResult, WorkerResult>) project.getResults());
+					(IResults<String, DatumResult, WorkerResult>) project.getResults());
 		}
 	}
 

@@ -1,7 +1,9 @@
-package com.datascience.core.results;
+package com.datascience.core.datastoring.memory;
 
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.results.AbstractResults;
+import com.datascience.core.results.ResultsFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +14,12 @@ import java.util.Map;
  * U - datum results class
  * V - worker results class
  */
-public class Results<T, U, V> extends AbstractResults<T, U, V>{
+public class InMemoryResults<T, U, V> extends AbstractResults<T, U, V> {
 
 	protected Map<LObject<T>, U> datumResults;
 	protected Map<Worker<T>, V> workerResults;
 
-	public Results(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
+	public InMemoryResults(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
 		super(datumCreator, workerCreator);
 		datumResults = new HashMap<LObject<T>, U>();
 		workerResults = new HashMap<Worker<T>, V>();

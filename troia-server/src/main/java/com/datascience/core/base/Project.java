@@ -1,7 +1,7 @@
 package com.datascience.core.base;
 
 
-import com.datascience.core.results.Results;
+import com.datascience.core.results.IResults;
 import com.datascience.scheduler.IScheduler;
 import com.google.gson.JsonObject;
 
@@ -19,7 +19,7 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 
 	protected Algorithm<T, U, V, W> algorithm;
 	protected U data;
-	protected Results<T, V, W> results;
+	protected IResults<T, V, W> results;
 	protected JsonObject initializationData;
 	protected IScheduler<T> scheduler;
 
@@ -31,7 +31,7 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 		return data;
 	}
 
-	public Results<T, V, W> getResults(){
+	public IResults<T, V, W> getResults(){
 		return results;
 	}
 
@@ -55,7 +55,7 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 		this.data = data;
 	}
 
-	public void setResults(Results<T, V, W> results){
+	public void setResults(IResults<T, V, W> results){
 		this.results = results;
 	}
 

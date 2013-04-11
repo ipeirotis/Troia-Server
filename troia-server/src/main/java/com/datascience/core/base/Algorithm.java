@@ -1,6 +1,6 @@
 package com.datascience.core.base;
 
-import com.datascience.core.results.Results;
+import com.datascience.core.results.IResults;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 public abstract class Algorithm<T, U extends IData<T>, V, W> {
 
 	protected U data;
-	protected Results<T, V, W> results;
+	protected IResults<T, V, W> results;
 
 	public void setData(U data){
 		this.data = data;
@@ -21,11 +21,11 @@ public abstract class Algorithm<T, U extends IData<T>, V, W> {
 		return data;
 	}
 
-	public void setResults(Results<T, V, W> results){
+	public void setResults(IResults<T, V, W> results){
 		this.results = results;
 	}
 
-	public Results<T, V, W> getResults(){
+	public IResults<T, V, W> getResults(){
 		return  results;
 	}
 

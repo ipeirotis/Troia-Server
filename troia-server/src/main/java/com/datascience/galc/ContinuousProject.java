@@ -4,8 +4,8 @@ import java.util.Map;
 
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.results.DatumContResults;
-import com.datascience.core.results.Results;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
 
@@ -16,10 +16,11 @@ public class ContinuousProject extends Project<ContValue, IData<ContValue>, Datu
 
 	public ContinuousProject(ContinuousIpeirotis ci){
 		super(ci);
-		results = new Results<ContValue, DatumContResults, WorkerContResults>(
+		results = new InMemoryResults<ContValue, DatumContResults, WorkerContResults>(
 				new ResultsFactory.DatumContResultFactory(),
 				new ResultsFactory.WorkerContResultFactory());
 		data = new InMemoryData<ContValue>();
+		// TODO XXX FIXME  ^^^^ results and data needs to be reworked - passed from upstairs
 		ci.setData(data);
 		ci.setResults(results);
 	}

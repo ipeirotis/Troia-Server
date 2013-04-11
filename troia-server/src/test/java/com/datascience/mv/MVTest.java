@@ -2,7 +2,7 @@ package com.datascience.mv;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.INominalData;
-import com.datascience.core.results.Results;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
@@ -65,7 +65,7 @@ public class MVTest {
 		}
 	}
 
-	protected void testMVResults(Results<String, DatumResult, WorkerResult> results){
+	protected void testMVResults(IResults<String, DatumResult, WorkerResult> results){
 		double eps = 0.000001;
 		double[] exp = new double[]{2./3, 1./3};
 		for (int i=0;i<nObjects;i++){
@@ -92,7 +92,7 @@ public class MVTest {
 		NominalProject np = new NominalProject(mv);
 		np.initializeCategories(categories, null, null);
 		INominalData nd = np.getData();
-		Results<String, DatumResult, WorkerResult> results = np.getResults();
+		IResults<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
 		fillNominalData(nd);
@@ -106,7 +106,7 @@ public class MVTest {
 		NominalProject np = new NominalProject(mv);
 		np.initializeCategories(categories, null, null);
 		INominalData nd = np.getData();
-		Results<String, DatumResult, WorkerResult> results = np.getResults();
+		IResults<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
 		nd.addNewUpdatableAlgorithm(mv);
