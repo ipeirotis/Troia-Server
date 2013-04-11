@@ -3,6 +3,7 @@ package com.datascience.core.results;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -13,10 +14,8 @@ import java.util.Map;
  */
 public interface IResults<T, U, V> {
 
-	// I think those last methods should be removed from here.
-	// they can result in objects bigger than memory
-	Map<Worker<T>, V> getWorkerResults();
-	Map<LObject<T>, U> getDatumResults();
+	Map<Worker<T>, V> getWorkerResults(Collection<Worker<T>> workers);
+	Map<LObject<T>, U> getDatumResults(Collection<LObject<T>> objects);
 
 	U getOrCreateDatumResult(LObject<T> obj);
 	U getDatumResult(LObject<T> obj);

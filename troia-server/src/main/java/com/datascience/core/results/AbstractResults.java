@@ -3,8 +3,7 @@ package com.datascience.core.results;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -31,6 +30,24 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 
 	abstract protected U uncheckedGetDatumResults(LObject<T> obj);
 	abstract protected V uncheckedGetWorkerResult(Worker<T> worker);
+
+	@Override
+	public Map<Worker<T>, V> getWorkerResults(Collection<Worker<T>> workers){
+		Map<Worker<T>, V> results = new HashMap<Worker<T>, V>(workers.size());
+		for (Worker<T> worker: workers) {
+			results.put(worker, uncheckedGetWorkerResult(worker));
+		}
+		return results;
+	}
+
+	@Override
+	public Map<LObject<T>, U> getDatumResults(Collection<LObject<T>> objects){
+		Map<LObject<T>, U> results = new HashMap<LObject<T>, U>(objects.size());
+		for (LObject<T> object: objects){
+			results.put(object, uncheckedGetDatumResults(object));
+		}
+		return results;
+	}
 
 	@Override
 	public U getOrCreateDatumResult(LObject<T> obj){

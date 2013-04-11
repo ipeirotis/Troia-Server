@@ -6,7 +6,6 @@ import com.datascience.core.results.AbstractResults;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.utils.storage.ISafeKVStorage;
 
-import java.util.Map;
 
 /**
  * @Author: konrad
@@ -31,18 +30,6 @@ public class KVResults<T, U, V> extends AbstractResults<T, U, V> {
 	@Override
 	protected V uncheckedGetWorkerResult(Worker<T> worker) {
 		return workersKV.get(worker.getName());
-	}
-
-	@Override
-	public Map<Worker<T>, V> getWorkerResults() {
-		// TODO XXX FIXME
-		throw new UnsupportedOperationException("Can't be implemented - remove it from interface!");
-	}
-
-	@Override
-	public Map<LObject<T>, U> getDatumResults() {
-		// TODO XXX FIXME
-		throw new UnsupportedOperationException("Can't be implemented - remove it from interface!");
 	}
 
 	@Override

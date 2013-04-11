@@ -24,16 +24,6 @@ public class Results<T, U, V> extends AbstractResults<T, U, V>{
 	}
 
 	@Override
-	public Map<Worker<T>, V> getWorkerResults(){
-		return workerResults;
-	}
-
-	@Override
-	public Map<LObject<T>, U> getDatumResults(){
-		return datumResults;
-	}
-
-	@Override
 	protected U uncheckedGetDatumResults(LObject<T> obj){
 		return datumResults.get(obj);
 	}

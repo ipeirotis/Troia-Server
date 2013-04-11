@@ -45,7 +45,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 	public double estimate(double epsilon, int max_iters) {
 		logger.info("GALC estimate START");
 
-		double pastLogLikelihood = Double.POSITIVE_INFINITY;
+		double pastLogLikelihood;
 		double logLikelihood = 0d;
 
 		int round = 0;
@@ -66,7 +66,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		double mu = estimateDistributionMu();
 		double sigma = estimateDistributionSigma();
 		// Estimate objects' values. 
-		for (DatumContResults dcr : results.getDatumResults().values()) {
+		for (DatumContResults dcr : getObjectsResults().values()) {
 			dcr.setDistributionMu(mu);
 			dcr.setDistributionSigma(sigma);
 			dcr.getEst_value();
@@ -106,7 +106,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 		// See equation 9
 		double diff = 0.0;
-		for (DatumContResults dr: results.getDatumResults().values()) {
+		for (DatumContResults dr: getObjectsResults().values()) {
 			Double oldZeta;
 			Double newZeta;
 			Double zeta = 0.0;
@@ -191,7 +191,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		// See equation 10
 
 		double diff = 0.0;
-		for (WorkerContResults wr : results.getWorkerResults().values()) {
+		for (WorkerContResults wr : getWorkersResults().values()) {
 			Worker workerToIgnore = wr.getWorker();
 			Double sum_prod = 0.0;
 			Double sum_zi = 0.0;
@@ -228,7 +228,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 		Double nominatorSigma = 0.0;
 		Double denominatorSigma = 0.0;
-		for (WorkerContResults wcr : results.getWorkerResults().values()) {
+		for (WorkerContResults wcr : getWorkersResults().values()) {
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double s = wcr.getEst_sigma();
@@ -242,7 +242,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 		Double nominatorMu = 0.0;
 		Double denominatorMu = 0.0;
-		for (WorkerContResults wcr : results.getWorkerResults().values()) {
+		for (WorkerContResults wcr : getWorkersResults().values()) {
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double m = wcr.getEst_mu();
@@ -253,11 +253,11 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 	}
 
 	public Map<LObject<ContValue>, DatumContResults> getObjectsResults() {
-		return results.getDatumResults();
+		return results.getDatumResults(data.getObjects());
 	}
 
 	public Map<Worker<ContValue>, WorkerContResults> getWorkersResults() {
-		return results.getWorkerResults();
+		return results.getWorkerResults(data.getWorkers());
 	}
 
 	public void setIterations(int iterations){

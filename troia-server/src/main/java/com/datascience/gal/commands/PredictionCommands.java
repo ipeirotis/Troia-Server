@@ -3,6 +3,7 @@ package com.datascience.gal.commands;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.executor.JobCommand;
@@ -27,7 +28,9 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<ConfusionMatrix>> wq = new ArrayList<WorkerValue<ConfusionMatrix>>();
-			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults().entrySet()){
+			Map<Worker<String>, WorkerResult> allWorkersResults =
+					project.getResults().getWorkerResults(project.getData().getWorkers());
+			for (Entry<Worker<String>, WorkerResult> e : allWorkersResults.entrySet()){
 				wq.add(new WorkerValue<ConfusionMatrix>(e.getKey().getName(), e.getValue().cm));
 			}
 			setResult(wq);
