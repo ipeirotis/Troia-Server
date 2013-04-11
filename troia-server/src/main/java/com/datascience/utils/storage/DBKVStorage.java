@@ -13,15 +13,11 @@ import java.util.Properties;
 public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
-	protected static int VALIDATION_TIMEOUT = 2;
 
-	private static final String GET = "SELECT value FROM (?) WHERE key = (?);";
-	private static final String INSERT = "REPLACE INTO (?) (key, value) VALUES (?, ?);";
-	private static final String DELETE = "DELETE FROM (?) WHERE key = (?);";
+	private static final String GET = "SELECT value FROM (?) WHERE id = (?);";
+	private static final String INSERT = "REPLACE INTO (?) (id, value) VALUES (?, ?);";
+	private static final String DELETE = "DELETE FROM (?) WHERE id = (?);";
 
-	protected Connection connection;
-	protected Properties connectionProperties;
-	protected String dbUrl;
 	protected String table;
 	protected ISerializer serializer;
 	protected Type valueType;
