@@ -5,7 +5,11 @@ import com.datascience.utils.storage.DBStorage;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * User: artur
@@ -13,9 +17,9 @@ import java.util.Properties;
  */
 public class DBKVHelper extends DBStorage {
 
-	protected static String[] TABLES = new String[] {
+	protected static List<String> TABLES = Arrays.asList(new String[] {
 			"ObjectAssigns", "WorkerAssigns", "Objects", "Workers",
-			"ObjectResults", "WorkerResults", "JobSettings"};
+			"ObjectResults", "WorkerResults", "JobSettings"});
 	private static Logger logger = Logger.getLogger(DBKVHelper.class);
 
 	protected String dbName;
@@ -39,6 +43,7 @@ public class DBKVHelper extends DBStorage {
 	}
 
 	public DBKVStorage getKV(String table){
+		checkArgument(TABLES.contains(table), "Taking DBKV for not existing table " + table);
 		return new DBKVStorage(table, this);
 	}
 

@@ -18,6 +18,10 @@ public class DefaultSafeKVStorage<V> implements ISafeKVStorage<V>{
 		this.prefix = prefix + " ";
 	}
 
+	public DefaultSafeKVStorage(IKVStorage<V> wrapped, String prefix){
+		this(wrapped, Logger.getLogger(DefaultSafeKVStorage.class), prefix);
+	}
+
 	protected void log(String cmd, Exception ex){
 		logger.error(prefix + cmd, ex);
 		Throwables.propagate(ex);
