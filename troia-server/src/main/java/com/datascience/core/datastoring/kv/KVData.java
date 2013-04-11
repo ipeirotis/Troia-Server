@@ -7,6 +7,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.utils.storage.ISafeKVStorage;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @Author: konrad
@@ -24,72 +25,145 @@ public class KVData<T> extends AbstractData<T> {
 
 	@Override
 	protected LObject<T> uncheckedGetGoldObject(String objectId) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getObject(objectId);
 	}
 
 	@Override
 	protected LObject<T> uncheckedGetEvaluationObject(String objectId) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getObject(objectId);
 	}
 
 	@Override
 	public void addWorker(Worker<T> worker) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		Collection<Worker<T>> oldWorkers = workers.get("");
+		if (!oldWorkers.contains(worker)){
+			oldWorkers.add(worker);
+			workers.put("", oldWorkers);
+			notifyNewWorker(worker);
+			workersAssigns.put(worker.getName(), new LinkedList<AssignedLabel<T>>());
+		}
 	}
 
 	@Override
 	public Worker<T> getWorker(String workerId) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		for (Worker<T> w : workers.get(""))
+			if (w.getName().equals(workerId))
+				return w;
+		return null;
 	}
 
 	@Override
 	public Collection<Worker<T>> getWorkers() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return workers.get("");
 	}
 
 	@Override
 	public void addObject(LObject<T> object) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		Collection<LObject<T>> oldObjects = objects.get("");
+		if (!oldObjects.contains(object)){
+			oldObjects.add(object);
+			objects.put("", oldObjects);
+			notifyNewObject(object);
+			objectsAssigns.put(object.getName(), new LinkedList<AssignedLabel<T>>());
+			if (object.isGold())
+				addGoldObject(object);
+			if (object.isEvaluation())
+				addEvaluationObject(object);
+		} else {
+			LObject<T> oldObject = getObject(object.getName());
+			if (object.isGold() && !oldObject.isGold()) {
+				oldObject.setGoldLabel(object.getGoldLabel());
+				addGoldObject(oldObject);
+			}
+			if (object.isEvaluation() && !oldObject.isEvaluation()) {
+				oldObject.setEvaluationLabel(object.getEvaluationLabel());
+				addEvaluationObject(oldObject);
+			}
+		}
+	}
+
+	private void addGoldObject(LObject<T> object){
+		//assumption: goldObjects collection doesnt contain object
+		Collection<LObject<T>> oldGoldObjects = goldObjects.get("");
+		oldGoldObjects.add(object);
+		goldObjects.put("", oldGoldObjects);
+		notifyNewGoldObject(object);
+	}
+
+	private void addEvaluationObject(LObject<T> object){
+		//assumption: evaluationObjects collection doesnt contain object
+		Collection<LObject<T>> oldEvaluationObjects = evaluationObjects.get("");
+		oldEvaluationObjects.add(object);
+		evaluationObjects.put("", oldEvaluationObjects);
 	}
 
 	@Override
 	public LObject<T> getObject(String objectId) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		for (LObject<T> o : objects.get(""))
+			if (o.getName().equals(objectId))
+				return  o;
+		return null;
 	}
 
 	@Override
 	public Collection<LObject<T>> getObjects() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return objects.get("");
 	}
 
 	@Override
 	public Collection<LObject<T>> getGoldObjects() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return goldObjects.get("");
 	}
 
 	@Override
 	public void markObjectAsGold(LObject<T> object, T label) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		object.setGoldLabel(label);
+		Collection<LObject<T>> oldObjects = objects.get("");
+		oldObjects.add(object);
+		objects.put("", oldObjects);
+
+		oldObjects = goldObjects.get("");
+		oldObjects.add(object);
+		goldObjects.put("", oldObjects);
 	}
 
 	@Override
 	public Collection<LObject<T>> getEvaluationObjects() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return evaluationObjects.get("");
 	}
 
 	@Override
 	public void addAssign(AssignedLabel<T> assign) {
-		//To change body of implemented methods use File | Settings | File Templates.
+		addWorker(assign.getWorker());
+		forceAddAssign(assign, workersAssigns.get(assign.getWorker().getName()));
+		addObject(assign.getLobject());
+		forceAddAssign(assign, objectsAssigns.get(assign.getLobject().getName()));
+		notifyNewAssign(assign);
+	}
+
+	private void forceAddAssign(AssignedLabel<T> assign, Collection<AssignedLabel<T>> assigns){
+		if (!assigns.add(assign)) {
+			assigns.remove(assign);
+			assigns.add(assign);
+		}
 	}
 
 	@Override
 	public Collection<AssignedLabel<T>> getAssigns() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		Collection<AssignedLabel<T>> ret = new LinkedList<AssignedLabel<T>>();
+		for (Worker<T> w : getWorkers()){
+			ret.addAll(workersAssigns.get(w.getName()));
+		}
+		return ret;
 	}
 
 	@Override
 	public boolean hasAssign(LObject<T> object, Worker<T> worker) {
-		return false;  //To change body of implemented methods use File | Settings | File Templates.
+		for (AssignedLabel<T> al : objectsAssigns.get(object.getName())){
+			if (al.getWorker().equals(worker))
+				return true;
+		}
+		return false;
 	}
 
 	@Override
