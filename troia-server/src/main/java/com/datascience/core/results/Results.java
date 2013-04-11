@@ -51,7 +51,7 @@ public class Results<T, U, V> extends AbstractResults<T, U, V>{
 	@Override
 	public void addDatumResult(LObject<T> obj, U result){
 		datumResults.put(obj, result);
-		if (notifyEnabled) notifyNewObjectResults(obj, result);
+		notifyNewObjectResults(obj, result);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Results<T, U, V> extends AbstractResults<T, U, V>{
 	@Override
 	public void addWorkerResult(Worker<T> worker, V result){
 		workerResults.put(worker, result);
-		if (notifyEnabled) notifyNewWorkerResults(worker, result);
+		notifyNewWorkerResults(worker, result);
 	}
 
 }

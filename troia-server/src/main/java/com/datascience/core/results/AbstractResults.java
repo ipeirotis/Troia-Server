@@ -83,12 +83,14 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	}
 
 	protected void notifyNewWorkerResults(Worker<T> worker, V result){
+		if (!notifyEnabled) return;
 		for (INewResultsListener<T, U, V> newResultsListener: newResultsListeners){
 			newResultsListener.newResultsForWorker(worker, result);
 		}
 	}
 
 	protected void notifyNewObjectResults(LObject<T> object, U result){
+		if (!notifyEnabled) return;
 		for (INewResultsListener<T, U, V> newResultsListener: newResultsListeners){
 			newResultsListener.newResultsForObject(object, result);
 		}
