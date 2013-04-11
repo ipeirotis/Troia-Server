@@ -1,16 +1,14 @@
 package com.datascience.utils.storage;
 
-import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.Properties;
 
 /**
  * @Author: konrad
  */
-public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
+public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
 
@@ -19,15 +17,11 @@ public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 	private static final String DELETE = "DELETE FROM (?) WHERE id = (?);";
 
 	protected String table;
-	protected ISerializer serializer;
-	protected Type valueType;
 
 	public DBKVStorage(String dbUrl, String table, Properties connectionProperties,
-					   String driverClass, ISerializer serializer, Type valueType) throws ClassNotFoundException {
+					   String driverClass) throws ClassNotFoundException {
 		super(dbUrl, driverClass, connectionProperties);
 		this.table = table;
-		this.serializer = serializer;
-		this.valueType = valueType;
 	}
 
 	/**
@@ -40,7 +34,7 @@ public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 	}
 
 	@Override
-	public void put(String key, V value) throws SQLException{
+	public void put(String key, String value) throws SQLException{
 		String logmsg = "DBKV put " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
@@ -48,7 +42,7 @@ public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 			sql = initStatement(INSERT);
 			sql.setString(1, table);
 			sql.setString(2, key);
-			sql.setString(3, serializer.serialize(value));
+			sql.setString(3, value);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
 		} catch (Exception ex) {
@@ -59,12 +53,12 @@ public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 	}
 
 	@Override
-	public V get(String key) throws SQLException{
+	public String get(String key) throws SQLException{
 		String logmsg = "DBKV get " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		ResultSet result = null;
-		V value = null;
+		String value = null;
 		try {
 			sql = initStatement(GET);
 			sql.setString(1, table);
@@ -74,8 +68,7 @@ public class DBKVStorage<V> extends DBStorage implements IKVStorage<V> {
 				logger.debug(logmsg + " DONE no results");
 				return value;
 			}
-			String sValue = result.getString("value");
-			value = serializer.parse(sValue, valueType);
+			value = result.getString("value");
 			logger.debug(logmsg + " DONE");
 		} catch (Exception ex) {
 			logger.error(logmsg + " FAIL", ex);
