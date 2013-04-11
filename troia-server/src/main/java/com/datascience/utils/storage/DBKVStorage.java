@@ -3,12 +3,11 @@ package com.datascience.utils.storage;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
-import java.util.Properties;
 
 /**
  * @Author: konrad
  */
-public class DBKVStorage extends DBStorage implements IKVStorage<String> {
+public class DBKVStorage implements IKVStorage<String> {
 
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
 
@@ -17,20 +16,11 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 	private static final String DELETE = "DELETE FROM (?) WHERE id = (?);";
 
 	protected String table;
+	protected DBStorage dbStorage;
 
-	public DBKVStorage(String dbUrl, String table, Properties connectionProperties,
-					   String driverClass) throws ClassNotFoundException {
-		super(dbUrl, driverClass, connectionProperties);
+	public DBKVStorage(String table, DBStorage dbStorage){
 		this.table = table;
-	}
-
-	/**
-	 * Added hoping that this will sometime turn out to be useful
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		close();
+		this.dbStorage = dbStorage;
 	}
 
 	@Override
@@ -39,7 +29,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
-			sql = initStatement(INSERT);
+			sql = dbStorage.initStatement(INSERT);
 			sql.setString(1, table);
 			sql.setString(2, key);
 			sql.setString(3, value);
@@ -48,7 +38,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 		} catch (Exception ex) {
 			logger.error(logmsg + " FAIL", ex);
 		} finally {
-			cleanup(sql, null);
+			dbStorage.cleanup(sql, null);
 		}
 	}
 
@@ -60,7 +50,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 		ResultSet result = null;
 		String value = null;
 		try {
-			sql = initStatement(GET);
+			sql = dbStorage.initStatement(GET);
 			sql.setString(1, table);
 			sql.setString(2, key);
 			result = sql.executeQuery();
@@ -73,7 +63,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 		} catch (Exception ex) {
 			logger.error(logmsg + " FAIL", ex);
 		} finally {
-			cleanup(sql, result);
+			dbStorage.cleanup(sql, result);
 			return value;
 		}
 	}
@@ -84,7 +74,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
-			sql = initStatement(DELETE);
+			sql = dbStorage.initStatement(DELETE);
 			sql.setString(1, table);
 			sql.setString(2, key);
 			sql.executeUpdate();
@@ -92,7 +82,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 		} catch (Exception ex) {
 			logger.error(logmsg + " FAIL", ex);
 		} finally {
-			cleanup(sql, null);
+			dbStorage.cleanup(sql, null);
 		}
 	}
 
@@ -105,6 +95,7 @@ public class DBKVStorage extends DBStorage implements IKVStorage<String> {
 
 	@Override
 	public void shutdown() throws SQLException{
-		close();
+		// TODO XXX FIXME THINK - I think we don't should close DB here
+//		dbStorage.close();
 	}
 }

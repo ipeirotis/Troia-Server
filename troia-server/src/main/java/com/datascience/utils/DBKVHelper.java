@@ -1,5 +1,6 @@
 package com.datascience.utils;
 
+import com.datascience.utils.storage.DBKVStorage;
 import com.datascience.utils.storage.DBStorage;
 import org.apache.log4j.Logger;
 
@@ -12,6 +13,9 @@ import java.util.Properties;
  */
 public class DBKVHelper extends DBStorage {
 
+	protected static String[] TABLES = new String[] {
+			"ObjectAssigns", "WorkerAssigns", "Objects", "Workers",
+			"ObjectResults", "WorkerResults", "JobSettings"};
 	private static Logger logger = Logger.getLogger(DBKVHelper.class);
 
 	protected String dbName;
@@ -27,11 +31,15 @@ public class DBKVHelper extends DBStorage {
 		connectDB();
 		dropDatabase();
 		createDatabase();
-		for (String tableName : new String[] {"ObjectAssigns", "WorkerAssigns", "Objects", "Workers"}){
+		for (String tableName : TABLES){
 			createTable(tableName);
 			createIndex(tableName);
 		}
 		close();
+	}
+
+	public DBKVStorage getKV(String table){
+		return new DBKVStorage(table, this);
 	}
 
 	protected void createTable(String tableName) throws SQLException{
