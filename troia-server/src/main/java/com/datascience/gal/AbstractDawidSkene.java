@@ -13,7 +13,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
@@ -22,11 +21,9 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
-import org.apache.log4j.Logger;
 
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
-	private static Logger logger = Logger.getLogger(AbstractDawidSkene.class);
 	protected int iterations = 10;
 	protected double epsilon = 1e-6;
 
