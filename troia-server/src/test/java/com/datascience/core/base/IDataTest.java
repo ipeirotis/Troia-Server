@@ -20,7 +20,6 @@ public class IDataTest {
 
 	public interface DataCreator{
 		IData<String> create();
-		void prepare(IData<String> data);
 	}
 
 	final static DataCreator[] DATA_CREATORS = new DataCreator[]{
@@ -29,29 +28,19 @@ public class IDataTest {
 			public IData<String> create(){
 				return new InMemoryData<String>();
 			}
-			@Override
-			public void prepare(IData<String> data){
-
-			}
 		},
 		new DataCreator(){
 			@Override
 			public IData<String> create(){
-				return new InMemoryNominalData();
-			}
-			@Override
-			public void prepare(IData<String> data){
-				((InMemoryNominalData) data).setCategories(Arrays.asList(new String[]{"cat1", "cat2"}));
+				InMemoryNominalData data = new InMemoryNominalData();
+				data.setCategories(Arrays.asList(new String[]{"cat1", "cat2"}));
+				return data;
 			}
 		},
 		new DataCreator(){
 			@Override
 			public IData<String> create(){
 				return new KVData<String>();
-			}
-			@Override
-			public void prepare(IData<String> data){
-
 			}
 		}
 	};
@@ -74,7 +63,6 @@ public class IDataTest {
 	@Before
 	public void initialize(){
 		data = dataCreator.create();
-		dataCreator.prepare(data);
 	}
 
 	/**
