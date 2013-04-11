@@ -117,6 +117,8 @@ public class InMemoryData<T> extends AbstractData<T> {
 			throw new IllegalArgumentException("Object %s is not in this Data".format(object.getName()));
 		}
 		object.setGoldLabel(label);
+		if (!goldObjects.contains(object))
+			addGoldObject(object);
 	}
 
 	private void addEvaluationObject(LObject<T> object){

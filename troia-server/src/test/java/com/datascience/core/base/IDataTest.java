@@ -20,6 +20,7 @@ public class IDataTest {
 
 	public interface DataCreator{
 		IData<String> create();
+		void prepare(IData<String> data);
 	}
 
 	final static DataCreator[] DATA_CREATORS = new DataCreator[]{
@@ -28,17 +29,29 @@ public class IDataTest {
 			public IData<String> create(){
 				return new InMemoryData<String>();
 			}
+			@Override
+			public void prepare(IData<String> data){
+
+			}
 		},
 		new DataCreator(){
 			@Override
 			public IData<String> create(){
 				return new InMemoryNominalData();
 			}
+			@Override
+			public void prepare(IData<String> data){
+				((InMemoryNominalData) data).setCategories(Arrays.asList(new String[]{"cat1", "cat2"}));
+			}
 		},
 		new DataCreator(){
 			@Override
 			public IData<String> create(){
 				return new KVData<String>();
+			}
+			@Override
+			public void prepare(IData<String> data){
+
 			}
 		}
 	};
@@ -61,6 +74,7 @@ public class IDataTest {
 	@Before
 	public void initialize(){
 		data = dataCreator.create();
+		dataCreator.prepare(data);
 	}
 
 	/**
@@ -70,13 +84,13 @@ public class IDataTest {
 	public void testAddAssigns(){
 		Worker<String> w1 = data.getOrCreateWorker("Worker1");
 		LObject<String> object = data.getOrCreateObject("Object1");
-		String label1 = "label1";
+		String label1 = "cat1";
 		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object, label1);
 		data.addAssign(al1);
 		assertEquals(label1, data.getWorkerAssigns(w1).iterator().next().getLabel());
 		assertEquals(label1, data.getAssigns().iterator().next().getLabel());
 		assertEquals(label1, data.getAssignsForObject(object).iterator().next().getLabel());
-		String label2 = "label2";
+		String label2 = "cat2";
 		AssignedLabel<String> al2 = new AssignedLabel<String>(w1, object, label2);
 		data.addAssign(al2);
 		assertEquals(label2, data.getWorkerAssigns(w1).iterator().next().getLabel());
@@ -92,7 +106,7 @@ public class IDataTest {
 	public void testAddGold(){
 		LObject<String> object1 = data.getOrCreateObject("Object1");
 		LObject<String> object2 = data.getOrCreateObject("Object1");
-		String label = "goooooldLabel";
+		String label = "cat1";
 		object2.setGoldLabel(label);
 		data.addObject(object1);
 		data.addObject(object2);
@@ -109,7 +123,7 @@ public class IDataTest {
 	public void testAddEvaluation(){
 		LObject<String> object1 = data.getOrCreateObject("Object1");
 		LObject<String> object2 = data.getOrCreateObject("Object1");
-		String label = "goooooldLabel";
+		String label = "cat1";
 		object2.setEvaluationLabel(label);
 		data.addObject(object1);
 		data.addObject(object2);
@@ -124,14 +138,15 @@ public class IDataTest {
 		Worker<String> w1 = data.getOrCreateWorker("Worker1");
 		LObject<String> object1 = data.getOrCreateObject("Object1");
 		assertFalse(data.hasAssign(object1, w1));
-		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object1, "label1");
+		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object1, "cat1");
 		data.addAssign(al1);
 		assertTrue(data.hasAssign(object1, w1));
 	}
 
 	@Test
 	public void testAddWorker(){
-		data.getOrCreateWorker("Worker1");
+		Worker<String> w1 = data.getOrCreateWorker("Worker1");
+		data.addWorker(w1);
 		assertNull(data.getWorker("Worker2"));
 		assertNotNull(data.getWorker("Worker1"));
 		Worker<String> w2 = new Worker<String>("Worker2");
@@ -141,7 +156,8 @@ public class IDataTest {
 
 	@Test
 	public void testAddObject(){
-		data.getOrCreateObject("Object1");
+		LObject<String> object1 = data.getOrCreateObject("Object1");
+		data.addObject(object1);
 		assertNull(data.getObject("Object2"));
 		assertNotNull(data.getObject("Object1"));
 		LObject<String> o2 = new LObject<String>("Object2");
@@ -152,9 +168,10 @@ public class IDataTest {
 	@Test
 	public void testMarkingObjectsAsGold(){
 		LObject<String> object1 = data.getOrCreateObject("Object1");
+		data.addObject(object1);
 		assertFalse(object1.isGold());
 		assertEquals(0, data.getGoldObjects().size());
-		data.markObjectAsGold(object1, "goldLabel");
+		data.markObjectAsGold(object1, "cat1");
 		assertTrue(object1.isGold());
 		assertEquals(1, data.getGoldObjects().size());
 		assertEquals(object1, data.getGoldObject("Object1"));
