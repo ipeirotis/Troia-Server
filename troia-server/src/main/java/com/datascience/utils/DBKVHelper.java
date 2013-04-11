@@ -10,14 +10,14 @@ import java.util.Properties;
  * User: artur
  * Date: 4/10/13
  */
-public class DBHelper extends DBStorage {
+public class DBKVHelper extends DBStorage {
 
-	private static Logger logger = Logger.getLogger(DBHelper.class);
+	private static Logger logger = Logger.getLogger(DBKVHelper.class);
 
 	protected String dbName;
 	protected Connection connection;
 
-	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
+	public DBKVHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
 		super(dbUrl, driverClass, connectionProperties);
 		this.dbName = dbName;
 		Class.forName(driverClass);

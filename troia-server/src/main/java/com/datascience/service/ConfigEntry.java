@@ -5,7 +5,7 @@ import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
 import com.datascience.serialization.ISerializer;
-import com.datascience.utils.DBHelper;
+import com.datascience.utils.DBKVHelper;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -90,7 +90,7 @@ public class ConfigEntry {
 				Properties connectionProperties = new Properties();
 				connectionProperties.setProperty("user", p.getProperty(Constants.DB_USER));
 				connectionProperties.setProperty("password", p.getProperty(Constants.DB_PASSWORD));
-				new DBHelper(p.getProperty(Constants.DB_URL), p.getProperty(Constants.DB_DRIVER_CLASS),
+				new DBKVHelper(p.getProperty(Constants.DB_URL), p.getProperty(Constants.DB_DRIVER_CLASS),
 						connectionProperties, p.getProperty(Constants.DB_NAME)).execute();
 			} catch (Exception e){
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
