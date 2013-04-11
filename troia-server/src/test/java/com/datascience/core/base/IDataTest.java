@@ -10,8 +10,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @Author: konrad
@@ -118,5 +117,46 @@ public class IDataTest {
 		assertEquals(1, data.getEvaluationObjects().size());
 		assertTrue(data.getObject("Object1").isEvaluation());
 		assertEquals(label, data.getObject("Object1").getEvaluationLabel());
+	}
+
+	@Test
+	public void testHasAssigns(){
+		Worker<String> w1 = data.getOrCreateWorker("Worker1");
+		LObject<String> object1 = data.getOrCreateObject("Object1");
+		assertFalse(data.hasAssign(object1, w1));
+		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object1, "label1");
+		data.addAssign(al1);
+		assertTrue(data.hasAssign(object1, w1));
+	}
+
+	@Test
+	public void testAddWorker(){
+		data.getOrCreateWorker("Worker1");
+		assertNull(data.getWorker("Worker2"));
+		assertNotNull(data.getWorker("Worker1"));
+		Worker<String> w2 = new Worker<String>("Worker2");
+		data.addWorker(w2);
+		assertNotNull(data.getWorker("Worker2"));
+	}
+
+	@Test
+	public void testAddObject(){
+		data.getOrCreateObject("Object1");
+		assertNull(data.getObject("Object2"));
+		assertNotNull(data.getObject("Object1"));
+		LObject<String> o2 = new LObject<String>("Object2");
+		data.addObject(o2);
+		assertNotNull(data.getObject("Object2"));
+	}
+
+	@Test
+	public void testMarkingObjectsAsGold(){
+		LObject<String> object1 = data.getOrCreateObject("Object1");
+		assertFalse(object1.isGold());
+		assertEquals(0, data.getGoldObjects().size());
+		data.markObjectAsGold(object1, "goldLabel");
+		assertTrue(object1.isGold());
+		assertEquals(1, data.getGoldObjects().size());
+		assertEquals(object1, data.getGoldObject("Object1"));
 	}
 }
