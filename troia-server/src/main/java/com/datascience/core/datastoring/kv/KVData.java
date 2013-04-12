@@ -9,23 +9,22 @@ import com.datascience.utils.storage.ISafeKVStorage;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 /**
  * @Author: konrad
  */
 public class KVData<T> extends AbstractData<T> {
 
-	protected ISafeKVStorage<Set<AssignedLabel<T>>> workersAssigns;
-	protected ISafeKVStorage<Set<AssignedLabel<T>>> objectsAssigns;
+	protected ISafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns;
+	protected ISafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns;
 
 	protected ISafeKVStorage<Collection<LObject<T>>> objects;// SINGLE ROW!
 	protected ISafeKVStorage<Collection<LObject<T>>> goldObjects;// SINGLE ROW
 	protected ISafeKVStorage<Collection<LObject<T>>> evaluationObjects;// SINGLE ROW
 	protected ISafeKVStorage<Collection<Worker<T>>> workers; //SINGLE ROW!
 
-	public KVData(ISafeKVStorage<Set<AssignedLabel<T>>> workersAssigns,
-				  ISafeKVStorage<Set<AssignedLabel<T>>> objectsAssigns,
+	public KVData(ISafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns,
+				  ISafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns,
 				  ISafeKVStorage<Collection<LObject<T>>> objects,
 				  ISafeKVStorage<Collection<LObject<T>>> goldObjects,
 				  ISafeKVStorage<Collection<LObject<T>>> evaluationObjects,
@@ -156,7 +155,7 @@ public class KVData<T> extends AbstractData<T> {
 		notifyNewAssign(assign);
 	}
 
-	private void forceAddAssign(AssignedLabel<T> assign, Set<AssignedLabel<T>> assigns){
+	private void forceAddAssign(AssignedLabel<T> assign, Collection<AssignedLabel<T>> assigns){
 		if (!assigns.add(assign)) {
 			assigns.remove(assign);
 			assigns.add(assign);
