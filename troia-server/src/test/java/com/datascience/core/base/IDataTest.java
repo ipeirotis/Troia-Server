@@ -3,6 +3,9 @@ package com.datascience.core.base;
 import com.datascience.core.datastoring.kv.KVData;
 import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.utils.storage.DefaultSafeKVStorage;
+import com.datascience.utils.storage.MemoryKVStorage;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +20,8 @@ import static org.junit.Assert.*;
  */
 @RunWith(Parameterized.class)
 public class IDataTest {
+
+	private static Logger logger = Logger.getLogger(IDataTest.class);
 
 	public interface DataCreator{
 		IData<String> create();
@@ -40,7 +45,19 @@ public class IDataTest {
 		new DataCreator(){
 			@Override
 			public IData<String> create(){
-				return new KVData<String>();
+				return new KVData<String>(
+						new DefaultSafeKVStorage<Set<AssignedLabel<String>>>(
+								new MemoryKVStorage<Set<AssignedLabel<String>>>(), logger, ""),
+						new DefaultSafeKVStorage<Set<AssignedLabel<String>>>(
+								new MemoryKVStorage<Set<AssignedLabel<String>>>(), logger, ""),
+						new DefaultSafeKVStorage<Collection<LObject<String>>>(
+								new MemoryKVStorage<Collection<LObject<String>>>("", new LinkedList<LObject<String>>()), logger, ""),
+						new DefaultSafeKVStorage<Collection<LObject<String>>>(
+								new MemoryKVStorage<Collection<LObject<String>>>("", new LinkedList<LObject<String>>()), logger, ""),
+						new DefaultSafeKVStorage<Collection<LObject<String>>>(
+								new MemoryKVStorage<Collection<LObject<String>>>("", new LinkedList<LObject<String>>()), logger, ""),
+						new DefaultSafeKVStorage<Collection<Worker<String>>>(
+								new MemoryKVStorage<Collection<Worker<String>>>("", new LinkedList<Worker<String>>()), logger, ""));
 			}
 		}
 	};

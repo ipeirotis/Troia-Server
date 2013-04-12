@@ -1,16 +1,30 @@
 package com.datascience.core.datastoring.kv;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.utils.CostMatrix;
+import com.datascience.utils.storage.ISafeKVStorage;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: konrad
  */
 public class KVNominalData extends KVData<String> implements INominalData{
+
+	public KVNominalData(ISafeKVStorage<Set<AssignedLabel<String>>> workersAssigns,
+				  ISafeKVStorage<Set<AssignedLabel<String>>> objectsAssigns,
+				  ISafeKVStorage<Collection<LObject<String>>> objects,
+				  ISafeKVStorage<Collection<LObject<String>>> goldObjects,
+				  ISafeKVStorage<Collection<LObject<String>>> evaluationObjects,
+				  ISafeKVStorage<Collection<Worker<String>>> workers){
+		super(workersAssigns, objectsAssigns, objects, goldObjects, evaluationObjects, workers);
+	}
 
 	@Override
 	public void setCategories(Collection<String> categories) {

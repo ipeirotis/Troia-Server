@@ -15,6 +15,11 @@ public class MemoryKVStorage<V> implements IKVStorage<V>{
 		storage = new HashMap<String, V>();
 	}
 
+	public MemoryKVStorage(String key, V val){
+		this();
+		storage.put(key, val);
+	}
+
 	@Override
 	public void put(String key, V value) throws Exception {
 		storage.put(key, value);

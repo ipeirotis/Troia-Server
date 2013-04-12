@@ -7,21 +7,36 @@ import com.datascience.core.base.Worker;
 import com.datascience.utils.storage.ISafeKVStorage;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * @Author: konrad
  */
 public class KVData<T> extends AbstractData<T> {
 
-	protected ISafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns;
-	protected ISafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns;
+	protected ISafeKVStorage<Set<AssignedLabel<T>>> workersAssigns;
+	protected ISafeKVStorage<Set<AssignedLabel<T>>> objectsAssigns;
 
 	protected ISafeKVStorage<Collection<LObject<T>>> objects;// SINGLE ROW!
 	protected ISafeKVStorage<Collection<LObject<T>>> goldObjects;// SINGLE ROW
 	protected ISafeKVStorage<Collection<LObject<T>>> evaluationObjects;// SINGLE ROW
 	protected ISafeKVStorage<Collection<Worker<T>>> workers; //SINGLE ROW!
 
+	public KVData(ISafeKVStorage<Set<AssignedLabel<T>>> workersAssigns,
+				  ISafeKVStorage<Set<AssignedLabel<T>>> objectsAssigns,
+				  ISafeKVStorage<Collection<LObject<T>>> objects,
+				  ISafeKVStorage<Collection<LObject<T>>> goldObjects,
+				  ISafeKVStorage<Collection<LObject<T>>> evaluationObjects,
+				  ISafeKVStorage<Collection<Worker<T>>> workers){
+		this.workersAssigns = workersAssigns;
+		this.objectsAssigns = objectsAssigns;
+		this.objects = objects;
+		this.goldObjects = goldObjects;
+		this.evaluationObjects = evaluationObjects;
+		this.workers = workers;
+	}
 
 	@Override
 	protected LObject<T> uncheckedGetGoldObject(String objectId) {
@@ -40,7 +55,7 @@ public class KVData<T> extends AbstractData<T> {
 			oldWorkers.add(worker);
 			workers.put("", oldWorkers);
 			notifyNewWorker(worker);
-			workersAssigns.put(worker.getName(), new LinkedList<AssignedLabel<T>>());
+			workersAssigns.put(worker.getName(), new HashSet<AssignedLabel<T>>());
 		}
 	}
 
@@ -64,7 +79,7 @@ public class KVData<T> extends AbstractData<T> {
 			oldObjects.add(object);
 			objects.put("", oldObjects);
 			notifyNewObject(object);
-			objectsAssigns.put(object.getName(), new LinkedList<AssignedLabel<T>>());
+			objectsAssigns.put(object.getName(), new HashSet<AssignedLabel<T>>());
 			if (object.isGold())
 				addGoldObject(object);
 			if (object.isEvaluation())
@@ -141,7 +156,7 @@ public class KVData<T> extends AbstractData<T> {
 		notifyNewAssign(assign);
 	}
 
-	private void forceAddAssign(AssignedLabel<T> assign, Collection<AssignedLabel<T>> assigns){
+	private void forceAddAssign(AssignedLabel<T> assign, Set<AssignedLabel<T>> assigns){
 		if (!assigns.add(assign)) {
 			assigns.remove(assign);
 			assigns.add(assign);
@@ -159,10 +174,11 @@ public class KVData<T> extends AbstractData<T> {
 
 	@Override
 	public boolean hasAssign(LObject<T> object, Worker<T> worker) {
-		for (AssignedLabel<T> al : objectsAssigns.get(object.getName())){
-			if (al.getWorker().equals(worker))
-				return true;
-		}
+		if (objectsAssigns.contains(object.getName()))
+			for (AssignedLabel<T> al : objectsAssigns.get(object.getName())){
+				if (al.getWorker().equals(worker))
+					return true;
+			}
 		return false;
 	}
 
