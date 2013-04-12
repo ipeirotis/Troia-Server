@@ -46,10 +46,10 @@ public class IDataTest {
 			@Override
 			public IData<String> create(){
 				return new KVData<String>(
-						new DefaultSafeKVStorage<Set<AssignedLabel<String>>>(
-								new MemoryKVStorage<Set<AssignedLabel<String>>>(), logger, ""),
-						new DefaultSafeKVStorage<Set<AssignedLabel<String>>>(
-								new MemoryKVStorage<Set<AssignedLabel<String>>>(), logger, ""),
+						new DefaultSafeKVStorage<Collection<AssignedLabel<String>>>(
+								new MemoryKVStorage<Collection<AssignedLabel<String>>>(), logger, ""),
+						new DefaultSafeKVStorage<Collection<AssignedLabel<String>>>(
+								new MemoryKVStorage<Collection<AssignedLabel<String>>>(), logger, ""),
 						new DefaultSafeKVStorage<Collection<LObject<String>>>(
 								new MemoryKVStorage<Collection<LObject<String>>>("", new LinkedList<LObject<String>>()), logger, ""),
 						new DefaultSafeKVStorage<Collection<LObject<String>>>(
