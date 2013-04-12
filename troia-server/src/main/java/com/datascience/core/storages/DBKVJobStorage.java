@@ -39,7 +39,7 @@ public class DBKVJobStorage implements IJobStorage{
 	protected <V> ISafeKVStorage<V> getJobSettingKV(){   // TODO XXX  set proper type
 		IKVStorage<V> kvstorage = null;
 //		ITransformation<V, String> transformation = new SerializationTransform<V>(serializer, expectedType);
-//		kvstorage = new VTransformingKVWrapper<V, String>(new DBKVStorage("JobSettings", helper), transformation);
+//		kvstorage = new VTransformingKVWrapper<V, String>(helper.getKV("JobSettings"), transformation);
 //		kvstorage = new CachedKV<V>(kvstorage, 15); // this when we will test this
 		return new DefaultSafeKVStorage<V>(kvstorage, "JobSettings");
 	}
@@ -47,7 +47,7 @@ public class DBKVJobStorage implements IJobStorage{
 	protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, Type expectedType){
 		IKVStorage<V> kvstorage;
 		ITransformation<V, String> transformation = new SerializationTransform<V>(serializer, expectedType);
-		kvstorage = new VTransformingKVWrapper<V, String>(new DBKVStorage(table, helper), transformation);
+		kvstorage = new VTransformingKVWrapper<V, String>(helper.getKV(table), transformation);
 		kvstorage = new KVKeyPrefixingWrapper<V>(kvstorage, id + "_");
 		return new DefaultSafeKVStorage<V>(kvstorage, table);
 	}
