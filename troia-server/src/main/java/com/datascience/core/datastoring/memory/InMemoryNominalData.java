@@ -3,6 +3,7 @@ package com.datascience.core.datastoring.memory;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.base.LObject;
+import com.datascience.core.datastoring.utils.NominalData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.utils.CostMatrix;
@@ -17,117 +18,72 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class InMemoryNominalData extends InMemoryData<String> implements INominalData {
 
-	protected Collection<String> categories;
-	protected boolean fixedPriors;
-	protected Map<String, Double> categoryPriors;
-	protected CostMatrix<String> costMatrix;
+	protected NominalData jobData;
 
-	@Override
-	public Collection<String> getCategories(){
-		return categories;
+	public InMemoryNominalData(){
+		jobData = new NominalData();
 	}
 
 	@Override
-	public void setCategories(Collection<String> categories){
-		this.categories = categories;
+	public void setCategories(Collection<String> categories) {
+		jobData.setCategories(categories);
 	}
 
 	@Override
-	public boolean arePriorsFixed(){
-		return fixedPriors;
+	public Collection<String> getCategories() {
+		return jobData.getCategories();
 	}
 
 	@Override
-	public void setPriorFixed(boolean fixedPriors){
-		this.fixedPriors = fixedPriors;
+	public void setPriorFixed(boolean fixedPriors) {
+		jobData.setPriorFixed(fixedPriors);
 	}
 
 	@Override
-	public double getCategoryPrior(String name){
-		return categoryPriors.get(name);
+	public boolean arePriorsFixed() {
+		return jobData.arePriorsFixed();
 	}
 
 	@Override
-	public Map<String, Double> getCategoryPriors(){
-		return categoryPriors;
+	public double getCategoryPrior(String name) {
+		return jobData.getCategoryPrior(name);
 	}
 
 	@Override
-	public void setCategoryPriors(Collection<CategoryValue> priors){
-		double priorSum = 0.;
-		Set<String> categoryNames = new HashSet<String>();
-		for (CategoryValue cv : priors){
-			priorSum += cv.value;
-			checkArgument(categoryNames.add(cv.categoryName),
-				"CategoryPriors contains two categories with the same name");
-		}
-		checkArgument(priors.size() == categories.size(),
-				"Different number of categories in categoryPriors and categories parameters");
-		checkArgument(DoubleMath.fuzzyEquals(1., priorSum, 1e-6),
-				"Priors should sum up to 1. or not to be given (therefore we initialize the priors to be uniform across classes)");
-		fixedPriors = true;
-		categoryPriors = new HashMap<String, Double>();
-		for (CategoryValue cv : priors){
-			checkArgument(categories.contains(cv.categoryName),
-					"Categories list does not contain category named %s", cv.categoryName);
-			categoryPriors.put(cv.categoryName, cv.value);
-		}
+	public Map<String, Double> getCategoryPriors() {
+		return jobData.getCategoryPriors();
 	}
 
 	@Override
-	public CostMatrix<String> getCostMatrix(){
-		return costMatrix;
+	public void setCategoryPriors(Collection<CategoryValue> priors) {
+		jobData.setCategoryPriors(priors);
 	}
 
 	@Override
-	public void setCostMatrix(CostMatrix<String> cm){
-		this.costMatrix = cm;
+	public CostMatrix<String> getCostMatrix() {
+		return jobData.getCostMatrix();
 	}
 
 	@Override
-	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){
-		checkArgument(categories != null, "There is no categories collection");
-		checkArgument(categories.size() >= 2, "There should be at least two categories");
-		this.categories = new HashSet<String>();
-		this.categories.addAll(categories);
-		checkArgument(this.categories.size() == categories.size(), "Category names should be different");
-		fixedPriors = false;
+	public void setCostMatrix(CostMatrix<String> cm) {
+		jobData.setCostMatrix(cm);
+	}
 
-		if (priors != null){
-			setCategoryPriors(priors);
-		}
-
-		if (costMatrix == null) {
-			this.costMatrix = new CostMatrix<String>();
-		}
-		else {
-			for (String s : costMatrix.getKnownValues()){
-				checkArgument(this.categories.contains(s), "Categories list does not contain category named %s", s);
-			}
-			this.costMatrix = costMatrix;
-		}
-		for (String c1 : categories)
-			for (String c2 : categories){
-				if (!this.costMatrix.hasCost(c1, c2))
-					this.costMatrix.add(c1, c2, c1.equals(c2) ? 0. : 1.);
-			}
+	@Override
+	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix) {
+		jobData.initialize(categories, priors, costMatrix);
 	}
 
 	@Override
 	public void addAssign(AssignedLabel<String> assign){
-		checkForCategoryExist(assign.getLabel());
+		jobData.checkForCategoryExist(assign.getLabel());
 		super.addAssign(assign);
 	}
 
 	@Override
 	public void addObject(LObject<String> object){
-		if (object.isGold()) checkForCategoryExist(object.getGoldLabel());
-		if (object.isEvaluation()) checkForCategoryExist(object.getEvaluationLabel());
+		if (object.isGold()) jobData.checkForCategoryExist(object.getGoldLabel());
+		if (object.isEvaluation()) jobData.checkForCategoryExist(object.getEvaluationLabel());
 		super.addObject(object);
-	}
-
-	private void checkForCategoryExist(String name){
-		if (!categories.contains(name))
-			throw new IllegalArgumentException("There is no category named: " + name);
 	}
 }
