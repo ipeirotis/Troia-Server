@@ -10,15 +10,14 @@ import com.datascience.utils.storage.ISafeKVStorage;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Author: konrad
  */
 public class KVNominalData extends KVData<String> implements INominalData{
 
-	public KVNominalData(ISafeKVStorage<Set<AssignedLabel<String>>> workersAssigns,
-				  ISafeKVStorage<Set<AssignedLabel<String>>> objectsAssigns,
+	public KVNominalData(ISafeKVStorage<Collection<AssignedLabel<String>>> workersAssigns,
+				  ISafeKVStorage<Collection<AssignedLabel<String>>> objectsAssigns,
 				  ISafeKVStorage<Collection<LObject<String>>> objects,
 				  ISafeKVStorage<Collection<LObject<String>>> goldObjects,
 				  ISafeKVStorage<Collection<LObject<String>>> evaluationObjects,
