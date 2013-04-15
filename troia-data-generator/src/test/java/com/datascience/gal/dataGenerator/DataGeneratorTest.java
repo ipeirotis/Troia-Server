@@ -1,17 +1,15 @@
 package com.datascience.gal.dataGenerator;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+import org.junit.Test;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import java.util.regex.Pattern;
-
-import junit.framework.TestCase;
-
-import org.junit.Test;
-
-import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.CorrectLabel;
 
 /**
  * The class <code>TestDataGeneratorTest</code> contains tests for the class
@@ -160,14 +158,14 @@ public class DataGeneratorTest extends TestCase {
 		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categories);
 		Collection<ArtificialWorker> workers = generator.generateArtificialWorkers(
 				workersCount, categories, minQuality, maxQuality);
-		Collection<AssignedLabel> labels = generator.generateLabels(workers, objects,
+		Collection<AssignedLabel<String>> labels = generator.generateLabels(workers, objects,
 					workersPerObject);
 
 		int correct = 0;
 		int total = 0;
-		for (AssignedLabel label : labels) {
-			if (label.getCategoryName().equals(
-					objects.getCategory(label.getObjectName()))) {
+		for (AssignedLabel<String> label : labels) {
+			if (label.getLabel().equals(
+					objects.getCategory(label.getLobject().getName()))) {
 				correct++;
 			}
 			total++;
@@ -185,13 +183,11 @@ public class DataGeneratorTest extends TestCase {
 		DataGenerator generator = DataGenerator.getInstance();
 		Collection<String> categories = generator.generateCategoryNames(categoriesCount);
 		TroiaObjectCollection objects = generator.generateTestObjects(objectsCount, categories);
-		Collection<CorrectLabel> goldLabels = generator.generateGoldLabels(objects, goldCoverage);
+		Collection<LObject<String>> goldLabels = generator.generateGoldLabels(objects, goldCoverage);
 		assertEquals(goldLabels.size(), (int)(objectsCount * goldCoverage));
 	}
 
 	public final static double PRIOR_EPSILON = 1E-1;
-
-	private static Logger logger = Logger.getLogger(DataGeneratorTest.class);
 }
 
 /*

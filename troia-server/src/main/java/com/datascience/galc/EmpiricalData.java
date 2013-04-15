@@ -6,6 +6,7 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.results.WorkerContResults;
 
 
 public class EmpiricalData extends Data<ContValue> {
@@ -54,7 +55,7 @@ public class EmpiricalData extends Data<ContValue> {
 
 			LObject<ContValue> d = getOrCreateObject(objectname);
 			d.setGoldLabel(new ContValue(correctValue, correctZeta));
-			addGoldObject(d);
+			addObject(d);
 		}
 	}
 
@@ -97,7 +98,7 @@ public class EmpiricalData extends Data<ContValue> {
 
 			LObject<ContValue> d = getOrCreateObject(objectname);
 			d.setEvaluationLabel(new ContValue(value, zeta));
-			addEvaluationObject(d);
+			addObject(d);
 		}
 	}
 }

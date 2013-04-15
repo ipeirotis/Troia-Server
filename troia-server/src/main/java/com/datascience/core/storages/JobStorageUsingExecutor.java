@@ -1,9 +1,9 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
+import com.datascience.core.base.Project;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.gal.commands.JobStorageCommands;
-import com.datascience.service.JobsManager;
+import com.datascience.core.JobsManager;
 
 /**
  *
@@ -24,7 +24,7 @@ public class JobStorageUsingExecutor implements IJobStorage{
 	}
 	
 	@Override
-	public <T> Job<T> get(String id) throws Exception {
+	public <T extends Project> Job<T> get(String id) throws Exception {
 		// I think we don't need to sync it
 		return internalStorage.get(id);
 	}

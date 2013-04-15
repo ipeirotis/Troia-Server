@@ -8,6 +8,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import com.datascience.core.base.CategoryPair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class CategoryPairTest {
 		   new P(3,4), new P(3,5),
 		   new P(4,5)
 	};
-	CategoryPair categoryPairs[] = new  CategoryPair[froms.length];
+	CategoryPair categoryPairs[] = new CategoryPair[froms.length];
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -61,7 +62,7 @@ public class CategoryPairTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.gal.CategoryPair#hashCode()}.
+	 * Test method for {@link com.datascience.core.base.CategoryPair#hashCode()}.
 	 */
 	@Test
 	public final void testHashCode() {
@@ -86,7 +87,7 @@ public class CategoryPairTest {
 		}
 	}
 	/**
-	 * Test method for {@link com.datascience.gal.CategoryPair#equals(java.lang.Object)}.
+	 * Test method for {@link com.datascience.core.base.CategoryPair#equals(java.lang.Object)}.
 	 */
 	@Test
 	public final void testEqualsObject() {

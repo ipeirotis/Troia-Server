@@ -1,18 +1,13 @@
 package com.datascience.gal.dataGenerator;
 
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.utils.CostMatrix;
+
 import java.util.Collection;
 import java.util.Map;
 
-import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
-import com.datascience.gal.CorrectLabel;
-import com.datascience.gal.MisclassificationCost;
-
 public class Data {
-
-
-
-
 
 	/**
 	 * @return Request identifier
@@ -20,6 +15,7 @@ public class Data {
 	public String getRequestId() {
 		return requestId;
 	}
+
 
 	/**
 	 * @param requestId Request identifier
@@ -66,63 +62,53 @@ public class Data {
 	/**
 	 * @return Collection of category names
 	 */
-	public Collection<Category> getCategories() {
+	public Collection<String> getCategories() {
 		return categories;
 	}
 
 	/**
 	 * @param categories Collection of category names
 	 */
-	public void setCategories(Collection<Category> categories) {
+	public void setCategories(Collection<String> categories) {
 		this.categories = categories;
 	}
 
 	/**
 	 * @return Collection of generated labels
 	 */
-	public Collection<AssignedLabel> getLabels() {
+	public Collection<AssignedLabel<String>> getLabels() {
 		return labels;
 	}
 
 	/**
 	 * @param labels Collection of labels
 	 */
-	public void setLabels(Collection<AssignedLabel> labels) {
+	public void setLabels(Collection<AssignedLabel<String>> labels) {
 		this.labels = labels;
 	}
 
 	/**
 	 * @return Collection of gold labels in request
 	 */
-	public Collection<CorrectLabel> getGoldLabels() {
+	public Collection<LObject<String>> getGoldLabels() {
 		return goldLabels;
 	}
 
 	/**
 	 * @param goldLabels Collection of gold labels in request
 	 */
-	public void setGoldLabels(Collection<CorrectLabel> goldLabels) {
+	public void setGoldLabels(Collection<LObject<String>> goldLabels) {
 		this.goldLabels = goldLabels;
 	}
 
 
-
-	/**
-	 * @return Collection of misclassification costs
-	 */
-	public Collection<MisclassificationCost> getMisclassificationCost() {
-		return misclassificationCost;
+	public CostMatrix<String> getCostMatrix() {
+		return costMatrix;
 	}
 
-	/**
-	 * @param misclassificationCost Collection of misclassification costs
-	 */
-	public void setMisclassificationCost(
-		Collection<MisclassificationCost> misclassificationCost) {
-		this.misclassificationCost = misclassificationCost;
+	public void setCostMatrix(CostMatrix<String> misclassificationCost) {
+		this.costMatrix = misclassificationCost;
 	}
-
-
 
 	/**
 	 * @return the artificialWorkers
@@ -166,7 +152,7 @@ public class Data {
 			   "categories = " + categories + ", " +
 			   "labels = " + labels + ", " +
 			   "goldLabels = " + goldLabels + ", " +
-			   "misclassificationCost = " + misclassificationCost + ", " +
+			   "costMatrix = " + costMatrix + ", " +
 			   "artificialWorkers = " + artificialWorkers + ", " + "}";
 	}
 
@@ -188,22 +174,22 @@ public class Data {
 	/**
 	 * Collection of category names
 	 */
-	Collection<Category> categories;
+	Collection<String> categories;
 
 	/**
 	 * Collection of generated labels
 	 */
-	Collection<AssignedLabel> labels;
+	Collection<AssignedLabel<String>> labels;
 
 	/**
 	 * Collection of gold labels in request
 	 */
-	Collection<CorrectLabel> goldLabels;
+	Collection<LObject<String>> goldLabels;
 
 	/**
 	 * Collection of misclassification costs
 	 */
-	Collection<MisclassificationCost> misclassificationCost;
+	CostMatrix<String> costMatrix;
 
 	Collection<ArtificialWorker> artificialWorkers;
 

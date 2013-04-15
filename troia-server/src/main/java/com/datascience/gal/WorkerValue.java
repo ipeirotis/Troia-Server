@@ -1,11 +1,11 @@
 package com.datascience.gal;
 
-public class WorkerValue {
+public class WorkerValue<T> {
 
 	String workerName;
-	Double value;
+	T value;
 	
-	public WorkerValue(String worker, Double v){
+	public WorkerValue(String worker, T v){
 		workerName = worker;
 		value = v;
 	}

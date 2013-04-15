@@ -35,6 +35,7 @@ public class ContValue {
 		return zeta;
 	}
 
+	@Override
 	public boolean equals(Object other){
 		if (other instanceof ContValue) {
 			ContValue ot = (ContValue) other;
@@ -42,6 +43,11 @@ public class ContValue {
 					Objects.equal(zeta, ot.zeta);
 		}
 		return false;
+	}
+
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(value, zeta);
 	}
 	
 	@Override

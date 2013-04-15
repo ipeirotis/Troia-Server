@@ -33,7 +33,7 @@ public class ContDataComparator {
 		object2 = new LObject<ContValue>("gobject2");
 		object3 = new LObject<ContValue>("object3");
 		object2.setGoldLabel(new ContValue(0.42, 0.1));
-		data.addGoldObject(object2);
+		data.addObject(object2);
 		data.addObject(object3);
 		data.addObject(object3); // just for test ...
 
@@ -51,10 +51,10 @@ public class ContDataComparator {
 		assertEquals(worker1, d.getWorker(worker1.getName()));
 		assertEquals(worker2, d.getWorker(worker2.getName()));
 
-		assertEquals(1, d.getWorker("worker1").getAssigns().size());
-		assertTrue(d.getWorker("worker1").getAssigns().contains(assign1));
-		assertEquals(1, d.getWorker("worker2").getAssigns().size());
-		assertTrue(d.getWorker("worker2").getAssigns().contains(assign2));
+		assertEquals(1, d.getWorkerAssigns(d.getWorker("worker1")).size());
+		assertTrue(d.getWorkerAssigns(d.getWorker("worker1")).contains(assign1));
+		assertEquals(1, d.getWorkerAssigns(d.getWorker("worker2")).size());
+		assertTrue(d.getWorkerAssigns(d.getWorker("worker2")).contains(assign2));
 
 		assertEquals(3, d.getObjects().size());
 		assertEquals(object1, d.getObject(object1.getName()));

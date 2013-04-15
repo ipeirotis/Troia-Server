@@ -1,7 +1,7 @@
 package com.datascience.gal.commands;
 
 import com.datascience.executor.JobCommand;
-import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.core.nominal.NominalProject;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class CategoriesCommands {
 	
-	static public class GetCategories extends JobCommand<Collection<String>, AbstractDawidSkene> {
+	static public class GetCategories extends JobCommand<Collection<String>, NominalProject> {
 		
 		public GetCategories(){
 			super(false);
@@ -19,7 +19,7 @@ public class CategoriesCommands {
 		
 		@Override
 		protected void realExecute() {
-			setResult(project.getCategories().keySet());
+			setResult(project.getData().getCategories());
 		}
 	}
 }

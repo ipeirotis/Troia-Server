@@ -1,26 +1,17 @@
 package com.datascience.gal.dataGenerator;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
-import org.apache.log4j.Logger;
-
-import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
-import com.datascience.gal.CorrectLabel;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
+import com.datascience.utils.CostMatrix;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.apache.log4j.Logger;
+
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Test data manager is used for managing text files containing test data.
@@ -125,20 +116,18 @@ public class DataManager {
 	 *
 	 * @param filename
 	 *            Target file
-	 * @param categories
-	 *            Collection of categories
 	 * @throws IOException
 	 *             Thrown if program was unable to save workers to file
 	 */
-	public void saveMisclassificationCost(String filename,
-			Collection<Category> categories) throws IOException {
-		logger.info("Saving misclassification cost matrix to file");
+	public void saveCostMatrix(String filename,
+			CostMatrix<String> cm, Collection<String> categories) throws IOException {
+		logger.info("Saving cost matrix to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (Category c0 : categories) {
-			for (Category c1 : categories) {
-				out.append(c0.getName() + " " + c1.getName() + " "
-						+ c1.getCost(c0.getName()) + "\n");
+		for (String c0 : categories) {
+			for (String c1 : categories) {
+				out.append(c0 + " " + c1 + " "
+						+ cm.getCost(c0, c1) + "\n");
 			}
 		}
 
@@ -152,8 +141,6 @@ public class DataManager {
 	 * user. For files in with user can define workers you should see
 	 * "loadBasicWorkers" function.
 	 *
-	 * @see saveArtificialWorkers
-	 * @see loadBasicWorkers
 	 * @param filename
 	 *            Name of file containing JSONified artificial workers
 	 * @return Collection of artificial workers fetched from file
@@ -219,14 +206,13 @@ public class DataManager {
 	 * @param labels
 	 * @throws IOException
 	 */
-	public void saveLabelsToFile(String filename, Collection<AssignedLabel> labels)
+	public void saveLabelsToFile(String filename, Collection<AssignedLabel<String>> labels)
 	throws IOException {
 		logger.info("Saving labels to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (AssignedLabel label : labels) {
-			out.write(label.getWorkerName() + '\t' + label.getObjectName()
-					  + '\t' + label.getCategoryName() + '\n');
+		for (AssignedLabel<String> label : labels) {
+			out.write(label.getWorker().getName() + '\t' + label.getLobject().getName() + '\t' + label.getLabel() + '\n');
 		}
 		out.close();
 	}
@@ -241,13 +227,13 @@ public class DataManager {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public Collection<AssignedLabel> loadLabelsFromFile(String filename)
+	public Collection<AssignedLabel<String>> loadLabelsFromFile(String filename)
 	throws FileNotFoundException {
 		logger.info("Loading labels from file");
 		FileInputStream stream = new FileInputStream(filename);
 		Scanner scanner = new Scanner(stream);
 		String line;
-		Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
+		Collection<AssignedLabel<String>> labels = new ArrayList<AssignedLabel<String>>();
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			labels.add(this.parseLabelFromString(line));
@@ -264,14 +250,14 @@ public class DataManager {
 	 * @param line
 	 * @return
 	 */
-	public AssignedLabel parseLabelFromString(String line) {
+	public AssignedLabel<String> parseLabelFromString(String line) {
 		String objectName, objectCategory, workerName;
 		workerName = line.substring(0, line.indexOf('\t'));
 		objectName = line.substring(line.indexOf('\t') + 1,
 									line.lastIndexOf('\t'));
 		objectCategory = line.substring(line.lastIndexOf('\t') + 1,
 										line.length());
-		return new AssignedLabel(workerName, objectName, objectCategory);
+		return new AssignedLabel<String>(new Worker<String>(workerName), new LObject(objectName), objectCategory);
 	}
 
 	/**
@@ -282,13 +268,14 @@ public class DataManager {
 	 * @throws IOException
 	 */
 	public void saveGoldLabelsToFile(String filename,
-									 Collection<CorrectLabel> labels) throws IOException {
+									 Collection<LObject<String>> labels) throws IOException {
 		logger.info("Saving gold labels objects to file");
 		FileOutputStream stream = new FileOutputStream(filename);
 		Writer out = new OutputStreamWriter(stream);
-		for (CorrectLabel label : labels) {
-			out.write(label.getObjectName() + '\t' + label.getCorrectCategory()
-					  + '\n');
+		for (LObject<String> label : labels) {
+//			out.write(label.getObjectName() + '\t' + label.getCorrectCategory()
+//					  + '\n');
+			out.write(label.getName() + '\t' + label.getGoldLabel() + '\n');
 		}
 		out.close();
 	}
@@ -300,22 +287,51 @@ public class DataManager {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public Collection<CorrectLabel> loadGoldLabelsFromFile(String filename)
+	public Collection<LObject<String>> loadGoldLabelsFromFile(String filename)
 	throws FileNotFoundException {
 		logger.info("Loading gold labels from file");
 		FileInputStream stream = new FileInputStream(filename);
 		Scanner scanner = new Scanner(stream);
 		String line, objectName, objectCategory;
-		Collection<CorrectLabel> goldLabels = new ArrayList<CorrectLabel>();
+		Collection<LObject<String>> goldLabels = new ArrayList<LObject<String>>();
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			objectName = line.substring(0, line.indexOf('\t'));
 			objectCategory = line.substring(line.indexOf('\t') + 1,
 											line.length());
-			goldLabels.add(new CorrectLabel(objectName, objectCategory));
+			LObject<String> object = new LObject<String>(objectName);
+			object.setGoldLabel(objectCategory);
+			goldLabels.add(object);
 		}
 		scanner.close();
 		return goldLabels;
+	}
+
+	/**
+	 * Loads evaluation labels from file
+	 *
+	 * @param filename
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public Collection<LObject<String>> loadEvaluationLabelsFromFile(String filename)
+			throws FileNotFoundException {
+		logger.info("Loading evaluation labels from file");
+		FileInputStream stream = new FileInputStream(filename);
+		Scanner scanner = new Scanner(stream);
+		String line, objectName, objectCategory;
+		Collection<LObject<String>> evaluationLabels = new ArrayList<LObject<String>>();
+		while (scanner.hasNextLine()) {
+			line = scanner.nextLine();
+			objectName = line.substring(0, line.indexOf('\t'));
+			objectCategory = line.substring(line.indexOf('\t') + 1,
+					line.length());
+			LObject<String> object = new LObject<String>(objectName);
+			object.setEvaluationLabel(objectCategory);
+			evaluationLabels.add(object);
+		}
+		scanner.close();
+		return evaluationLabels;
 	}
 
 
@@ -357,16 +373,15 @@ public class DataManager {
 									   + FILE_EXTENSION, data.getArtificialWorkerQualities());
 		}
 		if(data.getCategories()!=null) {
-			this.saveMisclassificationCost(filename_base + MISCLASSIFICATION_COST_TAG
-									   + FILE_EXTENSION, data.getCategories());
+			this.saveCostMatrix(filename_base + MISCLASSIFICATION_COST_TAG
+									   + FILE_EXTENSION, data.getCostMatrix(), data.getCategories());
 		}
 		if(data.getGoldLabels()!=null) {
 			this.saveGoldLabelsToFile(filename_base + GOLD_LABELS_TAG
 									  + FILE_EXTENSION, data.getGoldLabels());
 		}
 		if(data.getLabels()!=null) {
-			this.saveLabelsToFile(filename_base + LABELS_TAG + FILE_EXTENSION,
-								  data.getLabels());
+			this.saveLabelsToFile(filename_base + LABELS_TAG + FILE_EXTENSION, data.getLabels());
 		}
 		if(data.getObjectCollection()!=null) {
 			this.saveTestObjectsToFile(
@@ -388,28 +403,27 @@ public class DataManager {
 		data.setObjectCollection(this.loadTestObjectsFromFile(filename_base
 								 + OBJECTS_TAG + FILE_EXTENSION));
 		data.setWorkers(this.extractWorkerNamesFromLabels(data.getLabels()));
-		data.setCategories(CategoryFactory.getInstance().createCategories(
-							   this.extractCategoryNamesFromLabels(data.getLabels())));
+		data.setCategories(this.extractCategoryNamesFromLabels(data.getLabels()));
 		return data;
 	}
 
 	public Collection<String> extractWorkerNamesFromLabels(
-		Collection<AssignedLabel> labels) {
+		Collection<AssignedLabel<String>> labels) {
 		Collection<String> workers = new ArrayList<String>();
-		for (AssignedLabel label : labels) {
-			if (!workers.contains(label.getWorkerName())) {
-				workers.add(label.getWorkerName());
+		for (AssignedLabel<String> label : labels) {
+			if (!workers.contains(label.getWorker().getName())) {
+				workers.add(label.getWorker().getName());
 			}
 		}
 		return workers;
 	}
 
 	public Collection<String> extractCategoryNamesFromLabels(
-		Collection<AssignedLabel> labels) {
+		Collection<AssignedLabel<String>> labels) {
 		Collection<String> categories = new ArrayList<String>();
-		for (AssignedLabel label : labels) {
-			if (!categories.contains(label.getCategoryName())) {
-				categories.add(label.getCategoryName());
+		for (AssignedLabel<String> label : labels) {
+			if (!categories.contains(label.getLabel())) {
+				categories.add(label.getLabel());
 			}
 		}
 		return categories;

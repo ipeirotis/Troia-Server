@@ -1,22 +1,14 @@
 package com.datascience.gal.dataGenerator;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
-
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.nominal.NominalData;
+import com.datascience.gal.BatchDawidSkene;
+import com.datascience.utils.CostMatrix;
 import org.apache.log4j.Logger;
 
-import com.datascience.gal.AssignedLabel;
-import com.datascience.gal.Category;
-import com.datascience.gal.CorrectLabel;
-import com.datascience.gal.MisclassificationCost;
-import com.datascience.gal.Worker;
-import com.datascience.gal.decision.WorkerEstimator;
+import java.util.*;
 
 /**
  * This class is used to create test data for Troia client tests.
@@ -228,10 +220,8 @@ public class DataGenerator {
 	 *            How many workers will assign label to same object
 	 * @return Collection of worker assigned labels
 	 */
-	public Collection<AssignedLabel> generateLabels(
-		Collection<ArtificialWorker> workers, TroiaObjectCollection objects,
-		int workersPerObject) {
-		Collection<AssignedLabel> labels = new ArrayList<AssignedLabel>();
+	public Collection<AssignedLabel<String>> generateLabels(Collection<ArtificialWorker> workers, TroiaObjectCollection objects, int workersPerObject) {
+		Collection<AssignedLabel<String>> labels = new ArrayList<AssignedLabel<String>>();
 		Map<ArtificialWorker, NoisedLabelGenerator> generators = NoisedLabelGeneratorFactory
 				.getInstance().getRouletteGeneratorsForWorkers(workers);
 		Iterator<ArtificialWorker> workersIterator = workers.iterator();
@@ -246,7 +236,7 @@ public class DataGenerator {
 				worker = workersIterator.next();
 				assignedLabel = generators.get(worker).getCategoryWithNoise(
 									correctCat);
-				labels.add(new AssignedLabel(worker.getName(), object, assignedLabel));
+				labels.add(new AssignedLabel<String>(worker, new LObject<String>(object), assignedLabel));
 			}
 		}
 		return labels;
@@ -261,17 +251,18 @@ public class DataGenerator {
 	 *            Fraction of objects that will have gold label
 	 * @return Collection of gold labels.
 	 */
-	public Collection<CorrectLabel> generateGoldLabels(
+	public Collection<LObject<String>> generateGoldLabels(
 		TroiaObjectCollection objects, double goldCoverage) {
 		int goldCount = (int) (objects.size() * goldCoverage);
-		Collection<CorrectLabel> goldLabels = new ArrayList<CorrectLabel>();
+		Collection<LObject<String>> goldLabels = new ArrayList<LObject<String>>();
 		Iterator<String> objectsIterator = objects.iterator();
 		for (int i = 0; i < goldCount; i++) {
 			String objectName;
 			if (objectsIterator.hasNext()) {
 				objectName = objectsIterator.next();
-				goldLabels.add(new CorrectLabel(objectName, objects
-											 .getCategory(objectName)));
+				LObject<String> goldObject = new LObject<String>(objectName);
+				goldObject.setGoldLabel(objects.getCategory(objectName));
+				goldLabels.add(goldObject);
 			} else {
 				break;
 			}
@@ -280,42 +271,37 @@ public class DataGenerator {
 	}
 
 	public Collection<Map<String, Object>> computeArtificialWorkerQualities(
-			Collection<Category> categories,
+			Collection<String> categories,
 			TroiaObjectCollection objects,
 			Collection<ArtificialWorker> workers,
-			Collection<AssignedLabel> labels,
-			Collection<CorrectLabel> goldLabels) {
+			Collection<AssignedLabel<String>> labels,
+			Collection<LObject<String>> goldLabels) {
 		// Objects conversion.
-		Collection<com.datascience.gal.Category> tsCategories =
-				new ArrayList<com.datascience.gal.Category>();
-		for (Category category : categories) {
-			tsCategories.add(new com.datascience.gal.Category(category.getName()));
+		Collection<AssignedLabel<String>> tsLabels =
+				new ArrayList<AssignedLabel<String>>();
+		for (AssignedLabel<String> label : labels) {
+			tsLabels.add(new AssignedLabel<String>(label.getWorker(), label.getLobject(), label.getLabel()));
 		}
-		Collection<AssignedLabel> tsLabels =
-				new ArrayList<AssignedLabel>();
-		for (AssignedLabel label : labels) {
-			tsLabels.add(new com.datascience.gal.AssignedLabel(
-					label.getWorkerName(),
-					label.getObjectName(),
-					label.getCategoryName()));
-		}
-		Collection<CorrectLabel> tsCorrectLabels =
-				new ArrayList<CorrectLabel>();
+		Collection<LObject<String>> tsCorrectLabels =
+				new ArrayList<LObject<String>>();
 		for (String objectName : objects.testObject.keySet()) {
-			tsCorrectLabels.add(new CorrectLabel(objectName,
-					objects.getCategory(objectName)));
+			LObject<String> goldObject = new LObject<String>(objectName);
+			goldObject.setGoldLabel(objects.getCategory(objectName));
+			tsCorrectLabels.add(goldObject);
 		}
-		com.datascience.gal.DawidSkene dawidSkene =
-				new com.datascience.gal.BatchDawidSkene("data-generation", tsCategories);
-		dawidSkene.addAssignedLabels(tsLabels);
-		dawidSkene.addCorrectLabels(tsCorrectLabels);
-		dawidSkene.getCategoryPriors();
-		System.out.println("DEBUG >>>");
-		for (Category c : categories) {
-			//com.datascience.gal.Category c = dawidSkene.getCategories().get(name);
-			System.out.println(">>>>>> " + c.getName() + " " + c.getPrior() + " " + c.getMisclassificationCosts());
+
+//		com.datascience.gal.DawidSkene dawidSkene =
+//				new com.datascience.gal.BatchDawidSkene("data-generation", tsCategories);
+//		dawidSkene.addAssignedLabels(tsLabels);
+//		dawidSkene.addCorrectLabels(tsCorrectLabels);
+
+		BatchDawidSkene dawidSkene = new BatchDawidSkene();
+		NominalData data = new NominalData();
+		for (AssignedLabel<String> assign : tsLabels) {
+			data.addAssign(assign);
 		}
-		
+		dawidSkene.setData(data);
+
 		return null;
 	}
 
@@ -323,21 +309,19 @@ public class DataGenerator {
 			int categoryCount, int workerCount, double minQuality,
 			double maxQuality, double goldRatio, int workersPerObject) {
 		Data data = new Data();
-		Collection<String> categoryNames = this.generateCategoryNames(
+		Collection<String> categories = this.generateCategoryNames(
 				categoryCount);
-		Collection<Category> categories = CategoryFactory.getInstance().createCategories(categoryNames);
 		TroiaObjectCollection objects = this.generateTestObjects(objectCount,
-				categoryNames);
-		Collection<MisclassificationCost> misclassificationCost = MisclassificationCostFactory
-				.getInstance().getMisclassificationCosts(categories);
-		Collection<CorrectLabel> goldLabels = this.generateGoldLabels(objects,
+				categories);
+		CostMatrix<String> cm = CategoryFactory.getInstance().createMatrix(categories);
+		Collection<LObject<String>> goldLabels = this.generateGoldLabels(objects,
 				goldRatio);
 		Collection<ArtificialWorker> workers = null;
-		Collection<AssignedLabel> labels = null;
+		Collection<AssignedLabel<String>> labels = null;
 		Collection<String> workerNames = null;
 		if(workerCount>0) {
-			workers = this.generateArtificialWorkers(workerCount, categoryNames, minQuality, maxQuality);
-			labels = this.generateLabels(workers, objects,workersPerObject);
+			workers = this.generateArtificialWorkers(workerCount, categories, minQuality, maxQuality);
+			labels = this.generateLabels(workers, objects, workersPerObject);
 			workerNames = new ArrayList<String>();
 			for (ArtificialWorker worker : workers) {
 				workerNames.add(worker.getName());
@@ -346,7 +330,7 @@ public class DataGenerator {
 		data.setCategories(categories);
 		data.setGoldLabels(goldLabels);
 		data.setLabels(labels);
-		data.setMisclassificationCost(misclassificationCost);
+		data.setCostMatrix(cm);
 		data.setObjectCollection(objects);
 		data.setRequestId(requestId);
 		data.setWorkers(workerNames);

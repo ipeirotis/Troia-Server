@@ -10,7 +10,6 @@ import java.util.Set;
  */
 public class Worker<T> {
 
-	protected Set<AssignedLabel<T>> assigns;
 	protected String name;
 
 	public Worker(String name){
@@ -19,15 +18,6 @@ public class Worker<T> {
 	}
 
 	public Worker(){
-		assigns = new HashSet<AssignedLabel<T>>();
-	}
-
-	public void addAssign(AssignedLabel<T> assign){
-		assigns.add(assign);
-	}
-
-	public Set<AssignedLabel<T>> getAssigns(){
-		return assigns;
 	}
 
 	public void setName(String name){

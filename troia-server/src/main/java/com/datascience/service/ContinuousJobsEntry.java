@@ -1,11 +1,14 @@
 package com.datascience.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.datascience.core.Job;
+import com.google.gson.JsonObject;
 import com.sun.jersey.spi.resource.Singleton;
 
 /**
@@ -14,19 +17,15 @@ import com.sun.jersey.spi.resource.Singleton;
 @Path("/cjobs/")
 @Singleton
 public class ContinuousJobsEntry extends AbstractJobsEntry {
-	
+
+	@Override
+	protected Job createJob(JsonObject jo, String jid) {
+		return getJobFactory().createContinuousJob(jo, jid);
+	}
+
 	@POST
-	public Response createJob(@FormParam("id") String jid) throws Exception{
-		if (empty_jid(jid)){
-			jid = jidGenerator.getID();
-		}
-
-		Job job_old = jobStorage.get(jid);
-		if (job_old != null) {
-			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
-		}
-
-		jobStorage.add(jobFactory.createContinuousJob(jid));
-		return responser.makeOKResponse("New job created with ID: " + jid);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response createJob(String json) throws Exception{
+		return super.createJob(json);
 	}
 }

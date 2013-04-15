@@ -19,6 +19,10 @@ public class CostMatrix<T> {
 		costMatrix = new HashMap<T, Map<T, Double>>();
 	}
 
+	public CostMatrix(Map<T, Map<T, Double>> cm) {
+		costMatrix = cm;
+	}
+
 	public void add(T trueValue, T predictedValue, Double cost) {
 		Map<T, Double> entryMap = costMatrix.get(trueValue);
 		if (entryMap == null) {
@@ -28,9 +32,17 @@ public class CostMatrix<T> {
 		entryMap.put(predictedValue, cost);
 	}
 
+	public boolean hasCost(T trueValue, T predictedValue){
+		return costMatrix.containsKey(trueValue) && costMatrix.get(trueValue).containsKey(predictedValue);
+	}
+
 	public Double getCost(T trueValue, T predictedValue) {
 		// I won't check if this "request" is correct - it should fail if not
 		return costMatrix.get(trueValue).get(predictedValue);
+	}
+
+	public Map<T, Map<T, Double>> getCostMatrix(){
+		return costMatrix;
 	}
 
 	public Map<T, Double> getDefinedCostsForValue(T trueValue) {

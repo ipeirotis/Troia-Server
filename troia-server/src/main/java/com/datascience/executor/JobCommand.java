@@ -1,6 +1,7 @@
 package com.datascience.executor;
 
 import com.datascience.core.Job;
+import com.datascience.core.commands.ProjectCommand;
 import com.datascience.core.storages.IJobStorage;
 
 /**
@@ -18,14 +19,11 @@ public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 	}
 	
 	protected Job getJob() throws Exception {
-		if (jobId == null)
-			throw new IllegalStateException("No jobid");
-		if (jobStorage == null)
-			throw new IllegalStateException("No jobStorage");
+		assertState(jobId != null, "No job ID");
+		assertState(jobStorage != null, "No jobStorage set");
 		Job tmp_job = jobStorage.get(jobId);
-		if (tmp_job == null){ // || !expectedClass.isAssignableFrom(tmp_job.getProject().getClass())) {
-			throw new IllegalArgumentException("Job with ID " + jobId + " does not exist or is of different kind");
-		}
+		assertArgument(tmp_job != null, "Job with ID " + jobId + " does not exist or is of different kind");
+		// old: ^^^^ || !expectedClass.isAssignableFrom(tmp_job.getProject().getClass())) {
 		return tmp_job;
 	}
 	
@@ -39,6 +37,14 @@ public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 
 	protected void prepareExecution() throws Exception{
 		project = (U) getJob().getProject();
+	}
+
+	protected void assertState(boolean condition, String message){
+		if (!condition) throw new IllegalStateException(message);
+	}
+
+	protected void assertArgument(boolean condition, String message){
+		if (!condition) throw new IllegalArgumentException(message);
 	}
 }
 
