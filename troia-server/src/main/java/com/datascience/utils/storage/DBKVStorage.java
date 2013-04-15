@@ -12,6 +12,7 @@ public class DBKVStorage implements IKVStorage<String> {
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
 
 	private static final String GET = "SELECT value FROM %s WHERE id = ?;";
+	private static final String EXISTS = "SELECT COUNT(*) as c FROM %s WHERE id = ?;";
 	private static final String INSERT = "REPLACE INTO %s (id, value) VALUES (?, ?);";
 	private static final String DELETE = "DELETE FROM %s WHERE id = ?;";
 
@@ -23,23 +24,37 @@ public class DBKVStorage implements IKVStorage<String> {
 		this.dbStorage = dbStorage;
 	}
 
-	private String prepareString(String sql, String table){
+	protected String prepareString(String sql, String table){
 		return String.format(sql, table);
+	}
+
+	protected PreparedStatement prepareStatement(String sql, String table) throws SQLException {
+		return dbStorage.initStatement(prepareString(sql, table));
+	}
+
+	protected String startLog(String method, String key){
+		String logmsg = "DBKV (" + table + ") " + method + " " + key;
+		logger.debug(logmsg);
+		return logmsg;
+	}
+
+	protected void handleError(String msg, SQLException ex) throws SQLException {
+		logger.error(msg + " FAIL", ex);
+		throw ex;
 	}
 
 	@Override
 	public void put(String key, String value) throws SQLException{
-		String logmsg = "DBKV (" + table + ") put " + key;
-		logger.debug(logmsg);
+		String logmsg = startLog("put", key);
 		PreparedStatement sql = null;
 		try {
-			sql = dbStorage.initStatement(prepareString(INSERT, table));
+			sql = prepareStatement(INSERT, table);
 			sql.setString(1, key);
 			sql.setString(2, value);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
-		} catch (Exception ex) {
-			logger.error(logmsg + " FAIL", ex);
+		} catch (SQLException ex) {
+			handleError(logmsg, ex);
 		} finally {
 			dbStorage.cleanup(sql, null);
 		}
@@ -47,13 +62,12 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	@Override
 	public String get(String key) throws SQLException{
-		String logmsg = "DBKV (" + table + ") get " + key;
-		logger.debug(logmsg);
+		String logmsg = startLog("get", key);
 		PreparedStatement sql = null;
 		ResultSet result = null;
 		String value = null;
 		try {
-			sql = dbStorage.initStatement(prepareString(GET, table));
+			sql = prepareStatement(GET, table);
 			sql.setString(1, key);
 			result = sql.executeQuery();
 			if (!result.next()) {
@@ -62,26 +76,25 @@ public class DBKVStorage implements IKVStorage<String> {
 			}
 			value = result.getString("value");
 			logger.debug(logmsg + " DONE");
-		} catch (Exception ex) {
-			logger.error(logmsg + " FAIL", ex);
+		} catch (SQLException ex) {
+			handleError(logmsg, ex);
 		} finally {
 			dbStorage.cleanup(sql, result);
-			return value;
 		}
+		return value;
 	}
 
 	@Override
 	public void remove(String key) throws SQLException{
-		String logmsg = "DBKV (" + table + ") remove " + key;
-		logger.debug(logmsg);
+		String logmsg = startLog("remove ", key);
 		PreparedStatement sql = null;
 		try {
-			sql = dbStorage.initStatement(prepareString(DELETE, table));
+			sql = prepareStatement(DELETE, table);
 			sql.setString(1, key);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
-		} catch (Exception ex) {
-			logger.error(logmsg + " FAIL", ex);
+		} catch (SQLException ex) {
+			handleError(logmsg, ex);
 		} finally {
 			dbStorage.cleanup(sql, null);
 		}
@@ -89,9 +102,23 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	@Override
 	public boolean contains(String key) throws SQLException{
-		// TODO XXX FIXME rewrite this to run without deserialization (count results)
-		logger.debug("DBKV contains");
-		return get(key) != null;
+		String logmsg = startLog("contains", key);
+		PreparedStatement sql = null;
+		ResultSet result = null;
+		long value = 0;
+		try {
+			sql = prepareStatement(EXISTS, table);
+			sql.setString(1, key);
+			result = sql.executeQuery();
+			result.next();
+			value = result.getLong("c");
+			logger.debug(logmsg + " DONE");
+		} catch (SQLException ex) {
+			handleError(logmsg, ex);
+		} finally {
+			dbStorage.cleanup(sql, result);
+		}
+		return value == 1;
 	}
 
 	@Override

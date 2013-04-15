@@ -8,7 +8,6 @@ import com.datascience.utils.storage.ISafeKVStorage;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 /**
@@ -41,7 +40,7 @@ public class KVData<T> extends AbstractData<T> {
 
 	protected void initializeEmptyRows(Collection<ISafeKVStorage> storages){
 		for (ISafeKVStorage storage : storages){
-			if (storage.get("") == null){
+			if (!storage.contains("")){
 				storage.put("", new LinkedList());
 			}
 		}
