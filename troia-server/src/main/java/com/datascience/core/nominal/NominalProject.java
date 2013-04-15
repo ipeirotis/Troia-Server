@@ -18,10 +18,10 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 
 	protected NominalAlgorithm nomAlgorithm;
 
-	public NominalProject(Algorithm algorithm1){
+	public NominalProject(Algorithm algorithm1, INominalData data){
 		super(algorithm1);
 		nomAlgorithm = (NominalAlgorithm) algorithm1; // just to skip casting over and over
-		data = new InMemoryNominalData(); // TODO XXX FIXME we need to pass this as parameter
+		this.data = data;
 		algorithm.setData(data);
 	}
 

@@ -10,6 +10,7 @@ import com.datascience.core.storages.*;
 import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.SerializedCachedCommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
+import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
 import org.apache.log4j.Logger;
@@ -36,10 +37,16 @@ public class ServiceComponentsFactory {
 		String password = properties.getProperty(Constants.DB_PASSWORD);
 		String db = properties.getProperty(Constants.DB_NAME);
 		String url = properties.getProperty(Constants.DB_URL);
+		String driverClass = properties.getProperty(Constants.DB_DRIVER_CLASS);
+		Properties connectionProperties = new Properties();
+		connectionProperties.put("name", user);
+		connectionProperties.put("password", password);
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
 
-		IJobStorage internalJobStorage = new DBJobStorage(user, password, db, url, serializer);
+//		IJobStorage internalJobStorage = new DBJobStorage(user, password, db, url, serializer);
+		DBKVHelper helper = new DBKVHelper(url, driverClass, connectionProperties, db);
+		IJobStorage internalJobStorage = new DBKVJobStorage(helper, serializer);
 		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
 		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
 		logger.info("Job Storage loaded");

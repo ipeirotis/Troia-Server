@@ -15,6 +15,7 @@ import java.util.Set;
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.decision.DecisionEngine;
@@ -40,7 +41,7 @@ public class IncrementalDawidSkeneTest {
 		categories.add("category2");
 
 		IncrementalDawidSkene alg = new IncrementalDawidSkene();
-		project = new NominalProject(alg);
+		project = new NominalProject(alg, new InMemoryNominalData());
 		project.getData().addNewUpdatableAlgorithm(alg);
 		project.initializeCategories(categories, null, null);
 	}

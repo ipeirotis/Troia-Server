@@ -19,16 +19,15 @@ public class DBKVHelper extends DBStorage {
 
 	protected static List<String> TABLES = Arrays.asList(new String[] {
 			"ObjectAssigns", "WorkerAssigns", "Objects", "Workers",
-			"ObjectResults", "WorkerResults", "JobSettings"});
+			"ObjectResults", "WorkerResults", "JobSettings", "JobTypes"});
 	private static Logger logger = Logger.getLogger(DBKVHelper.class);
 
 	protected String dbName;
 	protected Connection connection;
 
-	public DBKVHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
+	public DBKVHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException, SQLException {
 		super(dbUrl, driverClass, connectionProperties);
 		this.dbName = dbName;
-		Class.forName(driverClass);
 	}
 
 	public void execute() throws SQLException {

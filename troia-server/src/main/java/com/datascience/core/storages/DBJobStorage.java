@@ -11,7 +11,13 @@ import java.util.Properties;
 import java.util.UUID;
 
 import com.datascience.core.JobFactory;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
+import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.core.datastoring.memory.InMemoryResults;
+import com.datascience.core.nominal.INominalData;
+import com.datascience.core.results.IResults;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 
@@ -55,7 +61,7 @@ public class DBJobStorage implements IJobStorage {
 		//connectDB();
 		
 		this.serializer = serializer;
-		jobFactory = new JobFactory(serializer);
+		jobFactory = new JobFactory(serializer, this);
 	}
 	
 	private void connectDB() throws SQLException {
@@ -200,9 +206,20 @@ public class DBJobStorage implements IJobStorage {
 	public void stop() throws Exception {
 		close();
 	}
-	
+
 	@Override
-	public String toString(){
-		return "DataBase";
+	public <T> IData<T> getData(String id) {
+		return new InMemoryData<T>();
+	}
+
+	@Override
+	public INominalData getNominalData(String id) {
+		return new InMemoryNominalData();
+	}
+
+	@Override
+	public IResults getResults(String id) {
+		//TODO
+		return new InMemoryResults(null, null);
 	}
 }

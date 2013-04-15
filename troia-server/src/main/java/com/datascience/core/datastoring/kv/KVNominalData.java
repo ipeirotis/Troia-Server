@@ -24,9 +24,11 @@ public class KVNominalData extends KVData<String> implements INominalData{
 				  ISafeKVStorage<Collection<LObject<String>>> objects,
 				  ISafeKVStorage<Collection<LObject<String>>> goldObjects,
 				  ISafeKVStorage<Collection<LObject<String>>> evaluationObjects,
-				  ISafeKVStorage<Collection<Worker<String>>> workers){
+				  ISafeKVStorage<Collection<Worker<String>>> workers,
+				  ISafeKVStorage<NominalData> storage){
 		super(workersAssigns, objectsAssigns, objects, goldObjects, evaluationObjects, workers);
 		jobData = new NominalData();
+		this.storage = storage;
 	}
 
 	@Override

@@ -38,8 +38,11 @@ public abstract class AbstractJobsEntry {
 		if (jobFactory != null)
 			return jobFactory;
 		ResponseBuilder responser = getResponseBuilder();
-		if (responser != null)
-			return new JobFactory(responser.getSerializer());
+		IJobStorage storage = getJobStorage();
+		if (responser != null && storage != null){
+			jobFactory = new JobFactory(responser.getSerializer(), storage);
+			return jobFactory;
+		}
 		return null;
 	}
 

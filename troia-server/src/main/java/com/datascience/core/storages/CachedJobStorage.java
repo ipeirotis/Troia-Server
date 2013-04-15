@@ -2,7 +2,10 @@ package com.datascience.core.storages;
 
 import java.util.concurrent.ExecutionException;
 
+import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
+import com.datascience.core.nominal.INominalData;
+import com.datascience.core.results.IResults;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.apache.log4j.Logger;
 
@@ -113,7 +116,22 @@ public class CachedJobStorage implements IJobStorage {
 		cache.cleanUp();
 		cachedJobStorage.stop();
 	}
-	
+
+	@Override
+	public <T> IData<T> getData(String id) {
+		return cachedJobStorage.getData(id);
+	}
+
+	@Override
+	public INominalData getNominalData(String id) {
+		return cachedJobStorage.getNominalData(id);
+	}
+
+	@Override
+	public IResults getResults(String id) {
+		return cachedJobStorage.getResults(id);
+	}
+
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();

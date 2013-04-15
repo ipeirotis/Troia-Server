@@ -1,6 +1,7 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.IResults;
 import com.datascience.core.results.DatumResult;
@@ -89,7 +90,7 @@ public class MVTest {
 	@Test
 	public void testBatchMV(){
 		BatchMV mv = new BatchMV();
-		NominalProject np = new NominalProject(mv);
+		NominalProject np = new NominalProject(mv, new InMemoryNominalData());
 		np.initializeCategories(categories, null, null);
 		INominalData nd = np.getData();
 		IResults<String, DatumResult, WorkerResult> results = np.getResults();
@@ -103,7 +104,7 @@ public class MVTest {
 	@Test
 	public void testIncrementalMV(){
 		IncrementalMV mv = new IncrementalMV();
-		NominalProject np = new NominalProject(mv);
+		NominalProject np = new NominalProject(mv, new InMemoryNominalData());
 		np.initializeCategories(categories, null, null);
 		INominalData nd = np.getData();
 		IResults<String, DatumResult, WorkerResult> results = np.getResults();

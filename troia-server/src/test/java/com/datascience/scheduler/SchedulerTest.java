@@ -31,7 +31,7 @@ public class SchedulerTest {
 				addAssign(data, "worker" + j, "object" + i);
 			}
 		}
-		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis());
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), new InMemoryData<ContValue>());
 		cp.setData(data);
 		return cp;
 	}
@@ -51,7 +51,7 @@ public class SchedulerTest {
 	@Test
 	public void schedulerTestOnSmallUpdates() {
 		final int objectsCount = 5;
-		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis());
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), new InMemoryData<ContValue>());
 		InMemoryData<ContValue> data = new InMemoryData<ContValue>();
 		cp.setData(data);
 		Scheduler<ContValue> scheduler =

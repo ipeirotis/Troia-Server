@@ -9,6 +9,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.service.GSONSerializer;
 import com.google.gson.*;
@@ -69,7 +70,7 @@ public class NominalModelTest {
 	}
 
 	private NominalProject createProject(String alg, ArrayList<String> categories, boolean priors){
-		JobFactory jf = new JobFactory(new GSONSerializer());
+		JobFactory jf = new JobFactory(new GSONSerializer(), new MemoryJobStorage());
 		JsonObject jo = new JsonObject();
 		jo.addProperty("algorithm", alg);
 		jo.add("categories", createCategoriesJsonArray(categories));

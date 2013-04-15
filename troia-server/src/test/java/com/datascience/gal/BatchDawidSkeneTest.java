@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class BatchDawidSkeneTest {
 		categories.add("category1");
 		categories.add("category2");
 
-		project = new NominalProject(new BatchDawidSkene());
+		project = new NominalProject(new BatchDawidSkene(), new InMemoryNominalData());
 		project.initializeCategories(categories, null, null);
 	}
 

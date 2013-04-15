@@ -1,7 +1,10 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
+import com.datascience.core.nominal.INominalData;
+import com.datascience.core.results.IResults;
 import com.datascience.executor.ProjectCommandExecutor;
 import com.datascience.core.JobsManager;
 
@@ -49,7 +52,22 @@ public class JobStorageUsingExecutor implements IJobStorage{
 		executor.stop();
 		internalStorage.stop();
 	}
-	
+
+	@Override
+	public <T> IData<T> getData(String id) {
+		return internalStorage.getData(id);
+	}
+
+	@Override
+	public INominalData getNominalData(String id) {
+		return internalStorage.getNominalData(id);
+	}
+
+	@Override
+	public IResults getResults(String id) {
+		return internalStorage.getResults(id);
+	}
+
 	@Override
 	public String toString() {
 		return internalStorage.toString() + "UsingExecutor";

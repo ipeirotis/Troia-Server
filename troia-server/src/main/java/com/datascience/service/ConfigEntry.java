@@ -90,6 +90,7 @@ public class ConfigEntry {
 				Properties connectionProperties = new Properties();
 				connectionProperties.setProperty("user", p.getProperty(Constants.DB_USER));
 				connectionProperties.setProperty("password", p.getProperty(Constants.DB_PASSWORD));
+				//TODO make db helper
 				new DBKVHelper(p.getProperty(Constants.DB_URL), p.getProperty(Constants.DB_DRIVER_CLASS),
 						connectionProperties, p.getProperty(Constants.DB_NAME)).execute();
 			} catch (Exception e){

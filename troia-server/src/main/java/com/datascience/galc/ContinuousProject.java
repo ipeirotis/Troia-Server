@@ -14,13 +14,12 @@ import com.datascience.core.results.WorkerContResults;
  */
 public class ContinuousProject extends Project<ContValue, IData<ContValue>, DatumContResults, WorkerContResults> {
 
-	public ContinuousProject(ContinuousIpeirotis ci){
+	public ContinuousProject(ContinuousIpeirotis ci, IData<ContValue> data){
 		super(ci);
 		results = new InMemoryResults<ContValue, DatumContResults, WorkerContResults>(
 				new ResultsFactory.DatumContResultFactory(),
 				new ResultsFactory.WorkerContResultFactory());
-		data = new InMemoryData<ContValue>();
-		// TODO XXX FIXME  ^^^^ results and data needs to be reworked - passed from upstairs
+		this.data = data;
 		ci.setData(data);
 		ci.setResults(results);
 	}

@@ -21,11 +21,10 @@ public class DBStorage {
 	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties) throws ClassNotFoundException {
 		this.dbUrl = dbUrl;
 		this.connectionProperties = connectionProperties;
-		logger.info("DRIVER CLASS: " + driverClass);
 		Class.forName(driverClass);
 	}
 
-	protected void connectDB() throws SQLException {
+	public void connectDB() throws SQLException {
 		logger.info("Trying to connect with: " + this.dbUrl);
 		connection = DriverManager.getConnection(this.dbUrl, connectionProperties);
 		logger.info("Connected to " + this.dbUrl);

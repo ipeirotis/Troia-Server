@@ -1,22 +1,26 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Project;
-import com.datascience.core.base.Worker;
+import com.datascience.core.JobFactory;
+import com.datascience.core.base.*;
 import com.datascience.core.datastoring.kv.KVCleaner;
 import com.datascience.core.datastoring.kv.KVData;
+import com.datascience.core.datastoring.kv.KVNominalData;
 import com.datascience.core.datastoring.kv.KVResults;
+import com.datascience.core.datastoring.utils.NominalData;
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.DatumResult;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
 import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.storage.*;
+import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -28,12 +32,17 @@ public class DBKVJobStorage implements IJobStorage{
 
 	protected DBKVHelper helper;
 	protected ISerializer serializer;
-	protected ISafeKVStorage<?> jobSettings; // TODO XXX
+	protected ISafeKVStorage<JsonObject> jobSettings;
+	protected ISafeKVStorage<String> jobTypes;
+	protected JobFactory jobFactory;
 
-	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer){
+	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer) throws SQLException {
 		this.helper = helper;
+		this.helper.connectDB();
 		this.serializer = serializer;
-		jobSettings = getJobSettingKV();
+		jobSettings = getKV("JobSettings", JsonObject.class);
+		jobTypes = getKV("JobTypes", String.class);
+		jobFactory = new JobFactory(serializer, this);
 	}
 
 	protected <V> ISafeKVStorage<V> getJobSettingKV(){   // TODO XXX  set proper type
@@ -42,6 +51,12 @@ public class DBKVJobStorage implements IJobStorage{
 //		kvstorage = new VTransformingKVWrapper<V, String>(helper.getKV("JobSettings"), transformation);
 //		kvstorage = new CachedKV<V>(kvstorage, 15); // this when we will test this
 		return new DefaultSafeKVStorage<V>(kvstorage, "JobSettings");
+	}
+
+	protected <V> ISafeKVStorage<V> getKV(String table, Type expectedType){
+		ITransformation<V, String> transformation = new SerializationTransform<V>(serializer, expectedType);
+		IKVStorage<V> storage = new VTransformingKVWrapper<V, String>(helper.getKV(table), transformation);
+		return new DefaultSafeKVStorage<V>(storage, table);
 	}
 
 	protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, Type expectedType){
@@ -54,29 +69,19 @@ public class DBKVJobStorage implements IJobStorage{
 
 	@Override
 	public <T extends Project> Job<T> get(String id) throws Exception {
-		Object settings = jobSettings.get(id);
-		checkArgument(settings != null, "There is no job with ID="+id);
-		KVData<T> data = new KVData<T>(   // This needs to create proper instance = KVNominalData
-				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "WorkerAssigns", AssignedLabel.class),
-				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "ObjectAssigns", AssignedLabel.class),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class), // TODO separate tables for this and golds?
-				this.<Collection<Worker<T>>>getKVForJob(id, "Workers", Worker.class)
-		);
-		KVResults results = new KVResults(null, null, // Needs proper factories
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class),
-				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class));
-
-		//Project project prepare project
-		return null;
+		JsonObject settings = jobSettings.get(id);
+		String type = jobTypes.get(id);
+		if (type == null || settings == null)
+			return null;
+		return jobFactory.create(type, settings, id);
 	}
 
 	@Override
 	public void add(Job job) throws Exception {
 		// We should check whether this job exists - if not than create new:
 		// - row in JobSettings, - row with empty collection in {Objects, Workers}
-
+		jobTypes.put(job.getId(), job.getProject().getKind());
+		jobSettings.put(job.getId(), job.getProject().getInitializationData());
 	}
 
 	@Override
@@ -97,4 +102,40 @@ public class DBKVJobStorage implements IJobStorage{
 	public void stop() throws Exception {
 		helper.close();
 	}
+
+	@Override
+	public <T> IData<T> getData(String id) {
+		KVData<T> data = new KVData<T>(
+				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "WorkerAssigns", AssignedLabel.class),
+				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "ObjectAssigns", AssignedLabel.class),
+				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class),
+				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class),
+				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class), // TODO separate tables for this and golds?
+				this.<Collection<Worker<T>>>getKVForJob(id, "Workers", Worker.class)
+		);
+		return data;
+	}
+
+	@Override
+	public INominalData getNominalData(String id) {
+		INominalData data = new KVNominalData(
+				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", AssignedLabel.class),
+				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", AssignedLabel.class),
+				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", LObject.class),
+				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", LObject.class),
+				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", LObject.class), // TODO separate tables for this and golds?
+				this.<Collection<Worker<String>>>getKVForJob(id, "Workers", Worker.class),
+				this.<NominalData>getKVForJob(id, "JobSettings", NominalData.class)
+		);
+		return data;
+	}
+
+	@Override
+	public IResults getResults(String id) {
+		return new KVResults(null, null, // Needs proper factories
+				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class),
+				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class));
+	}
+
+
 }
