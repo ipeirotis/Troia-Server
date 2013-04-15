@@ -39,7 +39,7 @@ public class ServiceComponentsFactory {
 		String url = properties.getProperty(Constants.DB_URL);
 		String driverClass = properties.getProperty(Constants.DB_DRIVER_CLASS);
 		Properties connectionProperties = new Properties();
-		connectionProperties.put("name", user);
+		connectionProperties.put("user", user);
 		connectionProperties.put("password", password);
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));

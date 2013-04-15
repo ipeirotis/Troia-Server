@@ -22,12 +22,8 @@ public class DBKVHelper extends DBStorage {
 			"ObjectResults", "WorkerResults", "JobSettings", "JobTypes"});
 	private static Logger logger = Logger.getLogger(DBKVHelper.class);
 
-	protected String dbName;
-	protected Connection connection;
-
-	public DBKVHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException, SQLException {
-		super(dbUrl, driverClass, connectionProperties);
-		this.dbName = dbName;
+	public DBKVHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
+		super(dbUrl, driverClass, connectionProperties, dbName);
 	}
 
 	public void execute() throws SQLException {

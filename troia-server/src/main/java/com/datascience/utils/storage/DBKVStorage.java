@@ -11,9 +11,9 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	private static Logger logger = Logger.getLogger(DBKVStorage.class);
 
-	private static final String GET = "SELECT value FROM (?) WHERE id = (?);";
-	private static final String INSERT = "REPLACE INTO (?) (id, value) VALUES (?, ?);";
-	private static final String DELETE = "DELETE FROM (?) WHERE id = (?);";
+	private static final String GET = "SELECT value FROM %s WHERE id = ?;";
+	private static final String INSERT = "REPLACE INTO %s (id, value) VALUES (?, ?);";
+	private static final String DELETE = "DELETE FROM %s WHERE id = ?;";
 
 	protected String table;
 	protected DBStorage dbStorage;
@@ -23,16 +23,19 @@ public class DBKVStorage implements IKVStorage<String> {
 		this.dbStorage = dbStorage;
 	}
 
+	private String prepareString(String sql, String table){
+		return String.format(sql, table);
+	}
+
 	@Override
 	public void put(String key, String value) throws SQLException{
 		String logmsg = "DBKV put " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
-			sql = dbStorage.initStatement(INSERT);
-			sql.setString(1, table);
-			sql.setString(2, key);
-			sql.setString(3, value);
+			sql = dbStorage.initStatement(prepareString(INSERT, table));
+			sql.setString(1, key);
+			sql.setString(2, value);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
 		} catch (Exception ex) {
@@ -50,9 +53,8 @@ public class DBKVStorage implements IKVStorage<String> {
 		ResultSet result = null;
 		String value = null;
 		try {
-			sql = dbStorage.initStatement(GET);
-			sql.setString(1, table);
-			sql.setString(2, key);
+			sql = dbStorage.initStatement(prepareString(GET, table));
+			sql.setString(1, key);
 			result = sql.executeQuery();
 			if (!result.next()) {
 				logger.debug(logmsg + " DONE no results");
@@ -74,9 +76,8 @@ public class DBKVStorage implements IKVStorage<String> {
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
-			sql = dbStorage.initStatement(DELETE);
-			sql.setString(1, table);
-			sql.setString(2, key);
+			sql = dbStorage.initStatement(prepareString(DELETE, table));
+			sql.setString(1, key);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
 		} catch (Exception ex) {

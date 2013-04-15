@@ -15,19 +15,22 @@ public class DBStorage {
 	protected static int VALIDATION_TIMEOUT = 2;
 
 	protected String dbUrl;
+	protected String dbName;
 	protected Connection connection;
 	protected Properties connectionProperties;
 
-	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties) throws ClassNotFoundException {
+	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
 		this.dbUrl = dbUrl;
+		this.dbName = dbName;
 		this.connectionProperties = connectionProperties;
 		Class.forName(driverClass);
 	}
 
 	public void connectDB() throws SQLException {
-		logger.info("Trying to connect with: " + this.dbUrl);
-		connection = DriverManager.getConnection(this.dbUrl, connectionProperties);
-		logger.info("Connected to " + this.dbUrl);
+		String dbPath = String.format("%s%s?useUnicode=true&characterEncoding=utf-8", dbUrl, dbName);
+		logger.info("Trying to connect with: " + dbPath);
+		connection = DriverManager.getConnection(dbPath, connectionProperties);
+		logger.info("Connected to " + dbPath);
 	}
 
 	protected void ensureConnection() throws SQLException {
