@@ -29,7 +29,7 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	@Override
 	public void put(String key, String value) throws SQLException{
-		String logmsg = "DBKV put " + key;
+		String logmsg = "DBKV (" + table + ") put " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {
@@ -47,7 +47,7 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	@Override
 	public String get(String key) throws SQLException{
-		String logmsg = "DBKV get " + key;
+		String logmsg = "DBKV (" + table + ") get " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		ResultSet result = null;
@@ -72,7 +72,7 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	@Override
 	public void remove(String key) throws SQLException{
-		String logmsg = "DBKV remove " + key;
+		String logmsg = "DBKV (" + table + ") remove " + key;
 		logger.debug(logmsg);
 		PreparedStatement sql = null;
 		try {

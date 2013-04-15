@@ -46,9 +46,14 @@ public class JSONUtils {
 
 	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
 	public static final Type objectsContValueType = new TypeToken<Collection<LObject<ContValue>>>() {}.getType();
+	public static final Type objectsCollection = new TypeToken<Collection<LObject>>() {}.getType();
+
 	public static final Type assignsStringType = new TypeToken<Collection<DataJSON.ShallowAssign<String>>>(){}.getType();
 	public static final Type assignsContValueType = new TypeToken<Collection<DataJSON.ShallowAssign<ContValue>>>(){}.getType();
+	public static final Type assignsCollection = new TypeToken<Collection<AssignedLabel>>(){}.getType();
 
+	public static final Type workersStringType = new TypeToken<Collection<Worker<String>>>() {}.getType();
+	public static final Type workersCollection = new TypeToken<Collection<Worker>>() {}.getType();
 
 	public JSONUtils() {
 		GsonBuilder builder = getFilledDefaultGsonBuilder();
@@ -76,7 +81,9 @@ public class JSONUtils {
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Serializer());
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
+		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignDeserializer());
 		builder.registerTypeAdapter(Worker.class, new DataJSON.WorkerSerializer());
+		builder.registerTypeAdapter(Worker.class, new DataJSON.WorkerDeserializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
 		builder.registerTypeAdapter(CostMatrix.class, new DataJSON.CostMatrixDeserializer<String>());
 		builder.registerTypeAdapter(CostMatrix.class, new DataJSON.CostMatrixSerializer<String>());

@@ -6,6 +6,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.utils.storage.ISafeKVStorage;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -35,6 +36,15 @@ public class KVData<T> extends AbstractData<T> {
 		this.goldObjects = goldObjects;
 		this.evaluationObjects = evaluationObjects;
 		this.workers = workers;
+		initializeEmptyRows(Arrays.asList(new ISafeKVStorage[]{objects, goldObjects, evaluationObjects, workers}));
+	}
+
+	protected void initializeEmptyRows(Collection<ISafeKVStorage> storages){
+		for (ISafeKVStorage storage : storages){
+			if (storage.get("") == null){
+				storage.put("", new LinkedList());
+			}
+		}
 	}
 
 	@Override
@@ -54,7 +64,7 @@ public class KVData<T> extends AbstractData<T> {
 			oldWorkers.add(worker);
 			workers.put("", oldWorkers);
 			notifyNewWorker(worker);
-			workersAssigns.put(worker.getName(), new HashSet<AssignedLabel<T>>());
+			workersAssigns.put(worker.getName(), new LinkedList());
 		}
 	}
 
@@ -78,7 +88,7 @@ public class KVData<T> extends AbstractData<T> {
 			oldObjects.add(object);
 			objects.put("", oldObjects);
 			notifyNewObject(object);
-			objectsAssigns.put(object.getName(), new HashSet<AssignedLabel<T>>());
+			objectsAssigns.put(object.getName(), new LinkedList());
 			if (object.isGold())
 				addGoldObject(object);
 			if (object.isEvaluation())
@@ -149,17 +159,19 @@ public class KVData<T> extends AbstractData<T> {
 	@Override
 	public void addAssign(AssignedLabel<T> assign) {
 		addWorker(assign.getWorker());
-		forceAddAssign(assign, workersAssigns.get(assign.getWorker().getName()));
+		forceAddAssign(assign, workersAssigns, assign.getWorker().getName());
 		addObject(assign.getLobject());
-		forceAddAssign(assign, objectsAssigns.get(assign.getLobject().getName()));
+		forceAddAssign(assign, objectsAssigns, assign.getLobject().getName());
 		notifyNewAssign(assign);
 	}
 
-	private void forceAddAssign(AssignedLabel<T> assign, Collection<AssignedLabel<T>> assigns){
+	private void forceAddAssign(AssignedLabel<T> assign, ISafeKVStorage<Collection<AssignedLabel<T>>> storage, String key){
+		Collection<AssignedLabel<T>> assigns = storage.get(key);
 		if (!assigns.add(assign)) {
 			assigns.remove(assign);
 			assigns.add(assign);
 		}
+		storage.put(key, assigns);
 	}
 
 	@Override

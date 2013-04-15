@@ -100,11 +100,29 @@ public class DataJSON {
 			return jsonSerializationContext.serialize(new ShallowAssign<T>(tAssignedLabel));
 		}
 	}
+
+	public static class AssignDeserializer<T> implements JsonDeserializer<AssignedLabel<T>> {
+		@Override
+		public AssignedLabel<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+			ShallowAssign<T> sassign = context.deserialize(element, ShallowAssign.class);
+			return new AssignedLabel<T>(
+					new Worker<T>(sassign.worker),
+					new LObject<T>(sassign.object),
+					sassign.label);
+		}
+	}
 	
 	public static class WorkerSerializer<T> implements JsonSerializer<Worker<T>> {
 		@Override
 		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());
+		}
+	}
+
+	public static class WorkerDeserializer<T> implements JsonDeserializer<Worker<T>> {
+		@Override
+		public Worker<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+			return new Worker<T>(element.getAsString());
 		}
 	}
 

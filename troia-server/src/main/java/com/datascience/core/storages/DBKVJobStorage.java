@@ -14,6 +14,7 @@ import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
+import com.datascience.serialization.json.JSONUtils;
 import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.storage.*;
@@ -59,11 +60,11 @@ public class DBKVJobStorage implements IJobStorage{
 		return new DefaultSafeKVStorage<V>(storage, table);
 	}
 
-	protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, Type expectedType){
+	protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, Type expectedType, boolean multirows){
 		IKVStorage<V> kvstorage;
 		ITransformation<V, String> transformation = new SerializationTransform<V>(serializer, expectedType);
 		kvstorage = new VTransformingKVWrapper<V, String>(helper.getKV(table), transformation);
-		kvstorage = new KVKeyPrefixingWrapper<V>(kvstorage, id + "_");
+		kvstorage = new KVKeyPrefixingWrapper<V>(kvstorage, multirows ? id + "_" : id);
 		return new DefaultSafeKVStorage<V>(kvstorage, table);
 	}
 
@@ -106,12 +107,12 @@ public class DBKVJobStorage implements IJobStorage{
 	@Override
 	public <T> IData<T> getData(String id) {
 		KVData<T> data = new KVData<T>(
-				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "WorkerAssigns", AssignedLabel.class),
-				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "ObjectAssigns", AssignedLabel.class),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", LObject.class), // TODO separate tables for this and golds?
-				this.<Collection<Worker<T>>>getKVForJob(id, "Workers", Worker.class)
+				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsCollection, true),
+				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsCollection, true),
+				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<T>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<T>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<Worker<T>>>getKVForJob(id, "Workers", JSONUtils.workersCollection, false)
 		);
 		return data;
 	}
@@ -119,13 +120,13 @@ public class DBKVJobStorage implements IJobStorage{
 	@Override
 	public INominalData getNominalData(String id) {
 		INominalData data = new KVNominalData(
-				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", AssignedLabel.class),
-				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", AssignedLabel.class),
-				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", LObject.class),
-				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", LObject.class),
-				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", LObject.class), // TODO separate tables for this and golds?
-				this.<Collection<Worker<String>>>getKVForJob(id, "Workers", Worker.class),
-				this.<NominalData>getKVForJob(id, "JobSettings", NominalData.class)
+				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsCollection, true),
+				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsCollection, true),
+				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<String>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<String>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<Worker<String>>>getKVForJob(id, "Workers", JSONUtils.workersStringType, false),
+				this.<NominalData>getKVForJob(id, "JobSettings", NominalData.class, false)
 		);
 		return data;
 	}
@@ -133,8 +134,8 @@ public class DBKVJobStorage implements IJobStorage{
 	@Override
 	public IResults getResults(String id) {
 		return new KVResults(null, null, // Needs proper factories
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class),
-				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class));
+				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class, true),
+				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class, true));
 	}
 
 

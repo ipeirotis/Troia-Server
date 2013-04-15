@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class DBKVHelper extends DBStorage {
 
 	protected static List<String> TABLES = Arrays.asList(new String[] {
-			"ObjectAssigns", "WorkerAssigns", "Objects", "Workers",
+			"ObjectAssigns", "WorkerAssigns", "Objects", "GoldObjects", "EvaluationObjects", "Workers",
 			"ObjectResults", "WorkerResults", "JobSettings", "JobTypes"});
 	private static Logger logger = Logger.getLogger(DBKVHelper.class);
 
