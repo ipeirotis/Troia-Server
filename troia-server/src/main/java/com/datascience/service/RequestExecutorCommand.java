@@ -2,7 +2,7 @@ package com.datascience.service;
 
 import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
-import com.datascience.executor.ProjectCommand;
+import com.datascience.core.commands.ProjectCommand;
 import com.datascience.executor.SynchronizedCommand;
 import com.google.common.base.Stopwatch;
 
@@ -44,6 +44,6 @@ public class RequestExecutorCommand extends SynchronizedCommand{
 	public void run() {
 		Stopwatch stopwatch = new Stopwatch().start();
 		command.execute();
-		executionTimeInSeconds = stopwatch.elapsedTime(TimeUnit.MILLISECONDS) / 1000.;
+		executionTimeInSeconds = stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000.;
 	}
 }

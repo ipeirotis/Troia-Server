@@ -4,7 +4,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.galc.WorkerContResults;
+import com.datascience.core.results.WorkerContResults;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

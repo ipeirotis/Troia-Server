@@ -2,31 +2,25 @@ package com.datascience.galc;
 
 import java.util.Map;
 
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
+import com.datascience.core.base.*;
+import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.Results;
+import com.datascience.core.results.ResultsFactory;
+import com.datascience.core.results.WorkerContResults;
 
 /**
  * @Author: konrad
  */
-public class ContinuousProject {
+public class ContinuousProject extends Project<ContValue, Data<ContValue>, DatumContResults, WorkerContResults> {
 
-	protected Data<ContValue> data;
-	protected ContinuousIpeirotis algorithm;
-	
-	public ContinuousProject(){
+	public ContinuousProject(ContinuousIpeirotis ci){
+		super(ci);
+		results = new Results<ContValue, DatumContResults, WorkerContResults>(
+				new ResultsFactory.DatumContResultFactory(),
+				new ResultsFactory.WorkerContResultFactory());
 		data = new Data<ContValue>();
-	}
-
-	public Data<ContValue> getData(){
-		return data;
-	}
-	
-	public void compute(int iterations, double epsilon){
-		algorithm = new ContinuousIpeirotis();
-		algorithm.setData(data);
-		algorithm.estimate(epsilon, iterations);
+		ci.setData(data);
+		ci.setResults(results);
 	}
 
 	protected void checkComputed(){
@@ -37,11 +31,16 @@ public class ContinuousProject {
 
 	public Map<LObject<ContValue>, DatumContResults> getDataPrediction(){
 		checkComputed();
-		return algorithm.getObjectsResults();
+		return ((ContinuousIpeirotis)algorithm).getObjectsResults();
 	}
 
 	public Map<Worker<ContValue>, WorkerContResults> getWorkerPrediction(){
 		checkComputed();
-		return algorithm.getWorkersResults();
+		return ((ContinuousIpeirotis)algorithm).getWorkersResults();
+	}
+
+	@Override
+	public String getKind(){
+		return "CONTINUOUS";
 	}
 }

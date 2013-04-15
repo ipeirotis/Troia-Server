@@ -1,6 +1,5 @@
 package com.datascience.core.storages;
 
-import java.lang.reflect.Type;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,17 +7,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.datascience.gal.DawidSkene;
+import com.datascience.core.JobFactory;
+import com.datascience.core.base.Project;
+import com.datascience.core.nominal.NominalProject;
+import com.datascience.serialization.ISerializer;
 import com.datascience.galc.ContinuousProject;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.Job;
-import com.datascience.service.ISerializer;
+import org.apache.log4j.varia.StringMatchFilter;
 
 /**
  * From old class DawidSkeneCache.
@@ -29,21 +29,6 @@ import com.datascience.service.ISerializer;
 public class DBJobStorage implements IJobStorage {
 
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
-	protected static Map<String, Type> typesMap = new HashMap<String, Type>();
-	static {
-		typesMap.put("CONTINUOUS", JSONUtils.continuousProject);
-		typesMap.put("NOMINAL", JSONUtils.dawidSkeneType);
-	}
-
-	protected <T> String getKind(T object) {
-		if (object instanceof ContinuousProject){
-			return "CONTINUOUS";
-		}
-		if (object instanceof DawidSkene){
-			return "NOMINAL";
-		}
-		throw new IllegalArgumentException("Unknown job kind for class: " + object.getClass());
-	}
 
 	private int VALIDATION_TIMEOUT = 2;
 
@@ -51,12 +36,13 @@ public class DBJobStorage implements IJobStorage {
 	private Properties connectionProperties;
 	private String databaseUrl;
 	
-	private static final String GET_DS = "SELECT kind, data FROM projects WHERE id IN (?);";
-	private static final String INSERT_DS = "REPLACE INTO projects (id, kind, data) VALUES (?, ?, ?);";
-	private static final String DELETE_DS = "DELETE FROM projects WHERE id = (?);";
+	private static final String GET_DS = "SELECT kind, data, results, initializationData, model FROM Projects WHERE id IN (?);";
+	private static final String INSERT_DS = "REPLACE INTO Projects (id, kind, data, results, initializationData, model) VALUES (?, ?, ?, ?, ?, ?);";
+	private static final String DELETE_DS = "DELETE FROM Projects WHERE id = (?);";
 
 	private ISerializer serializer;
-	
+	private JobFactory jobFactory;
+
 	public DBJobStorage(String user, String password, String db, String url,
 			ISerializer serializer) throws ClassNotFoundException, SQLException,
 			IOException {
@@ -72,6 +58,7 @@ public class DBJobStorage implements IJobStorage {
 		connectDB();
 		
 		this.serializer = serializer;
+		jobFactory = new JobFactory(serializer);
 	}
 	
 	private void connectDB() throws SQLException {
@@ -95,8 +82,8 @@ public class DBJobStorage implements IJobStorage {
 	}
 	
 	@Override
-	public <T> Job<T>  get(String id) throws SQLException {
-		logger.info("Get job from DB: " + id);
+	public <T extends Project> Job<T>  get(String id) throws SQLException {
+		logger.debug("Getting job from DB: " + id);
 		ResultSet dsResults = null;
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
@@ -107,11 +94,14 @@ public class DBJobStorage implements IJobStorage {
 			if (!dsResults.next()) {
 				return null;
 			}
-			String dsJson = dsResults.getString("data");
+			String data = dsResults.getString("data");
 			String kind = dsResults.getString("kind");
+			String results = dsResults.getString("results");
+			String initializationData = dsResults.getString("initializationData");
+			String model = dsResults.getString("model");
 			dsStatement.close();
-			T project = serializer.parse(dsJson, typesMap.get(kind));
-			return new Job<T>(project, id);
+			logger.debug("Getting job from DB: " + id + " DONE");
+			return jobFactory.create(kind, initializationData, data, results, model, id);
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -124,17 +114,19 @@ public class DBJobStorage implements IJobStorage {
 
 	@Override
 	public void add(Job job) throws SQLException{
-		logger.info("Adding job to DB: " + job.getId());
+		logger.debug("Adding job to DB: " + job.getId());
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
 		try {
 			dsStatement = connection.prepareStatement(INSERT_DS);
 			dsStatement.setString(1, job.getId());
-			String dsString = serializer.serialize(job.getProject());
-			dsStatement.setString(2, getKind(job.getProject()));
-			dsStatement.setString(3, dsString);
-
+			dsStatement.setString(2, job.getProject().getKind());
+			dsStatement.setString(3, serializer.serialize(job.getProject().getData()));
+			dsStatement.setString(4, serializer.serialize(job.getProject().getResults()));
+			dsStatement.setString(5, job.getProject().getInitializationData().toString());
+			dsStatement.setString(6, serializer.serialize(job.getProject().getAlgorithm().getModel()));
 			dsStatement.executeUpdate();
+			logger.debug("Adding job to DB: " + job.getId() + " DONE");
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -144,7 +136,7 @@ public class DBJobStorage implements IJobStorage {
 	
 	@Override
 	public void remove(Job job) throws Exception {
-		logger.info("Removing job from DB: " + job.getId());
+		logger.debug("Removing job from DB: " + job.getId());
 		ensureDBConnection();
 		PreparedStatement dsStatement = null;
 		try {
@@ -152,6 +144,7 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(1, job.getId());
 			dsStatement.executeUpdate();
 			dsStatement.close();
+			logger.debug("Removing job from DB: " + job.getId() + " DONE");
 		} finally {
 			if (dsStatement != null) {
 				dsStatement.close();
@@ -173,7 +166,7 @@ public class DBJobStorage implements IJobStorage {
 	 * Added hoping that this will sometime turn out to be useful
 	 */
 	@Override
-	protected void finalize() throws SQLException, Throwable {
+	protected void finalize() throws Throwable {
 		super.finalize();
 		close();
 	}
@@ -190,6 +183,9 @@ public class DBJobStorage implements IJobStorage {
 			dsStatement.setString(1, jid);
 			dsStatement.setString(2, "TEST_KIND");
 			dsStatement.setString(3, content);
+			dsStatement.setString(4, content);
+			dsStatement.setString(5, content);
+			dsStatement.setString(6, content);
 			dsStatement.executeUpdate();
 			dsStatement.close();
 

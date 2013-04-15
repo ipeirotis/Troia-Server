@@ -1,6 +1,7 @@
 package com.datascience.service;
 
-import com.datascience.core.storages.JSONUtils;
+import com.datascience.serialization.ISerializer;
+import com.datascience.serialization.json.JSONUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
@@ -11,7 +12,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author konrad
  */
-public class GSONSerializer implements ISerializer{
+public class GSONSerializer implements ISerializer {
 
 	protected JSONUtils ju;
 

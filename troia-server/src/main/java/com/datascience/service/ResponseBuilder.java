@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.core.Response;
 
+import com.datascience.serialization.ISerializer;
 import com.datascience.executor.CommandStatus;
 import org.joda.time.DateTime;
 
@@ -67,6 +68,14 @@ public class ResponseBuilder {
 
 	public Response makeNotReadyResponse(){
 		Map<String, Object> init_content = initialResponseContent("NOT_READY", null);
+		return buildResponse(200, init_content);
+	}
+
+	public Response makeNotInitializedResponse(Map<String, Object> content){
+		Map<String, Object> init_content = initialResponseContent("NOT_INITIALIZED", null);
+		for (Map.Entry<String, Object> e : content.entrySet()){
+			init_content.put(e.getKey(), e.getValue());
+		}
 		return buildResponse(200, init_content);
 	}
 	

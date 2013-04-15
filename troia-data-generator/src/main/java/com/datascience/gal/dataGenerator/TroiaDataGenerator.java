@@ -144,13 +144,11 @@ public class TroiaDataGenerator {
         if (categoriesFileName != null) {
             categories = manager
                          .loadCategoriesWithProbabilities(categoriesFileName);
-            data.setCategories(CategoryFactory.getInstance().createCategories(
-                                   categories.keySet()));
+            data.setCategories(categories.keySet());
             categoryNames=categories.keySet();
         } else if(categoryCount!=0) {
             categoryNames = generator.generateCategoryNames(categoryCount);
-            data.setCategories(CategoryFactory.getInstance().createCategories(
-                                   categoryNames));
+            data.setCategories(categoryNames);
         }
         if (workerQualitiesFilename != null) {
             data.setArtificialWorkers(manager.loadBasicWorkers(

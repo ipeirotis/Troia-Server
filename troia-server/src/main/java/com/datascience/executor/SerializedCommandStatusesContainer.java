@@ -1,16 +1,17 @@
 package com.datascience.executor;
 
-import com.datascience.service.IRandomUniqIDGenerator;
-import com.datascience.service.ISerializer;
-import com.datascience.service.Serialized;
+import com.datascience.utils.IRandomUniqIDGenerator;
+import com.datascience.serialization.ISerializer;
+import com.datascience.serialization.Serialized;
 
 public class SerializedCommandStatusesContainer extends
 		CommandStatusesContainer {
 
 	protected ISerializer serializer;
 
-	public SerializedCommandStatusesContainer(IRandomUniqIDGenerator idGenerator, ISerializer serializer) {
-		super(idGenerator);
+	public SerializedCommandStatusesContainer(IRandomUniqIDGenerator idGenerator, ISerializer serializer,
+											  int cacheSize, int expirationTime) {
+		super(idGenerator, cacheSize, expirationTime);
 		this.serializer = serializer;
 	}
 	

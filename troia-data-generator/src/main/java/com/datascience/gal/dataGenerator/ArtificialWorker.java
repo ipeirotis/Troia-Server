@@ -1,26 +1,9 @@
 package com.datascience.gal.dataGenerator;
 
 
-public class ArtificialWorker {
+import com.datascience.core.base.Worker;
 
-
-
-
-
-	/**
-	 * @return Worker name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name Worker name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
+public class ArtificialWorker extends Worker<String> {
 
 	/**
 	 * @return the confusionMatrix
@@ -61,11 +44,6 @@ public class ArtificialWorker {
 		return confusionMatrix.equals(a.confusionMatrix) &&
 			   name.equals(a.name);
 	}
-
-	/**
-	 * Worker name
-	 */
-	private String name;
 
 	/**
 	 * Worker confusion matrix.

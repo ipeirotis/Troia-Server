@@ -2,7 +2,7 @@ package com.datascience.executor;
 
 import java.util.concurrent.TimeUnit;
 
-import com.datascience.service.IRandomUniqIDGenerator;
+import com.datascience.utils.IRandomUniqIDGenerator;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -15,10 +15,10 @@ public class CommandStatusesContainer {
 	Cache<String, CommandStatus> commandsResults;
 	IRandomUniqIDGenerator idGenerator;
 	
-	public CommandStatusesContainer(IRandomUniqIDGenerator idGenerator){
+	public CommandStatusesContainer(IRandomUniqIDGenerator idGenerator, int cacheSize, int expirationTime){
 		commandsResults = CacheBuilder.newBuilder()
-			.maximumSize(200)
-			.expireAfterWrite(1, TimeUnit.DAYS)
+			.maximumSize(cacheSize)
+			.expireAfterWrite(expirationTime, TimeUnit.SECONDS)
 			.build();
 		this.idGenerator = idGenerator;
 	}
