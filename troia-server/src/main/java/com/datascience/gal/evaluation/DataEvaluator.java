@@ -30,10 +30,13 @@ public class DataEvaluator {
 	}
 
 	protected double evaluate(NominalProject project, LObject<String> datum) {
-		Map<String, Double> dest_probabilities = project.getObjectResults(datum).getCategoryProbabilites();
-		if (!labelChoosingMethod.equals("soft"))
+		Map<String, Double> dest_probabilities;
+		if (labelChoosingMethod.equals("soft")) {
+			dest_probabilities = project.getObjectResults(datum).getCategoryProbabilites();
+		} else {
 			dest_probabilities = ProbabilityDistributions.generateOneLabelDistribution(
-					datum, project, new DecisionEngine(null, olda));
+					project, new DecisionEngine(null, olda).predictLabel(project, datum));
+		}
 		double cost = 0.0;
 		for (Map.Entry<String, Double> e : dest_probabilities.entrySet()) {
 			Double misclassification_cost = project.getData().getCostMatrix().getCost(datum.getEvaluationLabel(), e.getKey());

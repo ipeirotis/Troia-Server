@@ -9,7 +9,6 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.core.nominal.decision.DecisionEngine;
 
 /**
  * @author Konrad Kurdej
@@ -82,12 +81,8 @@ public class ProbabilityDistributions {
 		return pd;
 	}
 
-	static public Map<String, Double> generateOneLabelDistribution(LObject<String> datum, NominalProject project, DecisionEngine decisionEngine) {
-		String label = decisionEngine.predictLabel(project, datum);
-		Map<String, Double> pd = new HashMap<String, Double>();
-		for (String c: project.getData().getCategories()) {
-			pd.put(c, 0.);
-		}
+	static public Map<String, Double> generateOneLabelDistribution(NominalProject project, String label) {
+		Map<String, Double> pd = generateConstantDistribution(project.getData().getCategories(), 0.);
 		pd.put(label, 1.);
 		return pd;
 	}
