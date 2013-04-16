@@ -135,8 +135,8 @@ public class DBKVJobStorage implements IJobStorage{
 		return new KVResults(
 				new ResultsFactory.DatumContResultFactory(),
 				new ResultsFactory.WorkerContResultFactory(),
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class, true),
-				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class, true));
+				this.<Collection<DatumContResults>>getKVForJob(id, "ObjectResults", DatumContResults.class, true),
+				this.<Collection<WorkerContResults>>getKVForJob(id, "WorkerResults", WorkerContResults.class, true));
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class DBKVJobStorage implements IJobStorage{
 		return new KVResults(
 				new ResultsFactory.DatumResultFactory(),
 				wrnf,
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class, true),
+				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", DatumResult.class, true),
 				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class, true));
 	}
 }

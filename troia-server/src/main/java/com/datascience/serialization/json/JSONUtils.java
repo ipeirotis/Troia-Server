@@ -18,6 +18,7 @@ import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
+import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.MultinomialConfusionMatrix;
 import com.datascience.serialization.Serialized;
@@ -40,8 +41,6 @@ public class JSONUtils {
 	public static final Type stringSetType = new TypeToken<Collection<String>>() {
 	} .getType();
 	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
-	} .getType();
-	public static final Type confusionMatrixType = new TypeToken<MultinomialConfusionMatrix>() {
 	} .getType();
 
 	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
@@ -73,9 +72,8 @@ public class JSONUtils {
 
 	public static GsonBuilder getFilledDefaultGsonBuilder() {
 		GsonBuilder builder = getDefaultGsonBuilder();
-		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
-		builder.registerTypeAdapter(confusionMatrixType, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
-
+		builder.registerTypeAdapter(ConfusionMatrix.class, new MultinominalConfusionMatrixJSON.ConfusionMatrixDeserializer());
+		builder.registerTypeAdapter(ConfusionMatrix.class, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
 		builder.registerTypeAdapter(InMemoryNominalData.class, new DataJSON.NominalDeserializer());
 		builder.registerTypeAdapter(InMemoryNominalData.class, new DataJSON.NominalSerializer());
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Deserializer());
