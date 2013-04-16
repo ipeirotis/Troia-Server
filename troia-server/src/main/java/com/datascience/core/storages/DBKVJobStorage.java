@@ -44,14 +44,6 @@ public class DBKVJobStorage implements IJobStorage{
 		jobFactory = new JobFactory(serializer, this);
 	}
 
-	protected <V> ISafeKVStorage<V> getJobSettingKV(){   // TODO XXX  set proper type
-		IKVStorage<V> kvstorage = null;
-//		ITransformation<V, String> transformation = new SerializationTransform<V>(serializer, expectedType);
-//		kvstorage = new VTransformingKVWrapper<V, String>(helper.getKV("JobSettings"), transformation);
-//		kvstorage = new CachedKV<V>(kvstorage, 15); // this when we will test this
-		return new DefaultSafeKVStorage<V>(kvstorage, "JobSettings");
-	}
-
 	protected <V> ISafeKVStorage<V> getKV(String table, Type expectedType){
 		ITransformation<V, String> transformation = new SerializationTransform<V>(serializer, expectedType);
 		IKVStorage<V> storage = new VTransformingKVWrapper<V, String>(helper.getKV(table), transformation);
@@ -89,7 +81,8 @@ public class DBKVJobStorage implements IJobStorage{
 		KVCleaner cleaner = new KVCleaner();
 		cleaner.cleanUp((KVResults) p.getResults(), p.getData());
 		cleaner.cleanUp((KVData) p.getData()); // order is important ...
-		// cleaner.cleanUp( TODO XXX )job settings etc;
+		jobTypes.remove("");
+		jobSettings.remove("");
 	}
 
 	@Override
