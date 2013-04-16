@@ -22,6 +22,7 @@ import com.datascience.core.nominal.decision.DecisionEngine;
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.IObjectLabelDecisionAlgorithm;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
+import com.datascience.core.storages.MemoryJobStorage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -41,7 +42,8 @@ public class IncrementalDawidSkeneTest {
 		categories.add("category2");
 
 		IncrementalDawidSkene alg = new IncrementalDawidSkene();
-		project = new NominalProject(alg, new InMemoryNominalData());
+		MemoryJobStorage js = new MemoryJobStorage();
+		project = new NominalProject(alg, js.getNominalData("testId"), js.getNominalResults("testId", categories));
 		project.getData().addNewUpdatableAlgorithm(alg);
 		project.initializeCategories(categories, null, null);
 	}

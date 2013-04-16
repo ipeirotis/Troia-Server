@@ -3,15 +3,16 @@ package com.datascience.scheduler;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
+import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.mv.IncrementalMV;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,9 +23,11 @@ public class CostBasedPriorityCalculatorTest {
 
 	public static NominalProject setUpNominalProject(){
 		IncrementalMV imv = new IncrementalMV();
-		NominalProject project = new NominalProject(imv, new InMemoryNominalData());
-		project.initializeCategories(Arrays.asList(
-				new String[]{"A","B","C"}), null, null);
+		MemoryJobStorage js = new MemoryJobStorage();
+		Collection<String> categories = Arrays.asList(
+				new String[]{"A","B","C"});
+		NominalProject project = new NominalProject(imv, js.getNominalData("testId"), js.getNominalResults("testId", categories));
+		project.initializeCategories(categories, null, null);
 		project.getData().addNewUpdatableAlgorithm(imv);
 		return project;
 	}

@@ -23,8 +23,10 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 	protected JsonObject initializationData;
 	protected IScheduler<T> scheduler;
 
-	public Project(Algorithm<T, U, V, W> alg){
+	public Project(Algorithm<T, U, V, W> alg, U data, IResults<T, V, W> results){
 		this.algorithm = alg;
+		this.data = data;
+		this.results = results;
 	}
 
 	public U getData(){

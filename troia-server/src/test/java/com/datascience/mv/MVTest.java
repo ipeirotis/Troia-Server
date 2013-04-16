@@ -8,6 +8,8 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
 import static org.junit.Assert.*;
+
+import com.datascience.core.storages.MemoryJobStorage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -90,7 +92,8 @@ public class MVTest {
 	@Test
 	public void testBatchMV(){
 		BatchMV mv = new BatchMV();
-		NominalProject np = new NominalProject(mv, new InMemoryNominalData());
+		MemoryJobStorage js = new MemoryJobStorage();
+		NominalProject np = new NominalProject(mv, js.getNominalData("testId"), js.getNominalResults("testId", categories));
 		np.initializeCategories(categories, null, null);
 		INominalData nd = np.getData();
 		IResults<String, DatumResult, WorkerResult> results = np.getResults();
@@ -104,7 +107,8 @@ public class MVTest {
 	@Test
 	public void testIncrementalMV(){
 		IncrementalMV mv = new IncrementalMV();
-		NominalProject np = new NominalProject(mv, new InMemoryNominalData());
+		MemoryJobStorage js = new MemoryJobStorage();
+		NominalProject np = new NominalProject(mv, js.getNominalData("testId"), js.getNominalResults("testId", categories));
 		np.initializeCategories(categories, null, null);
 		INominalData nd = np.getData();
 		IResults<String, DatumResult, WorkerResult> results = np.getResults();

@@ -18,11 +18,11 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 
 	protected NominalAlgorithm nomAlgorithm;
 
-	public NominalProject(Algorithm algorithm1, INominalData data){
-		super(algorithm1);
+	public NominalProject(Algorithm algorithm1, INominalData data, IResults<String, DatumResult, WorkerResult> results){
+		super(algorithm1, data, results);
 		nomAlgorithm = (NominalAlgorithm) algorithm1; // just to skip casting over and over
-		this.data = data;
 		algorithm.setData(data);
+		algorithm.setResults(results);
 	}
 
 	@Override
@@ -38,16 +38,5 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 	public void initializeCategories(Collection<String> categories, Collection<CategoryValue> categoryPriors, CostMatrix<String> costMatrix){
 		data.initialize(categories, categoryPriors, costMatrix);
 		nomAlgorithm.initializeOnCategories(categories);
-		results = createResultsInstance(categories);
-		algorithm.setResults(results);
-	}
-
-	public static IResults<String, DatumResult, WorkerResult> createResultsInstance(Collection<String> categories){
-		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
-		wrnf.setCategories(categories);
-		IResults<String, DatumResult, WorkerResult> res = new InMemoryResults<String, DatumResult, WorkerResult>(
-				new ResultsFactory.DatumResultFactory(), wrnf);
-		// ^^^ TODO FIXME XXX this have to be given
-		return res;
 	}
 }

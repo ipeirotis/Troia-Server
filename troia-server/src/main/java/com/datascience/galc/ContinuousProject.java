@@ -6,6 +6,7 @@ import com.datascience.core.base.*;
 import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
 
@@ -14,12 +15,10 @@ import com.datascience.core.results.WorkerContResults;
  */
 public class ContinuousProject extends Project<ContValue, IData<ContValue>, DatumContResults, WorkerContResults> {
 
-	public ContinuousProject(ContinuousIpeirotis ci, IData<ContValue> data){
-		super(ci);
-		results = new InMemoryResults<ContValue, DatumContResults, WorkerContResults>(
-				new ResultsFactory.DatumContResultFactory(),
-				new ResultsFactory.WorkerContResultFactory());
-		this.data = data;
+	public ContinuousProject(ContinuousIpeirotis ci,
+							 IData<ContValue> data,
+							 IResults<ContValue, DatumContResults, WorkerContResults> results){
+		super(ci, data, results);
 		ci.setData(data);
 		ci.setResults(results);
 	}

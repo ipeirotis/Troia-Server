@@ -36,7 +36,7 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	
 	@Override
 	public String toString() {
-		return "CachedWithRegularDump" + cachedJobStorage.toString();
+		return "CachedWithRegularDump" + wrappedJobStorage.toString();
 	}
 	
 	public class DumpingService extends AbstractScheduledService {
@@ -51,7 +51,7 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 		@Override
 		protected void runOneIteration() throws Exception {
 			for (Optional<Job> oJob: cache.asMap().values()) {
-				cachedJobStorage.add(oJob.get());
+				wrappedJobStorage.add(oJob.get());
 			}
 		}
 

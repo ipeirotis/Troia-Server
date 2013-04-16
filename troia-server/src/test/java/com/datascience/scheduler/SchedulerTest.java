@@ -2,6 +2,7 @@ package com.datascience.scheduler;
 
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import org.junit.Test;
@@ -31,7 +32,8 @@ public class SchedulerTest {
 				addAssign(data, "worker" + j, "object" + i);
 			}
 		}
-		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), new InMemoryData<ContValue>());
+		MemoryJobStorage js = new MemoryJobStorage();
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), js.<ContValue>getData("testId"), js.getContResults("testId"));
 		cp.setData(data);
 		return cp;
 	}
@@ -51,7 +53,8 @@ public class SchedulerTest {
 	@Test
 	public void schedulerTestOnSmallUpdates() {
 		final int objectsCount = 5;
-		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), new InMemoryData<ContValue>());
+		MemoryJobStorage js = new MemoryJobStorage();
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), js.<ContValue>getData("testId"), js.getContResults("testId"));
 		InMemoryData<ContValue> data = new InMemoryData<ContValue>();
 		cp.setData(data);
 		Scheduler<ContValue> scheduler =

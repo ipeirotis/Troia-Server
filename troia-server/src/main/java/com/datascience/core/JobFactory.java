@@ -10,6 +10,7 @@ import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.results.*;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
@@ -127,7 +128,8 @@ public class JobFactory {
 		}
 		NominalAlgorithm na = creator.create(jo);
 		INominalData data = jobStorage.getNominalData(id);
-		NominalProject np = new NominalProject(na, data);
+		IResults<String, DatumResult, WorkerResult> results = jobStorage.getNominalResults(id, categories);
+		NominalProject np = new NominalProject(na, data, results);
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
@@ -164,7 +166,8 @@ public class JobFactory {
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
 		IData<ContValue> data = jobStorage.getData(id);
-		ContinuousProject cp = new ContinuousProject(alg, data);
+		IResults<ContValue, DatumContResults, WorkerContResults> results = jobStorage.getContResults(id);
+		ContinuousProject cp = new ContinuousProject(alg, data, results);
 		this.<ContValue>handleSchedulerLoading(jo, cp);
 		cp.setInitializationData(jo);
 		return new Job(cp, id);

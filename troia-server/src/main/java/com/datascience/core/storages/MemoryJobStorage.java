@@ -1,14 +1,16 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.Job;
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
 import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
-import com.datascience.core.results.IResults;
+import com.datascience.core.results.*;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,9 +61,16 @@ public class MemoryJobStorage implements IJobStorage{
 	}
 
 	@Override
-	public IResults getResults(String id) {
-		//TODO
-		return new InMemoryResults(null, null);
+	public IResults getContResults(String id) {
+		return new InMemoryResults<ContValue, DatumContResults, WorkerContResults>(
+				new ResultsFactory.DatumContResultFactory(), new ResultsFactory.WorkerContResultFactory());
+	}
+
+	@Override
+	public IResults getNominalResults(String id, Collection<String> categories){
+		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
+		wrnf.setCategories(categories);
+		return new InMemoryResults<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory(), wrnf);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
+import com.datascience.core.storages.MemoryJobStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -31,7 +32,8 @@ public class ResultsJSONingTest {
 		categories.add("category1");
 		categories.add("category2");
 
-		IResults<String, DatumResult, WorkerResult> results = NominalProject.createResultsInstance(categories);
+		MemoryJobStorage js = new MemoryJobStorage();
+		IResults<String, DatumResult, WorkerResult> results = js.getNominalResults("testid", categories);
 		LObject<String> obj = new LObject<String>("obj");
 		obj.setEvaluationLabel("category2");
 		DatumResult dr = results.getOrCreateDatumResult(obj);

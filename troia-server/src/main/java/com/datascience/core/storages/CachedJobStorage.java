@@ -2,10 +2,7 @@ package com.datascience.core.storages;
 
 import java.util.concurrent.ExecutionException;
 
-import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
-import com.datascience.core.nominal.INominalData;
-import com.datascience.core.results.IResults;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.apache.log4j.Logger;
 
@@ -21,16 +18,15 @@ import com.google.common.cache.RemovalNotification;
  *
  * @author konrad
  */
-public class CachedJobStorage implements IJobStorage {
+public class CachedJobStorage extends WrappedJobStorage{
 	
 	private static Logger logger = Logger.getLogger(CachedJobStorage.class);
 
-	protected IJobStorage cachedJobStorage;
-	protected LoadingCache<String, Optional<Job>> cache; 
+	protected LoadingCache<String, Optional<Job>> cache;
 	
 	@SuppressWarnings("OverridableMethodCallInConstructor")
 	public CachedJobStorage(final IJobStorage cachedJobStorage, int cacheSize){
-		this.cachedJobStorage = cachedJobStorage;
+		super(cachedJobStorage);
 		cache = CacheBuilder.newBuilder()
 			.maximumSize(cacheSize)
 			.removalListener(getRemovalListener())
@@ -43,7 +39,7 @@ public class CachedJobStorage implements IJobStorage {
 			public Optional<Job> load(String id) throws Exception {
 				// This is tricky - if absent we throw 
 				// exception to avoid putting this value into cache
-				Job job = cachedJobStorage.get(id);
+				Job job = wrappedJobStorage.get(id);
 				if (job == null) {
 					throw new NotInCachedException();
 				}
@@ -57,7 +53,7 @@ public class CachedJobStorage implements IJobStorage {
 			@Override
 			public void onRemoval(RemovalNotification<String, Optional<Job>> rn){
 				try {
-					cachedJobStorage.add(rn.getValue().get());
+					wrappedJobStorage.add(rn.getValue().get());
 				} catch (Exception ex) {
 					logger.error("CachedJobStorage on eviction", ex);
 				}
@@ -102,34 +98,19 @@ public class CachedJobStorage implements IJobStorage {
 		logger.debug("CACHED_JS: rm " + job.getId());
 		String id = job.getId();
 		cache.invalidate(id);
-		cachedJobStorage.remove(job);
+		wrappedJobStorage.remove(job);
 	}
 
 	@Override
 	public void test() throws Exception {
-		cachedJobStorage.test();
+		wrappedJobStorage.test();
 	}
 
 	@Override
 	public void stop() throws Exception {
 		cache.invalidateAll();
 		cache.cleanUp();
-		cachedJobStorage.stop();
-	}
-
-	@Override
-	public <T> IData<T> getData(String id) {
-		return cachedJobStorage.getData(id);
-	}
-
-	@Override
-	public INominalData getNominalData(String id) {
-		return cachedJobStorage.getNominalData(id);
-	}
-
-	@Override
-	public IResults getResults(String id) {
-		return cachedJobStorage.getResults(id);
+		wrappedJobStorage.stop();
 	}
 
 	@Override
@@ -140,7 +121,7 @@ public class CachedJobStorage implements IJobStorage {
 	
 	@Override
 	public String toString() {
-		return "Cached" + cachedJobStorage.toString();
+		return "Cached" + wrappedJobStorage.toString();
 	}
 	
 	static protected class NotInCachedException extends Exception{

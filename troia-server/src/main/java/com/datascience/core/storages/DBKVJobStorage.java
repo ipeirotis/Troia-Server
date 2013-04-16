@@ -7,11 +7,10 @@ import com.datascience.core.datastoring.kv.KVCleaner;
 import com.datascience.core.datastoring.kv.KVData;
 import com.datascience.core.datastoring.kv.KVNominalData;
 import com.datascience.core.datastoring.kv.KVResults;
+import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.datastoring.utils.NominalData;
 import com.datascience.core.nominal.INominalData;
-import com.datascience.core.results.DatumResult;
-import com.datascience.core.results.IResults;
-import com.datascience.core.results.WorkerResult;
+import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
 import com.datascience.serialization.json.JSONUtils;
@@ -132,11 +131,22 @@ public class DBKVJobStorage implements IJobStorage{
 	}
 
 	@Override
-	public IResults getResults(String id) {
-		return new KVResults(null, null, // Needs proper factories
+	public IResults<ContValue, DatumContResults, WorkerContResults> getContResults(String id) {
+		return new KVResults(
+				new ResultsFactory.DatumContResultFactory(),
+				new ResultsFactory.WorkerContResultFactory(),
 				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class, true),
 				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class, true));
 	}
 
-
+	@Override
+	public IResults<String, DatumResult, WorkerResult> getNominalResults(String id, Collection<String> categories) {
+		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
+		wrnf.setCategories(categories);
+		return new KVResults(
+				new ResultsFactory.DatumResultFactory(),
+				wrnf,
+				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", WorkerResult.class, true),
+				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class, true));
+	}
 }
