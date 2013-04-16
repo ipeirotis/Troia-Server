@@ -14,7 +14,6 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
@@ -38,7 +37,6 @@ public abstract class JobEntryBase<T extends Project> {
 	@Context UriInfo uriInfo;
 	@PathParam("id") String jid;
 	
-	Job<T> job;
 	protected Class expectedClass;
 	ResponseBuilder responser;
 	ProjectCommandExecutor executor;
