@@ -22,7 +22,6 @@ import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * @Author: konrad
