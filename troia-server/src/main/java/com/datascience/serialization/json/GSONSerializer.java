@@ -1,7 +1,6 @@
-package com.datascience.service;
+package com.datascience.serialization.json;
 
 import com.datascience.serialization.ISerializer;
-import com.datascience.serialization.json.JSONUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import java.io.StringReader;

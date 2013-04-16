@@ -9,7 +9,6 @@ import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.gal.IncrementalDawidSkene;
-import com.datascience.service.GSONSerializer;
 import com.google.gson.*;
 import org.junit.Assert;
 import org.junit.Before;

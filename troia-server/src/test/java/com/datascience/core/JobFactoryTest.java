@@ -9,7 +9,7 @@ import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
 import com.datascience.scheduler.Constants;
-import com.datascience.service.GSONSerializer;
+import com.datascience.serialization.json.GSONSerializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;

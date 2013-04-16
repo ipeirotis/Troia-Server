@@ -4,7 +4,7 @@ import com.datascience.core.jobs.Job;
 import com.datascience.core.base.ContValue;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
-import com.datascience.service.GSONSerializer;
+import com.datascience.serialization.json.GSONSerializer;
 import org.junit.Test;
 
 /**

@@ -10,6 +10,7 @@ import com.datascience.core.storages.*;
 import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.SerializedCachedCommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
+import com.datascience.serialization.json.GSONSerializer;
 import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
