@@ -19,9 +19,9 @@ import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
+import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
-import com.datascience.serialization.json.DataJSON;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.serialization.ISerializer;
 import com.datascience.core.jobs.JobCommand;
@@ -180,7 +180,7 @@ public abstract class JobEntryBase<T extends Project> {
 	@Path("assigns")
 	@POST
 	public Response addAssigns(String json){
-		Collection<DataJSON.ShallowAssign> assigns = serializer.parse(json, assignsType);
+		Collection<ShallowAssign> assigns = serializer.parse(json, assignsType);
 		return buildResponseOnCommand(new AssignsCommands.AddAssigns(assigns));
 	}
 

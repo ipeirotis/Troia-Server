@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.datascience.core.base.*;
+import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
@@ -79,18 +80,6 @@ public class DataJSON {
 		}
 	}
 
-	public static class ShallowAssign<T>{
-
-		public String worker;
-		public String object;
-		public T label;
-
-		public ShallowAssign(AssignedLabel<T> assign){
-			worker = assign.getWorker().getName();
-			object = assign.getLobject().getName();
-			label = assign.getLabel();
-		}
-	}
 
 
 	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {

@@ -20,7 +20,7 @@ import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.MatrixValue;
-import com.datascience.core.stats.MultinomialConfusionMatrix;
+import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.serialization.Serialized;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.*;
@@ -47,8 +47,8 @@ public class JSONUtils {
 	public static final Type objectsContValueType = new TypeToken<Collection<LObject<ContValue>>>() {}.getType();
 	public static final Type objectsCollection = new TypeToken<Collection<LObject>>() {}.getType();
 
-	public static final Type assignsStringType = new TypeToken<Collection<DataJSON.ShallowAssign<String>>>(){}.getType();
-	public static final Type assignsContValueType = new TypeToken<Collection<DataJSON.ShallowAssign<ContValue>>>(){}.getType();
+	public static final Type assignsStringType = new TypeToken<Collection<ShallowAssign<String>>>(){}.getType();
+	public static final Type assignsContValueType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){}.getType();
 	public static final Type assignsCollection = new TypeToken<Collection<AssignedLabel>>(){}.getType();
 
 	public static final Type workersStringType = new TypeToken<Collection<Worker<String>>>() {}.getType();
@@ -100,13 +100,13 @@ public class JSONUtils {
 						"objects",
 						new TypeToken<LObject<ContValue>>(){}.getType()));
 		builder.registerTypeAdapter(assignsStringType,
-				new GenericCollectionDeserializer<DataJSON.ShallowAssign<String>>(
+				new GenericCollectionDeserializer<ShallowAssign<String>>(
 						"assigns",
-						new TypeToken<DataJSON.ShallowAssign<String>>(){}.getType()));
+						new TypeToken<ShallowAssign<String>>(){}.getType()));
 		builder.registerTypeAdapter(assignsContValueType,
-				new GenericCollectionDeserializer<DataJSON.ShallowAssign<ContValue>>(
+				new GenericCollectionDeserializer<ShallowAssign<ContValue>>(
 						"assigns",
-						new TypeToken<DataJSON.ShallowAssign<ContValue>>(){}.getType()));
+						new TypeToken<ShallowAssign<ContValue>>(){}.getType()));
 
 		return builder;
 	}

@@ -7,7 +7,6 @@ import java.util.Map;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.utils.CostMatrix;
-import com.datascience.utils.ProbabilityDistributions;
 
 /**
  *
