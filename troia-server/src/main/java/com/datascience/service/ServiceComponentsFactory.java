@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import com.datascience.core.JobsManager;
+import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.storages.*;
 import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.SerializedCachedCommandStatusesContainer;

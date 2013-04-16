@@ -1,6 +1,6 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;

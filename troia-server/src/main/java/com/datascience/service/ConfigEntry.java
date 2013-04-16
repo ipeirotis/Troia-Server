@@ -1,6 +1,6 @@
 package com.datascience.service;
 
-import com.datascience.core.JobsManager;
+import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;

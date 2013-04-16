@@ -14,8 +14,8 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.core.Job;
-import com.datascience.core.JobsManager;
+import com.datascience.core.jobs.Job;
+import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
@@ -24,7 +24,7 @@ import com.datascience.scheduler.SchedulerCommands;
 import com.datascience.serialization.json.DataJSON;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.serialization.ISerializer;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**

@@ -2,7 +2,7 @@ package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
 import com.datascience.serialization.json.DataJSON.ShallowAssign;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 
 import java.util.Collection;
 

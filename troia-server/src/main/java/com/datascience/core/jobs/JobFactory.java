@@ -1,4 +1,4 @@
-package com.datascience.core;
+package com.datascience.core.jobs;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;

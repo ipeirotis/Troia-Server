@@ -1,14 +1,11 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.datastoring.memory.InMemoryData;
-import com.datascience.core.nominal.NominalProject;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.service.GSONSerializer;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * @Author: konrad

@@ -1,5 +1,7 @@
 package com.datascience.core;
 
+import com.datascience.core.jobs.Job;
+import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;

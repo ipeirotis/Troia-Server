@@ -4,7 +4,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import com.google.gson.JsonObject;
 import com.sun.jersey.spi.resource.Singleton;
 

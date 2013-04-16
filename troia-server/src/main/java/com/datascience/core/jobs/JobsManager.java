@@ -1,4 +1,4 @@
-package com.datascience.core;
+package com.datascience.core.jobs;
 
 import java.util.HashMap;
 import java.util.Map;

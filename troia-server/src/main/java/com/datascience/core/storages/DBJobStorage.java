@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.datascience.core.JobFactory;
+import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
@@ -23,7 +23,7 @@ import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 
 /**
  * From old class DawidSkeneCache.

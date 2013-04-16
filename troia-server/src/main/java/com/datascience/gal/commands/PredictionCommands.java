@@ -3,10 +3,9 @@ package com.datascience.gal.commands;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
 

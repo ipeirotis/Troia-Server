@@ -1,12 +1,10 @@
 package com.datascience.serialization.json;
 
-import com.datascience.core.Job;
-import com.datascience.core.JobFactory;
+import com.datascience.core.jobs.Job;
+import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.storages.MemoryJobStorage;

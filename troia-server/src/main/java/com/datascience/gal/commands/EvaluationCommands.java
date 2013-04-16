@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.gal.DatumValue;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.gal.Quality;

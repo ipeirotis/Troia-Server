@@ -1,6 +1,6 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.AbstractScheduledService;
 
