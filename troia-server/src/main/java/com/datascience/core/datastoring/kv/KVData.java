@@ -166,10 +166,13 @@ public class KVData<T> extends AbstractData<T> {
 
 	private void forceAddAssign(AssignedLabel<T> assign, ISafeKVStorage<Collection<AssignedLabel<T>>> storage, String key){
 		Collection<AssignedLabel<T>> assigns = storage.get(key);
-		if (!assigns.add(assign)) {
-			assigns.remove(assign);
-			assigns.add(assign);
+		for (AssignedLabel<T> al : assigns){
+			if (al.equals(assign)){
+				assigns.remove(al);
+				break;
+			}
 		}
+		assigns.add(assign);
 		storage.put(key, assigns);
 	}
 
