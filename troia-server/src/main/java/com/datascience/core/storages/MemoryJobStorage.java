@@ -10,6 +10,7 @@ import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,10 @@ public class MemoryJobStorage implements IJobStorage{
 	@Override
 	public void stop() throws Exception {
 		storage.clear();
+	}
+
+	@Override
+	public void clearAndInitialize() throws SQLException {
 	}
 
 	@Override

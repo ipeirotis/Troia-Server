@@ -7,6 +7,7 @@ import com.datascience.core.base.Project;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 /**
@@ -20,6 +21,8 @@ public interface IJobStorage {
 	void remove(Job job) throws Exception;
 	void test() throws Exception;
 	void stop() throws Exception;
+
+	void clearAndInitialize() throws SQLException;
 
 	<T> IData<T> getData(String id);
 	INominalData getNominalData(String id);

@@ -1,6 +1,9 @@
 package com.datascience.service;
 
 import com.datascience.core.jobs.JobsManager;
+import com.datascience.core.storages.BaseDBJobStorage;
+import com.datascience.core.storages.DBJobStorage;
+import com.datascience.core.storages.DBKVJobStorage;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
@@ -18,6 +21,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Path("/config/")
 @Singleton
@@ -55,8 +59,9 @@ public class ConfigEntry {
 				continue;
 			items.add(new NameValue(s, properties.get(s)));
 		}
-		model.put("freezed", freezed);
+		model.put(Constants.IS_FREEZED, freezed);
 		model.put("items", items);
+		model.put(Constants.IS_INITIALIZED, scontext.getAttribute(Constants.IS_INITIALIZED));
 		return Response.ok(new Viewable("/config", model)).build();
 	}
 
@@ -66,7 +71,7 @@ public class ConfigEntry {
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
 			Map<String, String> simpleForm = new HashMap<String, String>();
 			for (String s : form.keySet()){
-				if (s.equals("freezed"))
+				if (s.equals(Constants.IS_FREEZED))
 					scontext.setAttribute(Constants.IS_FREEZED, true);
 				else
 					simpleForm.put(s, form.getFirst(s));
@@ -77,6 +82,7 @@ public class ConfigEntry {
 			} catch(Exception e){
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
 			}
+			scontext.setAttribute(Constants.IS_INITIALIZED, true);
 		}
 		return Response.ok().build();
 	}
@@ -85,14 +91,8 @@ public class ConfigEntry {
 	@Path("resetDB")
 	public Response resetDB(){
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
-			Properties p = (Properties) scontext.getAttribute(Constants.PROPERTIES);
 			try {
-				Properties connectionProperties = new Properties();
-				connectionProperties.setProperty("user", p.getProperty(Constants.DB_USER));
-				connectionProperties.setProperty("password", p.getProperty(Constants.DB_PASSWORD));
-				//TODO make db helper
-				new DBKVHelper(p.getProperty(Constants.DB_URL), p.getProperty(Constants.DB_DRIVER_CLASS),
-						connectionProperties, p.getProperty(Constants.DB_NAME)).execute();
+				((IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE)).clearAndInitialize();
 			} catch (Exception e){
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
 			}
@@ -104,7 +104,6 @@ public class ConfigEntry {
 		Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
 		props.putAll(properties);
 
-		scontext.setAttribute(Constants.IS_INITIALIZED, true);
 		ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
 
 		ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
@@ -115,7 +114,7 @@ public class ConfigEntry {
 
 		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
 
-		IJobStorage jobStorage = factory.loadJobStorage(serializer, executor, jobsManager);
+		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsManager);
 		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 
 		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);

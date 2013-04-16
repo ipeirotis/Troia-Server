@@ -26,21 +26,15 @@ import java.util.Collection;
 /**
  * @Author: konrad
  */
-public class DBKVJobStorage implements IJobStorage{
+public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
-	protected DBKVHelper helper;
-	protected ISerializer serializer;
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
-	protected JobFactory jobFactory;
 
 	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer) throws SQLException {
-		this.helper = helper;
-		this.helper.connectDB();
-		this.serializer = serializer;
+		super(helper, serializer);
 		jobSettings = getKV("JobSettings", JsonObject.class);
 		jobTypes = getKV("JobTypes", String.class);
-		jobFactory = new JobFactory(serializer, this);
 	}
 
 	protected <V> ISafeKVStorage<V> getKV(String table, Type expectedType){

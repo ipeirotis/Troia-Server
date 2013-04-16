@@ -25,22 +25,22 @@
 			        <tr>
 			            <td>${item.name}</td>
 			            <td><input type="text" name="${item.name}" value="${item.value}"
-			                <c:if test="${it.freezed}">disabled</c:if>
+			                <c:if test="${it.IS_FREEZED}">disabled</c:if>
                         /></td>
                     </tr>
                 </c:forEach>
                 <tr>
-                    <td colspan="2"><input type="checkbox" name="freezed"
-                        <c:if test="${it.freezed}">checked disabled</c:if>
+                    <td colspan="2"><input type="checkbox" name="IS_FREEZED"
+                        <c:if test="${it.IS_FREEZED}">checked disabled</c:if>
                     >settings freezed?</td>
                 </tr>
 			</tbody>
 		</table>
-		<c:if test="${!it.freezed}">
+		<c:if test="${!it.IS_FREEZED}">
 		    <input type="submit" value="Submit">
         </c:if>
 	</form>
-	<c:if test="${!it.freezed}">
+	<c:if test="${!it.IS_FREEZED && it.IS_INITIALIZED}">
         <form method="post" action="config/resetDB" id="db_form">
             <input type="submit" value="recreate (drop and create) database"/>
         </form>
