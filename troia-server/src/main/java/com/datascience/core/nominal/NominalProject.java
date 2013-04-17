@@ -1,10 +1,7 @@
 package com.datascience.core.nominal;
 
 import com.datascience.core.base.*;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
-import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.results.IResults;
-import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.results.DatumResult;
 import com.datascience.utils.CostMatrix;
@@ -37,6 +34,6 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 
 	public void initializeCategories(Collection<String> categories, Collection<CategoryValue> categoryPriors, CostMatrix<String> costMatrix){
 		data.initialize(categories, categoryPriors, costMatrix);
-		nomAlgorithm.initializeOnCategories(categories);
+		nomAlgorithm.initializeOnCategories();
 	}
 }

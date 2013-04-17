@@ -18,6 +18,7 @@ import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerResult;
+import com.datascience.core.stats.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,7 +36,9 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	private IncrementalNominalModel model;
 
 	public IncrementalDawidSkene() {
-		super(new ErrorRateCalculators.IncrementalErrorRateCalculator());
+		super(
+			new ErrorRateCalculators.IncrementalErrorRateCalculator(),
+			new CategoryPriorCalculators.IncrementalCategoryPriorCalculator());
 		model = new IncrementalNominalModel();
 	}
 
@@ -52,22 +55,6 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	@Override
 	public void setModel(Object o){
 		model = (IncrementalNominalModel) o;
-	}
-
-	@Override
-	public void initializePriors() {
-		for (String c : data.getCategories()){
-			model.categoryPriors.put(c, 0.);
-		}
-		model.priorDenominator = 0;
-	}
-
-	@Override
-	public double prior(String categoryName) {
-		if (data.arePriorsFixed() || model.priorDenominator == 0)
-			return 1. / (double) data.getCategories().size();
-		else
-			return model.categoryPriors.get(categoryName) / model.priorDenominator;
 	}
 
 	@Override

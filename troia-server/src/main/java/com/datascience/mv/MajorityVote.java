@@ -5,11 +5,13 @@ import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
+import com.datascience.core.stats.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
 import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,8 +19,8 @@ import java.util.Map;
  */
 public abstract class MajorityVote extends NominalAlgorithm {
 
-	public MajorityVote(IErrorRateCalculator errorRateCalculator){
-		super(errorRateCalculator);
+	public MajorityVote(IErrorRateCalculator errorRateCalculator, ICategoryPriorCalculator categoryPriorCalculator){
+		super(errorRateCalculator, categoryPriorCalculator);
 	}
 
 	public void computeResultsForObject(LObject<String> object){
@@ -75,9 +77,5 @@ public abstract class MajorityVote extends NominalAlgorithm {
 		}
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
 		results.addWorkerResult(worker, wr);
-	}
-
-	@Override
-	public void initializeOnCategories(Collection<String> categories){
 	}
 }

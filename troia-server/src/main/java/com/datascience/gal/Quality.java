@@ -65,4 +65,15 @@ public class Quality {
 		}
 		return quality;
 	}
+
+	static public double getAverage(NominalProject project, Map<String, Double> costs){
+		//sum of object qualities is: n - sum_of_costs/s, where s in minSpammerCost
+		int cnt = costs.size();
+		double costSum = 0.;
+		for (Double val : costs.values()){
+			costSum += val;
+		}
+		return (cnt - costSum/getMinSpammerCost(project.getData(), project.getAlgorithm())) / cnt;
+
+	}
 }

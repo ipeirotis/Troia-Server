@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./source.sh
+source ./commons.sh
+
+# Requests
 
 function createJob
 {
@@ -114,7 +116,217 @@ function getWorkersQualities
     echo $(curl -s1 -X GET "$URL/cjobs/$jid/workers/quality/estimated")
 }
 
-function galcTutorial
+# Responses
+
+loadAssignedLabelsExpected='
+{
+    "executionTime": 0.0, 
+    "result": "Assigns added", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T14:59:31.853+02:00"
+}'
+
+loadGoldLabelsExpected='
+{
+    "executionTime": 0.0, 
+    "result": "Objects added", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T14:59:32.263+02:00"
+}'
+
+loadUnassignedLabels='
+{
+    "executionTime": 0.0, 
+    "result": "Objects added", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T14:59:32.263+02:00"
+}'
+
+computeExpected='
+{
+    "executionTime": 0.001, 
+    "result": "Computation done", 
+    "status": "OK", 
+    "timestamp": "2013-04-09T14:59:32.468+02:00"
+}'
+
+getObjectsPredictionExpected='
+{
+    "executionTime": 0.0, 
+    "result": [
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": 0.11456418171572877, 
+            "est_zeta": -0.1913547099132667, 
+            "object": {
+                "name": "http://youporn.com"
+            }
+        }, 
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": 0.41045876986866625, 
+            "est_zeta": 0.343407722905, 
+            "object": {
+                "goldLabel": {
+                    "value": 8.219077484951955, 
+                    "zeta": 0.343407722905
+                }, 
+                "name": "http://sunnyfun.com"
+            }
+        }, 
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": 0.17414895890312143, 
+            "est_zeta": -0.08366872414864963, 
+            "object": {
+                "name": "http://sex-mission.com"
+            }
+        }, 
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": 0.38236987429215774, 
+            "est_zeta": 0.292643407722905, 
+            "object": {
+                "goldLabel": {
+                    "value": 10.219077484951955, 
+                    "zeta": 0.292643407722905
+                }, 
+                "name": "http://google.com"
+            }
+        }, 
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": NaN, 
+            "est_zeta": NaN, 
+            "object": {
+                "name": "object1"
+            }
+        }, 
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": NaN, 
+            "est_zeta": NaN, 
+            "object": {
+                "name": "object2"
+            }
+        }, 
+        {
+            "distributionMu": 0.22044451213182, 
+            "distributionSigma": 0.5533196986062296, 
+            "est_value": 0.05636583076319032, 
+            "est_zeta": -0.2965350443548846, 
+            "object": {
+                "name": "http://yahoo.com"
+            }
+        }
+    ], 
+    "status": "OK", 
+    "timestamp": "2013-04-09T15:05:46.124+02:00"
+}'
+
+getWorkersQualitiesExpected='
+{
+    "executionTime": 0.0, 
+    "result": [
+        {
+            "est_mu": 0.26207102226865925, 
+            "est_rho": -0.2706672409621047, 
+            "est_sigma": 1.8488708546932122, 
+            "worker": "worker2", 
+            "zeta": [
+                {
+                    "label": {
+                        "value": -0.9894035257125199
+                    }, 
+                    "object": "http://youporn.com", 
+                    "worker": "worker2"
+                }, 
+                {
+                    "label": {
+                        "value": -0.8410110909927939
+                    }, 
+                    "object": "http://yahoo.com", 
+                    "worker": "worker2"
+                }, 
+                {
+                    "label": {
+                        "value": -0.5747428949520097
+                    }, 
+                    "object": "http://google.com", 
+                    "worker": "worker2"
+                }, 
+                {
+                    "label": {
+                        "value": 1.4159566891958497
+                    }, 
+                    "object": "http://sex-mission.com", 
+                    "worker": "worker2"
+                }, 
+                {
+                    "label": {
+                        "value": 0.9892008224614738
+                    }, 
+                    "object": "http://sunnyfun.com", 
+                    "worker": "worker2"
+                }
+            ]
+        }, 
+        {
+            "est_mu": 1.366825857518015, 
+            "est_rho": 0.2706672409621048, 
+            "est_sigma": 2.2396896717998964, 
+            "worker": "worker1", 
+            "zeta": [
+                {
+                    "label": {
+                        "value": -0.4985659691918817
+                    }, 
+                    "object": "http://google.com", 
+                    "worker": "worker1"
+                }, 
+                {
+                    "label": {
+                        "value": 0.5641708370163716
+                    }, 
+                    "object": "http://youporn.com", 
+                    "worker": "worker1"
+                }, 
+                {
+                    "label": {
+                        "value": -1.60188718730396
+                    }, 
+                    "object": "http://sex-mission.com", 
+                    "worker": "worker1"
+                }, 
+                {
+                    "label": {
+                        "value": 0.18204432575971705
+                    }, 
+                    "object": "http://yahoo.com", 
+                    "worker": "worker1"
+                }, 
+                {
+                    "label": {
+                        "value": 1.354237993719753
+                    }, 
+                    "object": "http://sunnyfun.com", 
+                    "worker": "worker1"
+                }
+            ]
+        }
+    ], 
+    "status": "OK", 
+    "timestamp": "2013-04-09T15:05:46.329+02:00"
+}'
+
+# GALC tutorial: main flow
+function main
 {
     # Create a job.
     response=$(createJob)
@@ -123,153 +335,16 @@ function galcTutorial
     # Extract job id from the response.
     jid=$(echo $response | cut -d ',' -f 2 | cut -d ':' -f 3 | cut -d '"' -f 1 | tr -d ' ')
 
-    testAsyncJobCall "loadAssignedLabels"   "$jid" "Assigns added"
-    testAsyncJobCall "loadGoldLabels"       "$jid" "Objects added"
-    testAsyncJobCall "loadUnassignedLabels" "$jid" "Objects added"
-    testAsyncJobCall "compute"              "$jid" "Computation done"
+    testAsyncJobCallResponse "loadAssignedLabels"   "$jid" "$loadAssignedLabelsExpected"
+    testAsyncJobCallResponse "loadGoldLabels"       "$jid" "$loadGoldLabelsExpected"
+    testAsyncJobCallResponse "loadUnassignedLabels" "$jid" "$loadUnassignedLabels"
+    testAsyncJobCallResponse "compute"              "$jid" "$computeExpected"
 
-    expectedObjectsPrediction='[
-        {
-            "est_value":0.11456418171572877,
-            "est_zeta":-0.1913547099132667,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object":{"name":"http://youporn.com"}
-        },
-        {
-            "est_value":0.41045876986866625,
-            "est_zeta":0.343407722905,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object": 
-            {
-                "name":"http://sunnyfun.com",
-                "goldLabel":
-                {
-                    "value":8.219077484951955,
-                    "zeta":0.343407722905
-                }
-            }
-        },
-        {
-            "est_value":0.17414895890312143,
-            "est_zeta":-0.08366872414864963,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object":{"name":"http://sex-mission.com"}
-        },
-        {
-            "est_value":0.38236987429215774,
-            "est_zeta":0.292643407722905,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object":
-            {
-                "name":"http://google.com",
-                "goldLabel":
-                {
-                    "value":10.219077484951955,
-                    "zeta":0.292643407722905
-                }
-            }
-        },
-        {
-            "est_value":NaN,
-            "est_zeta":NaN,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object":{"name":"object1"}
-        },
-        {
-            "est_value":NaN,
-            "est_zeta":NaN,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object":{"name":"object2"}
-        },
-        {
-            "est_value":0.05636583076319032,
-            "est_zeta":-0.2965350443548846,
-            "distributionMu":0.22044451213182,
-            "distributionSigma":0.5533196986062296,
-            "object":{"name":"http://yahoo.com"}
-        }
-    ]'
-
-    expectedWorkersQualities='[
-        {
-            "est_rho":-0.2706672409621047,
-            "est_mu":0.26207102226865925,
-            "est_sigma":1.8488708546932122,
-            "zeta":[
-            {
-                "worker":"worker2",
-                "object":"http://youporn.com",
-                "label":{"value":-0.9894035257125199}
-            },
-            {
-                "worker":"worker2",
-                "object":"http://yahoo.com",
-                "label":{"value":-0.8410110909927939}
-            },
-            {
-                "worker":"worker2",
-                "object":"http://google.com",
-                "label":{"value":-0.5747428949520097}
-            },
-            {
-                "worker":"worker2",
-                "object":"http://sex-mission.com",
-                "label":{"value":1.4159566891958497}
-            },
-            {
-                "worker":"worker2",
-                "object":"http://sunnyfun.com",
-                "label":{"value":0.9892008224614738}
-            }
-            ],
-            "worker":"worker2"
-        },
-        {
-            "est_rho":0.2706672409621048,
-            "est_mu":1.366825857518015,
-            "est_sigma":2.2396896717998964,
-            "zeta":[
-            {
-                "worker":"worker1",
-                "object":"http://google.com",
-                "label":{"value":-0.4985659691918817}
-            },
-            {
-                "worker":"worker1",
-                "object":"http://youporn.com",
-                "label":{"value":0.5641708370163716}
-            },
-            {
-                "worker":"worker1",
-                "object":"http://sex-mission.com",
-                "label":{"value":-1.60188718730396}
-            },
-            {
-                "worker":"worker1",
-                "object":"http://yahoo.com",
-                "label":{"value":0.18204432575971705}
-            },
-            {
-                "worker":"worker1",
-                "object":"http://sunnyfun.com",
-                "label":{"value":1.354237993719753}
-            }
-            ],
-            "worker":"worker1"
-        }
-    ]'
-
-    testAsyncJobCallResult "getObjectsPrediction" "$jid" "$expectedObjectsPrediction"
-    testAsyncJobCallResult "getWorkersQualities"  "$jid" "$expectedWorkersQualities"
-
+    testAsyncJobCallResponse "getObjectsPrediction" "$jid" "$getObjectsPredictionExpected"
+    testAsyncJobCallResponse "getWorkersQualities"  "$jid" "$getWorkersQualitiesExpected"
+    
     response=$(deleteJob "$jid")
     assertStatus "$response"
 }
 
-galcTutorial
+main

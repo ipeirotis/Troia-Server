@@ -54,7 +54,7 @@ public class IncrementalDawidSkeneTest {
 
 	@Test
 	public final void testInitializePriors() {
-		double actual = ((AbstractDawidSkene)project.getAlgorithm()).prior(categories.get(0));
+		double actual = project.getAlgorithm().prior(categories.get(0));
 		double expected = 1. / project.getData().getCategories().size();
 		assertEquals(expected, actual, TestDataManager.DELTA_DOUBLE);
 	}

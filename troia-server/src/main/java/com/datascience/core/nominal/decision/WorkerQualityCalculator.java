@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.NominalProject;
+import com.datascience.gal.Quality;
 
 /*
  * @author: Artur Ambroziak
@@ -32,10 +33,18 @@ public abstract class WorkerQualityCalculator {
 		return cost;
 	}
 
-	protected String getCostStr(double cost, boolean inverse){
-		 return (Double.isNaN(cost)) ? "---" : Math.round(100 * (inverse ? 1. - cost : cost)) + "%";
+	public Map<String, Double> getCosts(NominalProject project){
+		Map<String, Double> ret = new HashMap<String, Double>();
+		for (Worker<String> w : project.getData().getWorkers()){
+			ret.put(w.getName(), getCost(project, w));
+		}
+		return ret;
 	}
-	
+
+	public double getQuality(NominalProject project, Worker w){
+		return Quality.fromCost(project, getCost(project, w));
+	}
+
 	private Map<String, Double> getSoftLabelForHardCategoryLabel(NominalProject project, Worker<String> w, String label) {
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 		Map<String, Double> worker_prior = project.getResults().getWorkerResult(w).getPrior(
