@@ -1,6 +1,6 @@
 package com.datascience.gal.commands;
 
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.core.nominal.NominalProject;
 
 import java.util.Collection;

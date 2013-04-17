@@ -13,7 +13,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
@@ -23,11 +22,9 @@ import com.datascience.core.stats.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
-import org.apache.log4j.Logger;
 
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
-	private static Logger logger = Logger.getLogger(AbstractDawidSkene.class);
 	protected int iterations = 10;
 	protected double epsilon = 1e-6;
 
@@ -120,7 +117,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 		// Let's check first if we have any workers who have labeled this item,
 		// except for the worker that we ignore
-		Set<AssignedLabel<String>> labels = data.getAssignsForObject(object);
+		Collection<AssignedLabel<String>> labels = data.getAssignsForObject(object);
 
 		if (workerToIgnore != null && labels.size() == 1 && labels.iterator().next().getWorker().equals(workerToIgnore)) {
 			return null;

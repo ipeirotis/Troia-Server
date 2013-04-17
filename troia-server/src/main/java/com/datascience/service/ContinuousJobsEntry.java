@@ -1,13 +1,12 @@
 package com.datascience.service;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import com.google.gson.JsonObject;
 import com.sun.jersey.spi.resource.Singleton;
 

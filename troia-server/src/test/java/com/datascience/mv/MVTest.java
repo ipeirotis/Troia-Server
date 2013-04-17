@@ -1,12 +1,15 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
-import com.datascience.core.nominal.NominalData;
-import com.datascience.core.results.Results;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.core.nominal.INominalData;
+import com.datascience.core.results.IResults;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
 import static org.junit.Assert.*;
+
+import com.datascience.core.storages.MemoryJobStorage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,7 +59,7 @@ public class MVTest {
 	}
 
 
-	protected void fillNominalData(NominalData data){
+	protected void fillNominalData(INominalData data){
 		for (LObject<String> gold: goldObjects){
 			data.addObject(gold);
 		}
@@ -65,7 +68,7 @@ public class MVTest {
 		}
 	}
 
-	protected void testMVResults(Results<String, DatumResult, WorkerResult> results){
+	protected void testMVResults(IResults<String, DatumResult, WorkerResult> results){
 		double eps = 0.000001;
 		double[] exp = new double[]{2./3, 1./3};
 		for (int i=0;i<nObjects;i++){
@@ -89,10 +92,11 @@ public class MVTest {
 	@Test
 	public void testBatchMV(){
 		BatchMV mv = new BatchMV();
-		NominalProject np = new NominalProject(mv);
+		MemoryJobStorage js = new MemoryJobStorage();
+		NominalProject np = new NominalProject(mv, js.getNominalData("testId"), js.getNominalResults("testId", categories));
 		np.initializeCategories(categories, null, null);
-		NominalData nd = np.getData();
-		Results<String, DatumResult, WorkerResult> results = np.getResults();
+		INominalData nd = np.getData();
+		IResults<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
 		fillNominalData(nd);
@@ -103,10 +107,11 @@ public class MVTest {
 	@Test
 	public void testIncrementalMV(){
 		IncrementalMV mv = new IncrementalMV();
-		NominalProject np = new NominalProject(mv);
+		MemoryJobStorage js = new MemoryJobStorage();
+		NominalProject np = new NominalProject(mv, js.getNominalData("testId"), js.getNominalResults("testId", categories));
 		np.initializeCategories(categories, null, null);
-		NominalData nd = np.getData();
-		Results<String, DatumResult, WorkerResult> results = np.getResults();
+		INominalData nd = np.getData();
+		IResults<String, DatumResult, WorkerResult> results = np.getResults();
 		mv.setData(nd);
 		mv.setResults(results);
 		nd.addNewUpdatableAlgorithm(mv);

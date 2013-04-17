@@ -1,7 +1,7 @@
 package com.datascience.core.stats;
 
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.IncrementalNominalModel;
-import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalModel;
 
 /**
@@ -13,7 +13,7 @@ public class CategoryPriorCalculators {
 	public static class BatchCategoryPriorCalculator implements ICategoryPriorCalculator {
 
 		@Override
-		public Double getPrior(NominalData data, NominalModel model, String categoryName) {
+		public Double getPrior(INominalData data, NominalModel model, String categoryName) {
 			if (data.arePriorsFixed())
 				return data.getCategoryPrior(categoryName);
 			else
@@ -21,7 +21,7 @@ public class CategoryPriorCalculators {
 		}
 
 		@Override
-		public void initializeModelPriors(NominalData data, NominalModel model) {
+		public void initializeModelPriors(INominalData data, NominalModel model) {
 			for (String c : data.getCategories()){
 				model.categoryPriors.put(c, 1. / data.getCategories().size());
 			}
@@ -31,7 +31,7 @@ public class CategoryPriorCalculators {
 	public static class IncrementalCategoryPriorCalculator implements ICategoryPriorCalculator {
 
 		@Override
-		public Double getPrior(NominalData data, NominalModel model, String categoryName) {
+		public Double getPrior(INominalData data, NominalModel model, String categoryName) {
 			if (data.arePriorsFixed())
 				return data.getCategoryPrior(categoryName);
 			else if (((IncrementalNominalModel) model).priorDenominator == 0)
@@ -41,7 +41,7 @@ public class CategoryPriorCalculators {
 		}
 
 		@Override
-		public void initializeModelPriors(NominalData data, NominalModel model) {
+		public void initializeModelPriors(INominalData data, NominalModel model) {
 			for (String c : data.getCategories()){
 				model.categoryPriors.put(c, 0.);
 			}

@@ -6,7 +6,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import com.datascience.serialization.json.JSONUtils;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.PredictionCommands;
 

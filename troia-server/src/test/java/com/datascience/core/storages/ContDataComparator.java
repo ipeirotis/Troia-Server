@@ -1,6 +1,7 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.base.*;
+import com.datascience.core.datastoring.memory.InMemoryData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ContDataComparator {
 
-	protected Data<ContValue> data;
+	protected IData<ContValue> data;
 	protected Worker<ContValue> worker1;
 	protected Worker<ContValue> worker2;
 	protected LObject<ContValue> object1;
@@ -20,13 +21,13 @@ public class ContDataComparator {
 	protected AssignedLabel<ContValue> assign1;
 	protected AssignedLabel<ContValue> assign2;
 
-	public Data<ContValue> getContData(){
-		data = new Data<ContValue>();
+	public IData<ContValue> getContData(){
+		data = new InMemoryData<ContValue>();
 		fillContData(data);
 		return data;
 	}
 
-	public void fillContData(Data<ContValue> data){
+	public void fillContData(IData<ContValue> data){
 		worker1 = new Worker<ContValue>("worker1");
 		worker2 = new Worker<ContValue>("worker2");
 		object1 = new LObject<ContValue>("object1");
@@ -44,7 +45,7 @@ public class ContDataComparator {
 		data.addAssign(assign2);
 	}
 
-	public void assertEqual(Data<ContValue> d){
+	public void assertEqual(IData<ContValue> d){
 		assertTrue(data != d);
 
 		assertEquals(2, d.getWorkers().size());

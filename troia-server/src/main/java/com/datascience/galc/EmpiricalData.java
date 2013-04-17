@@ -3,13 +3,13 @@ package com.datascience.galc;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.WorkerContResults;
 
 
-public class EmpiricalData extends Data<ContValue> {
+public class EmpiricalData extends InMemoryData<ContValue> {
 
 	public EmpiricalData() {
 		super();

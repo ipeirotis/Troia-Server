@@ -1,6 +1,5 @@
-package com.datascience.executor;
+package com.datascience.core.jobs;
 
-import com.datascience.core.Job;
 import com.datascience.core.commands.ProjectCommand;
 import com.datascience.core.storages.IJobStorage;
 

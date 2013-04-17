@@ -1,6 +1,6 @@
 package com.datascience.core.commands;
 
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.google.common.base.Joiner;
 import org.joda.time.DateTime;
 

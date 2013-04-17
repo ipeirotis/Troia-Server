@@ -4,13 +4,13 @@ import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.Serialized;
 
-public class SerializedCommandStatusesContainer extends
-		CommandStatusesContainer {
+public class SerializedCachedCommandStatusesContainer extends
+		CachedCommandStatusesContainer {
 
 	protected ISerializer serializer;
 
-	public SerializedCommandStatusesContainer(IRandomUniqIDGenerator idGenerator, ISerializer serializer,
-											  int cacheSize, int expirationTime) {
+	public SerializedCachedCommandStatusesContainer(IRandomUniqIDGenerator idGenerator, ISerializer serializer,
+													int cacheSize, int expirationTime) {
 		super(idGenerator, cacheSize, expirationTime);
 		this.serializer = serializer;
 	}

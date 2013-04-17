@@ -5,8 +5,8 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.core.stats.MatrixValue;
-import com.datascience.executor.JobCommand;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
 
@@ -28,7 +28,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<Collection<MatrixValue<String>>>> wq = new ArrayList<WorkerValue<Collection<MatrixValue<String>>>>();
-			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults().entrySet()){
+			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
 				Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
 				ConfusionMatrix confusionMatrix = e.getValue().getConfusionMatrix();
 				for (String c1 : confusionMatrix.getCategories())

@@ -7,8 +7,10 @@ import java.util.ArrayList;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.storages.MemoryJobStorage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +28,8 @@ public class BatchDawidSkeneTest {
 		categories.add("category1");
 		categories.add("category2");
 
-		project = new NominalProject(new BatchDawidSkene());
+		MemoryJobStorage js = new MemoryJobStorage();
+		project = new NominalProject(new BatchDawidSkene(), js.getNominalData("testid"), js.getNominalResults("testid", categories));
 		project.initializeCategories(categories, null, null);
 	}
 

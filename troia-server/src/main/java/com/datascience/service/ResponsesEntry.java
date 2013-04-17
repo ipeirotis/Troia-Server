@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
-import com.datascience.executor.CommandStatusesContainer;
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/responses/")
@@ -23,8 +23,8 @@ public class ResponsesEntry {
 		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 	}
 
-	private CommandStatusesContainer getCommandStatusContainer(){
-		return (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
+	private CachedCommandStatusesContainer getCommandStatusContainer(){
+		return (CachedCommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 	}
 
 	@GET

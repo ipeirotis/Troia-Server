@@ -2,7 +2,7 @@ package com.datascience.core.commands;
 
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +22,7 @@ public class WorkerCommands {
 		return ret;
 	}
 
-	static public class GetWorkers<T> extends JobCommand<Collection<Map<String, Object>>, Project> {
+	static public class GetWorkers<T> extends JobCommand<Collection<Map<String, Object>>, Project<T, ?, ?, ?>> {
 		
 		public GetWorkers(){
 			super(false);
@@ -31,7 +31,7 @@ public class WorkerCommands {
 		@Override
 		protected void realExecute() {
 			Collection<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-			for (Worker<T> w : (Collection<Worker<T>>) project.getData().getWorkers()){
+			for (Worker<T> w : project.getData().getWorkers()){
 				ret.add(getWorkerStats(project, w));
 			}
 			setResult(ret);

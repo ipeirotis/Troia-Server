@@ -1,12 +1,12 @@
 package com.datascience.scheduler;
 
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 
 public class AssignCountPriorityCalculator<T> implements IPriorityCalculator<T> {
 
-	protected Data<T> data;
+	protected IData<T> data;
 
 	public AssignCountPriorityCalculator() { }
 
@@ -30,7 +30,7 @@ public class AssignCountPriorityCalculator<T> implements IPriorityCalculator<T> 
 	}
 
 	@Override
-	public <U extends Data<T>, V, W> ISchedulerNotificator<T> getSchedulerNotificator(Project<T, U, V, W> project) {
+	public <U extends IData<T>, V, W> ISchedulerNotificator<T> getSchedulerNotificator(Project<T, U, V, W> project) {
 		return new SchedulerNewDataNotificator<T>();
 	}
 }

@@ -1,12 +1,8 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.base.*;
-import com.datascience.core.results.DatumResult;
-import com.datascience.core.results.Results;
-import com.datascience.core.results.WorkerResult;
-import com.datascience.serialization.ISerializer;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.serialization.json.JSONUtils;
-import com.datascience.service.GSONSerializer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
@@ -21,13 +17,13 @@ public class TestCoreBaseSerialization {
 	@Test
 	public void testContData(){
 		ContDataComparator cdc = new ContDataComparator();
-		Data<ContValue> data = cdc.getContData();
+		IData<ContValue> data = cdc.getContData();
 
 		JSONUtils ju = new JSONUtils();
 		Gson gson = JSONUtils.getFilledDefaultGsonBuilder().create();
 		String s = gson.toJson(data);
 		System.out.println(s);
-		Data<ContValue> d = gson.fromJson(s, new TypeToken<Data<ContValue>>(){}.getType());
+		InMemoryData<ContValue> d = gson.fromJson(s, new TypeToken<InMemoryData<ContValue>>(){}.getType());
 		String s2 = gson.toJson(d);
 		assertEquals(s, s2);
 		cdc.assertEqual(d);

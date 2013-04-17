@@ -1,8 +1,8 @@
 package com.datascience.service;
 
-import com.datascience.executor.CommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
 import com.datascience.core.commands.ProjectCommand;
+import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.SynchronizedCommand;
 import com.google.common.base.Stopwatch;
 
@@ -17,11 +17,11 @@ public class RequestExecutorCommand extends SynchronizedCommand{
 
 	String commandId;
 	ProjectCommand command;
-	CommandStatusesContainer statusContainer;
+	ICommandStatusesContainer statusContainer;
 	Double executionTimeInSeconds;
 	
 	public RequestExecutorCommand(String commandId, ProjectCommand command,
-			ReadWriteLock rwLock, CommandStatusesContainer statusContainer){
+			ReadWriteLock rwLock, ICommandStatusesContainer statusContainer){
 		super(rwLock, command.modifies());
 		this.commandId = commandId;
 		this.command = command;

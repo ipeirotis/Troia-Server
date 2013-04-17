@@ -1,7 +1,7 @@
 package com.datascience.gal;
 
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.utils.ProbabilityDistributions;
 
@@ -20,7 +20,7 @@ public class Quality {
 	 *
 	 * @return The expected cost of this soft label
 	 */
-	static private double getMinSoftLabelCost(Map<String, Double> probabilities, NominalData data) {
+	static private double getMinSoftLabelCost(Map<String, Double> probabilities, INominalData data) {
 
 		double min_cost = Double.MAX_VALUE;
 
@@ -49,7 +49,7 @@ public class Quality {
 	 *
 	 * @return The expected cost of a spammer worker
 	 */
-	static public double getMinSpammerCost(NominalData data, NominalAlgorithm alg) {
+	static public double getMinSpammerCost(INominalData data, NominalAlgorithm alg) {
 		Map<String, Double> prior = ProbabilityDistributions.getSpammerDistribution(data, alg);
 		return getMinSoftLabelCost(prior, data);
 	}

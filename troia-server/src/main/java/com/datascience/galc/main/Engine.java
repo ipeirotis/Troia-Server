@@ -12,7 +12,7 @@ import com.datascience.core.results.DatumContResults;
 import com.datascience.galc.EmpiricalData;
 import com.datascience.core.results.WorkerContResults;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 
@@ -229,7 +229,7 @@ public class Engine {
 
 	public void execute() {
 
-		Data<ContValue> data;
+		IData<ContValue> data;
 
 		EmpiricalData edata = new EmpiricalData();
 		edata.loadLabelFile(ctx.getInputFile());

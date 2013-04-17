@@ -18,4 +18,17 @@ public class Constants {
 	public static final String PROPERTIES = "PROPERTIES";
 	public static final String IS_INITIALIZED = "IS_INITIALIZED";
 	public static final String IS_FREEZED = "IS_FREEZED";
+
+	// from config file
+	public static final String DB_USER = "DB_USER";
+	public static final String DB_PASSWORD = "DB_PASSWORD";
+	public static final String DB_NAME = "DB_NAME";
+	public static final String DB_URL = "DB_URL";
+	public static final String DB_DRIVER_CLASS = "DB_DRIVER_CLASS";
+	public static final String CACHE_SIZE = "CACHE_SIZE";
+	public static final String CACHE_DUMP_TIME = "CACHE_DUMP_TIME";
+	public static final String RESPONSES_CACHE_SIZE = "RESPONSES_CACHE_SIZE";
+	public static final String RESPONSES_DUMP_TIME = "RESPONSES_DUMP_TIME";
+	public static final String EXECUTOR_THREADS_NUM = "EXECUTOR_THREADS_NUM";
+
 }

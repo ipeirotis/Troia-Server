@@ -1,8 +1,8 @@
-package com.datascience.core.nominal;
+package com.datascience.core.datastoring.utils;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
+import com.datascience.core.nominal.CategoryValue;
 import com.datascience.utils.CostMatrix;
 import com.google.common.math.DoubleMath;
 
@@ -12,19 +12,20 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * User: artur
+ * Date: 4/12/13
  */
-public class NominalData extends Data<String> {
+public class NominalData {
 
-	protected Set<String> categories;
+	protected Collection<String> categories;
 	protected boolean fixedPriors;
 	protected Map<String, Double> categoryPriors;
 	protected CostMatrix<String> costMatrix;
 
-	public Set<String> getCategories(){
+	public Collection<String> getCategories(){
 		return categories;
 	}
 
-	public void setCategories(Set<String> categories){
+	public void setCategories(Collection<String> categories){
 		this.categories = categories;
 	}
 
@@ -50,7 +51,7 @@ public class NominalData extends Data<String> {
 		for (CategoryValue cv : priors){
 			priorSum += cv.value;
 			checkArgument(categoryNames.add(cv.categoryName),
-				"CategoryPriors contains two categories with the same name");
+					"CategoryPriors contains two categories with the same name");
 		}
 		checkArgument(priors.size() == categories.size(),
 				"Different number of categories in categoryPriors and categories parameters");
@@ -101,20 +102,7 @@ public class NominalData extends Data<String> {
 			}
 	}
 
-	@Override
-	public void addAssign(AssignedLabel<String> assign){
-		checkForCategoryExist(assign.getLabel());
-		super.addAssign(assign);
-	}
-
-	@Override
-	public void addObject(LObject<String> object){
-		if (object.isGold()) checkForCategoryExist(object.getGoldLabel());
-		if (object.isEvaluation()) checkForCategoryExist(object.getEvaluationLabel());
-		super.addObject(object);
-	}
-
-	private void checkForCategoryExist(String name){
+	public void checkForCategoryExist(String name){
 		if (!categories.contains(name))
 			throw new IllegalArgumentException("There is no category named: " + name);
 	}

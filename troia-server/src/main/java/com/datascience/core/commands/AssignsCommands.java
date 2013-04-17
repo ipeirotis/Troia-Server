@@ -1,8 +1,8 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
-import com.datascience.serialization.json.DataJSON.ShallowAssign;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
+import com.datascience.core.commands.Utils.ShallowAssign;
 
 import java.util.Collection;
 
@@ -24,7 +24,7 @@ public class AssignsCommands {
 		
 		@Override
 		protected void realExecute() {
-			Data data = project.getData();
+			IData data = project.getData();
 			for (ShallowAssign al : assigns){
 				Worker worker = data.getOrCreateWorker(al.worker);
 				LObject object = data.getOrCreateObject(al.object);

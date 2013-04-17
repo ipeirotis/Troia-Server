@@ -14,20 +14,17 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.core.Job;
-import com.datascience.core.JobsManager;
+import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
+import com.datascience.core.commands.Utils.ShallowAssign;
+import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
-import com.datascience.serialization.json.DataJSON;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.serialization.ISerializer;
-import com.datascience.executor.CommandStatusesContainer;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 /**
  *
@@ -40,12 +37,11 @@ public abstract class JobEntryBase<T extends Project> {
 	@Context UriInfo uriInfo;
 	@PathParam("id") String jid;
 	
-	Job<T> job;
 	protected Class expectedClass;
 	ResponseBuilder responser;
 	ProjectCommandExecutor executor;
 	ISerializer serializer;
-	CommandStatusesContainer statusesContainer;
+	ICommandStatusesContainer statusesContainer;
 	IJobStorage jobStorage;
 	JobsManager jobsManager;
 
@@ -59,7 +55,7 @@ public abstract class JobEntryBase<T extends Project> {
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
-		statusesContainer = (CommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
+		statusesContainer = (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
 		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 
@@ -182,7 +178,7 @@ public abstract class JobEntryBase<T extends Project> {
 	@Path("assigns")
 	@POST
 	public Response addAssigns(String json){
-		Collection<DataJSON.ShallowAssign> assigns = serializer.parse(json, assignsType);
+		Collection<ShallowAssign> assigns = serializer.parse(json, assignsType);
 		return buildResponseOnCommand(new AssignsCommands.AddAssigns(assigns));
 	}
 

@@ -1,13 +1,17 @@
-package com.datascience.core;
+package com.datascience.core.jobs;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Data;
+import com.datascience.core.base.IData;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.base.Project;
+import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.nominal.CategoryValue;
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.core.results.Results;
+import com.datascience.core.results.*;
+import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
@@ -30,9 +34,11 @@ import java.util.Map;
 public class JobFactory {
 
 	protected ISerializer serializer;
+	protected IJobStorage jobStorage;
 
-	public JobFactory(ISerializer serializer){
+	public JobFactory(ISerializer serializer, IJobStorage jobStorage){
 		this.serializer = serializer;
+		this.jobStorage = jobStorage;
 	}
 
 	protected interface AlgorithmCreator {
@@ -113,13 +119,17 @@ public class JobFactory {
 	protected NominalProject getNominalProject(Collection<String> categories,
 											   Collection<CategoryValue> categoryPriors,
 											   CostMatrix<String> costMatrix,
-											   String algorithm, JsonObject jo){
+											   String algorithm,
+											   JsonObject jo,
+											   String id){
 		AlgorithmCreator creator = ALG_FACTORY.get(algorithm);
 		if (creator == null){
 			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s", algorithm));
 		}
 		NominalAlgorithm na = creator.create(jo);
-		NominalProject np = new NominalProject(na);
+		INominalData data = jobStorage.getNominalData(id);
+		IResults<String, DatumResult, WorkerResult> results = jobStorage.getNominalResults(id, categories);
+		NominalProject np = new NominalProject(na, data, results);
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
@@ -146,7 +156,8 @@ public class JobFactory {
 				categoryPriors,
 				costMatrix,
 				jo.get("algorithm").getAsString(),
-				jo),
+				jo,
+				id),
 			id);
 	}
 	
@@ -154,7 +165,9 @@ public class JobFactory {
 		ContinuousIpeirotis alg = new ContinuousIpeirotis();
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
-		ContinuousProject cp = new ContinuousProject(alg);
+		IData<ContValue> data = jobStorage.getData(id);
+		IResults<ContValue, DatumContResults, WorkerContResults> results = jobStorage.getContResults(id);
+		ContinuousProject cp = new ContinuousProject(alg, data, results);
 		this.<ContValue>handleSchedulerLoading(jo, cp);
 		cp.setInitializationData(jo);
 		return new Job(cp, id);
@@ -164,10 +177,16 @@ public class JobFactory {
 											 String jsonResults, String model, String id){
 		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
 		Job<T> job = JOB_FACTORY.get(type).create(jo, id);
-		job.getProject().setData(serializer.<Data>parse(jsonData, Data.class));
-		job.getProject().setResults(serializer.<Results>parse(jsonResults, Results.class));
+		job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
+		job.getProject().setResults(serializer.<InMemoryResults>parse(jsonResults, InMemoryResults.class));
 		handleSchedulerLoading(jo, job.getProject());
 		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));
+		return job;
+	}
+
+	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
+		Job<T> job = JOB_FACTORY.get(type).create(initializationData, id);
+		//TODO
 		return job;
 	}
 }

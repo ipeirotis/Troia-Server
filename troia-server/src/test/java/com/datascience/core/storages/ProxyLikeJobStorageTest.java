@@ -1,6 +1,6 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;

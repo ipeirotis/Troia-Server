@@ -1,6 +1,6 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.AbstractScheduledService;
 
@@ -36,7 +36,7 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 	
 	@Override
 	public String toString() {
-		return "CachedWithRegularDump" + cachedJobStorage.toString();
+		return "CachedWithRegularDump" + wrappedJobStorage.toString();
 	}
 	
 	public class DumpingService extends AbstractScheduledService {
@@ -51,7 +51,7 @@ public class CachedWithRegularDumpJobStorage extends CachedJobStorage{
 		@Override
 		protected void runOneIteration() throws Exception {
 			for (Optional<Job> oJob: cache.asMap().values()) {
-				cachedJobStorage.add(oJob.get());
+				wrappedJobStorage.add(oJob.get());
 			}
 		}
 

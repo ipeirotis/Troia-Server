@@ -5,15 +5,17 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import com.datascience.core.JobsManager;
+import com.datascience.core.jobs.JobsManager;
 import com.datascience.core.storages.*;
+import com.datascience.executor.CachedCommandStatusesContainer;
+import com.datascience.executor.SerializedCachedCommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
+import com.datascience.serialization.json.GSONSerializer;
+import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
 import org.apache.log4j.Logger;
 
-import com.datascience.executor.CommandStatusesContainer;
-import com.datascience.executor.SerializedCommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**
@@ -30,16 +32,19 @@ public class ServiceComponentsFactory {
 		this.properties = properties;
 	}
 	
-	public IJobStorage loadJobStorage(ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
+	public IJobStorage loadJobStorage(String type, ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
 			throws IOException, ClassNotFoundException, SQLException {
-		String user = properties.getProperty("DB_USER");
-		String password = properties.getProperty("DB_PASSWORD");
-		String db = properties.getProperty("DB_NAME");
-		String url = properties.getProperty("DB_URL");
-		int cacheSize = Integer.parseInt(properties.getProperty("CACHE_SIZE"));
-		int cacheDumpTime = Integer.parseInt(properties.getProperty("CACHE_DUMP_TIME"));
+		logger.info("Loading " + type + " job storage");
+		String db = properties.getProperty(Constants.DB_NAME);
+		String url = properties.getProperty(Constants.DB_URL);
+		String driverClass = properties.getProperty(Constants.DB_DRIVER_CLASS);
+		Properties properties1 = new Properties();
+		properties1.put("user", properties.getProperty(Constants.DB_USER));
+		properties1.put("password", properties.getProperty(Constants.DB_PASSWORD));
+		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
+		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
 
-		IJobStorage internalJobStorage = new DBJobStorage(user, password, db, url, serializer);
+		IJobStorage internalJobStorage = JobStorageFactory.create(type, url, db, driverClass, properties1, serializer);
 		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
 		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
 		logger.info("Job Storage loaded");
@@ -50,14 +55,14 @@ public class ServiceComponentsFactory {
 		return new RandomUniqIDGenerators.PrefixAdderDecorator("RANDOM__", new RandomUniqIDGenerators.NumberAndDate());
 	}
 
-	public CommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
-		return new SerializedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
-				Integer.valueOf(properties.getProperty("RESPONSES_CACHE_SIZE")),
-				Integer.valueOf(properties.getProperty("RESPONSES_DUMP_TIME")));
+	public CachedCommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer){
+		return new SerializedCachedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
+				Integer.valueOf(properties.getProperty(Constants.RESPONSES_CACHE_SIZE)),
+				Integer.valueOf(properties.getProperty(Constants.RESPONSES_DUMP_TIME)));
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){
-		return new ProjectCommandExecutor(Integer.valueOf(properties.getProperty("EXECUTOR_THREADS_NUM")));
+		return new ProjectCommandExecutor(Integer.valueOf(properties.getProperty(Constants.EXECUTOR_THREADS_NUM)));
 	}
 
 	public ISerializer loadSerializer() {

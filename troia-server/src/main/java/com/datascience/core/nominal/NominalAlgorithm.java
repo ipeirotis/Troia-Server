@@ -9,7 +9,7 @@ import com.datascience.core.results.DatumResult;
 /**
  * @Author: konrad
  */
-public abstract class NominalAlgorithm extends Algorithm<String, NominalData, DatumResult, WorkerResult> {
+public abstract class NominalAlgorithm extends Algorithm<String, INominalData, DatumResult, WorkerResult> {
 
 	protected IErrorRateCalculator errorRateCalculator;
 	protected ICategoryPriorCalculator priorCalculator;

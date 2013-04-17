@@ -6,8 +6,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.Job;
-import com.datascience.core.JobFactory;
+import com.datascience.core.jobs.Job;
+import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.google.gson.JsonObject;
@@ -38,8 +38,11 @@ public abstract class AbstractJobsEntry {
 		if (jobFactory != null)
 			return jobFactory;
 		ResponseBuilder responser = getResponseBuilder();
-		if (responser != null)
-			return new JobFactory(responser.getSerializer());
+		IJobStorage storage = getJobStorage();
+		if (responser != null && storage != null){
+			jobFactory = new JobFactory(responser.getSerializer(), storage);
+			return jobFactory;
+		}
 		return null;
 	}
 

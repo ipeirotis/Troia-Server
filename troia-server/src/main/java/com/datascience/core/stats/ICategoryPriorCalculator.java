@@ -1,6 +1,6 @@
 package com.datascience.core.stats;
 
-import com.datascience.core.nominal.NominalData;
+import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalModel;
 
 /**
@@ -8,6 +8,6 @@ import com.datascience.core.nominal.NominalModel;
  * Date: 4/9/13
  */
 public interface ICategoryPriorCalculator {
-	Double getPrior(NominalData data, NominalModel model, String categoryName);
-	void initializeModelPriors(NominalData data, NominalModel model);
+	Double getPrior(INominalData data, NominalModel model, String categoryName);
+	void initializeModelPriors(INominalData data, NominalModel model);
 }

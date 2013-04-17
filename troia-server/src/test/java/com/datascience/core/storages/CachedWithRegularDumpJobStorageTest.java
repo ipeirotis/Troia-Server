@@ -1,6 +1,6 @@
 package com.datascience.core.storages;
 
-import com.datascience.core.Job;
+import com.datascience.core.jobs.Job;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 

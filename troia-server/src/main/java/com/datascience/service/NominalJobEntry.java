@@ -2,7 +2,7 @@ package com.datascience.service;
 
 
 import com.datascience.serialization.json.JSONUtils;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.gal.commands.*;

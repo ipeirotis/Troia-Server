@@ -1,7 +1,7 @@
 package com.datascience.core.base;
 
 
-import com.datascience.core.results.Results;
+import com.datascience.core.results.IResults;
 import com.datascience.scheduler.IScheduler;
 import com.google.gson.JsonObject;
 
@@ -15,23 +15,25 @@ import java.util.Map;
  * V - datum results class
  * W - worker results class
  */
-public abstract class Project<T, U extends Data<T>, V, W> {
+public abstract class Project<T, U extends IData<T>, V, W> {
 
 	protected Algorithm<T, U, V, W> algorithm;
 	protected U data;
-	protected Results<T, V, W> results;
+	protected IResults<T, V, W> results;
 	protected JsonObject initializationData;
 	protected IScheduler<T> scheduler;
 
-	public Project(Algorithm<T, U, V, W> alg){
+	public Project(Algorithm<T, U, V, W> alg, U data, IResults<T, V, W> results){
 		this.algorithm = alg;
+		this.data = data;
+		this.results = results;
 	}
 
 	public U getData(){
 		return data;
 	}
 
-	public Results<T, V, W> getResults(){
+	public IResults<T, V, W> getResults(){
 		return results;
 	}
 
@@ -55,7 +57,7 @@ public abstract class Project<T, U extends Data<T>, V, W> {
 		this.data = data;
 	}
 
-	public void setResults(Results<T, V, W> results){
+	public void setResults(IResults<T, V, W> results){
 		this.results = results;
 	}
 

@@ -1,12 +1,15 @@
 package com.datascience.core;
 
+import com.datascience.core.jobs.Job;
+import com.datascience.core.jobs.JobFactory;
+import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
 import com.datascience.scheduler.Constants;
-import com.datascience.service.GSONSerializer;
+import com.datascience.serialization.json.GSONSerializer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -56,7 +59,7 @@ public class JobFactoryTest {
 		alg.put("BMV", BatchMV.class);
 		alg.put("IMV", IncrementalMV.class);
 		for (Map.Entry<String, Class> e : alg.entrySet()){
-			JobFactory jf = new JobFactory(new GSONSerializer());
+			JobFactory jf = new JobFactory(new GSONSerializer(), new MemoryJobStorage());
 			JsonObject jo = new JsonObject();
 			jo.addProperty("algorithm", e.getKey());
 			jo.add("categories", createCategoriesJsonArray());
@@ -69,7 +72,7 @@ public class JobFactoryTest {
 
 	@Test
 	public void createContinuousJob() throws Exception {
-		JobFactory jf = new JobFactory(new GSONSerializer());
+		JobFactory jf = new JobFactory(new GSONSerializer(), new MemoryJobStorage());
 		JsonObject jo = new JsonObject();
 		jo.addProperty(Constants.SCHEDULER, Constants.SCHEDULER_NORMAL);
 		Job job = jf.createContinuousJob(jo, "test");

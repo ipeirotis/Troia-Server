@@ -1,7 +1,7 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
-import com.datascience.executor.JobCommand;
+import com.datascience.core.jobs.JobCommand;
 
 import java.util.Collection;
 
@@ -22,7 +22,7 @@ public class ObjectCommands {
 		
 		@Override
 		protected void realExecute() {
-			Data<T> data = project.getData();
+			IData<T> data = project.getData();
 			for (LObject obj : objects){
 				data.addObject(obj);
 			}

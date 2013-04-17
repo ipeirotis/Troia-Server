@@ -3,12 +3,10 @@ package com.datascience.serialization.json;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
 
-import com.datascience.serialization.json.JSONUtils;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,11 +14,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.Data;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -70,7 +66,7 @@ public class GenericSerializationTest {
 
 	@Test
 	public void dataDoubleJsonTest() {
-		Data<Double> data = new Data<Double>();
+		InMemoryData<Double> data = new InMemoryData<Double>();
 		ArrayList<Double> labels = new ArrayList<Double>();
 		for (int i = 0; i < 2; i++) {
 			labels.add(1.0 * i);
@@ -91,7 +87,7 @@ public class GenericSerializationTest {
 			data.addWorker(worker);
 		}
 		String json = gson.toJson(data);
-		Data deserialized = gson.fromJson(json, new TypeToken<Data>(){}.getType());
+		InMemoryData deserialized = gson.fromJson(json, new TypeToken<InMemoryData>(){}.getType());
 		
 		assertTrue(deserialized.getAssigns().containsAll(data.getAssigns()));
 		assertTrue(deserialized.getObjects().containsAll(data.getObjects()));
