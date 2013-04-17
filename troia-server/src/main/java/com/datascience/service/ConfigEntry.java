@@ -1,16 +1,13 @@
 package com.datascience.service;
 
 import com.datascience.core.jobs.JobsManager;
-import com.datascience.core.storages.BaseDBJobStorage;
-import com.datascience.core.storages.DBJobStorage;
-import com.datascience.core.storages.DBKVJobStorage;
 import com.datascience.core.storages.IJobStorage;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.executor.ProjectCommandExecutor;
 import com.datascience.serialization.ISerializer;
-import com.datascience.utils.DBKVHelper;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.resource.Singleton;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
@@ -21,13 +18,13 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Logger;
 
 @Path("/config/")
 @Singleton
 public class ConfigEntry {
 
 	@Context ServletContext scontext;
+	protected static Logger logger = Logger.getLogger(ConfigEntry.class);
 
 	public static class NameValue{
 		public String name;
@@ -80,7 +77,7 @@ public class ConfigEntry {
 			try{
 				initializeContext(simpleForm);
 			} catch(Exception e){
-				Logger.getAnonymousLogger().warning(e.getStackTrace().toString());
+				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
 			scontext.setAttribute(Constants.IS_INITIALIZED, true);
@@ -95,7 +92,7 @@ public class ConfigEntry {
 			try {
 				((IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE)).clearAndInitialize();
 			} catch (Exception e){
-				Logger.getAnonymousLogger().warning(e.getStackTrace().toString());
+				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
 		}
