@@ -2,6 +2,7 @@ package com.datascience.utils;
 
 import com.datascience.utils.storage.DBStorage;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -17,5 +18,18 @@ public class DBHelper extends DBStorage {
 
 	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
 		super(dbUrl, driverClass, connectionProperties, dbName);
+	}
+
+	@Override
+	protected void createTable(String tableName) throws SQLException {
+		executeSQL("CREATE TABLE " + tableName + " (" +
+				"id VARCHAR(100) NOT NULL PRIMARY KEY, " +
+				"kind VARCHAR(25) NOT NULL, " +
+				"data LONGTEXT NOT NULL, " +
+				"results LONGTEXT, " +
+				"initializationData LONGTEXT, " +
+				"model LONGTEXT, " +
+				"last_use TIMESTAMP) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		logger.info("Table " + tableName + " successfully created");
 	}
 }

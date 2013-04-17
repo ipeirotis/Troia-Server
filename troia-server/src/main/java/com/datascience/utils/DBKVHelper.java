@@ -31,4 +31,10 @@ public class DBKVHelper extends DBStorage {
 		checkArgument(TABLES.contains(table), "Taking DBKV for not existing table " + table);
 		return new DBKVStorage(table, this);
 	}
+
+	@Override
+	protected void createTable(String tableName) throws SQLException{
+		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(100) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		logger.info("Table " + tableName + " successfully created");
+	}
 }

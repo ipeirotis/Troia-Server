@@ -12,7 +12,7 @@ import java.util.Properties;
  */
 public abstract class DBStorage {
 
-	private static Logger logger = Logger.getLogger(DBStorage.class);
+	protected static Logger logger = Logger.getLogger(DBStorage.class);
 	protected static int VALIDATION_TIMEOUT = 2;
 	protected static List<String> TABLES;
 
@@ -52,17 +52,14 @@ public abstract class DBStorage {
 		logger.info("Database created successfully");
 	}
 
-	protected void createTable(String tableName) throws SQLException{
-		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(100) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
-		logger.info("Table " + tableName + " successfully created");
-	}
+	protected abstract void createTable(String tableName) throws SQLException;
 
 	protected void createIndex(String tableName) throws  SQLException{
 		executeSQL("CREATE INDEX " + tableName + "Index on " + tableName + " (id);");
 		logger.info("Index on table " + tableName + " successfully created");
 	}
 
-	private void executeSQL(String sql) throws SQLException {
+	protected void executeSQL(String sql) throws SQLException {
 		PreparedStatement stmt = initStatement(sql);
 		stmt.executeUpdate();
 		cleanup(stmt, null);
