@@ -1,7 +1,5 @@
 package com.datascience.core.datastoring.utils;
 
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.utils.CostMatrix;
 import com.google.common.math.DoubleMath;

@@ -80,7 +80,8 @@ public class ConfigEntry {
 			try{
 				initializeContext(simpleForm);
 			} catch(Exception e){
-				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
+				Logger.getAnonymousLogger().warning(e.getStackTrace().toString());
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
 			scontext.setAttribute(Constants.IS_INITIALIZED, true);
 		}
@@ -94,7 +95,8 @@ public class ConfigEntry {
 			try {
 				((IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE)).clearAndInitialize();
 			} catch (Exception e){
-				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getLocalizedMessage()).build();
+				Logger.getAnonymousLogger().warning(e.getStackTrace().toString());
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
 		}
 		return Response.ok().build();
