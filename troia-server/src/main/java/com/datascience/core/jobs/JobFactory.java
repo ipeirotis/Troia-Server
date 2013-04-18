@@ -186,7 +186,6 @@ public class JobFactory {
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
 		Job<T> job = JOB_FACTORY.get(type).create(initializationData, id);
-		//TODO
 		return job;
 	}
 }

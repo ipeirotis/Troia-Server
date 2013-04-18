@@ -196,12 +196,12 @@ public class KVData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker) {
+	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker) {
 		return workersAssigns.get(worker.getName());
 	}
 
 	@Override
-	public Collection<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject) {
+	public Collection<AssignedLabel<T>> uncheckedGetAssignsForObject(LObject<T> lObject) {
 		return objectsAssigns.get(lObject.getName());
 	}
 }

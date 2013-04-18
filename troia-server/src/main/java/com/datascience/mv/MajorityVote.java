@@ -35,7 +35,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 			return ProbabilityDistributions.generateGoldDistribution(categories, object.getGoldLabel());
 		}
 		Collection<AssignedLabel<String>> assigns = data.getAssignsForObject(object);
-		if (assigns == null || assigns.isEmpty()) {
+		if (assigns.isEmpty()) {
 			return generateLabelForNonAssignedObject();
 		}
 		return generateLabelDistribution(categories, assigns);

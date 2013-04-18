@@ -136,7 +136,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker){
+	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker){
 		return workersAssigns.get(worker);
 	}
 
@@ -162,11 +162,8 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Set<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject){
-		Set<AssignedLabel<T>> ret = datums.get(lObject);
-		if (ret != null)
-			return ret;
-		return new HashSet<AssignedLabel<T>>();
+	public Collection<AssignedLabel<T>> uncheckedGetAssignsForObject(LObject<T> lObject){
+		return datums.get(lObject);
 	}
 
 	@Override

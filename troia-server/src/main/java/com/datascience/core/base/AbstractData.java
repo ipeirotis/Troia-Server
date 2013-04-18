@@ -83,4 +83,25 @@ public abstract class AbstractData<T> implements IData<T> {
 			updatableAlgorithm.newWorker(worker);
 		}
 	}
+
+	@Override
+	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker) {
+		Collection<AssignedLabel<T>> ret = uncheckedGetWorkerAssigns(worker);
+		if (ret == null)
+			return new LinkedList<AssignedLabel<T>>();
+		return ret;
+	}
+
+	@Override
+	public Collection<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject) {
+		Collection<AssignedLabel<T>> ret = uncheckedGetAssignsForObject(lObject);
+		if (ret == null)
+			return new LinkedList<AssignedLabel<T>>();
+		return ret;
+	}
+
+	public abstract Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker);
+
+	public abstract Collection<AssignedLabel<T>> uncheckedGetAssignsForObject(LObject<T> lObject);
+
 }
