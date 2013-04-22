@@ -39,7 +39,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public void addWorker(Worker<T> worker){
+	protected void uncheckedAddWorker(Worker<T> worker){
 		if (!workers.contains(worker)){
 			workers.add(worker);
 			mapWorkers.put(worker.getName(), worker);
@@ -59,7 +59,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public void addObject(LObject<T> object){
+	protected void uncheckedAddObject(LObject<T> object){
 		if (objects.contains(object)) {
 			LObject oldObject = getObject(object.getName());
 			if (object.isGold() && !oldObject.isGold()) {

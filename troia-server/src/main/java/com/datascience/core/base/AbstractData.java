@@ -35,6 +35,22 @@ public abstract class AbstractData<T> implements IData<T> {
 		return object;
 	}
 
+	@Override
+	public void addWorker(Worker<T> worker) {
+		checkArgument(worker.getName().length() < 50, "Worker name should be shorter than 50 chars");
+		uncheckedAddWorker(worker);
+	}
+
+	abstract protected void uncheckedAddWorker(Worker<T> worker);
+
+	@Override
+	public void addObject(LObject<T> object) {
+		checkArgument(object.getName().length() < 50, "Object name should be shorter than 50 chars");
+		uncheckedAddObject(object);
+	}
+
+	abstract protected void uncheckedAddObject(LObject<T> object);
+
 	abstract protected LObject<T> uncheckedGetGoldObject(String objectId);
 
 	@Override
@@ -92,6 +108,8 @@ public abstract class AbstractData<T> implements IData<T> {
 		return ret;
 	}
 
+	public abstract Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker);
+
 	@Override
 	public Collection<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject) {
 		Collection<AssignedLabel<T>> ret = uncheckedGetAssignsForObject(lObject);
@@ -99,8 +117,6 @@ public abstract class AbstractData<T> implements IData<T> {
 			return new LinkedList<AssignedLabel<T>>();
 		return ret;
 	}
-
-	public abstract Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker);
 
 	public abstract Collection<AssignedLabel<T>> uncheckedGetAssignsForObject(LObject<T> lObject);
 

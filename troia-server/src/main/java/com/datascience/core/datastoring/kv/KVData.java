@@ -57,7 +57,7 @@ public class KVData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public void addWorker(Worker<T> worker) {
+	protected void uncheckedAddWorker(Worker<T> worker) {
 		Collection<Worker<T>> oldWorkers = workers.get("");
 		if (!oldWorkers.contains(worker)){
 			oldWorkers.add(worker);
@@ -81,7 +81,7 @@ public class KVData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public void addObject(LObject<T> object) {
+	protected void uncheckedAddObject(LObject<T> object) {
 		Collection<LObject<T>> oldObjects = objects.get("");
 		if (!oldObjects.contains(object)){
 			oldObjects.add(object);
