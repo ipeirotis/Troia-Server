@@ -36,12 +36,9 @@ import com.google.gson.reflect.TypeToken;
 public class JSONUtils {
 	public final Gson gson;
 
-	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {
-	} .getType();
-	public static final Type stringSetType = new TypeToken<Collection<String>>() {
-	} .getType();
-	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {
-	} .getType();
+	public static final Type categoryValuesCollectionType = new TypeToken<Collection<CategoryValue>>() {} .getType();
+	public static final Type stringSetType = new TypeToken<Collection<String>>() {} .getType();
+	public static final Type matrixValuesCollectionType = new TypeToken<Collection<MatrixValue>>() {} .getType();
 
 	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
 	public static final Type objectsContValueType = new TypeToken<Collection<LObject<ContValue>>>() {}.getType();
@@ -50,6 +47,11 @@ public class JSONUtils {
 	public static final Type assignsStringType = new TypeToken<Collection<ShallowAssign<String>>>(){}.getType();
 	public static final Type assignsContValueType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){}.getType();
 	public static final Type assignsCollection = new TypeToken<Collection<AssignedLabel>>(){}.getType();
+	public static final Type assignString = new TypeToken<AssignedLabel<String>>(){}.getType();
+	public static final Type assignContValue = new TypeToken<AssignedLabel<ContValue>>(){}.getType();
+	public static final Type shallowAssignString = new TypeToken<ShallowAssign<String>>(){}.getType();
+	public static final Type shallowAssignContValue = new TypeToken<ShallowAssign<ContValue>>(){}.getType();
+
 
 	public static final Type workersStringType = new TypeToken<Collection<Worker<String>>>() {}.getType();
 	public static final Type workersCollection = new TypeToken<Collection<Worker>>() {}.getType();
@@ -79,7 +81,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Serializer());
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
-		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignDeserializer());
+		builder.registerTypeAdapter(assignString, new DataJSON.AssignDeserializer<AssignedLabel<String>>(shallowAssignString));
+		builder.registerTypeAdapter(assignContValue, new DataJSON.AssignDeserializer<AssignedLabel<ContValue>>(shallowAssignContValue));
 		builder.registerTypeAdapter(Worker.class, new DataJSON.WorkerSerializer());
 		builder.registerTypeAdapter(Worker.class, new DataJSON.WorkerDeserializer());
 		builder.registerTypeAdapter(Serialized.class, new SerializedSerializer());
@@ -101,12 +104,10 @@ public class JSONUtils {
 						new TypeToken<LObject<ContValue>>(){}.getType()));
 		builder.registerTypeAdapter(assignsStringType,
 				new GenericCollectionDeserializer<ShallowAssign<String>>(
-						"assigns",
-						new TypeToken<ShallowAssign<String>>(){}.getType()));
+						"assigns", shallowAssignString));
 		builder.registerTypeAdapter(assignsContValueType,
 				new GenericCollectionDeserializer<ShallowAssign<ContValue>>(
-						"assigns",
-						new TypeToken<ShallowAssign<ContValue>>(){}.getType()));
+						"assigns", shallowAssignContValue));
 
 		return builder;
 	}
@@ -129,6 +130,5 @@ public class JSONUtils {
 			}
 			return ret;
 		}
-
 	}
 }

@@ -165,7 +165,7 @@ public class JobFactory {
 		ContinuousIpeirotis alg = new ContinuousIpeirotis();
 		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
 		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
-		IData<ContValue> data = jobStorage.getData(id);
+		IData<ContValue> data = jobStorage.getContData(id);
 		IResults<ContValue, DatumContResults, WorkerContResults> results = jobStorage.getContResults(id);
 		ContinuousProject cp = new ContinuousProject(alg, data, results);
 		this.<ContValue>handleSchedulerLoading(jo, cp);

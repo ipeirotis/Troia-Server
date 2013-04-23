@@ -163,8 +163,8 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 	}
 
 	@Override
-	public <T> IData<T> getData(String id) {
-		return new InMemoryData<T>();
+	public IData<ContValue> getContData(String id) {
+		return new InMemoryData<ContValue>();
 	}
 
 	@Override

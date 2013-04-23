@@ -75,6 +75,9 @@ public class NominalData {
 	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){
 		checkArgument(categories != null, "There is no categories collection");
 		checkArgument(categories.size() >= 2, "There should be at least two categories");
+		for (String c : categories){
+			checkArgument(c.length() < 50, "Category names should be shorter than 50 chars");
+		}
 		this.categories = new HashSet<String>();
 		this.categories.addAll(categories);
 		checkArgument(this.categories.size() == categories.size(), "Category names should be different");

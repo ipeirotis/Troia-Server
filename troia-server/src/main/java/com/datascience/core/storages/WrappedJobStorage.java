@@ -26,8 +26,8 @@ public abstract class WrappedJobStorage implements IJobStorage {
 	}
 
 	@Override
-	public <T> IData<T> getData(String id) {
-		return wrappedJobStorage.getData(id);
+	public IData<ContValue> getContData(String id) {
+		return wrappedJobStorage.getContData(id);
 	}
 
 	@Override

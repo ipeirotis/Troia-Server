@@ -17,6 +17,7 @@ import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.storage.*;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
@@ -89,14 +90,15 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 	}
 
 	@Override
-	public <T> IData<T> getData(String id) {
-		KVData<T> data = new KVData<T>(
-				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsCollection, true),
-				this.<Collection<AssignedLabel<T>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsCollection, true),
-				this.<Collection<LObject<T>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
-				this.<Collection<LObject<T>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
-				this.<Collection<LObject<T>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
-				this.<Collection<Worker<T>>>getKVForJob(id, "Workers", JSONUtils.workersCollection, false)
+	public IData<ContValue> getContData(String id) {
+		Type t = new TypeToken<Collection<AssignedLabel<ContValue>>>(){}.getType();
+		KVData<ContValue> data = new KVData<ContValue>(
+				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "WorkerAssigns", t, true),
+				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "ObjectAssigns", t, true),
+				this.<Collection<LObject<ContValue>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<ContValue>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<ContValue>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<Worker<ContValue>>>getKVForJob(id, "Workers", JSONUtils.workersCollection, false)
 		);
 		return data;
 	}

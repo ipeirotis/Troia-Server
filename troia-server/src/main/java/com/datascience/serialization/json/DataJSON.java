@@ -3,6 +3,7 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.datascience.core.base.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
@@ -13,6 +14,7 @@ import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * @Author: konrad
@@ -83,7 +85,6 @@ public class DataJSON {
 
 
 	public static class AssignSerializer<T> implements JsonSerializer<AssignedLabel<T>> {
-
 		@Override
 		public JsonElement serialize(AssignedLabel<T> tAssignedLabel, Type type, JsonSerializationContext jsonSerializationContext) {
 			return jsonSerializationContext.serialize(new ShallowAssign<T>(tAssignedLabel));
@@ -91,9 +92,16 @@ public class DataJSON {
 	}
 
 	public static class AssignDeserializer<T> implements JsonDeserializer<AssignedLabel<T>> {
+
+		private Type type;
+
+		public AssignDeserializer(Type type){
+			this.type = type;
+		}
+
 		@Override
 		public AssignedLabel<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-			ShallowAssign<T> sassign = context.deserialize(element, ShallowAssign.class);
+			ShallowAssign<T> sassign = context.deserialize(element, this.type);
 			return new AssignedLabel<T>(
 					new Worker<T>(sassign.worker),
 					new LObject<T>(sassign.object),
@@ -140,7 +148,6 @@ public class DataJSON {
 	}
 
 	public static class DatumCreatorDeserializer<T, U> implements JsonDeserializer<ResultsFactory.DatumResultCreator<T, U>> {
-
 		@Override
 		public ResultsFactory.DatumResultCreator<T, U> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 			JsonObject jo = jsonElement.getAsJsonObject();
@@ -150,7 +157,6 @@ public class DataJSON {
 	}
 
 	public static class WorkerCreatorDeserializer<T, U> implements JsonDeserializer<ResultsFactory.WorkerResultCreator<T, U>> {
-
 		@Override
 		public ResultsFactory.WorkerResultCreator<T, U> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 			JsonObject jo = jsonElement.getAsJsonObject();

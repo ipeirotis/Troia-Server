@@ -103,10 +103,10 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 	}
 
 	private Double estimateObjectZetas() {
-
 		// See equation 9
 		double diff = 0.0;
-		for (DatumContResults dr: getObjectsResults().values()) {
+		for (LObject<ContValue> obj : data.getObjects()){
+			DatumContResults dr = results.getDatumResult(obj);
 			Double oldZeta;
 			Double newZeta;
 			Double zeta = 0.0;
@@ -140,6 +140,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 			dr.setEst_zeta(newZeta);
 
+			results.addDatumResult(obj, dr);
 			if (object.isGold())
 				continue;
 			else if (oldZeta == null) {
@@ -177,13 +178,9 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			//d.setEst_zeta(zeta / betasum);
 			newZeta = zeta / betasum;
 			result.put(object, newZeta);
-
 			//if (Double.isNaN(newZeta)) logger.info("estimateObjectZetas NaNbug@: " + zeta +","+ betasum + "," +d.getName());
-
 		}
-
 		return result;
-
 	}
 
 	private double estimateWorkerRho() {

@@ -24,7 +24,7 @@ public interface IJobStorage {
 
 	void clearAndInitialize() throws SQLException;
 
-	<T> IData<T> getData(String id);
+	IData<ContValue> getContData(String id);
 	INominalData getNominalData(String id);
 	IResults<ContValue, DatumContResults, WorkerContResults> getContResults(String id);
 	IResults<String, DatumResult, WorkerResult> getNominalResults(String id, Collection<String> categories);
