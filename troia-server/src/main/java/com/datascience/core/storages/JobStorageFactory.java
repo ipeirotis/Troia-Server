@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * User: artur
  * Date: 4/16/13
@@ -51,6 +53,8 @@ public class JobStorageFactory {
 
 	public static IJobStorage create(String type, String dbUrl, String dbName, String driverClass,
 									 Properties connectionProperties, ISerializer serializer) throws SQLException, ClassNotFoundException{
-		return JOB_STORAGE_FACTORY.get(type.toUpperCase()).create(dbUrl, dbName, driverClass, connectionProperties, serializer);
+		JobStorageCreator jsc = JOB_STORAGE_FACTORY.get(type.toUpperCase());
+		checkArgument(jsc != null, "Unknown storage model: " + type);
+		return jsc.create(dbUrl, dbName, driverClass, connectionProperties, serializer);
 	}
 }
