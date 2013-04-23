@@ -44,9 +44,11 @@ public class JSONUtils {
 	public static final Type objectsContValueType = new TypeToken<Collection<LObject<ContValue>>>() {}.getType();
 	public static final Type objectsCollection = new TypeToken<Collection<LObject>>() {}.getType();
 
-	public static final Type assignsStringType = new TypeToken<Collection<ShallowAssign<String>>>(){}.getType();
-	public static final Type assignsContValueType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){}.getType();
-	public static final Type assignsCollection = new TypeToken<Collection<AssignedLabel>>(){}.getType();
+	public static final Type shallowAssignsStringType = new TypeToken<Collection<ShallowAssign<String>>>(){}.getType();
+	public static final Type shallowAssignsContValueType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){}.getType();
+	public static final Type assignsStringType = new TypeToken<Collection<AssignedLabel<String>>>(){}.getType();
+	public static final Type assignsContValueType = new TypeToken<Collection<AssignedLabel<ContValue>>>(){}.getType();
+
 	public static final Type assignString = new TypeToken<AssignedLabel<String>>(){}.getType();
 	public static final Type assignContValue = new TypeToken<AssignedLabel<ContValue>>(){}.getType();
 	public static final Type shallowAssignString = new TypeToken<ShallowAssign<String>>(){}.getType();
@@ -102,10 +104,10 @@ public class JSONUtils {
 				new GenericCollectionDeserializer<LObject<ContValue>>(
 						"objects",
 						new TypeToken<LObject<ContValue>>(){}.getType()));
-		builder.registerTypeAdapter(assignsStringType,
+		builder.registerTypeAdapter(shallowAssignsStringType,
 				new GenericCollectionDeserializer<ShallowAssign<String>>(
 						"assigns", shallowAssignString));
-		builder.registerTypeAdapter(assignsContValueType,
+		builder.registerTypeAdapter(shallowAssignsContValueType,
 				new GenericCollectionDeserializer<ShallowAssign<ContValue>>(
 						"assigns", shallowAssignContValue));
 

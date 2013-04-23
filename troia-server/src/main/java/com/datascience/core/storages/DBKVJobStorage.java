@@ -1,7 +1,6 @@
 package com.datascience.core.storages;
 
 import com.datascience.core.jobs.Job;
-import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.kv.KVCleaner;
 import com.datascience.core.datastoring.kv.KVData;
@@ -91,10 +90,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public IData<ContValue> getContData(String id) {
-		Type t = new TypeToken<Collection<AssignedLabel<ContValue>>>(){}.getType();
 		KVData<ContValue> data = new KVData<ContValue>(
-				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "WorkerAssigns", t, true),
-				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "ObjectAssigns", t, true),
+				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsContValueType, true),
+				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsContValueType, true),
 				this.<Collection<LObject<ContValue>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
 				this.<Collection<LObject<ContValue>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
 				this.<Collection<LObject<ContValue>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
@@ -106,8 +104,8 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 	@Override
 	public INominalData getNominalData(String id) {
 		INominalData data = new KVNominalData(
-				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsCollection, true),
-				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsCollection, true),
+				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsStringType, true),
+				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsStringType, true),
 				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
 				this.<Collection<LObject<String>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
 				this.<Collection<LObject<String>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),

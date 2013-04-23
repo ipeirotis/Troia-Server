@@ -21,9 +21,8 @@ import javax.ws.rs.core.Response;
 public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
 	public NominalJobEntry(){
-		expectedClass = AbstractDawidSkene.class;
 		objectsType = JSONUtils.objectsStringType;
-		assignsType = JSONUtils.assignsStringType;
+		assignsType = JSONUtils.shallowAssignsStringType;
 	}
 
 	@Path("categories/")

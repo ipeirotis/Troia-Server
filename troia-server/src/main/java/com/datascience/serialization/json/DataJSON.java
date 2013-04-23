@@ -3,7 +3,6 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.datascience.core.base.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
@@ -14,7 +13,6 @@ import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * @Author: konrad

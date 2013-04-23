@@ -37,7 +37,6 @@ public abstract class JobEntryBase<T extends Project> {
 	@Context UriInfo uriInfo;
 	@PathParam("id") String jid;
 	
-	protected Class expectedClass;
 	ResponseBuilder responser;
 	ProjectCommandExecutor executor;
 	ISerializer serializer;

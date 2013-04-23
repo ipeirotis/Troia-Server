@@ -17,9 +17,8 @@ import com.datascience.galc.commands.PredictionCommands;
 public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
 	public ContinuousJobEntry(){
-		expectedClass = ContinuousProject.class;
 		objectsType = JSONUtils.objectsContValueType;
-		assignsType = JSONUtils.assignsContValueType;
+		assignsType = JSONUtils.shallowAssignsContValueType;
 	}
 
 	@Path("objects/{oid:[a-zA-Z_0-9/:.-]+}/prediction")
