@@ -1,7 +1,5 @@
 package com.datascience.utils;
 
-import com.google.common.base.Strings;
-
 import java.sql.SQLException;
 import java.util.Properties;
 
