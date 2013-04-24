@@ -12,9 +12,7 @@ import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.IResults;
-import com.datascience.core.results.WorkerResult;
 import com.datascience.serialization.json.GSONSerializer;
 import com.datascience.service.Constants;
 import com.datascience.utils.DBHelper;
@@ -37,7 +35,7 @@ import org.junit.Test;
  *
  * @author dana
  */
-public class CachedAndDBJobStorageTests {
+public class CachedAndDBJobStorageTest {
 
 	protected String dbUser;
 	protected String dbPassword;
@@ -56,7 +54,7 @@ public class CachedAndDBJobStorageTests {
 			dbUrl = props.getProperty(Constants.DB_URL);
 			dbDriverClass = props.getProperty(Constants.DB_DRIVER_CLASS);
 		} catch (Exception ex) {
-			Logger.getLogger(CachedAndDBJobStorageTests.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(CachedAndDBJobStorageTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
