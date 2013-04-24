@@ -16,7 +16,7 @@ public class DBUtils {
 	}
 
 	public String getURL(){
-		return "jdbc:h2:mem:MODE=MYSQL";
+		return "jdbc:h2:mem:";
 	}
 
 	public String getDriverClass(){
