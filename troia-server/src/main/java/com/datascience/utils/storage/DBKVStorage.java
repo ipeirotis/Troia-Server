@@ -13,7 +13,7 @@ public class DBKVStorage implements IKVStorage<String> {
 
 	private static final String GET = "SELECT value FROM %s WHERE id = ?;";
 	private static final String EXISTS = "SELECT COUNT(*) as c FROM %s WHERE id = ?;";
-	private static final String INSERT = "REPLACE INTO %s (id, value) VALUES (?, ?);";
+	private static final String INSERT_PARAMS = "(id, value)";
 	private static final String DELETE = "DELETE FROM %s WHERE id = ?;";
 
 	protected String table;
@@ -48,7 +48,7 @@ public class DBKVStorage implements IKVStorage<String> {
 		String logmsg = startLog("put", key);
 		PreparedStatement sql = null;
 		try {
-			sql = prepareStatement(INSERT, table);
+			sql = dbStorage.initStatement(dbStorage.insertReplacingSQL(table, INSERT_PARAMS));
 			sql.setString(1, key);
 			sql.setString(2, value);
 			sql.executeUpdate();

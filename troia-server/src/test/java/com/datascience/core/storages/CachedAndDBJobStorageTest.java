@@ -16,6 +16,7 @@ import com.datascience.core.results.IResults;
 import com.datascience.serialization.json.GSONSerializer;
 import com.datascience.service.Constants;
 import com.datascience.utils.DBHelper;
+import com.datascience.utils.DBUtils;
 import com.google.gson.JsonObject;
 
 import java.util.*;
@@ -36,27 +37,6 @@ import org.junit.Test;
  * @author dana
  */
 public class CachedAndDBJobStorageTest {
-
-	protected String dbUser;
-	protected String dbPassword;
-	protected String dbName;
-	protected String dbUrl;
-	protected String dbDriverClass;
-
-	private void getDBProperties() {
-		Properties props = new Properties();
-		try {
-			File dir = new File(".");
-			props.load(new FileInputStream(dir.getCanonicalPath() + dir.separator + "src" + dir.separator + "main" + dir.separator + "resources" + dir.separator + "troia.properties"));
-			dbUser = props.getProperty(Constants.DB_USER);
-			dbPassword = props.getProperty(Constants.DB_PASSWORD);
-			dbName = props.getProperty(Constants.DB_NAME);
-			dbUrl = props.getProperty(Constants.DB_URL);
-			dbDriverClass = props.getProperty(Constants.DB_DRIVER_CLASS);
-		} catch (Exception ex) {
-			Logger.getLogger(CachedAndDBJobStorageTest.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
 
 	private INominalData initializeNominalData() {
 		ArrayList<Worker<String>> workers;
@@ -113,10 +93,6 @@ public class CachedAndDBJobStorageTest {
 		return nominalData;
 	}
 
-	@Before
-	public void setUp() {
-		getDBProperties();
-	}
 
 	private JsonArray createCategoriesJsonArray(Collection<String> categories) {
 		JsonArray cat = new JsonArray();
@@ -139,10 +115,9 @@ public class CachedAndDBJobStorageTest {
 
 	@Test
 	public void testMixedStorages() throws Exception {
-		Properties connectionProps = new Properties();
-		connectionProps.put("user", dbUser);
-		connectionProps.put("password", dbPassword);
-		IJobStorage dbJobStorage = new DBJobStorage(new DBHelper(dbUrl, dbDriverClass, connectionProps, dbName), new GSONSerializer());
+		DBHelper dbHelper = new DBUtils().getDBHelper();
+		IJobStorage dbJobStorage = new DBJobStorage(dbHelper, new GSONSerializer());
+		dbJobStorage.clearAndInitialize();
 
 		JobFactory jobFactory = new JobFactory(new GSONSerializer(), dbJobStorage);
 		JsonObject jo = new JsonObject();

@@ -1,5 +1,6 @@
 package com.datascience.utils.storage;
 
+import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -21,17 +22,29 @@ public abstract class DBStorage {
 	protected Connection connection;
 	protected Properties connectionProperties;
 
+	protected String extraOptions;
+
 	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
+		this(dbUrl, driverClass, connectionProperties, dbName,
+				"?useUnicode=true&characterEncoding=utf-8");
+	}
+
+	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {
 		this.dbUrl = dbUrl;
 		this.dbName = dbName;
 		this.connectionProperties = connectionProperties;
+		this.extraOptions = extraOptions;
 		Class.forName(driverClass);
 	}
 
 	public void execute() throws SQLException {
 		connectDB();
-		dropDatabase();
-		createDatabase();
+		if (dbName != null) {
+			dropDatabase();
+			createDatabase();
+		} else {
+			dropAllObjects();
+		}
 		for (String tableName : TABLES){
 			createTable(tableName);
 			createIndex(tableName);
@@ -52,6 +65,12 @@ public abstract class DBStorage {
 		logger.info("Database created successfully");
 	}
 
+	protected void dropAllObjects() throws SQLException {
+		logger.info("Droping objects " + dbName);
+		executeSQL("DROP ALL OBJECTS;");
+		logger.info("Droping objects - done");
+	}
+
 	protected abstract void createTable(String tableName) throws SQLException;
 
 	protected void createIndex(String tableName) throws  SQLException{
@@ -66,7 +85,7 @@ public abstract class DBStorage {
 	}
 
 	public void connectDB() throws SQLException {
-		String dbPath = String.format("%s%s?useUnicode=true&characterEncoding=utf-8", dbUrl, dbName);
+		String dbPath = String.format("%s%s%s", dbUrl, dbName, extraOptions);
 		logger.info("Trying to connect with: " + dbPath);
 		connection = DriverManager.getConnection(dbPath, connectionProperties);
 		logger.info("Connected to " + dbPath);
@@ -99,5 +118,15 @@ public abstract class DBStorage {
 
 	public Connection getConnection(){
 		return connection;
+	}
+
+	protected String getInsertPrefix(){
+		return "REPLACE INTO";
+	}
+
+	public String insertReplacingSQL(String table, String params){
+		int paramsNumber = params.split(",").length;
+		return String.format("%s %s %s VALUES (%s);", getInsertPrefix(), table, params,
+				"?" + Strings.repeat(",?", paramsNumber - 1));
 	}
 }

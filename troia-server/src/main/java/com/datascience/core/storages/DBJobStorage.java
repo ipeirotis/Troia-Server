@@ -32,7 +32,7 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
 
 	private static final String GET_DS = "SELECT kind, data, results, initializationData, model FROM Projects WHERE id IN (?);";
-	private static final String INSERT_DS = "REPLACE INTO Projects (id, kind, data, results, initializationData, model) VALUES (?, ?, ?, ?, ?, ?);";
+	private static final String INSERT_DS_PARAMS = "(id, kind, data, results, initializationData, model)";
 	private static final String DELETE_DS = "DELETE FROM Projects WHERE id = (?);";
 
 	public DBJobStorage(DBHelper helper, ISerializer serializer) throws SQLException{
@@ -76,7 +76,7 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 		helper.ensureConnection();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = helper.getConnection().prepareStatement(INSERT_DS);
+			dsStatement = helper.getConnection().prepareStatement(helper.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
 			dsStatement.setString(1, job.getId());
 			dsStatement.setString(2, job.getProject().getKind());
 			dsStatement.setString(3, serializer.serialize(job.getProject().getData()));
@@ -137,7 +137,7 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 		String content = "TEST_CONTENT_" + uuid.toString();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = helper.getConnection().prepareStatement(INSERT_DS);
+			dsStatement = helper.getConnection().prepareStatement(helper.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
 			dsStatement.setString(1, jid);
 			dsStatement.setString(2, "TEST_KIND");
 			dsStatement.setString(3, content);

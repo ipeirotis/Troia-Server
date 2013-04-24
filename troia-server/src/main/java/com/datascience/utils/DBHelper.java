@@ -1,6 +1,8 @@
 package com.datascience.utils;
 
 import com.datascience.utils.storage.DBStorage;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -18,6 +20,10 @@ public class DBHelper extends DBStorage {
 
 	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
 		super(dbUrl, driverClass, connectionProperties, dbName);
+	}
+
+	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {
+		super(dbUrl, driverClass, connectionProperties, dbName, extraOptions);
 	}
 
 	@Override
