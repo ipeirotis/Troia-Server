@@ -49,25 +49,10 @@ public class JobFactory {
 		Job create(JsonObject jo, String id);
 	}
 
+	final static Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
 	final static Map<String, JobCreator> JOB_FACTORY = new HashMap();
 	{
-		JOB_FACTORY.put("NOMINAL", new JobCreator(){
-			@Override
-			public Job create(JsonObject jo, String id){
-				return createNominalJob(jo, id);
-			}
-		});
 
-		JOB_FACTORY.put("CONTINUOUS", new JobCreator(){
-			@Override
-			public Job create(JsonObject jo, String id){
-				return createContinuousJob(jo, id);
-			}
-		});
-	}
-
-	final static Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
-	{
 		AlgorithmCreator bds = new AlgorithmCreator() {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
@@ -109,7 +94,26 @@ public class JobFactory {
 		ALG_FACTORY.put("blockingMV", bmv);
 		ALG_FACTORY.put("IMV", imv);
 		ALG_FACTORY.put("onlineMV", imv);
-	};
+
+		JobCreator nominal = new JobCreator(){
+			@Override
+			public Job create(JsonObject jo, String id){
+				return createNominalJob(jo, id);
+			}
+		};
+
+		JobCreator continuous = new JobCreator(){
+			@Override
+			public Job create(JsonObject jo, String id){
+				return createContinuousJob(jo, id);
+			}
+		};
+		JOB_FACTORY.put("NOMINAL", nominal);
+		JOB_FACTORY.put("CONTINUOUS", continuous);
+		JOB_FACTORY.put("GALC", continuous);
+		for (String s : ALG_FACTORY.keySet())
+			JOB_FACTORY.put(s, nominal);
+	}
 
 	protected <T> void handleSchedulerLoading(JsonObject settings, Project project){
 		if (settings.has("scheduler"))
@@ -148,8 +152,6 @@ public class JobFactory {
 				(Collection<CategoryValue>) serializer.parse(jo.get("categoryPriors").toString(), JSONUtils.categoryValuesCollectionType) : null;
 		CostMatrix<String> costMatrix = jo.has("costMatrix") ?
 				(CostMatrix<String>) serializer.parse(jo.get("costMatrix").toString(), CostMatrix.class) : null;
-		if (!jo.has("algorithm"))
-			jo.addProperty("algorithm", "BDS");
 		return new Job(
 			getNominalProject(
 				categories,
@@ -185,7 +187,6 @@ public class JobFactory {
 	}
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
-		Job<T> job = JOB_FACTORY.get(type).create(initializationData, id);
-		return job;
+		return JOB_FACTORY.get(type).create(initializationData, id);
 	}
 }

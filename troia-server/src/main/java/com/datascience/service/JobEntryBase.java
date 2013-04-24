@@ -32,11 +32,11 @@ import com.datascience.executor.ProjectCommandExecutor;
  */
 public abstract class JobEntryBase<T extends Project> {
 	
-	@Context ServletContext context;
-	@Context Request request;
-	@Context UriInfo uriInfo;
-	@PathParam("id") String jid;
-	
+	ServletContext context;
+	Request request;
+	UriInfo uriInfo;
+	String jid;
+
 	ResponseBuilder responser;
 	ProjectCommandExecutor executor;
 	ISerializer serializer;
@@ -47,9 +47,16 @@ public abstract class JobEntryBase<T extends Project> {
 	Type objectsType;
 	Type assignsType;
 
+	public JobEntryBase(ServletContext context, Request request, UriInfo uriInfo, String jid) throws Exception{
+		this.context = context;
+		this.request = request;
+		this.uriInfo = uriInfo;
+		this.jid = jid;
+		postConstruct();
+	}
+
 	protected abstract JobCommand getPredictionZipCommand(String path);
 
-	@PostConstruct
 	public void postConstruct() throws Exception{
 		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);

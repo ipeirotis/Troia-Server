@@ -1,9 +1,12 @@
 package com.datascience.service;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.datascience.serialization.json.JSONUtils;
 import com.datascience.core.jobs.JobCommand;
@@ -13,10 +16,10 @@ import com.datascience.galc.commands.PredictionCommands;
 /**
  * @Author: konrad
  */
-@Path("/cjobs/{id}/")
 public class ContinuousJobEntry extends JobEntryBase<ContinuousProject> {
 
-	public ContinuousJobEntry(){
+	public ContinuousJobEntry(ServletContext context, Request request, UriInfo uriInfo, String jid) throws Exception{
+		super(context, request, uriInfo, jid);
 		objectsType = JSONUtils.objectsContValueType;
 		assignsType = JSONUtils.shallowAssignsContValueType;
 	}
