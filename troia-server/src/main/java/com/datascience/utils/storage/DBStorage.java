@@ -15,7 +15,7 @@ public abstract class DBStorage {
 
 	protected static Logger logger = Logger.getLogger(DBStorage.class);
 	protected static int VALIDATION_TIMEOUT = 2;
-	protected static List<String> TABLES;
+	protected List<String> TABLES;
 
 	protected String dbUrl;
 	protected String dbName;
