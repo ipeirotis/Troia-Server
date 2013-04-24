@@ -21,6 +21,7 @@
 	<modules>
 		<module>troia-server</module>
 		<module>troia-data-generator</module>
+		<module>troia-integration-tests</module>
 	</modules>
 	<dependencies>
 		<dependency>

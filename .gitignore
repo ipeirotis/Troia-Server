@@ -29,4 +29,5 @@ dependency-reduced-pom.xml
 
 # generated
 troia-data-generator/test-results/*
+data/galc/generated/
 
