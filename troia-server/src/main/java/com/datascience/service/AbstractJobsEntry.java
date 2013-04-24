@@ -1,24 +1,28 @@
 package com.datascience.service;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
 import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.storages.IJobStorage;
+import com.datascience.galc.ContinuousProject;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.jersey.spi.resource.Singleton;
 
+@Path("/jobs/")
 @Singleton
-public abstract class AbstractJobsEntry {
+public class AbstractJobsEntry {
 	
-	
-	@Context ServletContext context;
+	@Context
+	ServletContext context;
+	@Context
+	Request request;
+	@Context
+	UriInfo uriInfo;
 	
 	protected JobFactory jobFactory;
 
@@ -65,8 +69,8 @@ public abstract class AbstractJobsEntry {
 		return getResponseBuilder().makeOKResponse("Removed job with ID: " + jid);
 	}
 
-	protected abstract Job createJob(JsonObject jo, String jid);
-
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createJob(String json) throws Exception{
 		if (!InitializationSupport.checkIsInitialized(context))
 			return InitializationSupport.makeNotInitializedResponse(context);
@@ -78,7 +82,23 @@ public abstract class AbstractJobsEntry {
 		if (job_old != null) {
 			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
 		}
-		getJobStorage().add(createJob(jo, jid));
+		if (!jo.has("algorithm")){
+			throw new IllegalArgumentException("You should provide alogorithm type (BDS/IDS/BMV/IMV/GALC)");
+		}
+
+		getJobStorage().add(getJobFactory().create(jo.get("algorithm").getAsString(), jo, jid));
 		return getResponseBuilder().makeOKResponse("New job created with ID: " + jid);
+	}
+
+	@Path("{id}")
+	public JobEntryBase getJobEntry(@PathParam("id") String id) throws Exception{
+		Job job = getJobStorage().get(id);
+		if (job == null) {
+			throw new IllegalArgumentException("Job with ID " + id + " does not exist");
+		}
+		if (job.getProject() instanceof ContinuousProject)
+			return new ContinuousJobEntry(context, request, uriInfo, id);
+		else
+			return new NominalJobEntry(context, request, uriInfo, id);
 	}
 }

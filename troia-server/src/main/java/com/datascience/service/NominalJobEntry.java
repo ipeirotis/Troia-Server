@@ -10,17 +10,20 @@ import com.datascience.core.nominal.decision.*;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 
 /**
  * @author Konrad Kurdej
  */
-@Path("/jobs/{id}/")
 public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
-	public NominalJobEntry(){
+	public NominalJobEntry(ServletContext context, Request request, UriInfo uriInfo, String jid) throws Exception{
+		super(context, request, uriInfo, jid);
 		objectsType = JSONUtils.objectsStringType;
 		assignsType = JSONUtils.shallowAssignsStringType;
 	}
