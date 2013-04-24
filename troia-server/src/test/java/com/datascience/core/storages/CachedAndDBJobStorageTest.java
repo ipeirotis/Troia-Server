@@ -4,10 +4,14 @@
  */
 package com.datascience.core.storages;
 
+import com.datascience.core.base.AbstractData;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.datastoring.kv.KVNominalData;
+import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.nominal.INominalData;
@@ -131,8 +135,8 @@ public class CachedAndDBJobStorageTest {
 		job1.getProject().getAlgorithm().compute();
 		String job1Kind = job1.getProject().getKind();
 		IResults job1Results = job1.getProject().getResults();
-		//Assert.assertFalse(job1Results.getDatumResults().isEmpty());
-
+                Assert.assertFalse(job1Results == null);
+                
 		Job job2 = jobFactory.createNominalJob(jo, "job2");
 		job2.getProject().setData(nominalData);
 		job2.getProject().getAlgorithm().compute();
@@ -149,9 +153,10 @@ public class CachedAndDBJobStorageTest {
 
 		NominalProject dbNominalProject = dbJob.getProject();
 		Assert.assertEquals(job1Kind, dbNominalProject.getKind());
+                System.out.println(dbNominalProject.getAlgorithm().getResults());
 		//checkResults(job1Results, dbNominalProject.getAlgorithm().getResults());
 
-		INominalData dbJobData = dbNominalProject.getData();
+		InMemoryData dbJobData = (InMemoryData)dbNominalProject.getData();
 		Assert.assertEquals(nominalData.getAssigns(), dbJobData.getAssigns());
 		Assert.assertEquals(nominalData.getGoldObjects(), dbJobData.getGoldObjects());
 		Assert.assertEquals(nominalData.getEvaluationObjects(), dbJobData.getEvaluationObjects());
