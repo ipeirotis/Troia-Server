@@ -15,7 +15,7 @@ import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/jobs/")
 @Singleton
-public class AbstractJobsEntry {
+public class JobsEntry {
 	
 	@Context
 	ServletContext context;

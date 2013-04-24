@@ -6,19 +6,19 @@ source ./commons.sh
 
 function createJob
 {
-    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs")
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs" -d '{algorithm: "GALC"}')
 }
 
 function deleteJob 
 {
     local jid=$1
-    echo $(curl -s1 -X DELETE -H "Content-Type: application/json" "$URL/cjobs" -d "id=$jid")
+    echo $(curl -s1 -X DELETE -H "Content-Type: application/json" "$URL/jobs" -d "id=$jid")
 }
 
 function loadAssignedLabels 
 {
     local jid=$1
-    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs/$jid/assigns" -d '{"assigns":
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$jid/assigns" -d '{"assigns":
         [{
             "worker":"worker1",
             "object":"http://sunnyfun.com",
@@ -75,7 +75,7 @@ function loadAssignedLabels
 function loadGoldLabels 
 {
     local jid=$1
-    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs/$jid/goldObjects" -d '{"objects":
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$jid/goldObjects" -d '{"objects":
         [{
             "name": "http://google.com",
             "goldLabel":{"value":10.219077484951955,"zeta":0.292643407722905}
@@ -90,7 +90,7 @@ function loadGoldLabels
 function loadUnassignedLabels
 {
     local jid=$1
-    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/cjobs/$jid/objects" -d '{"objects":
+    echo $(curl -s1 -X POST -H "Content-Type: application/json" "$URL/jobs/$jid/objects" -d '{"objects":
         [
             {"name":"object1"},
             {"name":"object2"}
@@ -101,19 +101,19 @@ function loadUnassignedLabels
 function compute
 {
     local jid=$1
-    echo $(curl -s1 -X POST "$URL/cjobs/$jid/compute")
+    echo $(curl -s1 -X POST "$URL/jobs/$jid/compute")
 }
 
 function getObjectsPrediction
 {
     local jid=$1
-    echo $(curl -s1 -X GET "$URL/cjobs/$jid/objects/prediction")
+    echo $(curl -s1 -X GET "$URL/jobs/$jid/objects/prediction")
 }
 
 function getWorkersQualities
 {
     local jid=$1
-    echo $(curl -s1 -X GET "$URL/cjobs/$jid/workers/quality/estimated")
+    echo $(curl -s1 -X GET "$URL/jobs/$jid/workers/quality/estimated")
 }
 
 # Responses
