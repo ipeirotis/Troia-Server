@@ -4,11 +4,12 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.PureNominalData;
-import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.core.datastoring.memory.InMemoryResults;
+import com.datascience.core.nominal.*;
 import com.datascience.core.nominal.decision.*;
+import com.datascience.core.results.DatumResult;
+import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
@@ -34,10 +35,11 @@ public class BaseTestScenario {
     protected static FileWriters fileWriter;
     protected static SummaryResultsParser summaryResultsParser;
     protected static NominalProject project;
-    protected static PureNominalData data;
+    protected static INominalData data;
 
     public static void setUp(NominalAlgorithm algorithm, String testName, boolean loadEvaluationLabels) {
-        project = new NominalProject(algorithm);
+        project = new NominalProject(algorithm, new InMemoryNominalData(),
+				new InMemoryResults<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory(), new ResultsFactory.WorkerResultNominalFactory()));
         data = project.getData();
         if (algorithm instanceof INewDataObserver) {
             data.addNewUpdatableAlgorithm((INewDataObserver) algorithm);
@@ -110,7 +112,7 @@ public class BaseTestScenario {
             IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm) {
         DecisionEngine decisionEngine = new DecisionEngine(labelProbabilityDistributionCostCalculator,
                 objectLabelDecisionAlgorithm);
-        Set<LObject<String>> objects = data.getObjects();
+        Collection<LObject<String>> objects = data.getObjects();
         double avgClassificationCost = 0.0;
 
         //compute the estimated misclassification cost for each object, using DS
@@ -180,8 +182,7 @@ public class BaseTestScenario {
         Map<String, Double> result = new HashMap<String, Double>();
         Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
 
-        for (Map.Entry<Worker<String>, WorkerResult> w : project.getResults().getWorkerResults().entrySet()) {
-            Worker<String> worker = w.getKey();
+        for (Worker<String> worker : project.getData().getWorkers()) {
             result.put(worker.getName(), workerEstimator.getCost(project, worker));
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }
@@ -216,8 +217,7 @@ public class BaseTestScenario {
         Map<String, Double> result = new HashMap<String, Double>();
         Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
 
-        for (Map.Entry<Worker<String>, WorkerResult> w : project.getResults().getWorkerResults().entrySet()) {
-            Worker<String> worker = w.getKey();
+		for (Worker<String> worker : project.getData().getWorkers()) {
             result.put(worker.getName(), workerEvaluator.getCost(project, worker));
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }

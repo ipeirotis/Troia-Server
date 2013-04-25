@@ -11,6 +11,7 @@ import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.utils.ProbabilityDistributions;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -71,7 +72,7 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         //get the labels
         int noAssignedLabels = 0;
-        Set<LObject<String>> objects = this.data.getObjects();
+        Collection<LObject<String>> objects = this.data.getObjects();
         for (LObject<String> object : objects) {
             noAssignedLabels += this.data.getAssignsForObject(object).size();
         }
@@ -84,7 +85,7 @@ public class DSBaseTestScenario extends BaseTestScenario {
     @Test
     public void test_ProbabilityDistributions_DS() {
         HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-        Set<LObject<String>> objects = data.getObjects();
+		Collection<LObject<String>> objects = data.getObjects();
 
         //init the categoryProbabilities hashmap
         HashMap<String, Double> categoryProbabilities = new HashMap<String, Double>();
@@ -433,7 +434,7 @@ public class DSBaseTestScenario extends BaseTestScenario {
     public void test_LabelsPerWorker() {
         HashMap<String, String> workerQuality = summaryResultsParser.getWorkerQuality();
         double noAssignedLabels = 0.0;
-        Set<LObject<String>> objects = data.getObjects();
+		Collection<LObject<String>> objects = data.getObjects();
         for (LObject<String> object : objects) {
             noAssignedLabels += data.getAssignsForObject(object).size();
         }
@@ -448,7 +449,7 @@ public class DSBaseTestScenario extends BaseTestScenario {
     public void test_GoldTestsPerWorker() {
         HashMap<String, String> workerQuality = summaryResultsParser.getWorkerQuality();
         double avgNoGoldTests = 0.0;
-        Set<Worker<String>> workers = data.getWorkers();
+		Collection<Worker<String>> workers = data.getWorkers();
         for (Worker<String> worker : workers) {
             for (AssignedLabel<String> assign : project.getData().getWorkerAssigns(worker)) {
                 if (assign.getLobject().isGold()) {
