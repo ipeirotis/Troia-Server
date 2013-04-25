@@ -3,7 +3,7 @@ package com.datascience.core.datastoring.kv;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.utils.NominalData;
+import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.utils.CostMatrix;
@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class KVNominalData extends KVData<String> implements INominalData{
 
-	protected NominalData jobData;
-	protected ISafeKVStorage<NominalData> storage;
+	protected PureNominalData jobData;
+	protected ISafeKVStorage<PureNominalData> storage;
 
 	public KVNominalData(ISafeKVStorage<Collection<AssignedLabel<String>>> workersAssigns,
 				  ISafeKVStorage<Collection<AssignedLabel<String>>> objectsAssigns,
@@ -25,9 +25,9 @@ public class KVNominalData extends KVData<String> implements INominalData{
 				  ISafeKVStorage<Collection<LObject<String>>> goldObjects,
 				  ISafeKVStorage<Collection<LObject<String>>> evaluationObjects,
 				  ISafeKVStorage<Collection<Worker<String>>> workers,
-				  ISafeKVStorage<NominalData> storage){
+				  ISafeKVStorage<PureNominalData> storage){
 		super(workersAssigns, objectsAssigns, objects, goldObjects, evaluationObjects, workers);
-		jobData = new NominalData();
+		jobData = new PureNominalData();
 		this.storage = storage;
 	}
 

@@ -1,4 +1,4 @@
-package com.datascience.core.datastoring.utils;
+package com.datascience.core.nominal;
 
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.utils.CostMatrix;
@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * User: artur
  * Date: 4/12/13
  */
-public class NominalData {
+public class PureNominalData {
 
 	protected Collection<String> categories;
 	protected boolean fixedPriors;
