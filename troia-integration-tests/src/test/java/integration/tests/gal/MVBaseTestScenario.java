@@ -7,6 +7,7 @@ import com.datascience.mv.BatchMV;
 import com.datascience.mv.IncrementalMV;
 import org.junit.Test;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class MVBaseTestScenario extends BaseTestScenario {
     @Test
     public void test_ProbabilityDistributions_MV() {
         HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-        Set<LObject<String>> objects = data.getObjects();
+		Collection<LObject<String>> objects = data.getObjects();
 
         //init the categoryProbabilities hashmap
         HashMap<String, Double> categoryProbabilities = new HashMap<String, Double>();

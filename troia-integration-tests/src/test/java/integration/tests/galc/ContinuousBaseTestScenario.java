@@ -3,7 +3,10 @@ package test.java.integration.tests.galc;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.results.DatumContResults;
+import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
@@ -48,7 +51,10 @@ public class ContinuousBaseTestScenario {
 
     public static void initSetup(Setup testSetup) {
         algorithm = testSetup.algorithm;
-        project = new ContinuousProject(algorithm);
+        project = new ContinuousProject(algorithm, new InMemoryData<ContValue>(),
+				new InMemoryResults<ContValue, DatumContResults, WorkerContResults>(
+						new ResultsFactory.DatumContResultFactory(),
+						new ResultsFactory.WorkerContResultFactory()));
 
         String inputDir = DATA_BASE_DIR + testSetup.testName + TestSettings.FILEPATH_SEPARATOR + "input" + TestSettings.FILEPATH_SEPARATOR;
         String outputDir = DATA_BASE_DIR + testSetup.testName + TestSettings.FILEPATH_SEPARATOR + "output" + TestSettings.FILEPATH_SEPARATOR;
