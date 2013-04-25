@@ -5,7 +5,7 @@ import org.junit.BeforeClass;
 
 public class ContinuousAdultContentTest extends ContinuousBaseTestScenario {
 
-    public static String TEST_NAME = "adultcontent";
+    public static final String TEST_NAME = "adultcontent";
     static ContinuousBaseTestScenario.Setup testSetup;
 
     @BeforeClass

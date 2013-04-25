@@ -97,8 +97,8 @@ public class DSBaseTestScenario extends BaseTestScenario {
         int noObjects = objects.size();
         for (LObject<String> object : objects) {
             Map<String, Double> objectProbabilities = project.getObjectResults(object).getCategoryProbabilites();
-            for (String categoryName : objectProbabilities.keySet()) {
-                categoryProbabilities.put(categoryName, categoryProbabilities.get(categoryName) + objectProbabilities.get(categoryName));
+            for (Map.Entry<String, Double> e : objectProbabilities.entrySet()) {
+                categoryProbabilities.put(e.getKey(), categoryProbabilities.get(e.getKey()) + e.getValue());
             }
         }
 

@@ -21,12 +21,14 @@ public class FileReaders {
 	 * @param filename
 	 * @throws FileNotFoundException
 	 */
+
+	private static final String defaultEncoding = "UTF-8";
 	public CostMatrix<String> loadCostMatrix(String filename)
 	throws FileNotFoundException{
 
 		CostMatrix<String> matrix = new CostMatrix<String>();
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultEncoding);
 		String line, categoryFrom, categoryTo;
 		double cost;
 		
@@ -52,7 +54,7 @@ public class FileReaders {
 	
 		LinkedList <Map<String, Object>> workerSummaries = new LinkedList<Map<String, Object>>();
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultEncoding);
 		String line, workerName, errorRate, quality, submissions;
 
 		//scan the first line (containing the titles) - don't add it into the results list

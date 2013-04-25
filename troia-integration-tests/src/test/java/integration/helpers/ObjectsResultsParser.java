@@ -1,11 +1,6 @@
 package test.java.integration.helpers;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +17,7 @@ public class ObjectsResultsParser {
 		this.avgRelativeEstimationError = 0.0;
 	}
 
-	public void ParseResultsObjectsFile(String filePath) {
+	public void ParseResultsObjectsFile(String filePath) throws UnsupportedEncodingException {
 		FileInputStream fstream = null;
 
 		try {
@@ -32,7 +27,7 @@ public class ObjectsResultsParser {
 		}
 
 		DataInputStream in = new DataInputStream(fstream);
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
 		String line;
 		try {
@@ -63,20 +58,12 @@ public class ObjectsResultsParser {
 		}
 
 		try {
-			in.close();
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public double getAvgAbsoluteEstimationError() {
-		return this.avgAbsoluteEstimationError;
-	}
-
-	public double getAvgRelativeEstimationError() {
-		return this.avgRelativeEstimationError;
-	}
-	
 	public Map <String, Map<String, Double>> getEstimatedObjectValues(){
 		return this.resultsObjects;
 	}

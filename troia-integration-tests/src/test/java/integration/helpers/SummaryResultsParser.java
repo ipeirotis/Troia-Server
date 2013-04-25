@@ -1,11 +1,6 @@
 package test.java.integration.helpers;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,7 +20,11 @@ public class SummaryResultsParser {
 
 	public SummaryResultsParser(String path) {
 		this();
-		ParseSummaryFile(path);
+		try {
+			parseSummaryFile(path);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public HashMap<String, String> getParameters() {
@@ -56,7 +55,7 @@ public class SummaryResultsParser {
 		return finalData;
 	}
 
-	public void ParseSummaryFile(String filePath) {
+	public void parseSummaryFile(String filePath) throws UnsupportedEncodingException {
 		ArrayList<String> parametersList = new ArrayList<String>();
 		ArrayList<String> dataList = new ArrayList<String>();
 		ArrayList<String> dataQualityList = new ArrayList<String>();
@@ -70,7 +69,7 @@ public class SummaryResultsParser {
 		}
 
 		DataInputStream in = new DataInputStream(fstream);
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
 		String line;
 		int currentBlock = 0;
@@ -95,7 +94,7 @@ public class SummaryResultsParser {
 		}
 
 		try {
-			in.close();
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

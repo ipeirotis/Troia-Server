@@ -29,14 +29,14 @@ public class ContinuousBaseTestScenario {
 
     public final static String DATA_BASE_DIR = TestSettings.GALC_TESTDATA_BASEDIR;
     public final static String RESULTS_BASE_DIR = TestSettings.GALC_RESULTS_BASEDIR;
-    public static int MAX_ITERATIONS = 20;
-    public static double EPSILON = 1e-5;
-    public static double TOLERANCE = 0.0000000001;
-    public static ContinuousIpeirotis algorithm;
-    public static ContinuousProject project;
-    public static FileWriters fileWriter;
-    public static ObjectsResultsParser objectsResultsParser;
-    public static WorkersResultsParser workersResultsParser;
+    public static final int MAX_ITERATIONS = 20;
+    public static final double EPSILON = 1e-5;
+    public static final double TOLERANCE = 0.0000000001;
+    protected static ContinuousIpeirotis algorithm;
+    protected static ContinuousProject project;
+    protected static FileWriters fileWriter;
+    protected static ObjectsResultsParser objectsResultsParser;
+    protected static WorkersResultsParser workersResultsParser;
 
     public static class Setup {
 
