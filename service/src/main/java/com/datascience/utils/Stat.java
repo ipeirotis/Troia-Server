@@ -85,20 +85,20 @@ public class Stat {
 		return P;
 	}
 
-	public static double Beta_CDF(double x, int a, int b) {
-		return Ix(x, a, b);
+	public static double beta_CDF(double x, int a, int b) {
+		return ix(x, a, b);
 	}
 
 	public static double incompleteBeta(double x, int a, int b) {
-		return Beta(a, b) * Ix(x, a, b);
+		return beta(a, b) * ix(x, a, b);
 	}
 
-	public static double Beta(int a, int b) {
+	public static double beta(int a, int b) {
 		return Math.exp(logNfactExact(a - 1) + logNfactExact(b - 1)
 						- logNfactExact(a + b - 1));
 	}
 
-	public static double Ix(double x, int a, int b) {
+	public static double ix(double x, int a, int b) {
 
 		double result = 0;
 		for (int j = a; j <= a + b - 1; j++) {
@@ -151,7 +151,7 @@ public class Stat {
 	/**
 	 * Computing log(n!) using Stirling's approximation of n!
 	 */
-	public static long NfactExact(long n) {
+	public static long nFactExact(long n) {
 
 		if (n == 0)
 			return 1;
@@ -169,7 +169,7 @@ public class Stat {
 	 */
 	public static double binom(int n, int i) {
 
-		return 1.0 * NfactExact(n) / (NfactExact(i) * NfactExact(n - i));
+		return 1.0 * nFactExact(n) / (nFactExact(i) * nFactExact(n - i));
 
 	}
 
@@ -192,14 +192,14 @@ public class Stat {
 
 		/*
 		 * for (int a =1 ; a<10; a++) for (int b =1 ; b<10; b++)
-		 * System.out.println("a="+a+" b="+b+" Beta(a,b)="+Beta(a,b));
+		 * System.out.println("a="+a+" b="+b+" beta(a,b)="+beta(a,b));
 		 */
 
 		double x = 0.5;
 		for (int a = 0; a <= 20; a++)
 			for (int b = 0; b <= 20; b++)
 				System.out.println("x=" + x + " pos=" + a + " neg=" + b
-								   + " Beta_CDF(x;pos,neg)=" + Beta_CDF(x, a + 1, b + 1));
+								   + " beta_CDF(x;pos,neg)=" + beta_CDF(x, a + 1, b + 1));
 
 	}
 

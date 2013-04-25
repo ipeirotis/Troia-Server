@@ -74,7 +74,7 @@ public class StatTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.utils.Stat#Beta_CDF(double, int, int)}.
+	 * Test method for {@link com.datascience.utils.Stat#beta_CDF(double, int, int)}.
 	 */
 	@Test
 	public final void testBeta_CDF() {
@@ -146,7 +146,7 @@ public class StatTest {
 		testIncompleteBetaWithLimitedParameters(1,0);
 	}
 	/**
-	 * Test method for {@link com.datascience.utils.Stat#Beta(int, int)}.
+	 * Test method for {@link com.datascience.utils.Stat#beta(int, int)}.
 	 */
 	@Test
 	public final void testBeta() {
@@ -160,7 +160,7 @@ public class StatTest {
 						};
 		List<ModelIntIntDouble> testData = TestDataManager.fillTestCasesIntIntDouble(rp,ress);
 		for(ModelIntIntDouble datum : testData) {
-			assertEquals(datum.getRes(), Stat.Beta(datum.getArg1(), datum.getArg2()),TestDataManager.DELTA_DOUBLE);
+			assertEquals(datum.getRes(), Stat.beta(datum.getArg1(), datum.getArg2()),TestDataManager.DELTA_DOUBLE);
 		}
 	}
 
@@ -187,11 +187,11 @@ public class StatTest {
 			double x = datum.getArg1();
 			int a = datum.getArg2();
 			int b = datum.getArg3();
-			assertEquals(datum.getRes(), Stat.Ix(x, a, b), TestDataManager.DELTA_DOUBLE);
+			assertEquals(datum.getRes(), Stat.ix(x, a, b), TestDataManager.DELTA_DOUBLE);
 		}
 	}
 	/**
-	 * Test method for {@link com.datascience.utils.Stat#Ix(double, int, int)}.
+	 * Test method for {@link com.datascience.utils.Stat#ix(double, int, int)}.
 	 */
 	@Test
 	public final void testIx() {
@@ -212,7 +212,7 @@ public class StatTest {
 	}
 
 	/**
-	 * Test method for {@link com.datascience.utils.Stat#NfactExact(long)}.
+	 * Test method for {@link com.datascience.utils.Stat#nFactExact(long)}.
 	 */
 	@Test
 	public final void testNfactExact() {

@@ -229,8 +229,6 @@ public class Engine {
 
 	public void execute() {
 
-		IData<ContValue> data;
-
 		EmpiricalData edata = new EmpiricalData();
 		edata.loadLabelFile(ctx.getInputFile());
 		if(ctx.hasTrueWorkersFile()) {
@@ -242,7 +240,6 @@ public class Engine {
 		if(ctx.hasCorrectFile()) {
 			edata.loadGoldLabelsFile(ctx.getCorrectFile());
 		}
-		data = edata;
 
 		ContinuousIpeirotis ip = new ContinuousIpeirotis();
 		ip.setIterations(20);

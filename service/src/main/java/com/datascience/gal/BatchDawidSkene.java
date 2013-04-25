@@ -68,9 +68,8 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			if (probabilities == null)
 				continue; // No other worker labeled the object
 
-			for (String source : probabilities.keySet()) {
-				double error = probabilities.get(source);
-				wr.addError(source, destination, error);
+			for (Map.Entry<String, Double> e : probabilities.entrySet()) {
+				wr.addError(e.getKey(), destination, e.getValue());
 			}
 		}
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
