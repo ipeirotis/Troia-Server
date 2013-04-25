@@ -5,7 +5,7 @@ import org.junit.BeforeClass;
 
 public class ContinuousJoinlyNormalTest extends ContinuousBaseTestScenario {
 
-    public static String TEST_NAME = "joinlynormal";
+    public static final String TEST_NAME = "joinlynormal";
     static ContinuousBaseTestScenario.Setup testSetup;
 
     @BeforeClass
