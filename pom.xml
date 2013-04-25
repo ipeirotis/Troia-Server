@@ -11,8 +11,9 @@
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ipeirotis</groupId>
-	<artifactId>project-troia</artifactId>
+	<artifactId>troia</artifactId>
 	<version>1.1</version>
+    <name>Project Troia</name>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

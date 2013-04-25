@@ -1,9 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ipeirotis</groupId>
-	<artifactId>troia-integration-tests</artifactId>
-	<version>0.1</version>
+    <parent>
+        <groupId>com.ipeirotis</groupId>
+        <artifactId>troia</artifactId>
+        <version>1.1</version>
+    </parent>
+	<artifactId>integration-tests</artifactId>
 	<packaging>jar</packaging>
 	<name>Troia Integration Tests</name>
 	<dependencies>
@@ -19,13 +22,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ipeirotis</groupId>
-			<artifactId>troia-server</artifactId>
-			<version>1.1</version>
+			<artifactId>service</artifactId>
+            <version>${project.parent.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.ipeirotis</groupId>
-			<artifactId>troia-data-generator</artifactId>
+			<artifactId>data-generator</artifactId>
 			<version>0.5</version>
 			<scope>compile</scope>
 		</dependency>
