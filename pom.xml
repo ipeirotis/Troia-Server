@@ -20,9 +20,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 	<modules>
-		<module>troia-server</module>
-		<module>troia-data-generator</module>
-		<module>troia-integration-tests</module>
+		<module>service</module>
+		<module>data-generator</module>
+		<module>integration-tests</module>
 	</modules>
 	<dependencies>
 		<dependency>
