@@ -184,6 +184,7 @@ public class TroiaDataGenerator {
         Properties props = new Properties();
         FileInputStream inputStream = new FileInputStream(filename);
         props.load(inputStream);
+		inputStream.close();
         categoryCount = Integer.parseInt(props
                                          .getProperty(CATEGORY_COUNT_PROPERTY));
         objectCount = Integer

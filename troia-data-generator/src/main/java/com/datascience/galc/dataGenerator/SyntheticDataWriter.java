@@ -19,13 +19,6 @@ public class SyntheticDataWriter {
 		this.data = data;
 	}
 	
-	public void writeToFile() throws IOException {
-		writeAssignedLabelsToFile(data.getAssigns(), null);
-		writeTrueWorkerDataToFile(data.getWorkerContResults(), null);
-		writeTrueObjectDataToFile(data.getObjects(), null);
-		writeGoldObjectDataToFile(data.getGoldObjects(), null);
-	}
-	
 	private BufferedWriter openFile(String filename) throws IOException {
 		File outfile = new File(filename);
 		if (outfile.getParent() != null) {

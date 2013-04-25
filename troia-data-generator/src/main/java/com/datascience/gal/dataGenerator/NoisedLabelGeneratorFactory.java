@@ -16,9 +16,8 @@ public class NoisedLabelGeneratorFactory {
         Map<String, Map<Double, String>> roulette = new HashMap<String, Map<Double, String>>();
         Map<String, Map<String, Double>> confMatrix = confusion.getMatrix();
         Map<Double, String> limiterVector;
-        Collection<String> correctClasses = confMatrix.keySet();
-        for (String correctClass : correctClasses) {
-            Map<String, Double> confVector = confMatrix.get(correctClass);
+        for (Map.Entry<String, Map<String, Double>> e : confMatrix.entrySet()) {
+            Map<String, Double> confVector = e.getValue();
             Collection<String> labeledClasses = confVector.keySet();
             limiterVector = new TreeMap<Double, String>();
             double limiter = 0;
@@ -28,7 +27,7 @@ public class NoisedLabelGeneratorFactory {
                 if (prob != 0)
                     limiterVector.put(limiter, labeledClass);
             }
-            roulette.put(correctClass, limiterVector);
+            roulette.put(e.getKey(), limiterVector);
         }
         return new RouletteNoisedLabelGenerator(roulette);
     }

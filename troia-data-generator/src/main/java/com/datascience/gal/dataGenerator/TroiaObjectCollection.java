@@ -1,5 +1,7 @@
 package com.datascience.gal.dataGenerator;
 
+import com.google.common.base.Objects;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -226,18 +228,17 @@ public class TroiaObjectCollection implements Collection<String> {
 	 */
 
 	public String toString() {
-		String retStr = "";
+		StringBuffer sb = new StringBuffer();
 		Collection<String> objects = this.testObject.keySet();
 		for (String object : objects) {
-			retStr += object + '\t' + this.getCategory(object) + '\n';
+			sb.append(object);
+			sb.append("\t");
+			sb.append(getCategory(object));
+			sb.append("\n");
 		}
-		return retStr;
+		return sb.toString();
 	}
 
-	/**
-	 *
-	 * @see java.lang.Object#equals()
-	 */
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
@@ -248,6 +249,11 @@ public class TroiaObjectCollection implements Collection<String> {
 		}
 		TroiaObjectCollection c = (TroiaObjectCollection) o;
 		return testObject.equals(c.testObject);
+	}
+
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(testObject);
 	}
 
 	/**
