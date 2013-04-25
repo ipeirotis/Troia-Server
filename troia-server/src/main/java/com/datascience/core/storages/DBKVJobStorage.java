@@ -1,12 +1,12 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.kv.KVCleaner;
 import com.datascience.core.datastoring.kv.KVData;
 import com.datascience.core.datastoring.kv.KVNominalData;
 import com.datascience.core.datastoring.kv.KVResults;
-import com.datascience.core.datastoring.utils.NominalData;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
@@ -16,7 +16,6 @@ import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.storage.*;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
@@ -110,7 +109,7 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 				this.<Collection<LObject<String>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
 				this.<Collection<LObject<String>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
 				this.<Collection<Worker<String>>>getKVForJob(id, "Workers", JSONUtils.workersStringType, false),
-				this.<NominalData>getKVForJob(id, "JobSettings", NominalData.class, false)
+				this.<PureNominalData>getKVForJob(id, "JobSettings", PureNominalData.class, false)
 		);
 		return data;
 	}
