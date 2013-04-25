@@ -1,0 +1,8 @@
+Name	Labels	EstMean	EstStDev	EstCorrelation	TrueMean	TrueStDev	TrueCorrelation
+worker2	5	0.6	0.4898979485566356	0.6666666666666666	null	null	null
+worker1	5	1.0	1.0E-11	0.0	null	null	null
+worker5	5	0.6	0.4898979485566356	-0.9999	null	null	null
+worker4	5	0.4	0.4898979485566356	0.9999	null	null	null
+worker3	5	0.4	0.4898979485566356	0.9999	null	null	null
+Average absolute estimation error for correlation values: NaN
+Average relative estimation error for correlation values: NaN

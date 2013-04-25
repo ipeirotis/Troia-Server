@@ -1,0 +1,6 @@
+Worker	WorkerQuality_Estm_DS_Exp_n	WorkerQuality_Estm_DS_Exp_w	WorkerQuality_Estm_DS_ML_n	WorkerQuality_Estm_DS_ML_w	WorkerQuality_Estm_DS_Min_n	WorkerQuality_Estm_DS_Min_w	WorkerQuality_Eval_DS_Exp_n	WorkerQuality_Eval_DS_Exp_w	WorkerQuality_Eval_DS_ML_n	WorkerQuality_Eval_DS_ML_w	WorkerQuality_Eval_DS_Min_n	WorkerQuality_Eval_DS_Min_w	Number of labels	Gold Tests
+worker1	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	0.00%	5.0000	2.0000
+worker2	44.44%	44.44%	66.67%	66.67%	66.67%	66.67%	2.78%	2.78%	16.67%	16.67%	16.67%	16.67%	5.0000	2.0000
+worker3	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	2.78%	2.78%	16.67%	16.67%	16.67%	16.67%	5.0000	2.0000
+worker4	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	2.78%	2.78%	16.67%	16.67%	16.67%	16.67%	5.0000	2.0000
+worker5	100.00%	100.00%	100.00%	100.00%	100.00%	100.00%	2.78%	2.78%	16.67%	16.67%	16.67%	16.67%	5.0000	2.0000
