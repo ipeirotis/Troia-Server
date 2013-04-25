@@ -1,5 +1,7 @@
 package com.datascience.gal.dataGenerator;
 
+import com.google.common.base.Objects;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +12,6 @@ import java.util.Map;
  * @author piotr.gnys@10clouds.com
  */
 public class ConfusionMatrix {
-
-
-
 
 	/**
 	 * @param matrix
@@ -75,7 +74,6 @@ public class ConfusionMatrix {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("");
 		return "ConfusionMatrix: [matrix=" + matrix + "]";
 	}
 
@@ -92,6 +90,11 @@ public class ConfusionMatrix {
 		}
 		ConfusionMatrix m = (ConfusionMatrix) o;
 		return matrix.equals(m.matrix);
+	}
+
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(matrix);
 	}
 
 	/**

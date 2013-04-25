@@ -2,6 +2,7 @@ package com.datascience.gal.dataGenerator;
 
 
 import com.datascience.core.base.Worker;
+import com.google.common.base.Objects;
 
 public class ArtificialWorker extends Worker<String> {
 
@@ -29,9 +30,6 @@ public class ArtificialWorker extends Worker<String> {
 			   + confusionMatrix + "]";
 	}
 
-	/**
-	 * @see java.lang.Object#equals()
-	 */
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) {
@@ -44,6 +42,12 @@ public class ArtificialWorker extends Worker<String> {
 		return confusionMatrix.equals(a.confusionMatrix) &&
 			   name.equals(a.name);
 	}
+
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(name);
+	}
+
 
 	/**
 	 * Worker confusion matrix.

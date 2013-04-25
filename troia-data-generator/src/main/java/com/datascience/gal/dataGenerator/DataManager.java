@@ -30,11 +30,13 @@ public class DataManager {
 	 * @throws IOException
 	 *             Thrown if program was unable to save objects to file
 	 */
+
+	private static final String defaultCharsetEncoding = "UTF-8";
 	public void saveTestObjectsToFile(String filename,
 									  TroiaObjectCollection objects) throws IOException {
 		logger.info("Saving test objects to file");
 		FileOutputStream stream = new FileOutputStream(filename);
-		Writer out = new OutputStreamWriter(stream);
+		Writer out = new OutputStreamWriter(stream, defaultCharsetEncoding);
 		for (String object : objects) {
 			out.write(object + '\t' + objects.getCategory(object) + '\n');
 		}
@@ -57,7 +59,7 @@ public class DataManager {
 	throws FileNotFoundException {
 		logger.info("Loadin test objects from file");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		String line, objectName, objectCategory;
 		TroiaObjectCollection testObjects = new TroiaObjectCollection();
 		while (scanner.hasNextLine()) {
@@ -85,7 +87,7 @@ public class DataManager {
 			Collection<ArtificialWorker> workers) throws IOException {
 		logger.info("Saving artificial workers to file");
 		FileOutputStream stream = new FileOutputStream(filename);
-		Writer out = new OutputStreamWriter(stream);
+		Writer out = new OutputStreamWriter(stream, defaultCharsetEncoding);
 		Gson gson = new Gson();
 		out.write(gson.toJson(workers));
 		out.close();
@@ -105,7 +107,7 @@ public class DataManager {
 			Collection<Map<String, Object>> qualities) throws IOException {
 		logger.info("Saving qualities of artificial workers to file");
 		FileOutputStream stream = new FileOutputStream(filename);
-		Writer out = new OutputStreamWriter(stream);
+		Writer out = new OutputStreamWriter(stream, defaultCharsetEncoding);
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		out.write(gson.toJson(qualities));
 		out.close();
@@ -123,7 +125,7 @@ public class DataManager {
 			CostMatrix<String> cm, Collection<String> categories) throws IOException {
 		logger.info("Saving cost matrix to file");
 		FileOutputStream stream = new FileOutputStream(filename);
-		Writer out = new OutputStreamWriter(stream);
+		Writer out = new OutputStreamWriter(stream, defaultCharsetEncoding);
 		for (String c0 : categories) {
 			for (String c1 : categories) {
 				out.append(c0 + " " + c1 + " "
@@ -151,7 +153,7 @@ public class DataManager {
 		String filename) throws FileNotFoundException {
 		logger.info("Loading artificial workers from file");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		Gson gson = new Gson();
 		Type collectionType = new TypeToken<Collection<ArtificialWorker>>() {} .getType();
 		Collection<ArtificialWorker> workers;
@@ -180,7 +182,7 @@ public class DataManager {
 			Collection<String> categories) throws FileNotFoundException {
 		logger.info("Loading worker definintion from baisc workers file.");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		String line;
 		Collection<ArtificialWorker> workers = new ArrayList<ArtificialWorker>();
 		DataGenerator genreator = DataGenerator.getInstance();
@@ -210,7 +212,7 @@ public class DataManager {
 	throws IOException {
 		logger.info("Saving labels to file");
 		FileOutputStream stream = new FileOutputStream(filename);
-		Writer out = new OutputStreamWriter(stream);
+		Writer out = new OutputStreamWriter(stream, defaultCharsetEncoding);
 		for (AssignedLabel<String> label : labels) {
 			out.write(label.getWorker().getName() + '\t' + label.getLobject().getName() + '\t' + label.getLabel() + '\n');
 		}
@@ -231,7 +233,7 @@ public class DataManager {
 	throws FileNotFoundException {
 		logger.info("Loading labels from file");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		String line;
 		Collection<AssignedLabel<String>> labels = new ArrayList<AssignedLabel<String>>();
 		while (scanner.hasNextLine()) {
@@ -271,7 +273,7 @@ public class DataManager {
 									 Collection<LObject<String>> labels) throws IOException {
 		logger.info("Saving gold labels objects to file");
 		FileOutputStream stream = new FileOutputStream(filename);
-		Writer out = new OutputStreamWriter(stream);
+		Writer out = new OutputStreamWriter(stream, defaultCharsetEncoding);
 		for (LObject<String> label : labels) {
 //			out.write(label.getObjectName() + '\t' + label.getCorrectCategory()
 //					  + '\n');
@@ -291,7 +293,7 @@ public class DataManager {
 	throws FileNotFoundException {
 		logger.info("Loading gold labels from file");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		String line, objectName, objectCategory;
 		Collection<LObject<String>> goldLabels = new ArrayList<LObject<String>>();
 		while (scanner.hasNextLine()) {
@@ -318,7 +320,7 @@ public class DataManager {
 			throws FileNotFoundException {
 		logger.info("Loading evaluation labels from file");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		String line, objectName, objectCategory;
 		Collection<LObject<String>> evaluationLabels = new ArrayList<LObject<String>>();
 		while (scanner.hasNextLine()) {
@@ -345,7 +347,7 @@ public class DataManager {
 	throws FileNotFoundException {
 		logger.info("Loading prior file");
 		FileInputStream stream = new FileInputStream(filename);
-		Scanner scanner = new Scanner(stream);
+		Scanner scanner = new Scanner(stream, defaultCharsetEncoding);
 		String line;
 		Map<String, Double> categories = new HashMap<String, Double>();
 		String categoryName;
