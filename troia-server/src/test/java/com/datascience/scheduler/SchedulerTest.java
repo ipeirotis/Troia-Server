@@ -33,7 +33,7 @@ public class SchedulerTest {
 			}
 		}
 		MemoryJobStorage js = new MemoryJobStorage();
-		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), js.<ContValue>getContData("testId"), js.getContResults("testId"));
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), js.getContData("testId"), js.getContResults("testId"));
 		cp.setData(data);
 		return cp;
 	}
@@ -54,7 +54,7 @@ public class SchedulerTest {
 	public void schedulerTestOnSmallUpdates() {
 		final int objectsCount = 5;
 		MemoryJobStorage js = new MemoryJobStorage();
-		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), js.<ContValue>getContData("testId"), js.getContResults("testId"));
+		ContinuousProject cp = new ContinuousProject(new ContinuousIpeirotis(), js.getContData("testId"), js.getContResults("testId"));
 		InMemoryData<ContValue> data = new InMemoryData<ContValue>();
 		cp.setData(data);
 		Scheduler<ContValue> scheduler =
