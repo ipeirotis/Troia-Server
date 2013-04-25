@@ -24,7 +24,7 @@ import java.util.*;
 public class ConfigEntry {
 
 	@Context ServletContext scontext;
-	protected static Logger logger = Logger.getLogger(ConfigEntry.class);
+	protected static final Logger logger = Logger.getLogger(ConfigEntry.class);
 
 	public static class NameValue{
 		public String name;

@@ -13,8 +13,8 @@ import java.util.Properties;
  */
 public abstract class DBStorage {
 
-	protected static Logger logger = Logger.getLogger(DBStorage.class);
-	protected static int VALIDATION_TIMEOUT = 2;
+	protected final static Logger logger = Logger.getLogger(DBStorage.class);
+	protected final static int VALIDATION_TIMEOUT = 2;
 	protected List<String> TABLES;
 
 	protected String dbUrl;

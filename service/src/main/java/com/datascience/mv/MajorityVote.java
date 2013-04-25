@@ -70,9 +70,8 @@ public abstract class MajorityVote extends NominalAlgorithm {
 			// We treat this classification as the "correct" one
 			Map<String, Double> probabilities = results.getDatumResult(al.getLobject()).getCategoryProbabilites();
 
-			for (String source : probabilities.keySet()) {
-				double error = probabilities.get(source);
-				wr.addError(source, destination, error);
+			for (Map.Entry<String, Double> e : probabilities.entrySet()) {
+				wr.addError(e.getKey(), destination, e.getValue());
 			}
 		}
 		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);

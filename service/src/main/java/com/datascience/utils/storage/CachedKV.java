@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class CachedKV<V> implements IKVStorage<V>{
 
-	protected static Logger log = Logger.getLogger(CachedKV.class);
+	protected final static Logger log = Logger.getLogger(CachedKV.class);
 
 	protected final IKVStorage<V> wrapped;
 	protected LoadingCache<String, V> cache;

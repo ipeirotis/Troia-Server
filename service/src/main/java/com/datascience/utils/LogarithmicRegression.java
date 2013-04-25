@@ -97,9 +97,9 @@ public class LogarithmicRegression {
 	 */
 	public static double[] getBeta_3(double[] x, double[] y, double[] logy, int n) {
 
-		double sumx = getSum_x(x,n);
+//		double sumx = getSum_x(x,n);
 		double sumy = getSum_y(y,n);
-		double sumx2 = getSum_x2(x,n);
+//		double sumx2 = getSum_x2(x,n);
 		double sumxy = getSum_xy(x,y,n);
 		double sumx2y = getSum_x2y(x,y,n);
 		double sumylogy = getSum_xy(y,logy,n);
