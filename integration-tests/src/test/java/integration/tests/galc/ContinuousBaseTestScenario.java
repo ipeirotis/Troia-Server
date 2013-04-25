@@ -17,6 +17,7 @@ import test.java.integration.helpers.ObjectsResultsParser;
 import test.java.integration.helpers.TestSettings;
 import test.java.integration.helpers.WorkersResultsParser;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class ContinuousBaseTestScenario {
         }
     }
 
-    public static void initSetup(Setup testSetup) {
+    public static void initSetup(Setup testSetup) throws UnsupportedEncodingException {
         algorithm = testSetup.algorithm;
         project = new ContinuousProject(algorithm, new InMemoryData<ContValue>(),
 				new InMemoryResults<ContValue, DatumContResults, WorkerContResults>(
