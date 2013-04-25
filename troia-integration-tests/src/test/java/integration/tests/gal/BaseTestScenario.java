@@ -4,9 +4,9 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.*;
 import com.datascience.core.results.WorkerResult;
@@ -34,7 +34,7 @@ public class BaseTestScenario {
     protected static FileWriters fileWriter;
     protected static SummaryResultsParser summaryResultsParser;
     protected static NominalProject project;
-    protected static NominalData data;
+    protected static PureNominalData data;
 
     public static void setUp(NominalAlgorithm algorithm, String testName, boolean loadEvaluationLabels) {
         project = new NominalProject(algorithm);
