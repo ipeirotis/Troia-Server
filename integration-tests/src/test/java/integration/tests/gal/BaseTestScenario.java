@@ -99,14 +99,6 @@ public class BaseTestScenario {
         }
     }
 
-    public void setFileWriter(FileWriters fileWriter) {
-        this.fileWriter = fileWriter;
-    }
-
-    public void setSummaryResultsParser(SummaryResultsParser summaryResultsParser) {
-        this.summaryResultsParser = summaryResultsParser;
-    }
-
     public double estimateMissclassificationCost(
             ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
             IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm) {
