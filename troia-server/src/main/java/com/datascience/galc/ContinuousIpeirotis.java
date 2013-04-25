@@ -66,10 +66,12 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		double mu = estimateDistributionMu();
 		double sigma = estimateDistributionSigma();
 		// Estimate objects' values. 
-		for (DatumContResults dcr : getObjectsResults().values()) {
+		for (LObject<ContValue> obj : data.getObjects()){
+			DatumContResults dcr = results.getDatumResult(obj);
 			dcr.setDistributionMu(mu);
 			dcr.setDistributionSigma(sigma);
 			dcr.getEst_value();
+			results.addDatumResult(obj, dcr);
 		}
 		logger.info(String.format("GALC estimate STOP. iterations %d/%d, loglikelihood =%f",
 				round, max_iters, logLikelihood));
@@ -111,11 +113,10 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			Double newZeta;
 			Double zeta = 0.0;
 			Double betasum = 0.0;
-			LObject<ContValue> object = dr.getObject();
-			if(!object.isGold()) {
+			if(!obj.isGold()) {
 				oldZeta = dr.getEst_zeta();
 
-				for (AssignedLabel<ContValue> al : data.getAssignsForObject(object)) {
+				for (AssignedLabel<ContValue> al : data.getAssignsForObject(obj)) {
 					WorkerContResults wr = results.getWorkerResult(al.getWorker());
 					Double b = wr.getBeta();
 					Double r = wr.getEst_rho();
@@ -134,14 +135,14 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 				//d.setEst_zeta(zeta / betasum);
 				newZeta = zeta / betasum;
 			} else {
-				oldZeta = object.getGoldLabel().getZeta();
+				oldZeta = obj.getGoldLabel().getZeta();
 				newZeta = oldZeta;
 			}
 
 			dr.setEst_zeta(newZeta);
 
 			results.addDatumResult(obj, dr);
-			if (object.isGold())
+			if (obj.isGold())
 				continue;
 			else if (oldZeta == null) {
 				diff += 1;
@@ -215,7 +216,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 				rho = 0.0;
 			}
 			wr.setEst_rho(rho);
-
+			results.addWorkerResult(wr.getWorker(), wr);
 			diff += Math.abs(wr.getEst_rho() - oldrho);
 		}
 		return diff;

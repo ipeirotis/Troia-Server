@@ -82,37 +82,30 @@ public class WorkerContResults {
 	}
 
 	public Double getTrueMu() {
-
 		return true_mu;
 	}
 
 	public void setTrueMu(Double mu) {
-
 		this.true_mu = mu;
 	}
 
 	public Double getTrueSigma() {
-
 		return true_sigma;
 	}
 
 	public void setTrueSigma(Double sigma) {
-
 		this.true_sigma = sigma;
 	}
 
 	public Double getTrueRho() {
-
 		return true_rho;
 	}
 
 	public void setTrueRho(Double rho) {
-
 		this.true_rho = rho;
 	}
 
 	public Double getEst_rho() {
-
 		return est_rho;
 	}
 
@@ -127,17 +120,14 @@ public class WorkerContResults {
 	}
 
 	public Double getEst_mu() {
-
 		return est_mu;
 	}
 
 	public void setEst_mu(Double est_mu) {
-
 		this.est_mu = est_mu;
 	}
 
 	public Double getEst_sigma() {
-
 		return est_sigma;
 	}
 
@@ -153,7 +143,6 @@ public class WorkerContResults {
 	}
 
 	public static Double estimatedAbsZetaError(Double rho) {
-
 		return Math.sqrt(1 - Math.pow(rho,2)) * Math.sqrt(2) / Math.sqrt(Math.PI);
 	}
 
