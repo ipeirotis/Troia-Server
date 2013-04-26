@@ -11,6 +11,8 @@ import com.datascience.core.nominal.decision.*;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerResult;
+import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
@@ -38,36 +40,33 @@ public class BaseTestScenario {
     protected static INominalData data;
 
     public static void setUp(NominalAlgorithm algorithm, String testName, boolean loadEvaluationLabels) {
-        project = new NominalProject(algorithm, new InMemoryNominalData(),
-				new InMemoryResults<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory(), new ResultsFactory.WorkerResultNominalFactory()));
-        data = project.getData();
-        if (algorithm instanceof INewDataObserver) {
-            data.addNewUpdatableAlgorithm((INewDataObserver) algorithm);
-        }
-        inputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "input" + TestSettings.FILEPATH_SEPARATOR;
-        outputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "output" + TestSettings.FILEPATH_SEPARATOR;
-        fileWriter = new FileWriters(RESULTS_BASE_DIR + "Results_" + algorithm.getClass().getSimpleName() + "_" + testName + ".csv");
-        summaryResultsParser = new SummaryResultsParser(outputDir + "summary.txt");
-        loadData(loadEvaluationLabels);
+		inputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "input" + TestSettings.FILEPATH_SEPARATOR;
+		outputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "output" + TestSettings.FILEPATH_SEPARATOR;
+		fileWriter = new FileWriters(RESULTS_BASE_DIR + "Results_" + algorithm.getClass().getSimpleName() + "_" + testName + ".csv");
+		summaryResultsParser = new SummaryResultsParser(outputDir + "summary.txt");
+
+		Collection<String> categories = testHelper.LoadCategories(inputDir + "categories.txt");
+		Collection<CategoryValue> priors = testHelper.loadCategoryPriors(inputDir + "categories.txt");
+		CostMatrix<String> costs = testHelper.loadCostsMatrix(inputDir + "costs.txt");
+
+		IJobStorage js = new MemoryJobStorage();
+		project = new NominalProject(algorithm, js.getNominalData(testName), js.getNominalResults(testName, categories));
+		data = project.getData();
+		if (algorithm instanceof INewDataObserver) {
+			data.addNewUpdatableAlgorithm((INewDataObserver) algorithm);
+		}
+		project.initializeCategories(categories, priors, costs);
+		loadData(loadEvaluationLabels);
         project.getAlgorithm().compute();
         fileWriter.write("Metric,GAL value,Troia value");
     }
 
     public static void loadData(boolean loadEvaluationLabels) {
-        loadCategories();
         loadAssignedLabels();
         loadGoldLabels(); 
         if (loadEvaluationLabels){
             loadEvaluationLabels();
         }
-        
-    }
-
-    public static void loadCategories() {
-        Collection<String> categories = testHelper.LoadCategories(inputDir + "categories.txt");
-        Collection<CategoryValue> priors = testHelper.loadCategoryPriors(inputDir + "categories.txt");
-        CostMatrix<String> costs = testHelper.loadCostsMatrix(inputDir + "costs.txt");
-        project.initializeCategories(categories, priors, costs);
     }
 
     public static void loadGoldLabels() {
