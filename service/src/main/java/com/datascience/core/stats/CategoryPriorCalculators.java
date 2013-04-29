@@ -1,5 +1,6 @@
 package com.datascience.core.stats;
 
+import com.datascience.core.nominal.ICategoryPriorCalculator;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.nominal.NominalModel;

@@ -1,4 +1,4 @@
-package com.datascience.core.stats;
+package com.datascience.core.nominal;
 
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalModel;

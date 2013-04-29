@@ -3,15 +3,13 @@ package com.datascience.mv;
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.results.WorkerResult;
-import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.ConfusionMatrixNormalizationType;
-import com.datascience.core.stats.ICategoryPriorCalculator;
+import com.datascience.core.nominal.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
 import com.datascience.utils.ProbabilityDistributions;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
