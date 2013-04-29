@@ -3,7 +3,7 @@ package com.datascience.mv;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.stats.CategoryPriorCalculators;
+import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 
 import java.util.HashMap;

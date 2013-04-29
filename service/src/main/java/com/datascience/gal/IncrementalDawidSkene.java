@@ -14,11 +14,10 @@ import java.util.*;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.*;
-import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerResult;
-import com.datascience.core.stats.CategoryPriorCalculators;
+import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 import com.google.gson.reflect.TypeToken;
 
