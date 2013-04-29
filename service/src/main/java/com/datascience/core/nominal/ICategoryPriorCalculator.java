@@ -1,8 +1,5 @@
 package com.datascience.core.nominal;
 
-import com.datascience.core.nominal.INominalData;
-import com.datascience.core.nominal.NominalModel;
-
 /**
  * User: artur
  * Date: 4/9/13

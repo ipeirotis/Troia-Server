@@ -1,6 +1,5 @@
 package com.datascience.core.nominal;
 
-import com.datascience.core.nominal.CategoryValue;
 import com.datascience.utils.CostMatrix;
 import com.google.common.math.DoubleMath;
 
