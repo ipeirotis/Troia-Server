@@ -1,5 +1,6 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.base.Project;
 import com.datascience.executor.ProjectCommandExecutor;
@@ -14,7 +15,7 @@ public class JobStorageUsingExecutor extends WrappedJobStorage{
 	protected ProjectCommandExecutor executor;
 	protected JobsManager jobsManager;
 	
-	public JobStorageUsingExecutor(IJobStorage internalStorage, 
+	public JobStorageUsingExecutor(IJobStorage internalStorage,
 			ProjectCommandExecutor executor,
 			JobsManager jobsManager){
 		super(internalStorage);

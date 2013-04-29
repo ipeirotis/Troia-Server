@@ -4,14 +4,9 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
-import com.datascience.core.datastoring.memory.InMemoryResults;
 import com.datascience.core.nominal.*;
 import com.datascience.core.nominal.decision.*;
-import com.datascience.core.results.DatumResult;
-import com.datascience.core.results.ResultsFactory;
-import com.datascience.core.results.WorkerResult;
-import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.storages.MemoryJobStorage;
 import com.datascience.gal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
@@ -25,7 +20,6 @@ import test.java.integration.helpers.TestSettings;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class BaseTestScenario {
 

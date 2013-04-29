@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -21,7 +20,7 @@ import com.datascience.core.commands.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
-import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
 import com.datascience.core.jobs.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;

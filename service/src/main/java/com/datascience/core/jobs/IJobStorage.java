@@ -1,4 +1,4 @@
-package com.datascience.core.storages;
+package com.datascience.core.jobs;
 
 import com.datascience.core.jobs.Job;
 import com.datascience.core.base.ContValue;

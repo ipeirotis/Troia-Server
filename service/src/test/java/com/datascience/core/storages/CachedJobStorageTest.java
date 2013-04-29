@@ -1,5 +1,7 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.jobs.IJobStorage;
+
 /**
  *
  * @author konrad

@@ -1,5 +1,6 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.jobs.IJobStorage;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.jobs.Job;
