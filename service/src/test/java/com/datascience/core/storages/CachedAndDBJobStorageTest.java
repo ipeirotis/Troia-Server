@@ -4,21 +4,18 @@
  */
 package com.datascience.core.storages;
 
-import com.datascience.core.base.AbstractData;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.kv.KVNominalData;
 import com.datascience.core.datastoring.memory.InMemoryData;
 import com.datascience.core.datastoring.memory.InMemoryNominalData;
-import com.datascience.core.datastoring.memory.InMemoryResults;
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.IResults;
 import com.datascience.serialization.json.GSONSerializer;
-import com.datascience.service.Constants;
 import com.datascience.utils.DBHelper;
 import com.datascience.utils.DBUtils;
 import com.google.gson.JsonObject;
@@ -28,12 +25,7 @@ import java.util.*;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**

@@ -1,5 +1,6 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
@@ -19,7 +20,7 @@ import java.util.Map;
  *
  * @author konrad
  */
-public class MemoryJobStorage implements IJobStorage{
+public class MemoryJobStorage implements IJobStorage {
 
 	private Map<String, Job> storage;
 	

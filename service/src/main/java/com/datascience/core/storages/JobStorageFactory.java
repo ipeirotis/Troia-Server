@@ -1,5 +1,6 @@
 package com.datascience.core.storages;
 
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
 import com.datascience.utils.DBHelper;
 import com.datascience.utils.DBKVHelper;

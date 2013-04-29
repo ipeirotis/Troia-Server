@@ -1,7 +1,6 @@
 package com.datascience.core.jobs;
 
 import com.datascience.core.commands.ProjectCommand;
-import com.datascience.core.storages.IJobStorage;
 
 /**
  * T is result type

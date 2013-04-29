@@ -17,7 +17,7 @@ import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**

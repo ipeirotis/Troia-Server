@@ -11,7 +11,6 @@ import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.*;
-import com.datascience.core.storages.IJobStorage;
 import com.datascience.gal.*;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;

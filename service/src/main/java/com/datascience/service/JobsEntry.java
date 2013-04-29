@@ -6,7 +6,7 @@ import javax.ws.rs.core.*;
 
 import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;
-import com.datascience.core.storages.IJobStorage;
+import com.datascience.core.jobs.IJobStorage;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.google.gson.JsonObject;
