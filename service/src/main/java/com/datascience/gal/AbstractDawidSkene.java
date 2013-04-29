@@ -18,7 +18,7 @@ import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.DatumResult;
-import com.datascience.core.stats.ICategoryPriorCalculator;
+import com.datascience.core.nominal.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
