@@ -35,16 +35,13 @@ public class ServiceComponentsFactory {
 	public IJobStorage loadJobStorage(String type, ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
 			throws IOException, ClassNotFoundException, SQLException {
 		logger.info("Loading " + type + " job storage");
-		String db = properties.getProperty(Constants.DB_NAME);
-		String url = properties.getProperty(Constants.DB_URL);
-		String driverClass = properties.getProperty(Constants.DB_DRIVER_CLASS);
-		Properties properties1 = new Properties();
-		properties1.put("user", properties.getProperty(Constants.DB_USER));
-		properties1.put("password", properties.getProperty(Constants.DB_PASSWORD));
+		Properties connectionProperties = new Properties();
+		connectionProperties.put("user", properties.getProperty(Constants.DB_USER));
+		connectionProperties.put("password", properties.getProperty(Constants.DB_PASSWORD));
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
 
-		IJobStorage internalJobStorage = JobStorageFactory.create(type, url, db, driverClass, properties1, serializer);
+		IJobStorage internalJobStorage = JobStorageFactory.create(type, connectionProperties, properties, serializer);
 		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
 		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
 		logger.info("Job Storage loaded");

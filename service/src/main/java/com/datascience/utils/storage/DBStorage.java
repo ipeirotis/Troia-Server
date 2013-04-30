@@ -1,5 +1,6 @@
 package com.datascience.utils.storage;
 
+import com.datascience.service.Constants;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
@@ -24,9 +25,13 @@ public abstract class DBStorage {
 
 	protected String extraOptions;
 
-	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
-		this(dbUrl, driverClass, connectionProperties, dbName,
-				"?useUnicode=true&characterEncoding=utf-8");
+	public DBStorage(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
+		this(
+			properties.getProperty(Constants.DB_URL),
+			properties.getProperty(Constants.DB_DRIVER_CLASS),
+			connectionProperties,
+			properties.getProperty(Constants.DB_NAME),
+			"?useUnicode=true&characterEncoding=utf-8");
 	}
 
 	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {
