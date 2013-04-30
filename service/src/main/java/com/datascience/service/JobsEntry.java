@@ -39,13 +39,10 @@ public class JobsEntry {
 	}
 
 	protected JobFactory getJobFactory(){
-		if (jobFactory != null)
-			return jobFactory;
 		ResponseBuilder responser = getResponseBuilder();
 		IJobStorage storage = getJobStorage();
 		if (responser != null && storage != null){
-			jobFactory = new JobFactory(responser.getSerializer(), storage);
-			return jobFactory;
+			return new JobFactory(responser.getSerializer(), storage);
 		}
 		return null;
 	}
