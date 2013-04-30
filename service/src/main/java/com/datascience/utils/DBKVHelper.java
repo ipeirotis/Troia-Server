@@ -1,9 +1,9 @@
 package com.datascience.utils;
 
-import com.datascience.utils.storage.DBKVStorage;
-import com.datascience.utils.storage.DBStorage;
+import com.datascience.utils.storage.*;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +23,21 @@ public class DBKVHelper extends DBStorage {
 				"ObjectResults", "WorkerResults", "JobSettings", "JobTypes"});
 	}
 
-	public DBKVHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
-		super(dbUrl, driverClass, connectionProperties, dbName);
+	private Properties properties;
+
+	public DBKVHelper(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
+		super(connectionProperties, properties);
+		this.properties = properties;
 	}
 
-	public DBKVStorage getKV(String table){
+	public IKVStorage<String> getKV(String table){
 		checkArgument(TABLES.contains(table), "Taking DBKV for not existing table " + table);
-		return new DBKVStorage(table, this);
+		try {
+			return new MemcachedDBKVStorage(new DBKVStorage(table, this), table, properties);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		return null;
 	}
 
 	@Override
