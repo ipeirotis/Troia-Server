@@ -85,7 +85,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		for (Worker<ContValue> worker : data.getWorkers()){
 			WorkerContResults wcr = results.getWorkerResult(worker);
 			for (AssignedLabel<ContValue> al : wcr.getZetaValues()) {
-				HashMap<LObject<ContValue>, Double> zetas = estimateObjectZetas(worker);
+				HashMap<LObject<ContValue>, Double> zetas = estimateObjectZetas(worker);  //MOVE ^
 				LObject<ContValue> object = al.getLobject();
 				Double zeta = zetas.get(object);
 				double rho = wcr.getEst_rho();
@@ -113,7 +113,8 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			Double newZeta;
 			Double zeta = 0.0;
 			Double betasum = 0.0;
-			if(!obj.isGold()) {
+            logger.warn(data.getGoldObjects());
+			if(!data.getGoldObjects().contains(obj)) {
 				oldZeta = dr.getEst_zeta();
 
 				for (AssignedLabel<ContValue> al : data.getAssignsForObject(obj)) {
@@ -135,14 +136,14 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 				//d.setEst_zeta(zeta / betasum);
 				newZeta = zeta / betasum;
 			} else {
-				oldZeta = obj.getGoldLabel().getZeta();
+				oldZeta = data.getGoldObject(obj.getName()).getGoldLabel().getZeta();
 				newZeta = oldZeta;
 			}
 
 			dr.setEst_zeta(newZeta);
 
 			results.addDatumResult(obj, dr);
-			if (obj.isGold())
+			if (data.getGoldObjects().contains(obj))
 				continue;
 			else if (oldZeta == null) {
 				diff += 1;

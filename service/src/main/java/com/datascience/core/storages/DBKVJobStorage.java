@@ -92,9 +92,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 		KVData<ContValue> data = new KVData<ContValue>(
 				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsContValueType, true),
 				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsContValueType, true),
-				this.<Collection<LObject<ContValue>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
-				this.<Collection<LObject<ContValue>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
-				this.<Collection<LObject<ContValue>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<ContValue>>>getKVForJob(id, "Objects", JSONUtils.objectsContValueType, false),
+				this.<Collection<LObject<ContValue>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsContValueType, false),
+				this.<Collection<LObject<ContValue>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsContValueType, false),
 				this.<Collection<Worker<ContValue>>>getKVForJob(id, "Workers", JSONUtils.workersCollection, false)
 		);
 		return data;
@@ -105,9 +105,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 		INominalData data = new KVNominalData(
 				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", JSONUtils.assignsStringType, true),
 				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", JSONUtils.assignsStringType, true),
-				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", JSONUtils.objectsCollection, false),
-				this.<Collection<LObject<String>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsCollection, false),
-				this.<Collection<LObject<String>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsCollection, false),
+				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", JSONUtils.objectsStringType, false),
+				this.<Collection<LObject<String>>>getKVForJob(id, "GoldObjects", JSONUtils.objectsStringType, false),
+				this.<Collection<LObject<String>>>getKVForJob(id, "EvaluationObjects", JSONUtils.objectsStringType, false),
 				this.<Collection<Worker<String>>>getKVForJob(id, "Workers", JSONUtils.workersStringType, false),
 				this.<PureNominalData>getKVForJob(id, "JobSettings", PureNominalData.class, false)
 		);

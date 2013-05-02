@@ -15,6 +15,13 @@ import java.util.LinkedList;
  */
 public class KVData<T> extends AbstractData<T> {
 
+    protected static class EmptyObjects {
+        public LinkedList objects;
+        public EmptyObjects(){
+            objects = new LinkedList();
+        }
+    }
+
 	protected ISafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns;
 	protected ISafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns;
 
@@ -35,25 +42,26 @@ public class KVData<T> extends AbstractData<T> {
 		this.goldObjects = goldObjects;
 		this.evaluationObjects = evaluationObjects;
 		this.workers = workers;
-		initializeEmptyRows(Arrays.asList(new ISafeKVStorage[]{objects, goldObjects, evaluationObjects, workers}));
+		initializeEmptyRows(Arrays.asList(new ISafeKVStorage[]{objects, goldObjects, evaluationObjects}), new EmptyObjects());
+		initializeEmptyRows(Arrays.asList(new ISafeKVStorage[]{workers}), new LinkedList());
 	}
 
-	protected void initializeEmptyRows(Collection<ISafeKVStorage> storages){
+	protected void initializeEmptyRows(Collection<ISafeKVStorage> storages, Object initObj){
 		for (ISafeKVStorage storage : storages){
 			if (!storage.contains("")){
-				storage.put("", new LinkedList());
+				storage.put("", initObj);
 			}
 		}
 	}
 
 	@Override
 	protected LObject<T> uncheckedGetGoldObject(String objectId) {
-		return getObject(objectId);
+		return getObjectFromCollection(objectId, goldObjects.get(""));
 	}
 
 	@Override
 	protected LObject<T> uncheckedGetEvaluationObject(String objectId) {
-		return getObject(objectId);
+		return getObjectFromCollection(objectId, evaluationObjects.get(""));
 	}
 
 	@Override
@@ -122,7 +130,11 @@ public class KVData<T> extends AbstractData<T> {
 
 	@Override
 	public LObject<T> getObject(String objectId) {
-		for (LObject<T> o : objects.get(""))
+		return getObjectFromCollection(objectId, objects.get(""));
+	}
+
+	private LObject<T> getObjectFromCollection(String objectId, Collection<LObject<T>> collection){
+		for (LObject<T> o : collection)
 			if (o.getName().equals(objectId))
 				return  o;
 		return null;
