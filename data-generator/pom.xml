@@ -50,7 +50,7 @@
         <dependency>
 			<!-- Troia server library -->
 			<groupId>com.ipeirotis</groupId>
-			<artifactId>troia-server</artifactId>
+			<artifactId>service</artifactId>
 			<version>1.1</version>
 		</dependency>
 	</dependencies>
