@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT=./
-TOMCAT=~/apache-tomcat-6.0.33/
+TOMCAT=/var/lib/tomcat6
 SETTINGS=~/.troia_settings
 
 JAVA_RESOURCES=$PROJECT/src/main/resources
@@ -12,7 +12,10 @@ if [ -d "$SETTINGS" ]; then
     cp -rf $SETTINGS/* $JAVA_RESOURCES/
 fi
 
-cd $PROJECT
+cd core
+mvn clean
+mvn install -DskipTests=true
+cd ../service
 mvn clean
 mvn package -DskipTests=true
 
@@ -21,8 +24,9 @@ if [ -d "$SETTINGS" ]; then
     rm -rf $BACKUP
 fi
 
-$TOMCAT/bin/shutdown.sh
-rm -rf $TOMCAT/webapps/GetAnotherLabel*
-cp $PROJECT/target/*.war $TOMCAT/webapps/
-$TOMCAT/bin/startup.sh
+sudo service tomcat6 stop
+sudo rm -rf $TOMCAT/webapps/service-1.1*
+sudo cp ./target/*.war $TOMCAT/webapps/
+sudo service tomcat6 start
+curl -X POST -d "" "http://localhost:8080/service-1.1/config"
 

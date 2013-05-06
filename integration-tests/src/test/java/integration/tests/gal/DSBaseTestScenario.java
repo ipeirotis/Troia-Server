@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 import static org.junit.Assert.assertEquals;
 
 public class DSBaseTestScenario extends BaseTestScenario {
@@ -121,7 +122,7 @@ public class DSBaseTestScenario extends BaseTestScenario {
         //TODO this test does not make sense with the current form
         HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
         double avgClassificationCost = 0.0;
-        Map<String, Double> temp = ProbabilityDistributions.getPriorBasedDistribution(data, project.getAlgorithm());
+        Map<String, Double> temp = getPriorBasedDistribution(data, project.getAlgorithm());
         for (Double val : temp.values()) {
             avgClassificationCost += val;
         }
@@ -137,7 +138,7 @@ public class DSBaseTestScenario extends BaseTestScenario {
         //TODO this tests does not make sense with the current form
         HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
         double avgClassificationCost = 0.0;
-        Map<String, Double> temp = ProbabilityDistributions.getPriorBasedDistribution(data, project.getAlgorithm());
+        Map<String, Double> temp = getPriorBasedDistribution(data, project.getAlgorithm());
         for (Double val : temp.values()) {
             avgClassificationCost += val;
         }

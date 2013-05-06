@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.gal.Quality;
+import com.datascience.core.nominal.Quality;
 
 /*
  * @author: Artur Ambroziak

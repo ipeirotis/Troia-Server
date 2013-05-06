@@ -20,6 +20,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 	<modules>
+        <module>core</module>
 		<module>service</module>
 		<module>data-generator</module>
 		<module>integration-tests</module>

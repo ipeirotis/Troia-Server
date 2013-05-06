@@ -1,12 +1,9 @@
-package com.datascience.gal;
-
-import com.datascience.core.nominal.INominalData;
-import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalProject;
-import com.datascience.utils.ProbabilityDistributions;
+package com.datascience.core.nominal;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.datascience.core.nominal.ProbabilityDistributions.getSpammerDistribution;
 
 /**
  *
@@ -50,7 +47,7 @@ public class Quality {
 	 * @return The expected cost of a spammer worker
 	 */
 	static public double getMinSpammerCost(INominalData data, NominalAlgorithm alg) {
-		Map<String, Double> prior = ProbabilityDistributions.getSpammerDistribution(data, alg);
+		Map<String, Double> prior = getSpammerDistribution(data, alg);
 		return getMinSoftLabelCost(prior, data);
 	}
 
