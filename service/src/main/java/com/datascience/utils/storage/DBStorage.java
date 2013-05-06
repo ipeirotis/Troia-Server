@@ -1,6 +1,5 @@
 package com.datascience.utils.storage;
 
-import com.datascience.service.Constants;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 

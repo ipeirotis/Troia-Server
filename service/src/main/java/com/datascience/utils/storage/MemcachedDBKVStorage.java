@@ -1,6 +1,5 @@
 package com.datascience.utils.storage;
 
-import com.datascience.service.Constants;
 import net.spy.memcached.MemcachedClient;
 import org.apache.log4j.Logger;
 
