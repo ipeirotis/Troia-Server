@@ -18,8 +18,8 @@ public class DBHelper extends DBStorage {
 		TABLES = Arrays.asList(new String[] {"Projects"});
 	}
 
-	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName) throws ClassNotFoundException {
-		super(dbUrl, driverClass, connectionProperties, dbName);
+	public DBHelper(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
+		super(connectionProperties, properties);
 	}
 
 	public DBHelper(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {

@@ -30,5 +30,7 @@ public class Constants {
 	public static final String RESPONSES_CACHE_SIZE = "RESPONSES_CACHE_SIZE";
 	public static final String RESPONSES_DUMP_TIME = "RESPONSES_DUMP_TIME";
 	public static final String EXECUTOR_THREADS_NUM = "EXECUTOR_THREADS_NUM";
-
+	public static final String MEMCACHE_URL = "MEMCACHE_URL";
+	public static final String MEMCACHE_PORT = "MEMCACHE_PORT";
+	public static final String MEMCACHE_EXPIRATION_TIME = "MEMCACHE_EXPIRATION_TIME";
 }

@@ -19,43 +19,38 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class JobStorageFactory {
 
 	protected interface JobStorageCreator{
-		IJobStorage create(String dbUrl, String dbName, String driverClass,
-						   Properties connectionProperties, ISerializer serializer) throws SQLException, ClassNotFoundException;
+		IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer) throws SQLException, ClassNotFoundException;
 	}
 
 	final static Map<String, JobStorageCreator> JOB_STORAGE_FACTORY = new HashMap();
 	static {
 		JOB_STORAGE_FACTORY.put("MEMORY", new JobStorageCreator(){
 			@Override
-			public IJobStorage create(String dbUrl, String dbName, String driverClass,
-									  Properties connectionProperties, ISerializer serializer){
+			public IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer){
 				return new MemoryJobStorage();
 			}
 		});
 
 		JOB_STORAGE_FACTORY.put("DB", new JobStorageCreator(){
 			@Override
-			public IJobStorage create(String dbUrl, String dbName, String driverClass,
-									  Properties connectionProperties, ISerializer serializer)
+			public IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer)
 					throws SQLException, ClassNotFoundException{
-				return new DBJobStorage(new DBHelper(dbUrl, driverClass, connectionProperties, dbName), serializer);
+				return new DBJobStorage(new DBHelper(connectionProperties, properties), serializer);
 			}
 		});
 
 		JOB_STORAGE_FACTORY.put("KV", new JobStorageCreator(){
 			@Override
-			public IJobStorage create(String dbUrl, String dbName, String driverClass,
-									  Properties connectionProperties, ISerializer serializer)
+			public IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer)
 					throws SQLException, ClassNotFoundException{
-				return new DBKVJobStorage(new DBKVHelper(dbUrl, driverClass, connectionProperties, dbName), serializer);
+				return new DBKVJobStorage(new DBKVHelper(connectionProperties, properties), serializer);
 			}
 		});
 	}
 
-	public static IJobStorage create(String type, String dbUrl, String dbName, String driverClass,
-									 Properties connectionProperties, ISerializer serializer) throws SQLException, ClassNotFoundException{
+	public static IJobStorage create(String type, Properties connectionProperties, Properties properties, ISerializer serializer) throws SQLException, ClassNotFoundException{
 		JobStorageCreator jsc = JOB_STORAGE_FACTORY.get(type.toUpperCase());
 		checkArgument(jsc != null, "Unknown storage model: " + type);
-		return jsc.create(dbUrl, dbName, driverClass, connectionProperties, serializer);
+		return jsc.create(connectionProperties, properties,  serializer);
 	}
 }
