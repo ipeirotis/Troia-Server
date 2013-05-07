@@ -12,6 +12,7 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.memory.InMemoryData;
@@ -42,7 +43,6 @@ public class JSONUtils {
 
 	public static final Type objectsStringType = new TypeToken<Collection<LObject<String>>>() {}.getType();
 	public static final Type objectsContValueType = new TypeToken<Collection<LObject<ContValue>>>() {}.getType();
-	public static final Type objectsCollection = new TypeToken<Collection<LObject>>() {}.getType();
 
 	public static final Type shallowAssignsStringType = new TypeToken<Collection<ShallowAssign<String>>>(){}.getType();
 	public static final Type shallowAssignsContValueType = new TypeToken<Collection<ShallowAssign<ContValue>>>(){}.getType();
@@ -111,6 +111,9 @@ public class JSONUtils {
 				new GenericCollectionDeserializer<ShallowAssign<ContValue>>(
 						"assigns", shallowAssignContValue));
 
+		builder.registerTypeAdapter(objectsContValueType, new GenericCollectionSerializer<LObject<ContValue>>("objects"));
+		builder.registerTypeAdapter(objectsStringType, new GenericCollectionSerializer<LObject<String>>("objects"));
+
 		return builder;
 	}
 
@@ -131,6 +134,25 @@ public class JSONUtils {
 				ret.add((T)context.deserialize(je, this.type));
 			}
 			return ret;
+		}
+	}
+
+	public static class GenericCollectionSerializer<T> implements JsonSerializer<Collection<T>> {
+		private String collectionName;
+
+		public GenericCollectionSerializer(String collectionName){
+			this.collectionName = collectionName;
+		}
+
+		public JsonElement serialize(Collection<T> src, Type typeOfSrc, JsonSerializationContext context) {
+			JsonObject jo = new JsonObject();
+			JsonArray ja = new JsonArray();
+			for (T el : src){
+				ja.add(context.serialize(el));
+			}
+			jo.add(collectionName, ja);
+			Logger.getAnonymousLogger().warning(jo.toString());
+			return jo;
 		}
 	}
 }

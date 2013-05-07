@@ -34,7 +34,7 @@ class ReportGenerator {
 
 		Double relRhoError = 0.0;
 		int n = 0;
-		for (WorkerContResults wr: ip.getWorkersResults().values()) {
+		for (WorkerContResults wr: ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			if (wr.getTrueRho()==null)
 				continue;
 			n++;
@@ -54,7 +54,7 @@ class ReportGenerator {
 
 		Double avgRhoError = 0.0;
 		int n = 0;
-		for (WorkerContResults wr: ip.getWorkersResults().values()) {
+		for (WorkerContResults wr: ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			if (wr.getTrueRho() ==null )
 				continue;
 			n++;
@@ -74,7 +74,7 @@ class ReportGenerator {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name\tLabels\tEstMean\tEstStDev\tEstCorrelation\tTrueMean\tTrueStDev\tTrueCorrelation\n");
-		for (WorkerContResults wr : ip.getWorkersResults().values()) {
+		for (WorkerContResults wr : ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			Worker<ContValue> w = wr.getWorker();
 			sb.append(w.getName() + "\t" + ip.getData().getWorkerAssigns(w).size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
 			sb.append("\n");
@@ -97,7 +97,7 @@ class ReportGenerator {
 
 		Double nominator_sigma = 0.0;
 		Double denominator_sigma = 0.0;
-		for (WorkerContResults wr : ip.getWorkersResults().values()) {
+		for (WorkerContResults wr : ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double s = wr.getEst_sigma();
@@ -116,7 +116,7 @@ class ReportGenerator {
 		// Estimate mu and sigma of distribution
 		Double nominator_mu = 0.0;
 		Double denominator_mu = 0.0;
-		for (WorkerContResults wr : ip.getWorkersResults().values()) {
+		for (WorkerContResults wr : ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double m = wr.getEst_mu();
@@ -174,7 +174,7 @@ class ReportGenerator {
 		double mu = this.estimateDistributionMu();
 		double sigma = this.estimateDistributionSigma();
 		StringBuffer sb = new StringBuffer();
-		for (DatumContResults dr : ip.getObjectsResults().values()) {
+		for (DatumContResults dr : ip.getResults().getDatumResults(ip.getData().getObjects()).values()) {
 			LObject<ContValue> d = dr.getObject();
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);

@@ -23,7 +23,7 @@ public class PredictionCommands {
 
 		@Override
 		protected void realExecute() {
-			setResult(project.getDataPrediction().values());
+			setResult(project.getResults().getDatumResults(project.getData().getObjects()).values());
 		}
 	}
 
@@ -37,7 +37,7 @@ public class PredictionCommands {
 
         @Override
         protected void realExecute() {
-            setResult(project.getDataPrediction().get(project.getData().getObject(objectId)));
+            setResult(project.getResults().getDatumResult(project.getData().getObject(objectId)));
         }
     }
 
@@ -49,7 +49,7 @@ public class PredictionCommands {
 
 		@Override
 		protected void realExecute() {
-			setResult(project.getWorkerPrediction().values());
+			setResult(project.getResults().getWorkerResults(project.getData().getWorkers()).values());
 		}
 	}
 
@@ -63,7 +63,7 @@ public class PredictionCommands {
 
         @Override
         protected void realExecute() {
-            setResult(project.getWorkerPrediction().get(project.getData().getWorker(workerId)));
+            setResult(project.getResults().getWorkerResult(project.getData().getWorker(workerId)));
         }
     }
 
@@ -87,7 +87,7 @@ public class PredictionCommands {
 				for (LObject o : project.getData().getObjects()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(o.getName());
-					DatumContResults res = project.getDataPrediction().get(o);
+					DatumContResults res = project.getResults().getDatumResult(o);
 					line.add(res.getEst_value());
 					line.add(res.getEst_zeta());
 					ret.add(line);
@@ -106,7 +106,7 @@ public class PredictionCommands {
 				for (Worker w : project.getData().getWorkers()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(w.getName());
-					WorkerContResults res = project.getWorkerPrediction().get(w);
+					WorkerContResults res = project.getResults().getWorkerResult(w);
 					line.add(res.getEst_mu());
 					line.add(res.getEst_rho());
 					line.add(res.getEst_sigma());

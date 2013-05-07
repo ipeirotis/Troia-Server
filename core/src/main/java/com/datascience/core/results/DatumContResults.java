@@ -22,8 +22,11 @@ public class DatumContResults {
 	}
 
 	public Double getEst_value() {
-		this.est_value=  this.est_zeta * this.distributionSigma + this.distributionMu;
 		return est_value;
+	}
+
+	public void computeEst_value(){
+		this.est_value=  this.est_zeta * this.distributionSigma + this.distributionMu;
 	}
 
 	public void setEst_value(Double est_value) {
