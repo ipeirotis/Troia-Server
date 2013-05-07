@@ -12,6 +12,9 @@ import com.datascience.utils.ProbabilityDistributions;
 import java.util.Collection;
 import java.util.Map;
 
+import static com.datascience.core.nominal.ProbabilityDistributions.generateMV_PD;
+import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
+
 /**
  * @Author: konrad
  */
@@ -40,12 +43,12 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	}
 
 	public Map<String, Double> generateLabelForNonAssignedObject(){
-		return ProbabilityDistributions.getPriorBasedDistribution(data, this);
+		return getPriorBasedDistribution(data, this);
 	}
 
 	public Map<String, Double> generateLabelDistribution(Collection<String> categories,
 				Collection<AssignedLabel<String>> assigns){
-		return ProbabilityDistributions.generateMV_PD(categories, assigns);
+		return generateMV_PD(categories, assigns);
 	}
 
 	/**

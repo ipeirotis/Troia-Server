@@ -1,8 +1,6 @@
 package com.datascience.utils;
 
 import com.datascience.utils.storage.DBStorage;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 
 import java.sql.SQLException;
 import java.util.Arrays;

@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 import java.lang.reflect.Type;
-import javax.ws.rs.core.MediaType;
 
 /**
  *
@@ -26,7 +25,7 @@ public class GSONSerializer implements ISerializer {
 
 	@Override
 	public String getMediaType() {
-		return MediaType.APPLICATION_JSON;
+		return "application/json";
 	}
 
 	@Override
