@@ -1,5 +1,6 @@
 package com.datascience.galc.dataGenerator;
 
+import com.datascience.utils.Utils;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.base.AssignedLabel;
@@ -7,7 +8,6 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.DatumContResults;
-import com.datascience.galc.Utils;
 import com.datascience.core.results.WorkerContResults;
 
 public class SyntheticDataGenerator {

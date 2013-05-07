@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.datascience.core.nominal.ProbabilityDistributions.generateOneLabelDistribution;
+
 /**
  *
  * @author konrad
@@ -34,7 +36,7 @@ public class DataEvaluator {
 		if (labelChoosingMethod.equals("soft")) {
 			dest_probabilities = project.getObjectResults(datum).getCategoryProbabilites();
 		} else {
-			dest_probabilities = ProbabilityDistributions.generateOneLabelDistribution(
+			dest_probabilities = generateOneLabelDistribution(
 					project, new DecisionEngine(null, olda).predictLabel(project, datum));
 		}
 		double cost = 0.0;

@@ -8,7 +8,7 @@ import com.datascience.core.nominal.*;
 import com.datascience.core.nominal.decision.*;
 import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.storages.MemoryJobStorage;
-import com.datascience.gal.Quality;
+import com.datascience.core.nominal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.utils.CostMatrix;
