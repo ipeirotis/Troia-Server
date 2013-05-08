@@ -23,7 +23,7 @@ import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
 
-import static com.datascience.core.nominal.ProbabilityDistributions.getSpammerDistribution;
+import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
@@ -126,7 +126,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 
 		if (labels.isEmpty()){
-			return getSpammerDistribution(getData(), this);
+			return getPriorBasedDistribution(getData(), this);
 		}
 
 		// If it is not gold, then we proceed to estimate the class

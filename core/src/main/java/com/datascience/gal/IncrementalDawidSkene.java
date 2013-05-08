@@ -21,7 +21,7 @@ import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 import com.google.gson.reflect.TypeToken;
 
-import static com.datascience.core.nominal.ProbabilityDistributions.getSpammerDistribution;
+import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 /**
  * fully incremental version of DS- adjustments to the data structures are made
@@ -80,7 +80,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		//(https://project-troia.atlassian.net/browse/TROIA-347?focusedCommentId=12704&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12704)
 		Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), assign.getWorker());
 		if (probabilities == null)
-			probabilities = getSpammerDistribution(data, this);
+			probabilities = getPriorBasedDistribution(data, this);
 		for (AssignedLabel<String> al : data.getAssignsForObject(assign.getLobject())){
 			WorkerResult wr = results.getOrCreateWorkerResult(al.getWorker());
 			for (Map.Entry<String, Double> e : probabilities.entrySet()){
