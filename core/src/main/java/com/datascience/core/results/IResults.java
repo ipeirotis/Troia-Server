@@ -23,6 +23,7 @@ public interface IResults<T, U, V> {
 	void addDatumResult(LObject<T> obj, U result);
 
 	V getOrCreateWorkerResult(Worker<T> wor);
+	V createEmptyWorkerResult(Worker<T> wor);
 	V getWorkerResult(Worker<T> worker);
 	boolean hasWorkerResult(Worker<T> worker);
 	void addWorkerResult(Worker<T> worker, V result);
