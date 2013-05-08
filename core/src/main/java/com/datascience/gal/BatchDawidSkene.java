@@ -68,9 +68,9 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			Map<String, Double> probabilities = getObjectClassProbabilities(al.getLobject(), worker);
 			if (probabilities == null)
 				continue; // No other worker labeled the object
-
+			
+			matrixChanged = true;
 			for (Map.Entry<String, Double> e : probabilities.entrySet()) {
-				matrixChanged = true;
 				wr.addError(e.getKey(), destination, e.getValue());
 			}
 		}
