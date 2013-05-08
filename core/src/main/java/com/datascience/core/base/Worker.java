@@ -2,9 +2,6 @@ package com.datascience.core.base;
 
 import com.google.common.base.Objects;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @Author: konrad
  */
@@ -40,7 +37,7 @@ public class Worker<T> {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)

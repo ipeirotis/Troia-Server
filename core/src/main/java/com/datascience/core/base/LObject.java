@@ -60,6 +60,12 @@ public class LObject<T> {
 		}
 		return false;
 	}
+
+	public boolean deepEquals(LObject<T> other){
+		return Objects.equal(name, other.name) &&
+				Objects.equal(goldLabel, other.goldLabel) &&
+				Objects.equal(evaluationLabel, other.evaluationLabel);
+	}
 	
 	@Override
 	public String toString() {
