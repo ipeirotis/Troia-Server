@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * @author Konrad Kurdej
  */
@@ -177,7 +179,7 @@ public class JobFactory {
 	public <T extends Project> Job<T> create(String type, String initializationData, String jsonData,
 											 String jsonResults, String model, String id){
 		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
-		Job<T> job = JOB_FACTORY.get(type).create(jo, id);
+		Job<T> job = create(type, jo, id);
 		job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
 		job.getProject().setResults(serializer.<InMemoryResults>parse(jsonResults, InMemoryResults.class));
 		handleSchedulerLoading(jo, job.getProject());
@@ -186,6 +188,7 @@ public class JobFactory {
 	}
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
+		checkArgument(JOB_FACTORY.containsKey(type), "Unknown algorithm type: ", type);
 		return JOB_FACTORY.get(type).create(initializationData, id);
 	}
 }
