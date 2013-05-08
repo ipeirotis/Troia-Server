@@ -1,12 +1,10 @@
 package com.datascience.utils;
 
 import com.datascience.utils.storage.*;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkArgument;
