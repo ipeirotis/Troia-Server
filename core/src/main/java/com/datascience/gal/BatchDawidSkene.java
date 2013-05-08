@@ -54,6 +54,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		WorkerResult wr = results.getOrCreateWorkerResult(worker);
 		wr.empty();
 
+		boolean matrixChanged = false;
 		// Scan all objects and change the confusion matrix for each worker
 		// using the class probability for each object
 		for (AssignedLabel<String> al : data.getWorkerAssigns(worker)) {
@@ -67,13 +68,18 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 			Map<String, Double> probabilities = getObjectClassProbabilities(al.getLobject(), worker);
 			if (probabilities == null)
 				continue; // No other worker labeled the object
-
+			
+			matrixChanged = true;
 			for (Map.Entry<String, Double> e : probabilities.entrySet()) {
 				wr.addError(e.getKey(), destination, e.getValue());
 			}
 		}
-		wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
-		results.addWorkerResult(worker, wr);
+		if (matrixChanged){
+			wr.normalize(ConfusionMatrixNormalizationType.UNIFORM);
+			results.addWorkerResult(worker, wr);
+		} else {
+			results.addWorkerResult(worker, results.createEmptyWorkerResult(worker));
+		}
 	}
 
 	@Override

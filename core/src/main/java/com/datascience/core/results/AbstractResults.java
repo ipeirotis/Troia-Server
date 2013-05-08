@@ -76,6 +76,11 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	}
 
 	@Override
+	public V createEmptyWorkerResult(Worker<T> wor){
+		return workerCreator.create(wor);
+	}
+
+	@Override
 	public V getWorkerResult(Worker<T> worker){
 		V ret = uncheckedGetWorkerResult(worker);
 		checkArgument(ret != null,
