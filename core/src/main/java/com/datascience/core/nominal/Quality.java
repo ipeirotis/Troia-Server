@@ -3,7 +3,7 @@ package com.datascience.core.nominal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.datascience.core.nominal.ProbabilityDistributions.getSpammerDistribution;
+import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 /**
  *
@@ -47,8 +47,7 @@ public class Quality {
 	 * @return The expected cost of a spammer worker
 	 */
 	static public double getMinSpammerCost(INominalData data, NominalAlgorithm alg) {
-		Map<String, Double> prior = getSpammerDistribution(data, alg);
-		return getMinSoftLabelCost(prior, data);
+		return getMinSoftLabelCost(getPriorBasedDistribution(data, alg), data);
 	}
 
 	static public double fromCost(NominalProject project, double cost){

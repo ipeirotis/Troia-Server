@@ -12,9 +12,6 @@ import static com.datascience.utils.ProbabilityDistributions.generateConstantDis
  * Date: 5/6/13
  */
 public class ProbabilityDistributions {
-	static public Map<String, Double> getSpammerDistribution(INominalData data, NominalAlgorithm alg){
-		return getPriorBasedDistribution(data, alg);
-	}
 
 	static public Map<String, Double> getPriorBasedDistribution(INominalData data, NominalAlgorithm alg){
 		if (data.arePriorsFixed())

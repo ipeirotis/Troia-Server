@@ -21,6 +21,8 @@ import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 import com.google.gson.reflect.TypeToken;
 
+import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
+
 /**
  * fully incremental version of DS- adjustments to the data structures are made
  * when new information becomes available, not waiting for an explicit
@@ -65,23 +67,28 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		DatumResult dr = results.getOrCreateDatumResult(assign.getLobject());
 		Map<String, Double> oldProbabilites = dr.getCategoryProbabilites();
 		//update object class probabilites
-		Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), assign.getWorker());
-		dr.setCategoryProbabilites(probabilities);
+		Map<String, Double> probabilitiesWithWorkerInfluence = getObjectClassProbabilities(assign.getLobject(), null);
+		dr.setCategoryProbabilites(probabilitiesWithWorkerInfluence);
 		results.addDatumResult(assign.getLobject(), dr);
 		//update priors
 		if (!data.arePriorsFixed()){
 			undoPriorInfluence(oldProbabilites);
-			makePriorInfluence(probabilities);
+			makePriorInfluence(probabilitiesWithWorkerInfluence);
 		}
 		//rebuild worker confusion matrices for all workers who assigned this object
-		if (probabilities != null)
-			for (AssignedLabel<String> al : data.getAssignsForObject(assign.getLobject())){
-				WorkerResult wr = results.getOrCreateWorkerResult(al.getWorker());
-				for (Map.Entry<String, Double> e : probabilities.entrySet()){
-					wr.addError(e.getKey(), al.getLabel(), e.getValue());
-				}
-				results.addWorkerResult(al.getWorker(), wr);
+		//probabilities would be null only if we've got an object with just one assign. is such a situation we return prior distribution
+		//(https://project-troia.atlassian.net/browse/TROIA-347?focusedCommentId=12704&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12704)
+		Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), assign.getWorker());
+		if (probabilities == null)
+			probabilities = getPriorBasedDistribution(data, this);
+		for (AssignedLabel<String> al : data.getAssignsForObject(assign.getLobject())){
+			WorkerResult wr = results.getOrCreateWorkerResult(al.getWorker());
+			for (Map.Entry<String, Double> e : probabilities.entrySet()){
+				wr.addError(e.getKey(), al.getLabel(), e.getValue());
 			}
+			results.addWorkerResult(al.getWorker(), wr);
+		}
+
 	}
 
 	private void undoPriorInfluence(Map<String, Double> probabilites){
