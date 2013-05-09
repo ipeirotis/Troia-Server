@@ -2,6 +2,7 @@ package com.datascience.scheduler;
 
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.log4j.Logger;
 
@@ -39,7 +40,9 @@ public class SchedulerFactory<T> {
 	};
 
 	protected String getID(JsonObject params, String arg){
-		return Constants.t(params.get(arg).getAsString());
+		JsonElement jo = params.get(arg);
+		checkArgument(jo != null, "Missing parameter: " + arg);
+		return Constants.t(jo.getAsString());
 	}
 
 	protected void ensureDefault(JsonObject params, String paramName, String paramValue){
@@ -91,6 +94,7 @@ public class SchedulerFactory<T> {
 		return new IPriorityCalculatorCreator<T>() {
 			@Override
 			public IPriorityCalculator<T> create(JsonObject params) {
+				ensureDefault(params, Constants.COST_METHOD, "");
 				String costFun = getID(params, Constants.COST_METHOD);
 				ILabelProbabilityDistributionCostCalculator ilpcc =
 						LabelProbabilityDistributionCostCalculators.get(costFun);
