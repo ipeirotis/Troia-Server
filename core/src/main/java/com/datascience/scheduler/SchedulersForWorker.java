@@ -10,6 +10,7 @@ import com.datascience.core.results.WorkerResult;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -115,8 +116,7 @@ public class SchedulersForWorker {
 				}
 				return object;
 			}
-			// this worker has given assign for all objects known to the system ...
-			return null;
+			throw new NoSuchElementException(String.format("Worker %s has given assigns to all objects", worker.getName()));
 		}
 
 		@Override
