@@ -3,6 +3,7 @@ package com.datascience.scheduler;
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import com.google.gson.JsonObject;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class SchedulerFactory<T> {
 
 	protected void ensureDefault(JsonObject params, String paramName, String paramValue){
 		if (!params.has(paramName)){
+			Logger.getLogger(this.getClass()).info("No param: " + paramName + " so setting: " + paramValue);
 			params.addProperty(paramName, paramValue);
 		}
 	}
@@ -137,6 +139,8 @@ public class SchedulerFactory<T> {
 		IScheduler<T> scheduler = creator.create(params);
 		scheduler.setUpQueue(createPriorityCalculator(params));
 		scheduler.setSchedulerForWorker(createSchedulerForWorker(params));
+		Logger.getLogger(this.getClass()).debug(String.format("created scheduler: %s %s",
+				scheduler.getId(), scheduler.getCalculator().getId()));
 		return scheduler;
 	}
 
