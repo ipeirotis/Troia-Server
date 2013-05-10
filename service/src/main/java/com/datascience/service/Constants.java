@@ -5,7 +5,11 @@ package com.datascience.service;
  * @author konrad
  */
 public class Constants {
-	
+
+	public static String t(String s){
+		return s.toUpperCase();
+	}
+
 	public static final String DEPLOY_TIME = "DEPLOY_TIME";
 	public static final String JOBS_STORAGE = "JOBS_STORAGE";
 	public static final String SERIALIZER = "SERIALIZER";

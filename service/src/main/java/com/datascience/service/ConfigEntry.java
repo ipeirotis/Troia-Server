@@ -64,10 +64,11 @@ public class ConfigEntry {
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
 			Map<String, String> simpleForm = new HashMap<String, String>();
 			for (String s : form.keySet()){
-				if (s.equals(Constants.IS_FREEZED))
+				String ts = Constants.t(s);
+				if (ts.equals(Constants.IS_FREEZED))
 					scontext.setAttribute(Constants.IS_FREEZED, true);
 				else
-					simpleForm.put(s, form.getFirst(s));
+					simpleForm.put(ts, form.getFirst(s));
 			}
 			InitializationSupport.destroyContext(scontext);
 			try{
