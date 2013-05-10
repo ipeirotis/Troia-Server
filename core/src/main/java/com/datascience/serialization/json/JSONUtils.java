@@ -10,8 +10,9 @@
 package com.datascience.serialization.json;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import com.datascience.core.base.*;
 import com.datascience.core.datastoring.memory.InMemoryData;
@@ -97,40 +98,48 @@ public class JSONUtils {
 		builder.registerTypeAdapter(JsonObject.class, new DataJSON.JsonObjectSerializer());
 
 		builder.registerTypeAdapter(objectsStringType,
-				new GenericCollectionDeserializer<LObject<String>>(
+				new DataJSON.GenericCollectionDeserializer<LObject<String>>(
 						"objects",
 						new TypeToken<LObject<String>>(){}.getType()));
 		builder.registerTypeAdapter(objectsContValueType,
-				new GenericCollectionDeserializer<LObject<ContValue>>(
+				new DataJSON.GenericCollectionDeserializer<LObject<ContValue>>(
 						"objects",
 						new TypeToken<LObject<ContValue>>(){}.getType()));
 		builder.registerTypeAdapter(shallowAssignsStringType,
-				new GenericCollectionDeserializer<ShallowAssign<String>>(
+				new DataJSON.GenericCollectionDeserializer<ShallowAssign<String>>(
 						"assigns", shallowAssignString));
 		builder.registerTypeAdapter(shallowAssignsContValueType,
-				new GenericCollectionDeserializer<ShallowAssign<ContValue>>(
+				new DataJSON.GenericCollectionDeserializer<ShallowAssign<ContValue>>(
 						"assigns", shallowAssignContValue));
 
 		return builder;
 	}
 
-	public static class GenericCollectionDeserializer<T> implements JsonDeserializer<Collection<T>> {
-
-		private String collectionName;
-		private Type type;
-
-		public GenericCollectionDeserializer(String collectionName, Type type){
-			this.collectionName = collectionName;
-			this.type = type;
+	public static void ensureDefaultString(JsonObject params, String paramName, String paramValue){
+		if (!params.has(paramName)){
+			params.addProperty(paramName, paramValue);
 		}
+	}
 
-		@Override
-		public Collection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
-			Collection<T> ret = new ArrayList<T>();
-			for (JsonElement je : jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray()){
-				ret.add((T)context.deserialize(je, this.type));
-			}
-			return ret;
+	public static void ensureDefaultNumber(JsonObject params, String paramName, Number paramValue){
+		if (!params.has(paramName)){
+			params.addProperty(paramName, paramValue);
 		}
+	}
+
+	public static String getDefaultString(JsonObject params, String paramName, String defaultVal){
+		return params.has(paramName) ? params.get(paramName).getAsString() : defaultVal;
+	}
+
+	public static String t(String def){
+		return def.toLowerCase();
+	}
+
+	public static JsonObject tKeys(JsonObject jo){
+		JsonObject ret = new JsonObject();
+		for (Map.Entry<String, JsonElement> e : jo.entrySet()){
+			ret.add(t(e.getKey()), e.getValue());
+		}
+		return ret;
 	}
 }

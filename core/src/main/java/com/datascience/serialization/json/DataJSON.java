@@ -1,6 +1,7 @@
 package com.datascience.serialization.json;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
@@ -167,6 +168,26 @@ public class DataJSON {
 		@Override
 		public JsonElement serialize(JsonObject jo, Type type, JsonSerializationContext ctx) {
 			return jo;
+		}
+	}
+
+	public static class GenericCollectionDeserializer<T> implements JsonDeserializer<Collection<T>> {
+
+		private String collectionName;
+		private Type type;
+
+		public GenericCollectionDeserializer(String collectionName, Type type){
+			this.collectionName = collectionName;
+			this.type = type;
+		}
+
+		@Override
+		public Collection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+			Collection<T> ret = new ArrayList<T>();
+			for (JsonElement je : jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray()){
+				ret.add((T)context.deserialize(je, this.type));
+			}
+			return ret;
 		}
 	}
 }
