@@ -1,9 +1,5 @@
 package com.datascience.core.results;
 
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +13,9 @@ public class  ResultsFactory {
 		T create();
 	}
 
-	public static abstract class DatumResultCreator<T, U>{
+	public static abstract class DatumResultCreator<T>{
 		String clazz;
-		abstract U create();
+		abstract T create();
 		public DatumResultCreator(){
 			clazz = this.getClass().toString();
 		}
@@ -46,13 +42,13 @@ public class  ResultsFactory {
 		}
 	}
 
-	public static class DatumResultFactory extends DatumResultCreator<String, DatumResult> {
+	public static class DatumResultFactory extends DatumResultCreator<DatumResult> {
 		public DatumResult create(){
 			return new DatumResult();
 		}
 	}
 
-	public static class DatumContResultFactory extends DatumResultCreator<ContValue, DatumContResults> {
+	public static class DatumContResultFactory extends DatumResultCreator<DatumContResults> {
 		public DatumContResults create(){
 			return new DatumContResults();
 		}
@@ -60,9 +56,9 @@ public class  ResultsFactory {
 
 	/////////////////////////////////////////////////////////////////////////////////////////
 
-	public static abstract class WorkerResultCreator<T, U>{
+	public static abstract class WorkerResultCreator<T>{
 		String clazz;
-		abstract U create(Worker<T> w);
+		abstract T create();
 		public WorkerResultCreator(){
 			clazz = this.getClass().toString();
 		}
@@ -89,7 +85,7 @@ public class  ResultsFactory {
 		}
 	}
 
-	public static class WorkerResultNominalFactory extends WorkerResultCreator<String, WorkerResult> {
+	public static class WorkerResultNominalFactory extends WorkerResultCreator<WorkerResult> {
 
 		protected Collection<String> categories;
 
@@ -97,14 +93,14 @@ public class  ResultsFactory {
 			this.categories = categories;
 		}
 
-		public WorkerResult create(Worker<String> obj){
+		public WorkerResult create(){
 			return new WorkerResult(categories);
 		}
 	}
 
-	public static class WorkerContResultFactory extends WorkerResultCreator<ContValue, WorkerContResults>{
-		public WorkerContResults create(Worker<ContValue> obj){
-			return new WorkerContResults(obj);
+	public static class WorkerContResultFactory extends WorkerResultCreator<WorkerContResults>{
+		public WorkerContResults create(){
+			return new WorkerContResults();
 		}
 	}
 }

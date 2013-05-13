@@ -18,10 +18,10 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	protected transient List<INewResultsListener<T, U, V>> newResultsListeners;
 	protected transient boolean notifyEnabled;
 
-	protected ResultsFactory.DatumResultCreator<T, U> datumCreator;
-	protected ResultsFactory.WorkerResultCreator<T, V> workerCreator;
+	protected ResultsFactory.DatumResultCreator<U> datumCreator;
+	protected ResultsFactory.WorkerResultCreator<V> workerCreator;
 
-	public AbstractResults(ResultsFactory.DatumResultCreator<T, U> datumCreator, ResultsFactory.WorkerResultCreator<T, V> workerCreator){
+	public AbstractResults(ResultsFactory.DatumResultCreator<U> datumCreator, ResultsFactory.WorkerResultCreator<V> workerCreator){
 		this.datumCreator = datumCreator;
 		this.workerCreator = workerCreator;
 		newResultsListeners = new LinkedList<INewResultsListener<T, U, V>>();
@@ -70,7 +70,7 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	public V getOrCreateWorkerResult(Worker<T> wor){
 		V ret = uncheckedGetWorkerResult(wor);
 		if (ret == null){
-			ret = workerCreator.create(wor);
+			ret = workerCreator.create();
 		}
 		return ret;
 	}

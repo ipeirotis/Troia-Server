@@ -21,7 +21,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 	private void initWorkers() {
 		double initial_rho = 0.9;
 		for (Worker<ContValue> w : data.getWorkers()) {
-			WorkerContResults wcr = new WorkerContResults(w);
+			WorkerContResults wcr = new WorkerContResults();
 			wcr.setEst_rho(initial_rho);
 			wcr.computeZetaValues(getData().getWorkerAssigns(w));
 			results.addWorkerResult(w, wcr);
@@ -80,10 +80,10 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 	protected double getLogLikelihood() {
 
 		double result = 0d;
-		for (WorkerContResults wr: getWorkersResults().values()) {
-			Worker<ContValue> workerToIgnore = wr.getWorker();
+		for (Worker<ContValue> worker : data.getWorkers()){
+			WorkerContResults wr = results.getWorkerResult(worker);
 			for (AssignedLabel<ContValue> al : wr.getZetaValues()) {
-				HashMap<LObject<ContValue>, Double> zetas = estimateObjectZetas(workerToIgnore);
+				HashMap<LObject<ContValue>, Double> zetas = estimateObjectZetas(worker);
 				LObject<ContValue> object = al.getLobject();
 				Double zeta = zetas.get(object);
 				double rho = wr.getEst_rho();
@@ -125,7 +125,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 					//Single Label Worker gives a z=NaN, due to its current est_sigma which is equal to 0
 					if (Double.isNaN(zeta))
 						logger.warn("["+ z + "," + al.getLabel() + "," + wr.getEst_mu() + "," +
-								wr.getEst_sigma() + "," + wr.getWorker().getName()+"], ");
+								wr.getEst_sigma() + "," + al.getWorker().getName()+"], ");
 
 				}
 
@@ -186,8 +186,8 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		// See equation 10
 
 		double diff = 0.0;
-		for (WorkerContResults wr : getWorkersResults().values()) {
-			Worker workerToIgnore = wr.getWorker();
+		for (Worker<ContValue> worker : data.getWorkers()){
+			WorkerContResults wr = results.getWorkerResult(worker);
 			Double sum_prod = 0.0;
 			Double sum_zi = 0.0;
 			Double sum_zij = 0.0;
@@ -195,7 +195,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			double oldrho = wr.getEst_rho();
 			for (AssignedLabel<ContValue> al : wr.getZetaValues()) {
 
-				HashMap<LObject<ContValue>, Double> zeta = estimateObjectZetas(workerToIgnore);
+				HashMap<LObject<ContValue>, Double> zeta = estimateObjectZetas(worker);
 
 				LObject<ContValue> object = al.getLobject();
 				Double z_i = zeta.get(object);
@@ -209,7 +209,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 			if (Double.isNaN(rho)) {
 				logger.warn("estimateWorkerRho NaNbug@: " + sum_zi +","+ sum_zij + ","
-						+ workerToIgnore.getName());
+						+ worker.getName());
 				rho = 0.0;
 			}
 			wr.setEst_rho(rho);

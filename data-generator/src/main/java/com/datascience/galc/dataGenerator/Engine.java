@@ -29,7 +29,7 @@ public class Engine {
 			logger.info("Saving Labels to file");
 		}
 		if(ctx.hasEvalWorkersFile()) {
-			dataWriter.writeTrueWorkerDataToFile(data.getWorkerContResults().values(), ctx.getEvalWorkersFile());
+			dataWriter.writeTrueWorkerDataToFile(data.getWorkerContResults(), ctx.getEvalWorkersFile());
 			logger.info("Saving Workers to file");
 		}
 		if(ctx.hasEvalobjectsFile()) {

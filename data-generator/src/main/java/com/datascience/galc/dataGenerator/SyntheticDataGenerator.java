@@ -76,7 +76,7 @@ public class SyntheticDataGenerator {
 		
 		for (int i = 0; i < workersCount; i++) {
 			Worker<ContValue> w = new Worker<ContValue>("Worker" + (i + 1));
-			WorkerContResults wcr = new WorkerContResults(w);
+			WorkerContResults wcr = new WorkerContResults();
 			wcr.setTrueMu(muGenerator.nextData());
 			wcr.setTrueSigma(sigmaGenerator.nextData());
 			wcr.setTrueRho(rhoGenerator.nextData());

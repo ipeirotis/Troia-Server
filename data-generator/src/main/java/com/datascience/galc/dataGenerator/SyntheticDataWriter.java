@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 public class SyntheticDataWriter {
@@ -49,13 +50,14 @@ public class SyntheticDataWriter {
 	}
 
 	public void writeTrueWorkerDataToFile(
-			Collection<WorkerContResults> workerContResults,
+			Map<Worker<ContValue>, WorkerContResults> workerContResults,
 			String filename) throws IOException {
 
 		BufferedWriter bw = openFile(filename);
 		try {
-			for (WorkerContResults wcr : workerContResults) {
-				Worker<ContValue> w = wcr.getWorker();
+			for (Map.Entry<Worker<ContValue>, WorkerContResults> e : workerContResults.entrySet()) {
+				Worker<ContValue> w = e.getKey();
+				WorkerContResults wcr = e.getValue();
 				String line = w.getName() + "\t" +
 						wcr.getTrueRho() + "\t" +
 						wcr.getTrueMu() + "\t" +

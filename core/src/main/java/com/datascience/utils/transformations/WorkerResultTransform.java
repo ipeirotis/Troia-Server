@@ -44,7 +44,7 @@ public class WorkerResultTransform implements ITransformation<WorkerResult, Stri
 
 	@Override
 	public WorkerResult inverse(String object) {
-		WorkerResult ret = resultFactory.create(null);
+		WorkerResult ret = resultFactory.create();
 		MultinomialConfusionMatrix cm = (MultinomialConfusionMatrix) ret.getConfusionMatrix();
 		cm.empty();
 		Map<String, Double> map = new HashMap<String, Double>();
