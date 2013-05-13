@@ -219,18 +219,19 @@ public class BatchDawidSkeneEdgeCasesTest {
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3TXO6RKFIDFUV"), new LObject<String>("234EGOOGQSCMP9S5E65I2UU0A36EEO"), "confirm_closed"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("234EGOOGQSCMP9S5E65I2UU0A36EEO"), "confirm_closed"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A31X3JCHS0BPFJ"), new LObject<String>("234EGOOGQSCMP9S5E65I2UU0A36EEO"), "confirm_closed"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3TXO6RKFIDFUV"), new LObject<String>("23QJIA0RYNJ9LE1FYEWBUJTURDD27P"), "confirm_closed"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("23QJIA0RYNJ9LE1FYEWBUJTURDD27P"), "confirm_closed"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A31X3JCHS0BPFJ"), new LObject<String>("23QJIA0RYNJ9LE1FYEWBUJTURDD27P"), "confirm_closed"));
+                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3TXO6RKFIDFUV"), new LObject<String>("23QJIA0RYNJ9LE1FYEWBUJTURDD27P"), "confirm_yes"));
+                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("23QJIA0RYNJ9LE1FYEWBUJTURDD27P"), "confirm_yes"));
+                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A31X3JCHS0BPFJ"), new LObject<String>("23QJIA0RYNJ9LE1FYEWBUJTURDD27P"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2S5VP3TVOK5UYANWALHEWZFY07I52D"), "confirm_no"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2L2ZXRHK3SNOP"), new LObject<String>("2S5VP3TVOK5UYANWALHEWZFY07I52D"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("2S5VP3TVOK5UYANWALHEWZFY07I52D"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A31X3JCHS0BPFJ"), new LObject<String>("2ETAT2D5NQYNO6LLCX751YMNMBF84E"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2ETAT2D5NQYNO6LLCX751YMNMBF84E"), "confirm_no"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2L2ZXRHK3SNOP"), new LObject<String>("2ETAT2D5NQYNO6LLCX751YMNMBF84E"), "confirm_yes"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2L2ZXRHK3SNOP"), new LObject<String>("2Z2MN9U8P9Y3RKER9WUS2YIMAY9EVU"), "confirm_yes"));
+             
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("2Z2MN9U8P9Y3RKER9WUS2YIMAY9EVU"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2Z2MN9U8P9Y3RKER9WUS2YIMAY9EVU"), "confirm_no"));
+                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A1I3CXC17NIRWB"), new LObject<String>("2Z2MN9U8P9Y3RKER9WUS2YIMAY9EVU"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("ABT7QTMIYXYO0"), new LObject<String>("2GXYQS1CSTMOYO984I9C9EYDXCZPM9"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("2GXYQS1CSTMOYO984I9C9EYDXCZPM9"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2GXYQS1CSTMOYO984I9C9EYDXCZPM9"), "confirm_no"));
@@ -252,9 +253,6 @@ public class BatchDawidSkeneEdgeCasesTest {
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2VRQML8Q3XYP4"), new LObject<String>("2DABRI8IUB2YD0QET6KLJ3L0PQZH56"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2DABRI8IUB2YD0QET6KLJ3L0PQZH56"), "confirm_no"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("2DABRI8IUB2YD0QET6KLJ3L0PQZH56"), "confirm_yes"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("2TOSK9RJ85OZ1QWCYO1PUOOQFTCU60"), "confirm_yes"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2TOSK9RJ85OZ1QWCYO1PUOOQFTCU60"), "confirm_no"));
-                project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2L2ZXRHK3SNOP"), new LObject<String>("2TOSK9RJ85OZ1QWCYO1PUOOQFTCU60"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A3PRF4IIM2IQN2"), new LObject<String>("2TOSK9RJ85OZ1QWCYO1PUOOQFTCU60"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("AH5ZIMHL7TNWC"), new LObject<String>("2TOSK9RJ85OZ1QWCYO1PUOOQFTCU60"), "confirm_yes"));
                 project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2L2ZXRHK3SNOP"), new LObject<String>("2TOSK9RJ85OZ1QWCYO1PUOOQFTCU60"), "confirm_yes"));
