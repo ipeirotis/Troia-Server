@@ -116,7 +116,7 @@ public class SchedulersForWorker {
 				}
 				return object;
 			}
-			throw new NoSuchElementException(String.format("Worker %s has given assigns to all objects", worker.getName()));
+			return null;
 		}
 
 		@Override
