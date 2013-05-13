@@ -11,7 +11,6 @@ import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
-import com.datascience.serialization.json.JSONUtils;
 import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.storage.*;
@@ -30,6 +29,7 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	private static String objectSeparator = "|";
 	private static String collectionSeparator = "$";
+	private static String mapSeparator = ";";
 
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
@@ -157,10 +157,12 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 	public IResults<String, DatumResult, WorkerResult> getNominalResults(String id, Collection<String> categories) {
 		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
 		wrnf.setCategories(categories);
+		DatumResultTransform objectResultTransform = new DatumResultTransform(mapSeparator);
+		WorkerResultTransform workerResultTransform = new WorkerResultTransform(wrnf);
 		return new KVResults(
 				new ResultsFactory.DatumResultFactory(),
 				wrnf,
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", DatumResult.class, true),
-				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", WorkerResult.class, true));
+				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", objectResultTransform, true),
+				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", workerResultTransform, true));
 	}
 }

@@ -287,6 +287,4 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 	public Map<CategoryPair, Double> getMatrix(){
 		return matrix;
 	}
-
-
 }
