@@ -19,7 +19,7 @@ public class  ResultsFactory {
 
 	public static abstract class DatumResultCreator<T, U>{
 		String clazz;
-		abstract U create(LObject<T> obj);
+		abstract U create();
 		public DatumResultCreator(){
 			clazz = this.getClass().toString();
 		}
@@ -47,14 +47,14 @@ public class  ResultsFactory {
 	}
 
 	public static class DatumResultFactory extends DatumResultCreator<String, DatumResult> {
-		public DatumResult create(LObject<String> obj){
+		public DatumResult create(){
 			return new DatumResult();
 		}
 	}
 
 	public static class DatumContResultFactory extends DatumResultCreator<ContValue, DatumContResults> {
-		public DatumContResults create(LObject<ContValue> obj){
-			return new DatumContResults(obj);
+		public DatumContResults create(){
+			return new DatumContResults();
 		}
 	}
 

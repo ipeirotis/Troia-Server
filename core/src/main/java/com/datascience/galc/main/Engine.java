@@ -174,8 +174,8 @@ class ReportGenerator {
 		double mu = this.estimateDistributionMu();
 		double sigma = this.estimateDistributionSigma();
 		StringBuffer sb = new StringBuffer();
-		for (DatumContResults dr : ip.getObjectsResults().values()) {
-			LObject<ContValue> d = dr.getObject();
+		for (LObject<ContValue> d : ip.getData().getObjects()){
+			DatumContResults dr = ip.getResults().getDatumResult(d);
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);
 			sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t"); 

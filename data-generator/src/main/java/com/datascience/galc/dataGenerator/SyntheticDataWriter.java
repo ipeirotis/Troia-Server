@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Set;
 
 public class SyntheticDataWriter {
@@ -48,7 +49,7 @@ public class SyntheticDataWriter {
 	}
 
 	public void writeTrueWorkerDataToFile(
-			Set<WorkerContResults> workerContResults, 
+			Collection<WorkerContResults> workerContResults,
 			String filename) throws IOException {
 
 		BufferedWriter bw = openFile(filename);

@@ -53,7 +53,7 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	public U getOrCreateDatumResult(LObject<T> obj){
 		U ret = uncheckedGetDatumResults(obj);
 		if (ret == null){
-			ret = datumCreator.create(obj);
+			ret = datumCreator.create();
 		}
 		return ret;
 	}

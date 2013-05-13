@@ -10,6 +10,8 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;
 
+import java.util.Map;
+
 public class SyntheticDataGenerator {
 
 	private int	pointsCount;
@@ -56,11 +58,11 @@ public class SyntheticDataGenerator {
 		// Generate objects (real values x_i).
 		for (int i = 0; i < pointsCount; i++) {
 			LObject<ContValue> lo = new LObject<ContValue>("Object" + (i + 1));
-			DatumContResults dcr = new DatumContResults(lo);
+			DatumContResults dcr = new DatumContResults();
 			Double v = datumGenerator.nextData();
 			Double z = (v-this.dataMu)/this.dataSigma;
 			lo.setEvaluationLabel(new ContValue(v, z));
-			data.addObjectContResults(dcr);
+			data.addObjectResult(lo, dcr);
 		}
 		
 		// First n objects mark as gold.
@@ -78,14 +80,16 @@ public class SyntheticDataGenerator {
 			wcr.setTrueMu(muGenerator.nextData());
 			wcr.setTrueSigma(sigmaGenerator.nextData());
 			wcr.setTrueRho(rhoGenerator.nextData());
-			data.addWorkerContResults(wcr);
+			data.addWorkerResult(w, wcr);
 		}
 		
 		// Generate assigned labels (observation values y_ij).
-		for (DatumContResults dcr : data.getObjectContResults()) {
-			for (WorkerContResults wcr : data.getWorkerContResults()) {
-				LObject<ContValue> lo = dcr.getObject();
-				Worker<ContValue> w = wcr.getWorker();
+		for (Map.Entry<LObject<ContValue>, DatumContResults> dr : data.getObjectContResults().entrySet()){
+			for (Map.Entry<Worker<ContValue>, WorkerContResults> wr : data.getWorkerContResults().entrySet()){
+				LObject<ContValue> lo = dr.getKey();
+				DatumContResults dcr = dr.getValue();
+				Worker<ContValue> w = wr.getKey();
+				WorkerContResults wcr = wr.getValue();
 				ContValue label = lo.isGold() ? lo.getGoldLabel() : lo.getEvaluationLabel();
 				Double datum_z = (label.getValue() - this.dataMu) / this.dataSigma;
 				Double label_mu = wcr.getTrueMu() + wcr.getTrueRho() * wcr.getTrueSigma() * datum_z;

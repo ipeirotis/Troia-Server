@@ -1,8 +1,5 @@
 package com.datascience.core.results;
 
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.LObject;
-
 public class DatumContResults {
 	
 	private Double							est_value;
@@ -11,14 +8,7 @@ public class DatumContResults {
 	private Double 							distributionMu;
 	private Double 							distributionSigma;
 
-	protected LObject<ContValue> object;
-	
-	public DatumContResults(LObject<ContValue> object) {
-		this.object = object;
-	}
-
-	public LObject<ContValue> getObject(){
-		return object;
+	public DatumContResults() {
 	}
 
 	public Double getEst_value() {
