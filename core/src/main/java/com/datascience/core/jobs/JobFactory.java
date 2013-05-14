@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.datascience.serialization.json.JSONUtils.t;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -58,8 +59,8 @@ public class JobFactory {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
 				BatchDawidSkene alg = new BatchDawidSkene();
-				alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
-				alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
+				alg.setEpsilon(jo.has(Constants.EPSILON) ? jo.get(Constants.EPSILON).getAsDouble() : 1e-6);
+				alg.setIterations(jo.has(Constants.ITERATIONS) ? jo.get(Constants.ITERATIONS).getAsInt() : 10);
 				return alg;
 			}
 		};
@@ -67,8 +68,8 @@ public class JobFactory {
 			@Override
 			public NominalAlgorithm create(JsonObject jo) {
 				IncrementalDawidSkene alg = new IncrementalDawidSkene();
-				alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
-				alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
+				alg.setEpsilon(jo.has(Constants.EPSILON) ? jo.get(Constants.EPSILON).getAsDouble() : 1e-6);
+				alg.setIterations(jo.has(Constants.ITERATIONS) ? jo.get(Constants.ITERATIONS).getAsInt() : 10);
 				return alg;
 			}
 		};
@@ -87,14 +88,14 @@ public class JobFactory {
 			}
 		};
 
-		ALG_FACTORY.put("BDS", bds);
-		ALG_FACTORY.put("blockingEM", bds);
-		ALG_FACTORY.put("IDS", ids);
-		ALG_FACTORY.put("onlineEM", ids);
-		ALG_FACTORY.put("BMV", bmv);
-		ALG_FACTORY.put("blockingMV", bmv);
-		ALG_FACTORY.put("IMV", imv);
-		ALG_FACTORY.put("onlineMV", imv);
+		ALG_FACTORY.put(Constants.BDS, bds);
+		ALG_FACTORY.put(Constants.BLOCKING_EM, bds);
+		ALG_FACTORY.put(Constants.IDS, ids);
+		ALG_FACTORY.put(Constants.ONLINE_EM, ids);
+		ALG_FACTORY.put(Constants.BMV, bmv);
+		ALG_FACTORY.put(Constants.BLOCKING_MV, bmv);
+		ALG_FACTORY.put(Constants.IMV, imv);
+		ALG_FACTORY.put(Constants.ONLINE_MV, imv);
 
 		JobCreator nominal = new JobCreator(){
 			@Override
@@ -109,15 +110,15 @@ public class JobFactory {
 				return createContinuousJob(jo, id);
 			}
 		};
-		JOB_FACTORY.put("NOMINAL", nominal);
-		JOB_FACTORY.put("CONTINUOUS", continuous);
-		JOB_FACTORY.put("GALC", continuous);
+		JOB_FACTORY.put(Constants.NOMINAL, nominal);
+		JOB_FACTORY.put(Constants.CONTINUOUS, continuous);
+		JOB_FACTORY.put(Constants.GALC, continuous);
 		for (String s : ALG_FACTORY.keySet())
 			JOB_FACTORY.put(s, nominal);
 	}
 
 	protected <T> void handleSchedulerLoading(JsonObject settings, Project project){
-		if (settings.has("scheduler"))
+		if (settings.has(Constants.SCHEDULER))
 			project.setScheduler(new SchedulerFactory<T>().create(settings));
 	}
 
@@ -127,11 +128,8 @@ public class JobFactory {
 											   String algorithm,
 											   JsonObject jo,
 											   String id){
-		AlgorithmCreator creator = ALG_FACTORY.get(algorithm);
-		if (creator == null){
-			throw new IllegalArgumentException(String.format("Unknown Job algorithm: %s", algorithm));
-		}
-		NominalAlgorithm na = creator.create(jo);
+		checkArgument(ALG_FACTORY.containsKey(t(algorithm)), "Unknown Job algorithm: ", algorithm);
+		NominalAlgorithm na = ALG_FACTORY.get(t(algorithm)).create(jo);
 		INominalData data = jobStorage.getNominalData(id);
 		IResults<String, DatumResult, WorkerResult> results = jobStorage.getNominalResults(id, categories);
 		NominalProject np = new NominalProject(na, data, results);
@@ -145,20 +143,18 @@ public class JobFactory {
 	}
 	
 	public Job createNominalJob(JsonObject jo, String id){
-		if (!jo.has("categories")){
-			throw new IllegalArgumentException("You should provide categories list");
-		}
-		Collection<String> categories = serializer.parse(jo.get("categories").toString(), JSONUtils.stringSetType);
-		Collection<CategoryValue> categoryPriors = jo.has("categoryPriors") ?
-				(Collection<CategoryValue>) serializer.parse(jo.get("categoryPriors").toString(), JSONUtils.categoryValuesCollectionType) : null;
-		CostMatrix<String> costMatrix = jo.has("costMatrix") ?
-				(CostMatrix<String>) serializer.parse(jo.get("costMatrix").toString(), CostMatrix.class) : null;
+		checkArgument(jo.has(Constants.CATEGORIES), "You should provide categories list");
+		Collection<String> categories = serializer.parse(jo.get(Constants.CATEGORIES).toString(), JSONUtils.stringSetType);
+		Collection<CategoryValue> categoryPriors = jo.has(Constants.CATEGORY_PRIORS) ?
+				(Collection<CategoryValue>) serializer.parse(jo.get(Constants.CATEGORY_PRIORS).toString(), JSONUtils.categoryValuesCollectionType) : null;
+		CostMatrix<String> costMatrix = jo.has(Constants.COST_MATRIX) ?
+				(CostMatrix<String>) serializer.parse(jo.get(Constants.COST_MATRIX).toString(), CostMatrix.class) : null;
 		return new Job(
 			getNominalProject(
 				categories,
 				categoryPriors,
 				costMatrix,
-				jo.get("algorithm").getAsString(),
+				jo.get(Constants.ALGORITM).getAsString(),
 				jo,
 				id),
 			id);
@@ -166,8 +162,8 @@ public class JobFactory {
 	
 	public Job createContinuousJob(JsonObject jo, String id){
 		ContinuousIpeirotis alg = new ContinuousIpeirotis();
-		alg.setEpsilon(jo.has("epsilon") ? jo.get("epsilon").getAsDouble() : 1e-6);
-		alg.setIterations(jo.has("iterations") ? jo.get("iterations").getAsInt() : 10);
+		alg.setEpsilon(jo.has(Constants.EPSILON) ? jo.get(Constants.EPSILON).getAsDouble() : 1e-6);
+		alg.setIterations(jo.has(Constants.ITERATIONS) ? jo.get(Constants.ITERATIONS).getAsInt() : 10);
 		IData<ContValue> data = jobStorage.getContData(id);
 		IResults<ContValue, DatumContResults, WorkerContResults> results = jobStorage.getContResults(id);
 		ContinuousProject cp = new ContinuousProject(alg, data, results);
@@ -188,7 +184,7 @@ public class JobFactory {
 	}
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
-		checkArgument(JOB_FACTORY.containsKey(type), "Unknown algorithm type: ", type);
-		return JOB_FACTORY.get(type).create(initializationData, id);
+		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown algorithm type: ", type);
+		return JOB_FACTORY.get(t(type)).create(initializationData, id);
 	}
 }
