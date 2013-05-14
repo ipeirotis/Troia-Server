@@ -2,7 +2,6 @@ package com.datascience.gal;
 
 import static org.junit.Assert.assertNotEquals;
 
-import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.Algorithm;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
@@ -31,8 +30,11 @@ public class DawidSkeneEdgeCasesTest {
 	}
 
 	protected NominalProject getIDSProject(List<String> categories){
-		NominalProject project = getProject(new IncrementalDawidSkene(), categories);
-		project.getData().addNewUpdatableAlgorithm((INewDataObserver) project.getAlgorithm());
+		IncrementalDawidSkene algorithm = new IncrementalDawidSkene();
+		algorithm.setEpsilon(0.0001);
+		algorithm.setIterations(10);
+		NominalProject project = getProject(algorithm, categories);
+		project.getData().addNewUpdatableAlgorithm(algorithm);
 		return project;
 	}
 
@@ -169,9 +171,6 @@ public class DawidSkeneEdgeCasesTest {
 		matrix.add("confirm_yes", "confirm_nonrestaurant", 1.0);
 		matrix.add("confirm_yes", "confirm_yes", 0.0);
 
-		AbstractDawidSkene algorithm = new IncrementalDawidSkene();
-		algorithm.setEpsilon(0.0001);
-		algorithm.setIterations(10);
 
 		for (NominalProject project: Arrays.asList(getBDSProject(categories), getIDSProject(categories))) {
 			project.initializeCategories(categories, null, matrix);
