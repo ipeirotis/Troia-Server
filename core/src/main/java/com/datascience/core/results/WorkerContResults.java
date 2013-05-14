@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
-import com.datascience.core.base.Worker;
 
 public class WorkerContResults {
 
@@ -26,19 +25,18 @@ public class WorkerContResults {
 	private Double true_sigma;
 	private Double true_rho;
 
-	protected Worker<ContValue> worker;
-
-	public WorkerContResults(Worker<ContValue> worker) {
-		this.worker = worker;
+	public WorkerContResults() {
 		zeta = new HashSet<AssignedLabel<ContValue>>();
 	}
 
-	public Worker<ContValue> getWorker(){
-		return worker;
-	}
-	
 	public Set<AssignedLabel<ContValue>> getZetaValues() {
 		return zeta;
+	}
+
+	public void setZetaValue(Collection<AssignedLabel<ContValue>> zeta){
+		for (AssignedLabel<ContValue> al : zeta){
+			this.zeta.add(al);
+		}
 	}
 
 	public Double getZeta(Double label) {
@@ -70,13 +68,12 @@ public class WorkerContResults {
 		//logger.info(this.toString());
 		if(getEst_sigma()==0.0) {
 			setEst_sigma(0.00000000001);
-			logger.warn("[Single Label Worker: " + worker.getName()+"]");
 		}
 
 		for (AssignedLabel<ContValue> al : workersAssigns) {
 			double label = al.getLabel().getValue();
 			Double z = (label - getEst_mu()) / getEst_sigma();
-			AssignedLabel zl = new AssignedLabel<ContValue>(worker, al.getLobject(), new ContValue(z));
+			AssignedLabel zl = new AssignedLabel<ContValue>(al.getWorker(), al.getLobject(), new ContValue(z));
 			getZetaValues().add(zl);
 		}
 	}

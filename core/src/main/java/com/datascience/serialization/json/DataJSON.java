@@ -145,18 +145,18 @@ public class DataJSON {
 		}
 	}
 
-	public static class DatumCreatorDeserializer<T, U> implements JsonDeserializer<ResultsFactory.DatumResultCreator<T, U>> {
+	public static class DatumCreatorDeserializer<T> implements JsonDeserializer<ResultsFactory.DatumResultCreator<T>> {
 		@Override
-		public ResultsFactory.DatumResultCreator<T, U> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+		public ResultsFactory.DatumResultCreator<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 			JsonObject jo = jsonElement.getAsJsonObject();
 			ResultsFactory.DatumResultFactoryCreator creator = new ResultsFactory.DatumResultFactoryCreator();
 			return creator.create(jo.get("clazz").getAsString());
 		}
 	}
 
-	public static class WorkerCreatorDeserializer<T, U> implements JsonDeserializer<ResultsFactory.WorkerResultCreator<T, U>> {
+	public static class WorkerCreatorDeserializer<T> implements JsonDeserializer<ResultsFactory.WorkerResultCreator<T>> {
 		@Override
-		public ResultsFactory.WorkerResultCreator<T, U> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+		public ResultsFactory.WorkerResultCreator<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 			JsonObject jo = jsonElement.getAsJsonObject();
 			ResultsFactory.WorkerResultFactoryCreator creator = new ResultsFactory.WorkerResultFactoryCreator();
 			return creator.create(jo.get("clazz").getAsString());
