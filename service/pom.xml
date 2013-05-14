@@ -114,7 +114,7 @@
 							<groupId>${project.groupId}</groupId>
 							<version>${project.version}</version>
 							<file>
-								${project.build.directory}/${project.artifactId}-${project.version}.jar
+								${project.build.directory}/${project.artifactId}.jar
 							</file>
 						</configuration>
 					</execution>
@@ -136,5 +136,6 @@
 				<version>2.5.2</version>
 			</plugin>
 		</plugins>
+        <finalName>${project.artifactId}</finalName>
 	</build>
 </project>
