@@ -115,7 +115,6 @@ public class SchedulersForWorker {
 				}
 				return object;
 			}
-			// this worker has given assign for all objects known to the system ...
 			return null;
 		}
 

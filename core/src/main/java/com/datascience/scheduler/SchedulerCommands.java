@@ -5,6 +5,8 @@ import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.core.jobs.JobCommand;
 
+import java.util.NoSuchElementException;
+
 /**
  * @Author: konrad
  */
@@ -24,9 +26,25 @@ public class SchedulerCommands {
 			return scheduler;
 		}
 
+		protected LObject<T> getNextObject(){
+			return checkAndgetScheduler().nextObject();
+		}
+
+		protected LObject<T> getAndVerifyObject(){
+			LObject<T> object = getNextObject();
+			if (object == null){
+				throw new NoSuchElementException(getEmptyErrorMsg());
+			}
+			return object;
+		}
+
+		protected String getEmptyErrorMsg(){
+			return "No object could be found";
+		}
+
 		@Override
 		protected void realExecute() {
-			setResult(checkAndgetScheduler().nextObject());
+			setResult(getAndVerifyObject());
 		}
 	}
 
@@ -40,9 +58,14 @@ public class SchedulerCommands {
 		}
 
 		@Override
-		protected void realExecute(){
+		protected LObject<T> getNextObject(){
 			Worker<T> worker = project.getData().getOrCreateWorker(workerName);
-			setResult(checkAndgetScheduler().nextObject(worker));
+			return checkAndgetScheduler().nextObject(worker);
+		}
+
+		@Override
+		protected String getEmptyErrorMsg(){
+			return "No object could be found for worker " + workerName;
 		}
 	}
 }

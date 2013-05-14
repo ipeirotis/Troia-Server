@@ -15,7 +15,7 @@ public class KVResults<T, U, V> extends AbstractResults<T, U, V> {
 	protected ISafeKVStorage<U> datumKV;
 	protected ISafeKVStorage<V> workersKV;
 
-	public KVResults(ResultsFactory.DatumResultCreator<T, U> datumCreator, ResultsFactory.WorkerResultCreator<T, V> workerCreator,
+	public KVResults(ResultsFactory.DatumResultCreator<U> datumCreator, ResultsFactory.WorkerResultCreator<V> workerCreator,
 					 ISafeKVStorage<U> datumKV, ISafeKVStorage<V> workersKV) {
 		super(datumCreator, workerCreator);
 		this.datumKV = datumKV;

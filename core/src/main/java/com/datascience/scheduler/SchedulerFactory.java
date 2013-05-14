@@ -2,7 +2,9 @@ package com.datascience.scheduler;
 
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +46,9 @@ public class SchedulerFactory<T> {
 	};
 
 	protected String getID(JsonObject params, String arg){
-		return t(params.get(arg).getAsString());
+		JsonElement jo = params.get(arg);
+		checkArgument(jo != null, "Missing parameter: " + arg);
+		return t(jo.getAsString());
 	}
 
 	protected ISchedulerCreator<T> getNormalSchedulerCreator(){
@@ -122,6 +126,8 @@ public class SchedulerFactory<T> {
 		IScheduler<T> scheduler = SCHEDULER_CREATORS.get(type).create(params);
 		scheduler.setUpQueue(createPriorityCalculator(params));
 		scheduler.setSchedulerForWorker(createSchedulerForWorker(params));
+		Logger.getLogger(this.getClass()).debug(String.format("created scheduler: %s %s",
+				scheduler.getId(), scheduler.getCalculator().getId()));
 		return scheduler;
 	}
 
