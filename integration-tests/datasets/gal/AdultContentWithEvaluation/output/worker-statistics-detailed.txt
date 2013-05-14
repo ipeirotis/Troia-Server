@@ -1,0 +1,110 @@
+Worker: worker1
+WorkerQuality_Estm_DS_Exp_n: 0.00%
+WorkerQuality_Estm_DS_Exp_w: 0.00%
+WorkerQuality_Estm_DS_ML_n: 0.00%
+WorkerQuality_Estm_DS_ML_w: 0.00%
+WorkerQuality_Estm_DS_Min_n: 0.00%
+WorkerQuality_Estm_DS_Min_w: 0.00%
+WorkerQuality_Eval_DS_Exp_n: 0.00%
+WorkerQuality_Eval_DS_Exp_w: 0.00%
+WorkerQuality_Eval_DS_ML_n: 0.00%
+WorkerQuality_Eval_DS_ML_w: 0.00%
+WorkerQuality_Eval_DS_Min_n: 0.00%
+WorkerQuality_Eval_DS_Min_w: 0.00%
+Number of labels: 5.0000
+Gold Tests: 2.0000
+Estimated Confusion Matrix:
+P[porn->porn]=100.0%	P[porn->notporn]=0.0%	
+P[notporn->porn]=100.0%	P[notporn->notporn]=0.0%	
+Actual Confusion Matrix (evaluation data):
+P[porn->porn]=100.0%	P[porn->notporn]=0.0%	
+P[notporn->porn]=100.0%	P[notporn->notporn]=0.0%	
+
+Worker: worker2
+WorkerQuality_Estm_DS_Exp_n: 44.44%
+WorkerQuality_Estm_DS_Exp_w: 44.44%
+WorkerQuality_Estm_DS_ML_n: 66.67%
+WorkerQuality_Estm_DS_ML_w: 66.67%
+WorkerQuality_Estm_DS_Min_n: 66.67%
+WorkerQuality_Estm_DS_Min_w: 66.67%
+WorkerQuality_Eval_DS_Exp_n: 2.78%
+WorkerQuality_Eval_DS_Exp_w: 2.78%
+WorkerQuality_Eval_DS_ML_n: 16.67%
+WorkerQuality_Eval_DS_ML_w: 16.67%
+WorkerQuality_Eval_DS_Min_n: 16.67%
+WorkerQuality_Eval_DS_Min_w: 16.67%
+Number of labels: 5.0000
+Gold Tests: 2.0000
+Estimated Confusion Matrix:
+P[porn->porn]=100.0%	P[porn->notporn]=0.0%	
+P[notporn->porn]=33.333%	P[notporn->notporn]=66.667%	
+Actual Confusion Matrix (evaluation data):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=66.667%	P[notporn->notporn]=33.333%	
+
+Worker: worker3
+WorkerQuality_Estm_DS_Exp_n: 100.00%
+WorkerQuality_Estm_DS_Exp_w: 100.00%
+WorkerQuality_Estm_DS_ML_n: 100.00%
+WorkerQuality_Estm_DS_ML_w: 100.00%
+WorkerQuality_Estm_DS_Min_n: 100.00%
+WorkerQuality_Estm_DS_Min_w: 100.00%
+WorkerQuality_Eval_DS_Exp_n: 2.78%
+WorkerQuality_Eval_DS_Exp_w: 2.78%
+WorkerQuality_Eval_DS_ML_n: 16.67%
+WorkerQuality_Eval_DS_ML_w: 16.67%
+WorkerQuality_Eval_DS_Min_n: 16.67%
+WorkerQuality_Eval_DS_Min_w: 16.67%
+Number of labels: 5.0000
+Gold Tests: 2.0000
+Estimated Confusion Matrix:
+P[porn->porn]=100.0%	P[porn->notporn]=0.0%	
+P[notporn->porn]=0.0%	P[notporn->notporn]=100.0%	
+Actual Confusion Matrix (evaluation data):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=33.333%	P[notporn->notporn]=66.667%	
+
+Worker: worker4
+WorkerQuality_Estm_DS_Exp_n: 100.00%
+WorkerQuality_Estm_DS_Exp_w: 100.00%
+WorkerQuality_Estm_DS_ML_n: 100.00%
+WorkerQuality_Estm_DS_ML_w: 100.00%
+WorkerQuality_Estm_DS_Min_n: 100.00%
+WorkerQuality_Estm_DS_Min_w: 100.00%
+WorkerQuality_Eval_DS_Exp_n: 2.78%
+WorkerQuality_Eval_DS_Exp_w: 2.78%
+WorkerQuality_Eval_DS_ML_n: 16.67%
+WorkerQuality_Eval_DS_ML_w: 16.67%
+WorkerQuality_Eval_DS_Min_n: 16.67%
+WorkerQuality_Eval_DS_Min_w: 16.67%
+Number of labels: 5.0000
+Gold Tests: 2.0000
+Estimated Confusion Matrix:
+P[porn->porn]=100.0%	P[porn->notporn]=0.0%	
+P[notporn->porn]=0.0%	P[notporn->notporn]=100.0%	
+Actual Confusion Matrix (evaluation data):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=33.333%	P[notporn->notporn]=66.667%	
+
+Worker: worker5
+WorkerQuality_Estm_DS_Exp_n: 100.00%
+WorkerQuality_Estm_DS_Exp_w: 100.00%
+WorkerQuality_Estm_DS_ML_n: 100.00%
+WorkerQuality_Estm_DS_ML_w: 100.00%
+WorkerQuality_Estm_DS_Min_n: 100.00%
+WorkerQuality_Estm_DS_Min_w: 100.00%
+WorkerQuality_Eval_DS_Exp_n: 2.78%
+WorkerQuality_Eval_DS_Exp_w: 2.78%
+WorkerQuality_Eval_DS_ML_n: 16.67%
+WorkerQuality_Eval_DS_ML_w: 16.67%
+WorkerQuality_Eval_DS_Min_n: 16.67%
+WorkerQuality_Eval_DS_Min_w: 16.67%
+Number of labels: 5.0000
+Gold Tests: 2.0000
+Estimated Confusion Matrix:
+P[porn->porn]=0.0%	P[porn->notporn]=100.0%	
+P[notporn->porn]=100.0%	P[notporn->notporn]=0.0%	
+Actual Confusion Matrix (evaluation data):
+P[porn->porn]=50.0%	P[porn->notporn]=50.0%	
+P[notporn->porn]=66.667%	P[notporn->notporn]=33.333%	
+

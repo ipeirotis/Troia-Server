@@ -13,6 +13,7 @@ target/*
 *nb-configuration.xml
 .idea
 *.iml
+*.jpr
 # ^^^ we shouldn't keep IDEs settings in repo
 
 # Package Files #
@@ -28,4 +29,5 @@ dependency-reduced-pom.xml
 
 # generated
 troia-data-generator/test-results/*
+data/galc/generated/
 
