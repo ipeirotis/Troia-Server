@@ -74,8 +74,8 @@ class ReportGenerator {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name\tLabels\tEstMean\tEstStDev\tEstCorrelation\tTrueMean\tTrueStDev\tTrueCorrelation\n");
-		for (WorkerContResults wr : ip.getWorkersResults().values()) {
-			Worker<ContValue> w = wr.getWorker();
+		for (Worker<ContValue> w : ip.getData().getWorkers()){
+			WorkerContResults wr = ip.getResults().getWorkerResult(w);
 			sb.append(w.getName() + "\t" + ip.getData().getWorkerAssigns(w).size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
 			sb.append("\n");
 		}
@@ -174,8 +174,8 @@ class ReportGenerator {
 		double mu = this.estimateDistributionMu();
 		double sigma = this.estimateDistributionSigma();
 		StringBuffer sb = new StringBuffer();
-		for (DatumContResults dr : ip.getObjectsResults().values()) {
-			LObject<ContValue> d = dr.getObject();
+		for (LObject<ContValue> d : ip.getData().getObjects()){
+			DatumContResults dr = ip.getResults().getDatumResult(d);
 			dr.setDistributionMu(mu);
 			dr.setDistributionSigma(sigma);
 			sb.append(d.getName() +"\t" + ip.getAverageLabel(d) + "\t" + dr.getEst_value() + "\t" + dr.getEst_zeta() + "\t"); 

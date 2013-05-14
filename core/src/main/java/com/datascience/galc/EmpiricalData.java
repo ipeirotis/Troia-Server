@@ -76,7 +76,7 @@ public class EmpiricalData extends InMemoryData<ContValue> {
 			Double sigma = Double.parseDouble(entries[3]);
 
 			Worker<ContValue> w = getOrCreateWorker(workername);
-			WorkerContResults wr = new WorkerContResults(w);
+			WorkerContResults wr = new WorkerContResults();
 			wr.setTrueMu(mu);
 			wr.setTrueSigma(sigma);
 			wr.setTrueRho(rho);
