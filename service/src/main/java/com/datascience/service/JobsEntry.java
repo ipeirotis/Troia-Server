@@ -13,6 +13,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.jersey.spi.resource.Singleton;
 
+import static com.datascience.serialization.json.JSONUtils.tKeys;
+import static com.google.common.base.Preconditions.checkArgument;
+
 @Path("/jobs/")
 @Singleton
 public class JobsEntry {
@@ -24,8 +27,6 @@ public class JobsEntry {
 	@Context
 	UriInfo uriInfo;
 	
-	protected JobFactory jobFactory;
-
 	private IJobStorage getJobStorage(){
 		return (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
 	}
@@ -72,16 +73,11 @@ public class JobsEntry {
 		if (!InitializationSupport.checkIsInitialized(context))
 			return InitializationSupport.makeNotInitializedResponse(context);
 
-		JsonObject jo = json.isEmpty() ? new JsonObject() : new JsonParser().parse(json).getAsJsonObject();
+		JsonObject jo = json.isEmpty() ? new JsonObject() : tKeys(new JsonParser().parse(json).getAsJsonObject());
 
 		String jid = jo.has("id") ? jo.get("id").getAsString() : getJidGenerator().getID();
-		Job job_old = getJobStorage().get(jid);
-		if (job_old != null) {
-			throw new IllegalArgumentException("Job with ID " + jid + " already exists");
-		}
-		if (!jo.has("algorithm")){
-			throw new IllegalArgumentException("You should provide alogorithm type (BDS/IDS/BMV/IMV/GALC)");
-		}
+		checkArgument(getJobStorage().get(jid) == null, "Job with ID " + jid + " already exists");
+		checkArgument(jo.has("algorithm"), "You should provide alogorithm type (BDS/IDS/BMV/IMV/GALC)");
 
 		getJobStorage().add(getJobFactory().create(jo.get("algorithm").getAsString(), jo, jid));
 		return getResponseBuilder().makeOKResponse("New job created with ID: " + jid);

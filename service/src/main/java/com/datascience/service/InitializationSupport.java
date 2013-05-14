@@ -1,5 +1,6 @@
 package com.datascience.service;
 
+import java.io.IOException;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,6 +14,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.core.Response;
 
+import com.datascience.core.jobs.JobsManager;
+import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -54,11 +57,34 @@ public class InitializationSupport implements ServletContextListener {
 			ResponseBuilder responser = factory.loadResponser(serializer);
 			scontext.setAttribute(Constants.RESPONSER, responser);
 
+			initializeContext(scontext);
 			logger.info("Initialization support ended without complications");
 		}
 		catch (Exception e) {
 			logger.fatal("In context initialization support", e);
 		}
+	}
+
+	public static void initializeContext(ServletContext scontext) throws SQLException, IOException, ClassNotFoundException {
+		Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
+		ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
+
+		ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
+		scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
+
+		JobsManager jobsManager = factory.loadJobsManager();
+		scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
+
+		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
+
+		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsManager);
+		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
+
+		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
+		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
+
+		scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
+		scontext.setAttribute(Constants.IS_INITIALIZED, true);
 	}
 
 	@Override
