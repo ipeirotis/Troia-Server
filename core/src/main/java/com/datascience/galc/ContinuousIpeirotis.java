@@ -69,7 +69,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		for (DatumContResults dcr : getObjectsResults().values()) {
 			dcr.setDistributionMu(mu);
 			dcr.setDistributionSigma(sigma);
-			dcr.getEst_value();
+			dcr.computeEstValue();
 		}
 		logger.info(String.format("GALC estimate STOP. iterations %d/%d, loglikelihood =%f",
 				round, max_iters, logLikelihood));

@@ -2,12 +2,15 @@ package com.datascience.galc.commands;
 
 import java.util.*;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.jobs.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;
+import com.datascience.galc.DatumContPrediction;
+import com.datascience.galc.WorkerContQuality;
 
 /**
 *
@@ -15,7 +18,7 @@ import com.datascience.core.results.WorkerContResults;
 */
 public class PredictionCommands {
 
-	static public class ObjectsPrediction extends JobCommand<Collection<DatumContResults>, ContinuousProject> {
+	static public class ObjectsPrediction extends JobCommand<Collection<DatumContPrediction>, ContinuousProject> {
 
 		public ObjectsPrediction(){
 			super(true);
@@ -23,11 +26,15 @@ public class PredictionCommands {
 
 		@Override
 		protected void realExecute() {
-			setResult(project.getDataPrediction().values());
+			Collection<DatumContPrediction> result = new LinkedList<DatumContPrediction>();
+			for (Map.Entry<LObject<ContValue>, DatumContResults> e : project.getResults().getDatumResults(project.getData().getObjects()).entrySet()){
+				result.add(new DatumContPrediction(e.getKey().getName(), e.getValue()));
+			}
+			setResult(result);
 		}
 	}
 
-    static public class ObjectPrediction extends JobCommand<DatumContResults, ContinuousProject> {
+    static public class ObjectPrediction extends JobCommand<DatumContPrediction, ContinuousProject> {
 
         String objectId;
         public ObjectPrediction(String objectId){
@@ -37,11 +44,11 @@ public class PredictionCommands {
 
         @Override
         protected void realExecute() {
-            setResult(project.getDataPrediction().get(project.getData().getObject(objectId)));
+            setResult(new DatumContPrediction(objectId, project.getResults().getDatumResult(project.getData().getObject(objectId))));
         }
     }
 
-	static public class WorkersPrediction extends JobCommand<Collection<WorkerContResults>, ContinuousProject> {
+	static public class WorkersPrediction extends JobCommand<Collection<WorkerContQuality>, ContinuousProject> {
 
 		public WorkersPrediction(){
 			super(true);
@@ -49,11 +56,15 @@ public class PredictionCommands {
 
 		@Override
 		protected void realExecute() {
-			setResult(project.getWorkerPrediction().values());
+			Collection<WorkerContQuality> result = new LinkedList<WorkerContQuality>();
+			for (Map.Entry<Worker<ContValue>, WorkerContResults> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
+				result.add(new WorkerContQuality(e.getKey().getName(), e.getValue()));
+			}
+			setResult(result);
 		}
 	}
 
-    static public class WorkerPrediction extends JobCommand<WorkerContResults, ContinuousProject> {
+    static public class WorkerPrediction extends JobCommand<WorkerContQuality, ContinuousProject> {
 
         String workerId;
         public WorkerPrediction(String wid){
@@ -63,7 +74,7 @@ public class PredictionCommands {
 
         @Override
         protected void realExecute() {
-            setResult(project.getWorkerPrediction().get(project.getData().getWorker(workerId)));
+            setResult(new WorkerContQuality(workerId, project.getResults().getWorkerResult(project.getData().getWorker(workerId))));
         }
     }
 

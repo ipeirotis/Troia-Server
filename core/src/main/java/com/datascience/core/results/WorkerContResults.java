@@ -33,6 +33,12 @@ public class WorkerContResults {
 		return zeta;
 	}
 
+	public void setZetaValue(Collection<AssignedLabel<ContValue>> zeta){
+		for (AssignedLabel<ContValue> al : zeta){
+			this.zeta.add(al);
+		}
+	}
+
 	public Double getZeta(Double label) {
 		return (label - this.est_mu) / this.est_sigma;
 	}

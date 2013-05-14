@@ -146,11 +146,18 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public IResults<ContValue, DatumContResults, WorkerContResults> getContResults(String id) {
+		DatumContResultTransform objectResultTransform = new DatumContResultTransform(objectSeparator);
+
+		ContValueTransform contValueTransform = new ContValueTransform(objectSeparator);
+		AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
+		CollectionTransform<AssignedLabel<ContValue>> assignCollectionTransform = new CollectionTransform(collectionSeparator, assignTransform);
+		WorkerContResultTransform workerResultTransform = new WorkerContResultTransform(objectSeparator, assignCollectionTransform);
+
 		return new KVResults(
 				new ResultsFactory.DatumContResultFactory(),
 				new ResultsFactory.WorkerContResultFactory(),
-				this.<Collection<DatumContResults>>getKVForJob(id, "ObjectResults", DatumContResults.class, true),
-				this.<Collection<WorkerContResults>>getKVForJob(id, "WorkerResults", WorkerContResults.class, true));
+				this.<Collection<DatumContResults>>getKVForJob(id, "ObjectResults", objectResultTransform, true),
+				this.<Collection<WorkerContResults>>getKVForJob(id, "WorkerResults", workerResultTransform, true));
 	}
 
 	@Override

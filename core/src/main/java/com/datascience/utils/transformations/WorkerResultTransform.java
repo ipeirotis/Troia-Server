@@ -20,13 +20,11 @@ public class WorkerResultTransform implements ITransformation<WorkerResult, Stri
 	protected Joiner joiner;
 	protected Splitter splitter;
 	protected ResultsFactory.WorkerResultNominalFactory resultFactory;
-//	protected MapTransform mapTransform;
 
 	public WorkerResultTransform(ResultsFactory.WorkerResultNominalFactory wrnf){
 		joiner = Joiner.on(";");
 		splitter = Splitter.on(";");
 		resultFactory = wrnf;
-//		mapTransform = new MapTransform(";");
 	}
 
 	/*
