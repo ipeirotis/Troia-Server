@@ -77,7 +77,7 @@ public class JobsEntry {
 
 		String jid = jo.has("id") ? jo.get("id").getAsString() : getJidGenerator().getID();
 		checkArgument(getJobStorage().get(jid) == null, "Job with ID " + jid + " already exists");
-		checkArgument(jo.has("algorithm"), "You should provide alogorithm type (BDS/IDS/BMV/IMV/GALC)");
+		checkArgument(jo.has("algorithm"), "You should provide alogorithm type (for example BDS or GALC)");
 
 		getJobStorage().add(getJobFactory().create(jo.get("algorithm").getAsString(), jo, jid));
 		return getResponseBuilder().makeOKResponse("New job created with ID: " + jid);

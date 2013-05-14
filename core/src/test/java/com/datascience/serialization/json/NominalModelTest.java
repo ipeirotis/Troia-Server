@@ -73,8 +73,7 @@ public class NominalModelTest {
 		jo.add("categories", createCategoriesJsonArray(categories));
 		if (priors)
 			jo.add("categoryPriors", createCategoryPriorsJsonArray(categories));
-
-		Job job = jf.createNominalJob(jo, "test");
+		Job job = jf.createNominalJob(JSONUtils.tKeys(jo), "test");
 		return (NominalProject)job.getProject();
 	}
 
