@@ -1,7 +1,9 @@
 package com.datascience.gal;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
+import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.Algorithm;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
@@ -133,10 +135,12 @@ public class DawidSkeneEdgeCasesTest {
 			project.getData().addAssign(new AssignedLabel<String>(w2, new LObject<String>("2AOYTWX4H3H282M8LN7IEIJRJNY4ZV"), "yes"));
 			project.getData().addAssign(new AssignedLabel<String>(w3, new LObject<String>("2K5AB6BFMFFOHP0OD7AFLGESKIHJW8"), "yes"));
 
-			project.getAlgorithm().compute();
+			if (!(project.getAlgorithm() instanceof INewDataObserver)){
+				project.getAlgorithm().compute();
+			}
 			WorkerEstimator we = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get("ExpectedCost"));
 			for (Double d : we.getCosts(project).values()) {
-				assertNotEquals(d, Double.NaN);
+				assertFalse(Double.isNaN(d));
 			}
 		}
 	}
@@ -277,10 +281,13 @@ public class DawidSkeneEdgeCasesTest {
 			project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A1I3CXC17NIRWB"), new LObject<String>("294EZZ2MIKMNSLQKLCU81WWXSI97O0"), "confirm_yes"));
 			project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2VRQML8Q3XYP4"), new LObject<String>("2AOYTWX4H3H282M8LN7IEIJRLKM4ZF"), "confirm_yes"));
 
-			project.getAlgorithm().compute();
+			if (!(project.getAlgorithm() instanceof INewDataObserver)){
+				project.getAlgorithm().compute();
+			}
 			WorkerEstimator we = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get("ExpectedCost"));
-			for (Double d : we.getCosts(project).values()) {
-				assertNotEquals(d, Double.NaN);
+			for (Worker<String> worker: project.getData().getWorkers()){
+				System.out.println(we.getQuality(project, worker) + " :: " + we.getCost(project, worker));
+				assertFalse(Double.isNaN(we.getQuality(project, worker)));
 			}
 		}
 	}
