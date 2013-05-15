@@ -4,6 +4,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.NominalProject;
+import com.datascience.core.nominal.Quality;
 import com.datascience.core.nominal.decision.*;
 import com.datascience.utils.CostMatrix;
 
@@ -155,9 +156,19 @@ public class GH88_DawidSkeneTest extends AbstractBase {
 		project.getData().addAssign(new AssignedLabel<String>(new Worker<String>("A2VRQML8Q3XYP4"), new LObject<String>("2AOYTWX4H3H282M8LN7IEIJRLKM4ZF"), "confirm_yes"));
 
 		ensureComputed(project);
-		WorkerEstimator we = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get("ExpectedCost"));
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get("ExpectedCost");
+		WorkerEstimator we = new WorkerEstimator(lpdcc);
+		System.out.println("Worker name \t cost \t quality");
 		for (Worker<String> worker : project.getData().getWorkers()) {
-			System.out.println(we.getQuality(project, worker) + " :: " + we.getCost(project, worker) + " :: " + worker.getName());
+			System.out.println(worker.getName() + "\t" + we.getCost(project, worker) + "\t" + we.getQuality(project, worker));
+		}
+		System.out.println("Object \t cost \t label probabilities");
+		DecisionEngine de = new DecisionEngine(lpdcc, null);
+		for (LObject<String> object : project.getData().getObjects()) {
+			System.out.println(object.getName() + " \t " + de.estimateMissclassificationCost(project, object) + " \t " + de.getPD(object,project));
+		}
+		System.out.println("Spammer cost: " + Quality.getMinSpammerCost(project.getData(), project.getAlgorithm()));
+		for (Worker<String> worker : project.getData().getWorkers()) {
 			assertFalse(Double.isNaN(we.getQuality(project, worker)));
 		}
 	}
