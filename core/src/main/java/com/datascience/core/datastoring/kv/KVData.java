@@ -95,11 +95,17 @@ public class KVData<T> extends AbstractData<T> {
 		} else {
 			LObject<T> oldObject = getObject(object.getName());
 			if (object.isGold() && !oldObject.isGold()) {
+				oldObjects.remove(oldObject);
 				oldObject.setGoldLabel(object.getGoldLabel());
+				oldObjects.add(oldObject);
+				objects.put("", oldObjects);
 				addGoldObject(oldObject);
 			}
 			if (object.isEvaluation() && !oldObject.isEvaluation()) {
+				oldObjects.remove(oldObject);
 				oldObject.setEvaluationLabel(object.getEvaluationLabel());
+				oldObjects.add(oldObject);
+				objects.put("", oldObjects);
 				addEvaluationObject(oldObject);
 			}
 		}

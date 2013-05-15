@@ -112,8 +112,8 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			Double newZeta;
 			Double zeta = 0.0;
 			Double betasum = 0.0;
-			if(!data.getGoldObjects().contains(object)) {
-				oldZeta = dr.getEst_zeta();
+			if(!object.isGold()){
+					oldZeta = dr.getEst_zeta();
 
 				for (AssignedLabel<ContValue> al : data.getAssignsForObject(object)) {
 					WorkerContResults wr = results.getWorkerResult(al.getWorker());
@@ -134,14 +134,14 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 				//d.setEst_zeta(zeta / betasum);
 				newZeta = zeta / betasum;
 			} else {
-				oldZeta = data.getGoldObject(object.getName()).getGoldLabel().getZeta();
+				oldZeta = object.getGoldLabel().getZeta();
 				newZeta = oldZeta;
 			}
 
 			dr.setEst_zeta(newZeta);
 
 			results.addDatumResult(object, dr);
-			if (data.getGoldObjects().contains(object))
+			if (object.isGold())
 				continue;
 			else if (oldZeta == null) {
 				diff += 1;
