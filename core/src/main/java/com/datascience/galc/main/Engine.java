@@ -34,7 +34,7 @@ class ReportGenerator {
 
 		Double relRhoError = 0.0;
 		int n = 0;
-		for (WorkerContResults wr: ip.getWorkersResults().values()) {
+		for (WorkerContResults wr: ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			if (wr.getTrueRho()==null)
 				continue;
 			n++;
@@ -54,7 +54,7 @@ class ReportGenerator {
 
 		Double avgRhoError = 0.0;
 		int n = 0;
-		for (WorkerContResults wr: ip.getWorkersResults().values()) {
+		for (WorkerContResults wr: ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			if (wr.getTrueRho() ==null )
 				continue;
 			n++;
@@ -97,7 +97,7 @@ class ReportGenerator {
 
 		Double nominator_sigma = 0.0;
 		Double denominator_sigma = 0.0;
-		for (WorkerContResults wr : ip.getWorkersResults().values()) {
+		for (WorkerContResults wr : ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double s = wr.getEst_sigma();
@@ -116,7 +116,7 @@ class ReportGenerator {
 		// Estimate mu and sigma of distribution
 		Double nominator_mu = 0.0;
 		Double denominator_mu = 0.0;
-		for (WorkerContResults wr : ip.getWorkersResults().values()) {
+		for (WorkerContResults wr : ip.getResults().getWorkerResults(ip.getData().getWorkers()).values()) {
 			Double b = wr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
 			Double m = wr.getEst_mu();

@@ -98,7 +98,7 @@ public class PredictionCommands {
 				for (LObject o : project.getData().getObjects()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(o.getName());
-					DatumContResults res = project.getDataPrediction().get(o);
+					DatumContResults res = project.getResults().getDatumResult(o);
 					line.add(res.getEst_value());
 					line.add(res.getEst_zeta());
 					ret.add(line);
@@ -117,7 +117,7 @@ public class PredictionCommands {
 				for (Worker w : project.getData().getWorkers()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(w.getName());
-					WorkerContResults res = project.getWorkerPrediction().get(w);
+					WorkerContResults res = project.getResults().getWorkerResult(w);
 					line.add(res.getEst_mu());
 					line.add(res.getEst_rho());
 					line.add(res.getEst_sigma());

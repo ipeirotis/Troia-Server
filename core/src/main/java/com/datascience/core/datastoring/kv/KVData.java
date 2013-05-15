@@ -48,12 +48,12 @@ public class KVData<T> extends AbstractData<T> {
 
 	@Override
 	protected LObject<T> uncheckedGetGoldObject(String objectId) {
-		return getObject(objectId);
+		return getObjectFromCollection(objectId, goldObjects.get(""));
 	}
 
 	@Override
 	protected LObject<T> uncheckedGetEvaluationObject(String objectId) {
-		return getObject(objectId);
+		return getObjectFromCollection(objectId, evaluationObjects.get(""));
 	}
 
 	@Override
@@ -122,7 +122,11 @@ public class KVData<T> extends AbstractData<T> {
 
 	@Override
 	public LObject<T> getObject(String objectId) {
-		for (LObject<T> o : objects.get(""))
+		return getObjectFromCollection(objectId, objects.get(""));
+	}
+
+	private LObject<T> getObjectFromCollection(String objectId, Collection<LObject<T>> collection){
+		for (LObject<T> o : collection)
 			if (o.getName().equals(objectId))
 				return  o;
 		return null;
