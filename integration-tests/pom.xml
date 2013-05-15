@@ -35,7 +35,6 @@
 			<groupId>com.ipeirotis</groupId>
 			<artifactId>data-generator</artifactId>
 			<version>0.5</version>
-			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<build>
