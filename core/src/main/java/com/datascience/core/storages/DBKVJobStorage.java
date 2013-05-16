@@ -27,17 +27,15 @@ import java.util.Collection;
  */
 public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
-	private static String objectSeparator = "|";
-	private static String collectionSeparator = "$";
-	private static String mapSeparator = ";";
-
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
+	protected TransformationsFactory.ITransformationCreator transforationCreator;
 
 	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer) throws SQLException {
 		super(helper, serializer);
 		jobSettings = getKV("JobSettings", JsonObject.class);
 		jobTypes = getKV("JobTypes", String.class);
+		transforationCreator = TransformationsFactory.create("STRING");
 	}
 
 	protected <V> ISafeKVStorage<V> getKV(String table, Type expectedType){
@@ -99,15 +97,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public IData<ContValue> getContData(String id) {
-		ContValueTransform contValueTransform = new ContValueTransform(objectSeparator);
-
-		AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
-		LObjectTransform<ContValue> objectTransform = new LObjectTransform<ContValue>(objectSeparator, contValueTransform);
-		WorkerTransform workerTransform = new WorkerTransform();
-
-		CollectionTransform<AssignedLabel<ContValue>> assignCollectionTransform = new CollectionTransform(collectionSeparator, assignTransform);
-		CollectionTransform<LObject<ContValue>> objectCollectionTransform = new CollectionTransform(collectionSeparator, objectTransform);
-		CollectionTransform<Worker> workerCollectionTransform = new CollectionTransform(collectionSeparator, workerTransform);
+		ITransformation assignCollectionTransform = transforationCreator.createContAssignsTransformation();
+		ITransformation objectCollectionTransform = transforationCreator.createContObjectsTransformation();
+		ITransformation workerCollectionTransform = transforationCreator.createWorkersTransformation();
 
 		KVData<ContValue> data = new KVData<ContValue>(
 				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "WorkerAssigns", assignCollectionTransform, true),
@@ -122,15 +114,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public INominalData getNominalData(String id) {
-		StringTransform stringTransform = new StringTransform();
-
-		AssignTransform<String> assignTransform = new AssignTransform<String>(objectSeparator, stringTransform);
-		LObjectTransform<String> objectTransform = new LObjectTransform<String>(objectSeparator, stringTransform);
-		WorkerTransform workerTransform = new WorkerTransform();
-
-		CollectionTransform<AssignedLabel<String>> assignCollectionTransform = new CollectionTransform<AssignedLabel<String>>(collectionSeparator, assignTransform);
-		CollectionTransform<LObject<String>> objectCollectionTransform = new CollectionTransform<LObject<String>>(collectionSeparator, objectTransform);
-		CollectionTransform<Worker> workerCollectionTransform = new CollectionTransform<Worker>(collectionSeparator, workerTransform);
+		ITransformation assignCollectionTransform = transforationCreator.createStringAssignsTransformation();
+		ITransformation objectCollectionTransform = transforationCreator.createStringObjectsTransformation();
+		ITransformation workerCollectionTransform = transforationCreator.createWorkersTransformation();
 
 		INominalData data = new KVNominalData(
 				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", assignCollectionTransform, true),
@@ -146,30 +132,25 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public IResults<ContValue, DatumContResults, WorkerContResults> getContResults(String id) {
-		DatumContResultTransform objectResultTransform = new DatumContResultTransform(objectSeparator);
-
-		ContValueTransform contValueTransform = new ContValueTransform(objectSeparator);
-		AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
-		CollectionTransform<AssignedLabel<ContValue>> assignCollectionTransform = new CollectionTransform(collectionSeparator, assignTransform);
-		WorkerContResultTransform workerResultTransform = new WorkerContResultTransform(objectSeparator, assignCollectionTransform);
-
 		return new KVResults(
 				new ResultsFactory.DatumContResultFactory(),
 				new ResultsFactory.WorkerContResultFactory(),
-				this.<Collection<DatumContResults>>getKVForJob(id, "ObjectResults", objectResultTransform, true),
-				this.<Collection<WorkerContResults>>getKVForJob(id, "WorkerResults", workerResultTransform, true));
+				this.<Collection<DatumContResults>>getKVForJob(id, "ObjectResults",
+						transforationCreator.createDatumContResultsTransformation(), true),
+				this.<Collection<WorkerContResults>>getKVForJob(id, "WorkerResults",
+						transforationCreator.createWorkerContResultsTransformation(), true));
 	}
 
 	@Override
 	public IResults<String, DatumResult, WorkerResult> getNominalResults(String id, Collection<String> categories) {
 		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
 		wrnf.setCategories(categories);
-		DatumResultTransform objectResultTransform = new DatumResultTransform(mapSeparator);
-		WorkerResultTransform workerResultTransform = new WorkerResultTransform(wrnf);
 		return new KVResults(
 				new ResultsFactory.DatumResultFactory(),
 				wrnf,
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", objectResultTransform, true),
-				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", workerResultTransform, true));
+				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults",
+						transforationCreator.createDatumStringResultsTransformation(), true),
+				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults",
+						transforationCreator.createWorkerStringResultsTransformation(wrnf), true));
 	}
 }
