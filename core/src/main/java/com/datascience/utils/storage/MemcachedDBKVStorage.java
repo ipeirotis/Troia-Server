@@ -4,7 +4,6 @@ import net.spy.memcached.MemcachedClient;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.Properties;
 
 /**
@@ -18,11 +17,8 @@ public class MemcachedDBKVStorage implements IKVStorage<String> {
 	protected String prefix;
 	protected int expirationTime;
 
-	public MemcachedDBKVStorage(IKVStorage<String> wrapped, String prefix, Properties properties) throws IOException {
-		client = new MemcachedClient(
-				new InetSocketAddress(
-					properties.getProperty(Constants.MEMCACHE_URL),
-					Integer.parseInt(properties.getProperty(Constants.MEMCACHE_PORT))));
+	public MemcachedDBKVStorage(MemcachedClient memcachedClient, IKVStorage<String> wrapped, String prefix, Properties properties) throws IOException {
+		client = memcachedClient;
 		this.prefix = prefix;
 		this.expirationTime = Integer.parseInt(properties.getProperty(Constants.MEMCACHE_EXPIRATION_TIME));
 		this.storage = wrapped;
@@ -65,7 +61,6 @@ public class MemcachedDBKVStorage implements IKVStorage<String> {
 
 	@Override
 	public void shutdown() throws Exception {
-		client.shutdown();
 		storage.shutdown();
 	}
 }
