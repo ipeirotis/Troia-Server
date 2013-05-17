@@ -31,5 +31,6 @@ public class Constants {
 	public static final String RESPONSES_CACHE_SIZE = "RESPONSES_CACHE_SIZE";
 	public static final String RESPONSES_DUMP_TIME = "RESPONSES_DUMP_TIME";
 	public static final String EXECUTOR_THREADS_NUM = "EXECUTOR_THREADS_NUM";
+	public static final String FREEZE_CONFIGURATION_AT_START = "FREEZE_CONFIGURATION_AT_START";
 
 }
