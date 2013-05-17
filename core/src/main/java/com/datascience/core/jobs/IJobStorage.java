@@ -1,6 +1,5 @@
 package com.datascience.core.jobs;
 
-import com.datascience.core.jobs.Job;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;

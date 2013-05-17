@@ -87,7 +87,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public void test() throws Exception {
-		// TODO XXX I don't have much idea how to do this.. just put something to kv?
+		//check if db exists
+		helper.useDatabase();
+		helper.checkTables();
 	}
 
 	@Override
