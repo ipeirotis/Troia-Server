@@ -57,7 +57,7 @@ public class DBKVHelper extends DBStorage {
 
 	@Override
 	protected void createTable(String tableName) throws SQLException{
-		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(100) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(200) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		logger.info("Table " + tableName + " successfully created");
 	}
 
