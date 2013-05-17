@@ -7,6 +7,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
+import com.datascience.serialization.json.GSONSerializer;
 import com.datascience.serialization.json.JSONUtils;
 import com.datascience.utils.ITransformation;
 
@@ -90,68 +91,71 @@ public class TransformationsFactory {
 		}
 	}
 
+	public static class StringTransformationCreator implements ITransformationCreator {
+		private String objectSeparator = "|";
+		private String collectionSeparator = "$";
+		private String mapSeparator = ";";
+
+		StringTransform stringTransform = new StringTransform();
+		ContValueTransform contValueTransform = new ContValueTransform(objectSeparator);
+
+		@Override
+		public ITransformation<Collection<AssignedLabel<String>>, String> createStringAssignsTransformation() {
+			AssignTransform<String> assignTransform = new AssignTransform<String>(objectSeparator, stringTransform);
+			return new CollectionTransform<AssignedLabel<String>>(collectionSeparator, assignTransform);
+		}
+
+		@Override
+		public ITransformation<Collection<LObject<String>>, String> createStringObjectsTransformation() {
+			LObjectTransform<String> objectTransform = new LObjectTransform<String>(objectSeparator, stringTransform);
+			return new CollectionTransform<LObject<String>>(collectionSeparator, objectTransform);
+		}
+
+		@Override
+		public ITransformation<Collection<Worker>, String> createWorkersTransformation() {
+			WorkerTransform workerTransform = new WorkerTransform();
+			return new CollectionTransform<Worker>(collectionSeparator, workerTransform);
+		}
+
+		@Override
+		public ITransformation<Collection<AssignedLabel<ContValue>>, String> createContAssignsTransformation() {
+			AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
+			return new CollectionTransform(collectionSeparator, assignTransform);
+		}
+
+		@Override
+		public ITransformation<Collection<LObject<ContValue>>, String> createContObjectsTransformation() {
+			LObjectTransform<ContValue> objectTransform = new LObjectTransform<ContValue>(objectSeparator, contValueTransform);
+			return new CollectionTransform(collectionSeparator, objectTransform);
+		}
+
+		@Override
+		public ITransformation<DatumContResults, String> createDatumContResultsTransformation() {
+			return new DatumContResultTransform(objectSeparator);
+		}
+
+		@Override
+		public ITransformation<WorkerContResults, String> createWorkerContResultsTransformation() {
+			AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
+			CollectionTransform<AssignedLabel<ContValue>> assignCollectionTransform = new CollectionTransform(collectionSeparator, assignTransform);
+			return new WorkerContResultTransform(objectSeparator, assignCollectionTransform);
+		}
+
+		@Override
+		public ITransformation<DatumResult, String> createDatumStringResultsTransformation() {
+			return new DatumResultTransform(mapSeparator);
+		}
+
+		@Override
+		public ITransformation<WorkerResult, String> createWorkerStringResultsTransformation(ResultsFactory.WorkerResultNominalFactory wrnf) {
+			return new WorkerResultTransform(wrnf);
+		}
+	}
+
 	static Map<String, ITransformationCreator> TRANSFORMATION_FACTORY = new HashMap();
 	static {
-		TRANSFORMATION_FACTORY.put("STRING", new ITransformationCreator(){
-			private String objectSeparator = "|";
-			private String collectionSeparator = "$";
-			private String mapSeparator = ";";
-
-			StringTransform stringTransform = new StringTransform();
-			ContValueTransform contValueTransform = new ContValueTransform(objectSeparator);
-
-			@Override
-			public ITransformation<Collection<AssignedLabel<String>>, String> createStringAssignsTransformation() {
-				AssignTransform<String> assignTransform = new AssignTransform<String>(objectSeparator, stringTransform);
-				return new CollectionTransform<AssignedLabel<String>>(collectionSeparator, assignTransform);
-			}
-
-			@Override
-			public ITransformation<Collection<LObject<String>>, String> createStringObjectsTransformation() {
-				LObjectTransform<String> objectTransform = new LObjectTransform<String>(objectSeparator, stringTransform);
-				return new CollectionTransform<LObject<String>>(collectionSeparator, objectTransform);
-			}
-
-			@Override
-			public ITransformation<Collection<Worker>, String> createWorkersTransformation() {
-				WorkerTransform workerTransform = new WorkerTransform();
-				return new CollectionTransform<Worker>(collectionSeparator, workerTransform);
-			}
-
-			@Override
-			public ITransformation<Collection<AssignedLabel<ContValue>>, String> createContAssignsTransformation() {
-				AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
-				return new CollectionTransform(collectionSeparator, assignTransform);
-			}
-
-			@Override
-			public ITransformation<Collection<LObject<ContValue>>, String> createContObjectsTransformation() {
-				LObjectTransform<ContValue> objectTransform = new LObjectTransform<ContValue>(objectSeparator, contValueTransform);
-				return new CollectionTransform(collectionSeparator, objectTransform);
-			}
-
-			@Override
-			public ITransformation<DatumContResults, String> createDatumContResultsTransformation() {
-				return new DatumContResultTransform(objectSeparator);
-			}
-
-			@Override
-			public ITransformation<WorkerContResults, String> createWorkerContResultsTransformation() {
-				AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
-				CollectionTransform<AssignedLabel<ContValue>> assignCollectionTransform = new CollectionTransform(collectionSeparator, assignTransform);
-				return new WorkerContResultTransform(objectSeparator, assignCollectionTransform);
-			}
-
-			@Override
-			public ITransformation<DatumResult, String> createDatumStringResultsTransformation() {
-				return new DatumResultTransform(mapSeparator);
-			}
-
-			@Override
-			public ITransformation<WorkerResult, String> createWorkerStringResultsTransformation(ResultsFactory.WorkerResultNominalFactory wrnf) {
-				return new WorkerResultTransform(wrnf);
-			}
-		});
+		TRANSFORMATION_FACTORY.put("STRING", new StringTransformationCreator());
+		TRANSFORMATION_FACTORY.put("GSON", new SerializationBasedTransformationCreator(new GSONSerializer()));
 	}
 
 	public static ITransformationCreator create(String type){
