@@ -44,8 +44,18 @@ public abstract class DBStorage {
 	public void execute() throws SQLException {
 		connectDB();
 		if (dbName != null) {
-			dropDatabase();
-			createDatabase();
+			try {
+				dropDatabase();
+			}
+			catch (SQLException ex){
+				logger.warn("Can't drop database: " + dbName);
+			}
+			try {
+				createDatabase();
+			}
+			catch (SQLException ex){
+				logger.warn("Can't create database: " + dbName);
+			}
 		} else {
 			dropAllObjects();
 		}
@@ -65,8 +75,12 @@ public abstract class DBStorage {
 	protected void createDatabase() throws SQLException{
 		logger.info("Creating database");
 		executeSQL("CREATE DATABASE "+ dbName + " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;");
-		executeSQL("USE " + dbName + ";");
+		useDatabase();
 		logger.info("Database created successfully");
+	}
+
+	protected void useDatabase() throws  SQLException{
+		executeSQL("USE " + dbName + ";");
 	}
 
 	protected void dropAllObjects() throws SQLException {
@@ -89,9 +103,16 @@ public abstract class DBStorage {
 	}
 
 	public void connectDB() throws SQLException {
-		String dbPath = String.format("%s%s%s", dbUrl, dbName, extraOptions);
+		String dbPath = String.format("%s%s", dbUrl, extraOptions);
 		logger.info("Trying to connect with: " + dbPath);
 		connection = DriverManager.getConnection(dbPath, connectionProperties);
+		try{
+			useDatabase();
+		}
+		catch (SQLException ex){
+			logger.warn("Can't use database: " + dbName);
+			createDatabase();
+		}
 		logger.info("Connected to " + dbPath);
 	}
 
