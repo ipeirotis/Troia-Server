@@ -29,8 +29,8 @@ public class AssignsCommands {
 				Worker worker = data.getOrCreateWorker(al.worker);
 				LObject object = data.getOrCreateObject(al.object);
 				data.addAssign(new AssignedLabel(worker, object, al.label));
-				setResult("Assigns added");
 			}
+			setResult("Assigns added");
 		}
 	}
 	
