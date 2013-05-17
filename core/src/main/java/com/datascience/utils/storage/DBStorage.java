@@ -125,6 +125,12 @@ public abstract class DBStorage {
 		logger.info("Trying to connect with: " + dbPath);
 		connection = DriverManager.getConnection(dbPath, connectionProperties);
 		logger.info("Connected to " + dbPath);
+		try{
+			useDatabase();
+		}
+		catch (SQLException ex){
+			logger.warn("Can't use database: " + dbName);
+		}
 	}
 
 	public void ensureConnection() throws SQLException {
