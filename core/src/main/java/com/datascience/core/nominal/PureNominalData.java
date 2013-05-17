@@ -13,6 +13,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class PureNominalData {
 
+	static protected final int MAX_CATEGORY_LENGTH = 100;
+
 	protected Collection<String> categories;
 	protected boolean fixedPriors;
 	protected Map<String, Double> categoryPriors;
@@ -75,7 +77,7 @@ public class PureNominalData {
 		checkArgument(categories != null, "There is no categories collection");
 		checkArgument(categories.size() >= 2, "There should be at least two categories");
 		for (String c : categories){
-			checkArgument(c.length() < 50, "Category names should be shorter than 50 chars");
+			checkArgument(c.length() < MAX_CATEGORY_LENGTH, "Category names should be shorter than 50 chars");
 		}
 		this.categories = new HashSet<String>();
 		this.categories.addAll(categories);
