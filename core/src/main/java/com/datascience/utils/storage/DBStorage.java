@@ -4,8 +4,10 @@ import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * User: artur
@@ -42,10 +44,19 @@ public abstract class DBStorage {
 	}
 
 	public void execute() throws SQLException {
-		connectDB();
 		if (dbName != null) {
-			dropDatabase();
-			createDatabase();
+			try {
+				dropDatabase();
+			}
+			catch (SQLException ex){
+				logger.warn("Can't drop database: " + dbName);
+			}
+			try {
+				createDatabase();
+			}
+			catch (SQLException ex){
+				logger.warn("Can't create database: " + dbName);
+			}
 		} else {
 			dropAllObjects();
 		}
@@ -64,9 +75,30 @@ public abstract class DBStorage {
 
 	protected void createDatabase() throws SQLException{
 		logger.info("Creating database");
-		executeSQL("CREATE DATABASE "+ dbName + " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;");
-		executeSQL("USE " + dbName + ";");
+		executeSQL("CREATE DATABASE " + dbName + " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;");
+		useDatabase();
 		logger.info("Database created successfully");
+	}
+
+	public void useDatabase() throws  SQLException{
+		executeSQL("USE " + dbName + ";");
+	}
+
+	public void checkTables() throws  Exception{
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
+		Set<String> tableNamesSet = new HashSet<String>(TABLES);
+		int i=0;
+		while(rs.next()){
+			String tableName = rs.getString("TABLE_NAME");
+			if (!tableNamesSet.contains(tableName)){
+				throw new Exception("There is no table named: " + tableName);
+			}
+			i++;
+		}
+		if (TABLES.size() != i)
+			throw new Exception("Invalid tables size");
+		cleanup(stmt, null);
 	}
 
 	protected void dropAllObjects() throws SQLException {
@@ -89,10 +121,16 @@ public abstract class DBStorage {
 	}
 
 	public void connectDB() throws SQLException {
-		String dbPath = String.format("%s%s%s", dbUrl, dbName, extraOptions);
+		String dbPath = String.format("%s%s", dbUrl, extraOptions);
 		logger.info("Trying to connect with: " + dbPath);
 		connection = DriverManager.getConnection(dbPath, connectionProperties);
 		logger.info("Connected to " + dbPath);
+		try{
+			useDatabase();
+		}
+		catch (SQLException ex){
+			logger.warn("Can't use database: " + dbName);
+		}
 	}
 
 	public void ensureConnection() throws SQLException {

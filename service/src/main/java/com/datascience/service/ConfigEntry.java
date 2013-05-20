@@ -48,6 +48,8 @@ public class ConfigEntry {
 		Boolean freezed = (Boolean) scontext.getAttribute(Constants.IS_FREEZED);
 		List<NameValue> items = new ArrayList<NameValue>();
 		for (String s : new ArrayList<String>(new TreeSet<String>(properties.stringPropertyNames()))){
+			if (s.equals(Constants.JOBS_STORAGE))
+				continue;
 			if (freezed && (s.startsWith("DB") || s.endsWith("PATH")))
 				continue;
 			items.add(new NameValue(s, properties.get(s)));
@@ -55,6 +57,8 @@ public class ConfigEntry {
 		model.put(Constants.IS_FREEZED, freezed);
 		model.put("items", items);
 		model.put(Constants.IS_INITIALIZED, scontext.getAttribute(Constants.IS_INITIALIZED));
+		model.put("storages", new String[] {"MEMORY_FULL", "MEMORY_KV", "DB_FULL", "DB_KV_MEMCACHE_JSON", "DB_KV_MEMCACHE_SIMPLE", "DB_KV_JSON", "DB_KV_SIMPLE"});
+		model.put(Constants.JOBS_STORAGE, ((Properties) scontext.getAttribute(Constants.PROPERTIES)).getProperty(Constants.JOBS_STORAGE));
 		return Response.ok(new Viewable("/config", model)).build();
 	}
 
