@@ -10,7 +10,7 @@ public class StringTransformationTest extends BaseTransformationTest {
 
 	@Override
 	protected TransformationsFactory.ITransformationCreator getCreator() {
-		TransformationsFactory.ITransformationCreator creator = TransformationsFactory.create("STRING");
+		TransformationsFactory.ITransformationCreator creator = TransformationsFactory.create("SIMPLE");
 		Assert.assertTrue(creator instanceof TransformationsFactory.StringTransformationCreator);
 		return creator;
 	}
