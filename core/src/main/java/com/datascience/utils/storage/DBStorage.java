@@ -44,6 +44,7 @@ public abstract class DBStorage {
 	}
 
 	public void execute() throws SQLException {
+		connectDB();
 		if (dbName != null) {
 			try {
 				dropDatabase();

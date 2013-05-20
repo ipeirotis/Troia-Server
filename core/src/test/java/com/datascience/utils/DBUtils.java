@@ -14,7 +14,7 @@ public class DBUtils {
 	}
 
 	public String getURL(){
-		return "jdbc:h2:mem:";
+		return "jdbc:h2:mem:" + getDBName();
 	}
 
 	public String getDriverClass(){
