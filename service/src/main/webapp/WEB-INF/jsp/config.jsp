@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html"
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -50,7 +51,7 @@
 		    <input type="submit" value="Submit">
         </c:if>
 	</form>
-	<c:if test="${!it.IS_FREEZED && it.IS_INITIALIZED}">
+	<c:if test="${!it.IS_FREEZED && it.IS_INITIALIZED && fn:startsWith(it.JOBS_STORAGE, 'DB')}">
         <form method="post" action="config/resetDB" id="db_form">
             <input type="submit" value="recreate (drop and create) database"/>
         </form>

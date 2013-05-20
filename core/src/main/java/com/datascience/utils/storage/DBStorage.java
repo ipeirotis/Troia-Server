@@ -88,14 +88,16 @@ public abstract class DBStorage {
 	public void checkTables() throws  Exception{
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
-		Set<String> tableNamesSet = new HashSet<String>(TABLES);
+		Set<String> tableNamesSet = new HashSet<String>();
 		int i=0;
 		while(rs.next()){
-			String tableName = rs.getString("TABLE_NAME");
+			tableNamesSet.add(rs.getString("TABLE_NAME"));
+			i++;
+		}
+		for (String tableName : TABLES){
 			if (!tableNamesSet.contains(tableName)){
 				throw new Exception("There is no table named: " + tableName);
 			}
-			i++;
 		}
 		if (TABLES.size() != i)
 			throw new Exception("Invalid tables size");
