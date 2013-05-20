@@ -31,11 +31,11 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 	protected ISafeKVStorage<String> jobTypes;
 	protected TransformationsFactory.ITransformationCreator transforationCreator;
 
-	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer) throws SQLException {
+	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer, String transformation) throws SQLException {
 		super(helper, serializer);
 		jobSettings = getKV("JobSettings", JsonObject.class);
 		jobTypes = getKV("JobTypes", String.class);
-		transforationCreator = TransformationsFactory.create("STRING");
+		transforationCreator = TransformationsFactory.create(transformation);
 	}
 
 	protected <V> ISafeKVStorage<V> getKV(String table, Type expectedType){
@@ -87,7 +87,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 
 	@Override
 	public void test() throws Exception {
-		// TODO XXX I don't have much idea how to do this.. just put something to kv?
+		//check if db exists
+		helper.useDatabase();
+		helper.checkTables();
 	}
 
 	@Override

@@ -24,11 +24,13 @@ public class DBKVHelper extends DBStorage {
 	}
 
 	private Properties properties;
+	private boolean memCache;
 	protected MemcachedClient memcachedClient;
 
-	public DBKVHelper(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
+	public DBKVHelper(Properties connectionProperties, Properties properties, boolean memCache) throws ClassNotFoundException {
 		super(connectionProperties, properties);
 		this.properties = properties;
+		this.memCache = memCache;
 	}
 
 	protected MemcachedClient getMemcachedClient() throws IOException{
@@ -47,8 +49,14 @@ public class DBKVHelper extends DBStorage {
 
 	public IKVStorage<String> getKV(String table){
 		checkArgument(TABLES.contains(table), "Taking DBKV for not existing table " + table);
+		IKVStorage<String> storage = new DBKVStorage(table, this);
 		try {
-			return new MemcachedDBKVStorage(getMemcachedClient(), new DBKVStorage(table, this), table, properties);
+			if (memCache) {
+				return new MemcachedDBKVStorage(getMemcachedClient(), new DBKVStorage(table, this), table, properties);
+			}
+			else {
+				return storage;
+			}
 		} catch (IOException e) {
 			logger.error(e);
 		}
