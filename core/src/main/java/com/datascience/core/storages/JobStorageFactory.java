@@ -6,8 +6,6 @@ import com.datascience.utils.DBHelper;
 import com.datascience.utils.DBKVHelper;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -18,39 +16,26 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class JobStorageFactory {
 
-	protected interface JobStorageCreator{
-		IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer) throws SQLException, ClassNotFoundException;
-	}
-
-	final static Map<String, JobStorageCreator> JOB_STORAGE_FACTORY = new HashMap();
-	static {
-		JOB_STORAGE_FACTORY.put("MEMORY", new JobStorageCreator(){
-			@Override
-			public IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer){
-				return new MemoryJobStorage();
-			}
-		});
-
-		JOB_STORAGE_FACTORY.put("DB", new JobStorageCreator(){
-			@Override
-			public IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer)
-					throws SQLException, ClassNotFoundException{
-				return new DBJobStorage(new DBHelper(connectionProperties, properties), serializer);
-			}
-		});
-
-		JOB_STORAGE_FACTORY.put("KV", new JobStorageCreator(){
-			@Override
-			public IJobStorage create(Properties connectionProperties, Properties properties, ISerializer serializer)
-					throws SQLException, ClassNotFoundException{
-				return new DBKVJobStorage(new DBKVHelper(connectionProperties, properties), serializer);
-			}
-		});
-	}
-
-	public static IJobStorage create(String type, Properties connectionProperties, Properties properties, ISerializer serializer) throws SQLException, ClassNotFoundException{
-		JobStorageCreator jsc = JOB_STORAGE_FACTORY.get(type.toUpperCase());
-		checkArgument(jsc != null, "Unknown storage model: " + type);
-		return jsc.create(connectionProperties, properties,  serializer);
+	public static IJobStorage create(String fullType, Properties connectionProperties, Properties properties, ISerializer serializer) throws SQLException, ClassNotFoundException{
+		String[] storageParams = fullType.split("_");
+		checkArgument(storageParams.length >= 2, "Unknown storage model: " + fullType);
+		String type = (storageParams[0] + "_" + storageParams[1]).toUpperCase();
+		if (type.equals("MEMORY_FULL")){
+			return new MemoryJobStorage();
+		}
+		if (type.equals("MEMORY_KV")){
+			return new MemoryKVJobStorage(serializer);
+		}
+		if (type.equals("DB_FULL")){
+			return new DBJobStorage(new DBHelper(connectionProperties, properties), serializer);
+		}
+		if (type.equals("DB_KV")){
+			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
+			return new DBKVJobStorage(
+				new DBKVHelper(connectionProperties, properties, storageParams.length == 4 && storageParams[2].toUpperCase().equals("MEMCACHE")),
+				serializer,
+				storageParams[3]);
+		}
+		throw new IllegalArgumentException("Unknown storage model: " + fullType);
 	}
 }

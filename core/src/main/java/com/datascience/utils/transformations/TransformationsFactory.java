@@ -154,7 +154,7 @@ public class TransformationsFactory {
 
 	static Map<String, ITransformationCreator> TRANSFORMATION_FACTORY = new HashMap();
 	static {
-		TRANSFORMATION_FACTORY.put("STRING", new StringTransformationCreator());
+		TRANSFORMATION_FACTORY.put("SIMPLE", new StringTransformationCreator());
 		TRANSFORMATION_FACTORY.put("GSON", new SerializationBasedTransformationCreator(new GSONSerializer()));
 	}
 
