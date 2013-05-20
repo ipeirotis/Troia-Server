@@ -11,6 +11,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public abstract class AbstractData<T> implements IData<T> {
 
+	static protected final int WORKER_NAME_LIMIT = 100;
+	static protected final int OBJECT_NAME_LIMIT = 100;
+
 	protected transient List<INewDataObserver<T>> newDataObservers;
 
 	public AbstractData(){
@@ -37,7 +40,8 @@ public abstract class AbstractData<T> implements IData<T> {
 
 	@Override
 	public void addWorker(Worker<T> worker) {
-		checkArgument(worker.getName().length() < 50, "Worker name should be shorter than 50 chars");
+		checkArgument(worker.getName().length() < WORKER_NAME_LIMIT,
+				"Worker name should be shorter than " + WORKER_NAME_LIMIT + " chars");
 		uncheckedAddWorker(worker);
 	}
 
@@ -45,7 +49,8 @@ public abstract class AbstractData<T> implements IData<T> {
 
 	@Override
 	public void addObject(LObject<T> object) {
-		checkArgument(object.getName().length() < 50, "Object name should be shorter than 50 chars");
+		checkArgument(object.getName().length() < OBJECT_NAME_LIMIT,
+				"Object name should be shorter than " + OBJECT_NAME_LIMIT + " chars");
 		uncheckedAddObject(object);
 	}
 

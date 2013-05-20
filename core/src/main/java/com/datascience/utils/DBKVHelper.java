@@ -1,8 +1,10 @@
 package com.datascience.utils;
 
 import com.datascience.utils.storage.*;
+import net.spy.memcached.MemcachedClient;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Properties;
@@ -23,6 +25,7 @@ public class DBKVHelper extends DBStorage {
 
 	private Properties properties;
 	private boolean memCache;
+	protected MemcachedClient memcachedClient;
 
 	public DBKVHelper(Properties connectionProperties, Properties properties, boolean memCache) throws ClassNotFoundException {
 		super(connectionProperties, properties);
@@ -30,14 +33,30 @@ public class DBKVHelper extends DBStorage {
 		this.memCache = memCache;
 	}
 
+	protected MemcachedClient getMemcachedClient() throws IOException{
+		if (memcachedClient == null) {
+			synchronized (this) {
+				if (memcachedClient == null) {
+					memcachedClient = new MemcachedClient(
+							new InetSocketAddress(
+									properties.getProperty(Constants.MEMCACHE_URL),
+									Integer.parseInt(properties.getProperty(Constants.MEMCACHE_PORT))));
+				}
+			}
+		}
+		return memcachedClient;
+	}
+
 	public IKVStorage<String> getKV(String table){
 		checkArgument(TABLES.contains(table), "Taking DBKV for not existing table " + table);
 		IKVStorage<String> storage = new DBKVStorage(table, this);
 		try {
-			if (memCache)
-				return new MemcachedDBKVStorage(storage, table, properties);
-			else
+			if (memCache) {
+				return new MemcachedDBKVStorage(getMemcachedClient(), new DBKVStorage(table, this), table, properties);
+			}
+			else {
 				return storage;
+			}
 		} catch (IOException e) {
 			logger.error(e);
 		}
@@ -46,7 +65,12 @@ public class DBKVHelper extends DBStorage {
 
 	@Override
 	protected void createTable(String tableName) throws SQLException{
-		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(100) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		executeSQL("CREATE TABLE " + tableName + " (id VARCHAR(200) NOT NULL PRIMARY KEY, value LONGTEXT) DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		logger.info("Table " + tableName + " successfully created");
+	}
+
+	@Override
+	protected void finalize(){
+		if (memcachedClient != null) memcachedClient.shutdown();
 	}
 }
