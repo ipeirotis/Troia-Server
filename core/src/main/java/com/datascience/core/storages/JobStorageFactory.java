@@ -34,7 +34,7 @@ public class JobStorageFactory {
 			return new DBKVJobStorage(
 				new DBKVHelper(connectionProperties, properties, storageParams.length == 4 && storageParams[2].toUpperCase().equals("MEMCACHE")),
 				serializer,
-				storageParams[3]);
+				storageParams[storageParams.length-1]);
 		}
 		throw new IllegalArgumentException("Unknown storage model: " + fullType);
 	}
