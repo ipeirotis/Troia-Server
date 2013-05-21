@@ -81,6 +81,6 @@ public class MemoryJobStorage implements IJobStorage {
 
 	@Override
 	public String toString(){
-		return "InMemory";
+		return "MEMORY_FULL";
 	}
 }

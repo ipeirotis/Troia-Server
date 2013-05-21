@@ -155,4 +155,9 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults",
 						transforationCreator.createWorkerStringResultsTransformation(wrnf), true));
 	}
+
+	@Override
+	public String toString(){
+		return "DB_KV";
+	}
 }

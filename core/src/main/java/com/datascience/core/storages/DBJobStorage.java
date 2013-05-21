@@ -184,4 +184,9 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 		wrnf.setCategories(categories);
 		return new InMemoryResults<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory(), wrnf);
 	}
+
+	@Override
+	public String toString(){
+		return "DB_FULL";
+	}
 }

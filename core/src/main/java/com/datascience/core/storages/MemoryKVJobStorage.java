@@ -130,4 +130,9 @@ public class MemoryKVJobStorage implements IJobStorage{
 				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", true),
 				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", true));
 	}
+
+	@Override
+	public String toString(){
+		return "MEMORY_KV";
+	}
 }
