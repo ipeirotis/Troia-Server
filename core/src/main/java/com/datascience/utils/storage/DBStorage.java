@@ -147,6 +147,10 @@ public abstract class DBStorage {
 		connection.close();
 	}
 
+	public void stop() throws Exception{
+		close();
+	}
+
 	protected PreparedStatement initStatement(String command) throws SQLException {
 		ensureConnection();
 		return connection.prepareCall(command);

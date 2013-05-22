@@ -111,16 +111,6 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 	}
 	
 	/**
-	 * This method is never called - this is bad ...
-	 *
-	 * @throws SQLException
-	 */
-	public void close() throws SQLException {
-		logger.info("closing db connections");
-		helper.close();
-	}
-
-	/**
 	 * Added hoping that this will sometime turn out to be useful
 	 */
 	@Override
@@ -155,11 +145,6 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
 				dsStatement.close();
 			}
 		}
-	}
-
-	@Override
-	public void stop() throws Exception {
-		close();
 	}
 
 	@Override

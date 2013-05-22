@@ -93,11 +93,6 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 	}
 
 	@Override
-	public void stop() throws Exception {
-		helper.close();
-	}
-
-	@Override
 	public IData<ContValue> getContData(String id) {
 		ITransformation assignCollectionTransform = transforationCreator.createContAssignsTransformation();
 		ITransformation objectCollectionTransform = transforationCreator.createContObjectsTransformation();

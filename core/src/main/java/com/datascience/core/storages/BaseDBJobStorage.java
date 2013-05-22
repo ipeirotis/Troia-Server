@@ -4,6 +4,7 @@ import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.jobs.JobFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.utils.storage.DBStorage;
+import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 
@@ -12,6 +13,7 @@ import java.sql.SQLException;
  */
 public abstract class BaseDBJobStorage<T extends DBStorage> implements IJobStorage {
 
+	private static Logger logger = Logger.getLogger(BaseDBJobStorage.class);
 	protected T helper;
 	protected ISerializer serializer;
 	protected JobFactory jobFactory;
@@ -30,5 +32,15 @@ public abstract class BaseDBJobStorage<T extends DBStorage> implements IJobStora
 	@Override
 	public void clearAndInitialize() throws SQLException{
 		helper.execute();
+	}
+
+	@Override
+	public void stop() throws Exception {
+		helper.stop();
+	}
+
+	public void close() throws SQLException {
+		logger.info("closing db connections");
+		helper.close();
 	}
 }

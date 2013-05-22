@@ -70,7 +70,8 @@ public class DBKVHelper extends DBStorage {
 	}
 
 	@Override
-	protected void finalize(){
+	public void stop() throws Exception {
+		super.stop();
 		if (memcachedClient != null) memcachedClient.shutdown();
 	}
 }
