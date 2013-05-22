@@ -10,7 +10,6 @@ import org.junit.Test;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -66,7 +65,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
             String metricName = "[MV_Pr[" + categoryName + "]] Majority Vote estimate for prior probability of category " + categoryName;
             String expectedCategoryProbability = dataQuality.get(metricName);
             String actualCategoryProbability = testHelper.format(categoryProbabilities.get(categoryName));
-            fileWriter.write("[MV_Pr[" + categoryName + "]]," + expectedCategoryProbability + "," + actualCategoryProbability);
             assertEquals(expectedCategoryProbability, actualCategoryProbability);
         }
     }
@@ -80,7 +78,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_Exp] Estimated classification cost (MV_Exp metric)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_MV_Exp," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -93,7 +90,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_ML] Estimated classification cost (MV_ML metric)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_MV_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -106,7 +102,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_Min] Estimated classification cost (MV_Min metric)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_MV_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -118,7 +113,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_ML] Actual classification cost for majority vote classification");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Eval_MV_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -130,7 +124,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_Min] Actual classification cost for naive min-cost classification");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Eval_MV_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -142,7 +135,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_Soft] Actual classification cost for naive soft-label classification");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Eval_MV_Soft," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -155,7 +147,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_ML] Estimated data quality, naive majority label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Estm_MV_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -168,7 +159,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_Exp] Estimated data quality, naive soft label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Estm_MV_Exp," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -181,7 +171,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_Min] Estimated data quality, naive mincost label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Estm_MV_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -193,7 +182,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_MV_ML] Actual data quality, naive majority label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Eval_MV_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -205,7 +193,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_MV_Min] Actual data quality, naive mincost label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Eval_MV_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -216,7 +203,6 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_MV_Soft] Actual data quality, naive soft label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Eval_MV_Soft," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 }

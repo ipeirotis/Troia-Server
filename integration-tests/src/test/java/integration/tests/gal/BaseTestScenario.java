@@ -12,7 +12,6 @@ import com.datascience.core.nominal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.utils.CostMatrix;
-import test.java.integration.helpers.FileWriters;
 import test.java.integration.helpers.SummaryResultsParser;
 import test.java.integration.helpers.TestHelpers;
 import test.java.integration.helpers.TestSettings;
@@ -28,7 +27,6 @@ public class BaseTestScenario {
     protected static String inputDir;
     protected static String outputDir;
     protected static TestHelpers testHelper = new TestHelpers();
-    protected static FileWriters fileWriter;
     protected static SummaryResultsParser summaryResultsParser;
     protected static NominalProject project;
     protected static INominalData data;
@@ -36,7 +34,6 @@ public class BaseTestScenario {
     public static void setUp(NominalAlgorithm algorithm, String testName, boolean loadEvaluationLabels) {
 		inputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "input" + TestSettings.FILEPATH_SEPARATOR;
 		outputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "output" + TestSettings.FILEPATH_SEPARATOR;
-		fileWriter = new FileWriters(RESULTS_BASE_DIR + "Results_" + algorithm.getClass().getSimpleName() + "_" + testName + ".csv");
 		summaryResultsParser = new SummaryResultsParser(outputDir + "summary.txt");
 
 		Collection<String> categories = testHelper.LoadCategories(inputDir + "categories.txt");
@@ -52,7 +49,6 @@ public class BaseTestScenario {
 		project.initializeCategories(categories, priors, costs);
 		loadData(loadEvaluationLabels);
         project.getAlgorithm().compute();
-        fileWriter.write("Metric,GAL value,Troia value");
     }
 
     public static void loadData(boolean loadEvaluationLabels) {

@@ -59,17 +59,14 @@ public class DSBaseTestScenario extends BaseTestScenario {
         int actualCategoriesNo = this.data.getCategories().size();
 
         assertEquals(expectedCategoriesNo, actualCategoriesNo);
-        fileWriter.write("Categories," + expectedCategoriesNo + "," + actualCategoriesNo);
 
         int expectedObjectsNo = Integer.parseInt(data.get("Objects in Data Set"));
         int actualObjectsNo = this.data.getObjects().size();
         assertEquals(expectedObjectsNo, actualObjectsNo);
-        fileWriter.write("Objects in Data Set," + expectedObjectsNo + "," + actualObjectsNo);
 
         int expectedWorkersNo = Integer.parseInt(data.get("Workers in Data Set"));
         int actualWorkersNo = this.data.getWorkers().size();
         assertEquals(expectedWorkersNo, actualWorkersNo);
-        fileWriter.write("Workers in Data Set," + expectedWorkersNo + "," + actualWorkersNo);
 
         //get the labels
         int noAssignedLabels = 0;
@@ -80,7 +77,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         int expectedLabelsNo = Integer.parseInt(data.get("Labels Assigned by Workers"));
         assertEquals(expectedLabelsNo, noAssignedLabels);
-        fileWriter.write("Labels Assigned by Workers," + expectedLabelsNo + "," + noAssignedLabels);
     }
 
     @Test
@@ -111,9 +107,8 @@ public class DSBaseTestScenario extends BaseTestScenario {
             String metricName = "[DS_Pr[" + categoryName + "]] DS estimate for prior probability of category " + categoryName;
             String expectedCategoryProbability = dataQuality.get(metricName);
             String actualCategoryProbability = testHelper.format(categoryProbabilities.get(categoryName));
-            fileWriter.write("[DS_Pr[" + categoryName + "]]," + expectedCategoryProbability + "," + actualCategoryProbability);
             //TODO: enable the assert
-            //assertEquals(expectedCategoryProbability, actualCategoryProbability);
+            assertEquals(expectedCategoryProbability, actualCategoryProbability);
         }
     }
 
@@ -129,7 +124,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
         avgClassificationCost /= temp.size();
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_NoVote_Exp] Baseline classification cost (random spammer)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_NoVote_Exp," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -145,7 +139,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
         avgClassificationCost /= temp.size();
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_NoVote_Min] Baseline classification cost (strategic spammer)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_NoVote_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -158,7 +151,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_DS_Exp] Estimated classification cost (DS_Exp metric)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_DS_Exp," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -171,7 +163,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_DS_ML] Estimated classification cost (DS_ML metric)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_DS_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
 
     }
@@ -185,7 +176,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_DS_Min] Estimated classification cost (DS_Min metric)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Estm_DS_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -197,7 +187,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Eval_DS_ML] Actual classification cost for EM, maximum likelihood classification");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Eval_DS_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -209,7 +198,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = data.get("[DataCost_Eval_DS_Min] Actual classification cost for EM, min-cost classification");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Eval_DS_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -221,7 +209,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataCost_Eval_DS_Soft] Actual classification cost for EM, soft-label classification");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
-        fileWriter.write("DataCost_Eval_DS_Soft," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -234,7 +221,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_DS_ML] Estimated data quality, EM algorithm, maximum likelihood");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Estm_DS_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -247,7 +233,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_DS_Exp] Estimated data quality, EM algorithm, soft label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Estm_DS_Exp," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -260,7 +245,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_DS_Min] Estimated data quality, EM algorithm, mincost");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Estm_DS_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -272,7 +256,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_DS_ML] Actual data quality, EM algorithm, maximum likelihood");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Eval_DS_ML," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -284,7 +267,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_DS_Min] Actual data quality, EM algorithm, mincost");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Eval_DS_Min," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -295,7 +277,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_DS_Soft] Actual data quality, EM algorithm, soft label");
         String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        fileWriter.write("DataQuality_Eval_DS_Soft," + expectedClassificationCost + "," + actualClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
     }
 
@@ -306,7 +287,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Estm_DS_Exp_n] Estimated worker quality (non-weighted, DS_Exp metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Estm_DS_Exp_n," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -317,7 +297,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Estm_DS_Exp_w] Estimated worker quality (weighted, DS_Exp metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Estm_DS_Exp_w," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -328,7 +307,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Estm_DS_ML_n] Estimated worker quality (non-weighted, DS_ML metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Estm_DS_ML_n," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -339,7 +317,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Estm_DS_ML_w] Estimated worker quality (weighted, DS_ML metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Estm_DS_ML_w," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -350,7 +327,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Estm_DS_Min_n] Estimated worker quality (non-weighted, DS_Min metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Estm_DS_Min_n," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -361,7 +337,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Estm_DS_Min_w] Estimated worker quality (weighted, DS_Min metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Estm_DS_Min_w," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -372,7 +347,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Eval_DS_Exp_n] Actual worker quality (non-weighted, DS_Exp metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Eval_DS_Exp_n," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -383,7 +357,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Eval_DS_Exp_w] Actual worker quality (weighted, DS_Exp metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Eval_DS_Exp_w," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -394,7 +367,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Eval_DS_ML_n] Actual worker quality (non-weighted, DS_ML metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Eval_DS_ML_n," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -405,7 +377,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Eval_DS_ML_w] Actual worker quality (weighted, DS_ML metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Eval_DS_ML_w," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -416,7 +387,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Eval_DS_Min_n] Actual worker quality (non-weighted, DS_Min metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Eval_DS_Min_n," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -427,7 +397,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
         String expectedQuality = workerQuality.get("[WorkerQuality_Eval_DS_Min_w] Actual worker quality (weighted, DS_Min metric)");
         String actualQuality = testHelper.formatPercent(avgQuality);
-        fileWriter.write("WorkerQuality_Eval_DS_Min_w," + expectedQuality + "," + actualQuality);
         assertEquals(expectedQuality, actualQuality);
     }
 
@@ -442,7 +411,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
         double labelsPerWorker = noAssignedLabels / data.getWorkers().size();
         String expectedNoLabelsPerWorker = workerQuality.get("[Number of labels] Labels per worker");
         String actualNoLabelsPerWorker = testHelper.format(labelsPerWorker);
-        fileWriter.write("Labels per worker," + expectedNoLabelsPerWorker + "," + actualNoLabelsPerWorker);
         assertEquals(expectedNoLabelsPerWorker, actualNoLabelsPerWorker);
     }
 
@@ -461,7 +429,6 @@ public class DSBaseTestScenario extends BaseTestScenario {
         avgNoGoldTests = avgNoGoldTests / workers.size();
         String expectedNoGoldTestsPerWorker = workerQuality.get("[Gold Tests] Gold tests per worker");
         String actualNoGoldTestsPerWorker = testHelper.format(avgNoGoldTests);
-        fileWriter.write("Gold Tests per worker," + expectedNoGoldTestsPerWorker + "," + actualNoGoldTestsPerWorker);
         assertEquals(expectedNoGoldTestsPerWorker, actualNoGoldTestsPerWorker);
     }
 }

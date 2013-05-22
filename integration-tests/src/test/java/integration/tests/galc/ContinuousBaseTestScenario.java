@@ -35,7 +35,6 @@ public class ContinuousBaseTestScenario {
     public static final double TOLERANCE = 0.0000000001;
     protected static ContinuousIpeirotis algorithm;
     protected static ContinuousProject project;
-    protected static FileWriters fileWriter;
     protected static ObjectsResultsParser objectsResultsParser;
     protected static WorkersResultsParser workersResultsParser;
 
@@ -65,15 +64,11 @@ public class ContinuousBaseTestScenario {
         empData.loadGoldLabelsFile(inputDir + "goldObjects.txt");
         empData.loadTrueObjectData(inputDir + "evaluationObjects.txt");
 
-		project.setData(empData);
-		algorithm.setData(empData);
-		algorithm.setEpsilon(EPSILON);
-		algorithm.setIterations(MAX_ITERATIONS);
+	project.setData(empData);
+	algorithm.setData(empData);
+	algorithm.setEpsilon(EPSILON);
+	algorithm.setIterations(MAX_ITERATIONS);
         algorithm.compute();
-
-        //prepare the test results file
-        fileWriter = new FileWriters(RESULTS_BASE_DIR + "Results_" + testSetup.testName + ".csv");
-        fileWriter.write("Metric,Original GALC value,Troia value");
 
         objectsResultsParser = new ObjectsResultsParser();
         objectsResultsParser.ParseResultsObjectsFile(outputDir + "results-objects.txt");
@@ -95,7 +90,6 @@ public class ContinuousBaseTestScenario {
             Double actualAvgLabel = algorithm.getAverageLabel(object);
             Double expectedAvgLabel = expEstObjects.get(objectName).get("avgLabel");
 
-            fileWriter.write("AvgLabel-" + objectName + "," + expectedAvgLabel + "," + actualAvgLabel);
             assertTrue(Math.abs(expectedAvgLabel - actualAvgLabel) < TOLERANCE);
         }
     }
@@ -117,9 +111,6 @@ public class ContinuousBaseTestScenario {
             Double expectedEstimatedValue = expEstObjects.get(objectName).get("estValue");
             Double expectedEstimatedZeta = expEstObjects.get(objectName).get("estZeta");
 
-            fileWriter.write("EstValue-" + objectName + "," + expectedEstimatedValue + "," + actualEstimatedValue);
-            fileWriter.write("EstValue-" + objectName + "," + expectedEstimatedZeta + "," + actualEstimatedZeta);
-
             assertTrue(Math.abs(expectedEstimatedValue - actualEstimatedValue) < TOLERANCE);
             assertTrue(Math.abs(expectedEstimatedZeta - actualEstimatedZeta) < TOLERANCE);
         }
@@ -137,7 +128,6 @@ public class ContinuousBaseTestScenario {
             String workerName = worker.getName();
             int expectedNoAssigns = Integer.parseInt(expWorkersResults.get(workerName).get("labels").toString());
             int actualNoAssigns = project.getData().getWorkerAssigns(worker).size();
-            fileWriter.write("NoAssigns-" + workerName + "," + expectedNoAssigns + "," + actualNoAssigns);
             assertEquals(expectedNoAssigns, actualNoAssigns);
         }
     }
@@ -160,10 +150,6 @@ public class ContinuousBaseTestScenario {
             Double actualEstMu = workerContResults.getEst_mu();
             Double actualEstSigma = workerContResults.getEst_sigma();
             Double actualEstRho = workerContResults.getEst_rho();
-
-            fileWriter.write("Est_Mu_" + workerName + "," + expectedEstMu + "," + actualEstMu);
-            fileWriter.write("Est_Sigma_" + workerName + "," + expectedEstSigma + "," + actualEstSigma);
-            fileWriter.write("Est_Rho_" + workerName + "," + expectedEstRho + "," + actualEstRho);
 
             assertTrue(Math.abs(expectedEstMu - actualEstMu) < TOLERANCE);
             assertTrue(Math.abs(expectedEstSigma - actualEstSigma) < TOLERANCE);
