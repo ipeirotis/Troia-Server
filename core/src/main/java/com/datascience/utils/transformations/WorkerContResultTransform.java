@@ -6,9 +6,8 @@ import com.datascience.core.results.WorkerContResults;
 import com.datascience.utils.ITransformation;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @Author: artur
@@ -37,13 +36,13 @@ public class WorkerContResultTransform implements ITransformation<WorkerContResu
 	public WorkerContResults inverse(String object) {
 		WorkerContResults ret = new WorkerContResults();
 		String[] splitted = object.split(";");
-		ArrayList<String> items = Lists.newArrayList(splitter.split(splitted[0]));
-		ret.setEst_rho(getDoubleValue(items.get(0)));
-		ret.setEst_mu(getDoubleValue(items.get(1)));
-		ret.setEst_sigma(getDoubleValue(items.get(2)));
-		ret.setTrueRho(getDoubleValue(items.get(3)));
-		ret.setTrueMu(getDoubleValue(items.get(4)));
-		ret.setTrueSigma(getDoubleValue(items.get(5)));
+		Iterator<String> values = splitter.split(splitted[0]).iterator();
+		ret.setEst_rho(getDoubleValue(values.next()));
+		ret.setEst_mu(getDoubleValue(values.next()));
+		ret.setEst_sigma(getDoubleValue(values.next()));
+		ret.setTrueRho(getDoubleValue(values.next()));
+		ret.setTrueMu(getDoubleValue(values.next()));
+		ret.setTrueSigma(getDoubleValue(values.next()));
 		ret.setZetaValue(assignedLabelCollectionTransform.inverse(splitted[1]));
 		return ret;
 	}

@@ -6,9 +6,8 @@ import com.datascience.core.base.Worker;
 import com.datascience.utils.ITransformation;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
 * User: artur
@@ -28,17 +27,17 @@ public class AssignTransform<T> implements ITransformation<AssignedLabel<T>, Str
 
 	@Override
 	public String transform(AssignedLabel<T> object) {
-		return joiner.join(new String[]{
+		return joiner.join(
 				object.getWorker().getName(),
 				object.getLobject().getName(),
-				labelTransformation.transform(object.getLabel())});
+				labelTransformation.transform(object.getLabel()));
 	}
 
 	@Override
 	public AssignedLabel<T> inverse(String object) {
-		ArrayList<String> items = Lists.newArrayList(splitter.split(object));
-		Worker worker = new Worker(items.get(0));
-		LObject<T> obj = new LObject<T>(items.get(1));
-		return new AssignedLabel<T>(worker, obj, labelTransformation.inverse(joiner.join(items.subList(2, items.size()))));
+		Iterator<String> values = splitter.split(object).iterator();
+		Worker worker = new Worker(values.next());
+		LObject<T> obj = new LObject<T>(values.next());
+		return new AssignedLabel<T>(worker, obj, labelTransformation.inverse(joiner.join(values)));
 	}
 }

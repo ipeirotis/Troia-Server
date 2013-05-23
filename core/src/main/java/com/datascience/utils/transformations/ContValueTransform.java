@@ -7,6 +7,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
 * User: artur
@@ -27,16 +28,16 @@ public class ContValueTransform implements ITransformation<ContValue, String> {
 	@Override
 	public String transform(ContValue s) {
 		if (s != null)
-			return joiner.join(new String[]{s.getValue().toString(), s.getZeta() != null ? s.getZeta().toString() : ""});
+			return joiner.join(s.getValue().toString(), s.getZeta() != null ? s.getZeta().toString() : "");
 		else
 			return separator;
 	}
 
 	@Override
 	public ContValue inverse(String object) {
-		ArrayList<String> items = Lists.newArrayList(splitter.split(object));
-		String value = items.get(0);
-		String zeta = items.get(1);
+		Iterator<String> values = splitter.split(object).iterator();
+		String value = values.next();
+		String zeta = values.next();
 		if (value.isEmpty() && zeta.isEmpty())
 			return null;
 		return new ContValue(Double.parseDouble(value), zeta.isEmpty() ? null : Double.parseDouble(zeta));

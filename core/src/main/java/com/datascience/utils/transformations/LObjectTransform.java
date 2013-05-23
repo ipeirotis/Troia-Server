@@ -26,10 +26,10 @@ public class LObjectTransform<T> implements ITransformation<LObject<T>, String> 
 
 	@Override
 	public String transform(LObject<T> object) {
-		return joiner.join(new String[]{
+		return joiner.join(
 				object.getName(),
 				labelTransformation.transform(object.getGoldLabel()),
-				labelTransformation.transform(object.getEvaluationLabel())});
+				labelTransformation.transform(object.getEvaluationLabel()));
 	}
 
 	@Override

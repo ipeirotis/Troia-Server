@@ -8,7 +8,6 @@ import com.datascience.utils.ITransformation;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -45,7 +44,6 @@ public class WorkerResultTransform implements ITransformation<WorkerResult, Stri
 		WorkerResult ret = resultFactory.create();
 		MultinomialConfusionMatrix cm = (MultinomialConfusionMatrix) ret.getConfusionMatrix();
 		cm.empty();
-		Map<String, Double> map = new HashMap<String, Double>();
 		for (String item : splitter.split(object)){
 			String[] matrixVal = item.split(",");
 			cm.addError(matrixVal[0], matrixVal[1], Double.parseDouble(matrixVal[2]));
