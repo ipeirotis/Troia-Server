@@ -18,7 +18,7 @@ public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 	
 	protected Job getJob() throws Exception {
 		assertState(jobId != null, "No job ID");
-		assertState(jobStorage != null, "No jobStorage set");
+		assertState(jobStorage != null, "No jobDataLoader set");
 		Job tmp_job = jobStorage.get(jobId);
 		assertArgument(tmp_job != null, "Job with ID " + jobId + " does not exist or is of different kind");
 		// old: ^^^^ || !expectedClass.isAssignableFrom(tmp_job.getProject().getClass())) {

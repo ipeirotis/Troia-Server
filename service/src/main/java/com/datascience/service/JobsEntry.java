@@ -5,7 +5,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import com.datascience.datastoring.jobs.Job;
-import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.utils.IRandomUniqIDGenerator;
@@ -39,15 +38,6 @@ public class JobsEntry {
 		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 	}
 
-	protected JobFactory getJobFactory(){
-		ResponseBuilder responser = getResponseBuilder();
-		IJobStorage storage = getJobStorage();
-		if (responser != null && storage != null){
-			return new JobFactory(responser.getSerializer(), storage);
-		}
-		return null;
-	}
-
 	protected boolean empty_jid(String jid){
 		return jid == null || "".equals(jid);
 	}
@@ -79,16 +69,14 @@ public class JobsEntry {
 		checkArgument(getJobStorage().get(jid) == null, "Job with ID " + jid + " already exists");
 		checkArgument(jo.has("algorithm"), "You should provide alogorithm type (for example BDS or GALC)");
 
-		getJobStorage().add(getJobFactory().create(jo.get("algorithm").getAsString(), jo, jid));
+		getJobStorage().create(jo.get("algorithm").getAsString(), jid, jo);
 		return getResponseBuilder().makeOKResponse("New job created with ID: " + jid);
 	}
 
 	@Path("{id}")
 	public JobEntryBase getJobEntry(@PathParam("id") String id) throws Exception{
 		Job job = getJobStorage().get(id);
-		if (job == null) {
-			throw new IllegalArgumentException("Job with ID " + id + " does not exist");
-		}
+		checkArgument(job != null, "Job with ID " + id + " does not exist");
 		if (job.getProject() instanceof ContinuousProject)
 			return new ContinuousJobEntry(context, request, uriInfo, id);
 		else

@@ -36,11 +36,11 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class JobFactory {
 
 	protected ISerializer serializer;
-	protected IJobStorage jobStorage;
+	protected IJobDataLoader jobDataLoader;
 
-	public JobFactory(ISerializer serializer, IJobStorage jobStorage){
+	public JobFactory(ISerializer serializer, IJobDataLoader jobDataLoader){
 		this.serializer = serializer;
-		this.jobStorage = jobStorage;
+		this.jobDataLoader = jobDataLoader;
 	}
 
 	protected interface AlgorithmCreator {
@@ -51,8 +51,8 @@ public class JobFactory {
 		Job create(JsonObject jo, String id);
 	}
 
-	final static Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
-	final static Map<String, JobCreator> JOB_FACTORY = new HashMap();
+	final Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
+	final Map<String, JobCreator> JOB_FACTORY = new HashMap();
 	{
 
 		AlgorithmCreator bds = new AlgorithmCreator() {
@@ -130,8 +130,8 @@ public class JobFactory {
 											   String id){
 		checkArgument(ALG_FACTORY.containsKey(t(algorithm)), "Unknown Job algorithm: ", algorithm);
 		NominalAlgorithm na = ALG_FACTORY.get(t(algorithm)).create(jo);
-		INominalData data = jobStorage.getNominalData(id);
-		IResults<String, DatumResult, WorkerResult> results = jobStorage.getNominalResults(id, categories);
+		INominalData data = jobDataLoader.getNominalData(id);
+		IResults<String, DatumResult, WorkerResult> results = jobDataLoader.getNominalResults(id, categories);
 		NominalProject np = new NominalProject(na, data, results);
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
@@ -164,8 +164,8 @@ public class JobFactory {
 		ContinuousIpeirotis alg = new ContinuousIpeirotis();
 		alg.setEpsilon(jo.has(Constants.EPSILON) ? jo.get(Constants.EPSILON).getAsDouble() : 1e-6);
 		alg.setIterations(jo.has(Constants.ITERATIONS) ? jo.get(Constants.ITERATIONS).getAsInt() : 10);
-		IData<ContValue> data = jobStorage.getContData(id);
-		IResults<ContValue, DatumContResults, WorkerContResults> results = jobStorage.getContResults(id);
+		IData<ContValue> data = jobDataLoader.getContData(id);
+		IResults<ContValue, DatumContResults, WorkerContResults> results = jobDataLoader.getContResults(id);
 		ContinuousProject cp = new ContinuousProject(alg, data, results);
 		this.<ContValue>handleSchedulerLoading(jo, cp);
 		cp.setInitializationData(jo);
