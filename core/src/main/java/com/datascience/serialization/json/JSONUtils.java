@@ -12,12 +12,11 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import com.datascience.core.base.*;
-import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.MatrixValue;

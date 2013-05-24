@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.datascience.core.storages;
+package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.memory.InMemoryData;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;

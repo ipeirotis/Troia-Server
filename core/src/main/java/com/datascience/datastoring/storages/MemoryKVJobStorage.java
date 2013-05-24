@@ -1,10 +1,10 @@
-package com.datascience.core.storages;
+package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.*;
-import com.datascience.core.datastoring.kv.KVCleaner;
-import com.datascience.core.datastoring.kv.KVData;
-import com.datascience.core.datastoring.kv.KVNominalData;
-import com.datascience.core.datastoring.kv.KVResults;
+import com.datascience.datastoring.kv.KVCleaner;
+import com.datascience.datastoring.kv.KVData;
+import com.datascience.datastoring.kv.KVNominalData;
+import com.datascience.datastoring.kv.KVResults;
 import com.datascience.core.jobs.IJobStorage;
 import com.datascience.core.jobs.Job;
 import com.datascience.core.jobs.JobFactory;

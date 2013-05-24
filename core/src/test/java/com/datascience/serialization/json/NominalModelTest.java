@@ -7,7 +7,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.core.storages.MemoryJobStorage;
+import com.datascience.datastoring.storages.MemoryJobStorage;
 import com.datascience.gal.IncrementalDawidSkene;
 import com.google.gson.*;
 import org.junit.Assert;

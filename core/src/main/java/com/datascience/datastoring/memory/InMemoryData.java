@@ -1,4 +1,4 @@
-package com.datascience.core.datastoring.memory;
+package com.datascience.datastoring.memory;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AbstractData;

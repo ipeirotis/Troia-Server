@@ -1,4 +1,4 @@
-package com.datascience.core.storages;
+package com.datascience.datastoring.storages;
 
 import java.util.HashSet;
 import java.util.Set;

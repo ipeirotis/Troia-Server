@@ -1,7 +1,6 @@
 package com.datascience.mv;
 
 import com.datascience.core.base.*;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.IResults;
 import com.datascience.core.results.DatumResult;
@@ -9,7 +8,7 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
 import static org.junit.Assert.*;
 
-import com.datascience.core.storages.MemoryJobStorage;
+import com.datascience.datastoring.storages.MemoryJobStorage;
 import org.junit.Before;
 import org.junit.Test;
 

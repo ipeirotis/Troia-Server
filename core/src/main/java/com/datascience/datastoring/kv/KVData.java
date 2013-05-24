@@ -1,4 +1,4 @@
-package com.datascience.core.datastoring.kv;
+package com.datascience.datastoring.kv;
 
 import com.datascience.core.base.AbstractData;
 import com.datascience.core.base.AssignedLabel;

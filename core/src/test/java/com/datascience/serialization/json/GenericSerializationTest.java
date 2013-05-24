@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.memory.InMemoryData;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

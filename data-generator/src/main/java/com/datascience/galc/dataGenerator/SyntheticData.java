@@ -3,14 +3,12 @@ package com.datascience.galc.dataGenerator;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.memory.InMemoryData;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class SyntheticData extends InMemoryData<ContValue> {
 	

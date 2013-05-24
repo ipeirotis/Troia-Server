@@ -1,4 +1,4 @@
-package com.datascience.core.storages;
+package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
