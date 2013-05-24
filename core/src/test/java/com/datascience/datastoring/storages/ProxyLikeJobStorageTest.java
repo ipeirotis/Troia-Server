@@ -1,5 +1,6 @@
 package com.datascience.datastoring.storages;
 
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.Job;
 import org.junit.Test;

@@ -1,9 +1,12 @@
 package com.datascience.datastoring.storages;
 
+import com.datascience.datastoring.datamodels.full.DBJobStorage;
+import com.datascience.datastoring.backends.db.DBKVJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
-import com.datascience.utils.DBHelper;
-import com.datascience.utils.DBKVHelper;
+import com.datascience.datastoring.backends.db.DBHelper;
+import com.datascience.datastoring.backends.db.DBKVHelper;
 
 import java.sql.SQLException;
 import java.util.Properties;

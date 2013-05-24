@@ -1,6 +1,4 @@
-package com.datascience.utils;
-
-import com.datascience.utils.storage.DBStorage;
+package com.datascience.datastoring.backends.db;
 
 import java.sql.SQLException;
 import java.util.Arrays;

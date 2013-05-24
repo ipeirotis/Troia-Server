@@ -1,5 +1,6 @@
-package com.datascience.utils.storage;
+package com.datascience.datastoring.backends.db;
 
+import com.datascience.utils.storage.IKVStorage;
 import org.apache.log4j.Logger;
 
 import java.sql.*;

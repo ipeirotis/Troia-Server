@@ -3,7 +3,7 @@ package com.datascience.gal.dataGenerator;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
-import com.datascience.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.utils.CostMatrix;
 import org.apache.log4j.Logger;

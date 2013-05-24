@@ -1,13 +1,13 @@
-package com.datascience.datastoring.storages;
+package com.datascience.datastoring.datamodels.full;
 
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
-import com.datascience.datastoring.memory.InMemoryData;
-import com.datascience.datastoring.memory.InMemoryNominalData;
-import com.datascience.datastoring.memory.InMemoryResults;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 

@@ -7,7 +7,7 @@ import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.mv.IncrementalMV;
 import org.junit.Test;
 

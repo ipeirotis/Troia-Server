@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.datascience.core.base.*;
-import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.MatrixValue;

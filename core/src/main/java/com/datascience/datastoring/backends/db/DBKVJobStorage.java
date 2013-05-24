@@ -1,17 +1,16 @@
-package com.datascience.datastoring.storages;
+package com.datascience.datastoring.backends.db;
 
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.core.base.*;
-import com.datascience.datastoring.kv.KVCleaner;
-import com.datascience.datastoring.kv.KVData;
-import com.datascience.datastoring.kv.KVNominalData;
-import com.datascience.datastoring.kv.KVResults;
+import com.datascience.datastoring.datamodels.kv.KVCleaner;
+import com.datascience.datastoring.datamodels.kv.KVData;
+import com.datascience.datastoring.datamodels.kv.KVNominalData;
+import com.datascience.datastoring.datamodels.kv.KVResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
-import com.datascience.utils.DBKVHelper;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.storage.*;
 import com.datascience.utils.transformations.*;

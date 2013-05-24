@@ -8,7 +8,7 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.WorkerResult;
 import static org.junit.Assert.*;
 
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import org.junit.Before;
 import org.junit.Test;
 

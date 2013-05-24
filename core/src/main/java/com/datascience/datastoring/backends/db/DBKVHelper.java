@@ -1,4 +1,4 @@
-package com.datascience.utils;
+package com.datascience.datastoring.backends.db;
 
 import com.datascience.utils.storage.*;
 import net.spy.memcached.MemcachedClient;

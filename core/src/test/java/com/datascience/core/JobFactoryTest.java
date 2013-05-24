@@ -2,7 +2,7 @@ package com.datascience.core;
 
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.datastoring.jobs.JobFactory;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 import com.datascience.galc.ContinuousIpeirotis;

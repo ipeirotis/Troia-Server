@@ -1,4 +1,4 @@
-package com.datascience.datastoring.storages;
+package com.datascience.datastoring.datamodels.full;
 
 
 import java.sql.PreparedStatement;
@@ -10,13 +10,14 @@ import java.util.UUID;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
-import com.datascience.datastoring.memory.InMemoryData;
-import com.datascience.datastoring.memory.InMemoryNominalData;
-import com.datascience.datastoring.memory.InMemoryResults;
+import com.datascience.datastoring.backends.db.BaseDBJobStorage;
+import com.datascience.datastoring.backends.db.DBHelper;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
-import com.datascience.utils.DBHelper;
 import org.apache.log4j.Logger;
 
 import com.datascience.datastoring.jobs.Job;
@@ -27,7 +28,7 @@ import com.datascience.datastoring.jobs.Job;
  * FIXME: possible sql injection!
  * @author konrad
  */
-public class DBJobStorage extends BaseDBJobStorage<DBHelper>{
+public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
 
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
 

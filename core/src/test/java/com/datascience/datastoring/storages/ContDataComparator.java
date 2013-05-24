@@ -1,7 +1,7 @@
 package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.*;
-import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

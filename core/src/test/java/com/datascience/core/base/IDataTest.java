@@ -1,8 +1,8 @@
 package com.datascience.core.base;
 
-import com.datascience.datastoring.kv.KVData;
-import com.datascience.datastoring.memory.InMemoryData;
-import com.datascience.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.kv.KVData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.utils.storage.DefaultSafeKVStorage;
 import com.datascience.utils.storage.MemoryKVStorage;
 import org.apache.log4j.Logger;

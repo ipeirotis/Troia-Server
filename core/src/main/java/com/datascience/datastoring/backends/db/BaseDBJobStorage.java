@@ -1,9 +1,8 @@
-package com.datascience.datastoring.storages;
+package com.datascience.datastoring.backends.db;
 
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.serialization.ISerializer;
-import com.datascience.utils.storage.DBStorage;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;

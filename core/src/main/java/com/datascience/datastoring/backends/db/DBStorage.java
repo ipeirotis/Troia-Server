@@ -1,5 +1,6 @@
-package com.datascience.utils.storage;
+package com.datascience.datastoring.backends.db;
 
+import com.datascience.utils.storage.Constants;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
