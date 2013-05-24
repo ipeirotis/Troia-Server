@@ -6,7 +6,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.Quality;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.gal.*;

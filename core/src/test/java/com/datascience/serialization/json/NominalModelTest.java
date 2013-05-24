@@ -1,7 +1,7 @@
 package com.datascience.serialization.json;
 
-import com.datascience.core.jobs.Job;
-import com.datascience.core.jobs.JobFactory;
+import com.datascience.datastoring.jobs.Job;
+import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;

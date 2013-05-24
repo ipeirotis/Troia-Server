@@ -3,7 +3,7 @@ package com.datascience.scheduler;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 
 /**
  * @Author: konrad

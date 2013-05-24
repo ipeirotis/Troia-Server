@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 import org.joda.time.DateTime;
 
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/status/")

@@ -1,6 +1,6 @@
 package com.datascience.service;
 
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.resource.Singleton;
 import org.apache.log4j.Logger;

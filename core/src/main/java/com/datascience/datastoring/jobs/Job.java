@@ -1,4 +1,4 @@
-package com.datascience.core.jobs;
+package com.datascience.datastoring.jobs;
 
 import com.datascience.core.base.Project;
 import com.google.common.base.Objects;

@@ -1,11 +1,11 @@
 package com.datascience.datastoring.storages;
 
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import org.apache.log4j.Logger;
 
-import com.datascience.core.jobs.Job;
+import com.datascience.datastoring.jobs.Job;
 import com.datascience.executor.SynchronizedCommand;
-import com.datascience.core.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsManager;
 
 /**
  *

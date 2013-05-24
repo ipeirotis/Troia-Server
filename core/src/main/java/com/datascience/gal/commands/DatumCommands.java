@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import com.datascience.core.base.LObject;
 import com.datascience.core.commands.ParamChecking;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.nominal.NominalProject;
 
 /**

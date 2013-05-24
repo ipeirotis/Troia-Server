@@ -1,7 +1,7 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.commands.Utils.ShallowAssign;
 
 import java.util.Collection;

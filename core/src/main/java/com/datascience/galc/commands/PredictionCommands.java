@@ -5,7 +5,7 @@ import java.util.*;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;

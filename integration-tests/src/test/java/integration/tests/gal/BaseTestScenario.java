@@ -6,7 +6,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.*;
 import com.datascience.core.nominal.decision.*;
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.storages.MemoryJobStorage;
 import com.datascience.core.nominal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;

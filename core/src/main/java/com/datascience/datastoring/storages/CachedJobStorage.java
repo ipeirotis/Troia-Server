@@ -3,11 +3,11 @@ package com.datascience.datastoring.storages;
 import java.util.concurrent.ExecutionException;
 
 import com.datascience.core.base.Project;
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import org.apache.log4j.Logger;
 
-import com.datascience.core.jobs.Job;
+import com.datascience.datastoring.jobs.Job;
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

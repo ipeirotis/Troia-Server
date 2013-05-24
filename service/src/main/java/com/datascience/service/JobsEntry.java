@@ -4,9 +4,9 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.core.jobs.Job;
-import com.datascience.core.jobs.JobFactory;
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.Job;
+import com.datascience.datastoring.jobs.JobFactory;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.google.gson.JsonObject;

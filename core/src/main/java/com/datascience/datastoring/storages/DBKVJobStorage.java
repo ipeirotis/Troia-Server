@@ -1,7 +1,7 @@
 package com.datascience.datastoring.storages;
 
 import com.datascience.core.nominal.PureNominalData;
-import com.datascience.core.jobs.Job;
+import com.datascience.datastoring.jobs.Job;
 import com.datascience.core.base.*;
 import com.datascience.datastoring.kv.KVCleaner;
 import com.datascience.datastoring.kv.KVData;

@@ -2,7 +2,7 @@ package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 

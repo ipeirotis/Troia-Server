@@ -1,7 +1,7 @@
 package com.datascience.datastoring.storages;
 
-import com.datascience.core.jobs.IJobStorage;
-import com.datascience.core.jobs.JobFactory;
+import com.datascience.datastoring.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.utils.storage.DBStorage;
 import org.apache.log4j.Logger;

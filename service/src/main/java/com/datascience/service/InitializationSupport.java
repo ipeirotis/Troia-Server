@@ -14,13 +14,13 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.core.Response;
 
-import com.datascience.core.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsManager;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**

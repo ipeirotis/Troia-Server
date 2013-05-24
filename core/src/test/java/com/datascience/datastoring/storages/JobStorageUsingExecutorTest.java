@@ -1,8 +1,8 @@
 package com.datascience.datastoring.storages;
 
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.core.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsManager;
 
 /**
  *

@@ -13,16 +13,16 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.core.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
-import com.datascience.core.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**

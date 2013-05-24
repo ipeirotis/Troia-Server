@@ -19,7 +19,7 @@ import com.datascience.serialization.ISerializer;
 import com.datascience.utils.DBHelper;
 import org.apache.log4j.Logger;
 
-import com.datascience.core.jobs.Job;
+import com.datascience.datastoring.jobs.Job;
 
 /**
  * From old class DawidSkeneCache.
