@@ -108,6 +108,13 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersConfusionMatrix());
 	}
 
+	@Path("workers/quality/payment/")
+	@GET
+	public Response getWorkersPayments(@DefaultValue("1.0") @QueryParam("qualifiedWage") double qualifiedWage,
+									   @DefaultValue("0.01") @QueryParam("costThreshold") double costThreshold){
+		return buildResponseOnCommand(new PredictionCommands.GetWorkersPayments(qualifiedWage, costThreshold));
+	}
+
 	@Override
 	protected JobCommand getPredictionZipCommand(String path){
 		return new PredictionCommands.GetPredictionZip(path);

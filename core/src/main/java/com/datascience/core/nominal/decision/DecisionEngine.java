@@ -37,6 +37,11 @@ public class DecisionEngine {
 			getPD(datum, project), cm);
 	}
 
+	public double estimateMissclassificationCost(NominalProject project, Map<String, Double> pd) {
+		return labelProbabilityDistributionCostCalculator.predictedLabelCost(
+				pd, project.getData().getCostMatrix());
+	}
+
 	public String predictLabel(NominalProject project, LObject<String> datum) {
 		return predictLabel(project, datum, project.getData().getCostMatrix());
 	}
