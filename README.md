@@ -8,7 +8,7 @@ so it can prepare and run this service. You have to download the following softw
 * tomcat - http://tomcat.apache.org/
 
 
-<a href="/media/downloads/troia.war">
+<a href="http://project-troia.com/media/downloads/troia.war">
   Download precompiled WAR file
 </a>
 
@@ -111,8 +111,6 @@ To check if everything is working correctly you can punch the following into the
 
 As a result you should get a JSON response saying that everything is OK.
 
-**That covers all issues in regard of setting up Troia from precompiled WAR file, following part will instruct
-you how to build your own WAR file from sources downloaded from GitHub.**
 
 Building WAR file
 -----------------
