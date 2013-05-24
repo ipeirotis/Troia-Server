@@ -8,6 +8,7 @@ import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.jobs.JobCommand;
 import com.datascience.core.stats.MatrixValue;
+import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
 
@@ -40,6 +41,28 @@ public class PredictionCommands {
 			setResult(wq);
 		}
 	}
+
+	static public class GetWorkersPayments extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
+
+		double qualifiedWage;
+		double costThreshold;
+		public GetWorkersPayments(double qualifiedWage, double costThreshold){
+			super(false);
+			this.qualifiedWage = qualifiedWage;
+			this.costThreshold = costThreshold;
+		}
+
+		@Override
+		protected void realExecute() {
+			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
+			for (Worker<String> w : project.getData().getWorkers()){
+				QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
+				wq.add(new WorkerValue<Double>(w.getName(), wspq.getWorkerWage(qualifiedWage, costThreshold)));
+			}
+			setResult(wq);
+		}
+	}
+
 
 	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
 		private WorkerQualityCalculator wqc;
