@@ -89,8 +89,10 @@ public class ConfigEntry {
 	@Path("resetDB")
 	public Response resetDB(){
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
+			IJobStorage js = (IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE);
 			try {
-				((IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE)).clearAndInitialize();
+				js.clear();
+				js.initialize();
 			} catch (Exception e){
 				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
