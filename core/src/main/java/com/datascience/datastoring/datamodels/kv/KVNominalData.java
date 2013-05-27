@@ -7,7 +7,7 @@ import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.utils.CostMatrix;
-import com.datascience.utils.storage.ISafeKVStorage;
+import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 import java.util.Collection;
 import java.util.Map;
 

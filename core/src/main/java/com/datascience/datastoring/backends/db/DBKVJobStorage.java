@@ -1,6 +1,7 @@
 package com.datascience.datastoring.backends.db;
 
 import com.datascience.core.nominal.PureNominalData;
+import com.datascience.datastoring.adapters.kv.*;
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.core.base.*;
 import com.datascience.datastoring.datamodels.kv.KVCleaner;
@@ -12,7 +13,6 @@ import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
 import com.datascience.utils.ITransformation;
-import com.datascience.utils.storage.*;
 import com.datascience.utils.transformations.*;
 import com.google.gson.JsonObject;
 
@@ -57,31 +57,13 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
 		return new DefaultSafeKVStorage<V>(kvstorage, table);
 	}
 
-	@Override
-	public <T extends Project> Job<T> get(String id) throws Exception {
-		JsonObject settings = jobSettings.get(id);
-		String type = jobTypes.get(id);
-		if (type == null || settings == null)
-			return null;
-		return jobFactory.create(type, settings, id);
-	}
 
 	@Override
-	public void add(Job job) throws Exception {
-		// We should check whether this job exists - if not than create new:
-		// - row in JobSettings, - row with empty collection in {Objects, Workers}
-		jobTypes.put(job.getId(), job.getProject().getKind());
-		jobSettings.put(job.getId(), job.getProject().getInitializationData());
-	}
-
-	@Override
-	public void remove(Job job) throws Exception {
-		Project p = job.getProject();
-		KVCleaner cleaner = new KVCleaner();
-		cleaner.cleanUp((KVResults) p.getResults(), p.getData());
-		cleaner.cleanUp((KVData) p.getData()); // order is important ...
-		jobTypes.remove("");
-		jobSettings.remove("");
+	public void stop() throws Exception {
+		kvsProvider.stop();
+		// TODO out there move them to implementations
+		jobTypes.shutdown();
+		jobSettings.shutdown();
 	}
 
 	@Override

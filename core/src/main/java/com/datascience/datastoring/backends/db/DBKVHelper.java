@@ -1,6 +1,8 @@
 package com.datascience.datastoring.backends.db;
 
-import com.datascience.utils.storage.*;
+import com.datascience.datastoring.Constants;
+import com.datascience.datastoring.adapters.kv.IKVStorage;
+import com.datascience.datastoring.adapters.kv.MemcachedDBKVStorage;
 import net.spy.memcached.MemcachedClient;
 
 import java.io.IOException;

@@ -4,7 +4,7 @@ import com.datascience.core.base.AbstractData;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.utils.storage.ISafeKVStorage;
+import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 
 import java.util.Arrays;
 import java.util.Collection;

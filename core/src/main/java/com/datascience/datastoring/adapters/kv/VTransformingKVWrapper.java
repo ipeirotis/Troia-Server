@@ -1,4 +1,4 @@
-package com.datascience.utils.storage;
+package com.datascience.datastoring.adapters.kv;
 
 import com.datascience.utils.ITransformation;
 

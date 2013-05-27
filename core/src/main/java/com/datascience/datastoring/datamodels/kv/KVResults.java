@@ -4,7 +4,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.AbstractResults;
 import com.datascience.core.results.ResultsFactory;
-import com.datascience.utils.storage.ISafeKVStorage;
+import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 
 
 /**

@@ -1,5 +1,6 @@
-package com.datascience.utils.storage;
+package com.datascience.datastoring.adapters.kv;
 
+import com.datascience.datastoring.Constants;
 import net.spy.memcached.MemcachedClient;
 import org.apache.log4j.Logger;
 

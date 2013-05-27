@@ -1,67 +1,80 @@
-package com.datascience.datastoring.storages;
+package com.datascience.datastoring.datamodels.kv;
 
-import com.datascience.core.base.*;
-import com.datascience.datastoring.adapters.kv.DefaultSafeKVStorage;
-import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
-import com.datascience.datastoring.adapters.kv.KVKeyPrefixingWrapper;
-import com.datascience.datastoring.adapters.kv.MemoryKVStorage;
-import com.datascience.datastoring.datamodels.kv.KVCleaner;
-import com.datascience.datastoring.datamodels.kv.KVData;
-import com.datascience.datastoring.datamodels.kv.KVNominalData;
-import com.datascience.datastoring.datamodels.kv.KVResults;
-import com.datascience.datastoring.jobs.IJobStorage;
-import com.datascience.datastoring.jobs.Job;
-import com.datascience.datastoring.jobs.JobFactory;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.IData;
+import com.datascience.core.base.Project;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.adapters.kv.IKVsProvider;
+import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
+import com.datascience.datastoring.jobs.*;
 import com.datascience.serialization.ISerializer;
 import com.google.gson.JsonObject;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 /**
- * User: artur
- * Date: 5/17/13
+ * @Author: konrad
  */
-public class MemoryKVJobStorage implements IJobStorage{
+public class KVJobStorage extends BaseJobStorage implements IJobDataLoader{
 
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
+	protected KVCleaner cleaner;
 	protected JobFactory jobFactory;
+	protected IKVsProvider kvsProvider;
 
-	public MemoryKVJobStorage(ISerializer serializer){
-		jobSettings = getKV("JobSettings");
-		jobTypes = getKV("JobTypes");
+	public KVJobStorage(ISerializer serializer, IKVsProvider kvsProvider){
+		super(kvsProvider);
+		this.kvsProvider = kvsProvider;
 		jobFactory = new JobFactory(serializer, this);
+		initializeStorage();
 	}
 
-	protected <V> ISafeKVStorage<V> getKV(String table){
-		return new DefaultSafeKVStorage<V>(new MemoryKVStorage<V>(), table);
-	}
-
-	protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, boolean multirows){
-		return new DefaultSafeKVStorage<V>(new KVKeyPrefixingWrapper<V>(new MemoryKVStorage<V>(), multirows ? id + "_" : id), table);
-	}
-
-	@Override
-	public void test() throws Exception {
+	protected void initializeStorage(){
+		cleaner = new KVCleaner();
+		jobSettings = kvsProvider.getSettingsKV();
+		jobTypes = kvsProvider.getKindsKV();
 	}
 
 	@Override
-	public void clearAndInitialize() throws SQLException {
+	public <T extends Project> Job<T>  create(String type, String id, JsonObject settings) throws Exception {
+		Job<T> job = jobFactory.create(type, settings, id);
+		jobTypes.put(job.getId(), job.getProject().getKind());
+		jobSettings.put(job.getId(), job.getProject().getInitializationData());
+		return job;
 	}
+
+	@Override
+	public <T extends Project> Job<T> get(String id) throws Exception {
+		JsonObject settings = jobSettings.get(id);
+		String type = jobTypes.get(id);
+		if (type == null || settings == null)
+			return null;
+		return jobFactory.create(type, settings, id);
+	}
+
+	@Override
+	public void remove(Job job) throws Exception {
+		Project p = job.getProject();
+		cleaner.cleanUp((KVResults) p.getResults(), p.getData());
+		cleaner.cleanUp((KVData) p.getData()); // order is important ...
+		jobTypes.remove("");
+		jobSettings.remove("");
+	}
+
 
 	@Override
 	public IData<ContValue> getContData(String id) {
 		KVData<ContValue> data = new KVData<ContValue>(
-				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "WorkerAssigns", true),
-				this.<Collection<AssignedLabel<ContValue>>>getKVForJob(id, "ObjectAssigns", true),
-				this.<Collection<LObject<ContValue>>>getKVForJob(id, "Objects", false),
-				this.<Collection<LObject<ContValue>>>getKVForJob(id, "GoldObjects", false),
-				this.<Collection<LObject<ContValue>>>getKVForJob(id, "EvaluationObjects", false),
-				this.<Collection<Worker<ContValue>>>getKVForJob(id, "Workers", false)
+				kvsProvider.<Collection<AssignedLabel<ContValue>>>getWorkerAssignsKV(id),
+				kvsProvider.getObjectAssignsKV(id),
+				kvsProvider.getObjectsKV(id),
+				kvsProvider.getGoldObjectsKV(id),
+				kvsProvider.getEvaluationObjectsKV(id),
+				kvsProvider.getWorkersKV(id)
 		);
 		return data;
 	}
@@ -100,8 +113,5 @@ public class MemoryKVJobStorage implements IJobStorage{
 				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", true));
 	}
 
-	@Override
-	public String toString(){
-		return "MEMORY_KV";
-	}
+	protected ISafeKVStorage<PureNominalData> getPureNominalDataKV()
 }
