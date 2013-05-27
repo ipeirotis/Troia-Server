@@ -195,10 +195,8 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			Double sum_zij = 0.0;
 
 			double oldrho = wr.getEst_rho();
+			HashMap<LObject<ContValue>, Double> zeta = estimateObjectZetas(worker);
 			for (AssignedLabel<ContValue> al : wr.getZetaValues()) {
-
-				HashMap<LObject<ContValue>, Double> zeta = estimateObjectZetas(worker);
-
 				LObject<ContValue> object = al.getLobject();
 				Double z_i = zeta.get(object);
 				double z_ij = getLabel(al);
@@ -216,7 +214,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			}
 			wr.setEst_rho(rho);
 			results.addWorkerResult(worker, wr);
-			diff += Math.abs(wr.getEst_rho() - oldrho);
+			diff += Math.abs(rho - oldrho);
 		}
 		return diff;
 	}
