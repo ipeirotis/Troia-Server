@@ -1,4 +1,4 @@
-package com.datascience.datastoring.adapters.kv;
+package com.datascience.datastoring.datamodels.kv;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
@@ -9,6 +9,7 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerContResults;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.datastoring.IBackendAdapter;
+import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 import com.google.gson.JsonObject;
 
 import java.util.Collection;

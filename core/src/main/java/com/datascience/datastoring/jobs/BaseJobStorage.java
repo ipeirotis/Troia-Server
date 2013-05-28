@@ -5,6 +5,7 @@ import com.datascience.datastoring.IBackendAdapter;
 
 /**
  * Could use <T extends backendAdapter> but using name backendAdapter would be missleading
+ * It would be even better to turn it into wrapper but than we couldn't implement more (interface etc.)
  * @Author: konrad
  */
 public abstract class BaseJobStorage implements IJobStorage {
