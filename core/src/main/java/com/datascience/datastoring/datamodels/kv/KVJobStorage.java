@@ -1,11 +1,7 @@
 package com.datascience.datastoring.datamodels.kv;
 
-import com.datascience.core.base.AssignedLabel;
-import com.datascience.core.base.ContValue;
-import com.datascience.core.base.IData;
-import com.datascience.core.base.Project;
+import com.datascience.core.base.*;
 import com.datascience.core.nominal.INominalData;
-import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.results.*;
 import com.datascience.datastoring.adapters.kv.IKVsProvider;
 import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
@@ -65,16 +61,15 @@ public class KVJobStorage extends BaseJobStorage implements IJobDataLoader{
 		jobSettings.remove("");
 	}
 
-
 	@Override
 	public IData<ContValue> getContData(String id) {
 		KVData<ContValue> data = new KVData<ContValue>(
-				kvsProvider.<Collection<AssignedLabel<ContValue>>>getWorkerAssignsKV(id),
-				kvsProvider.getObjectAssignsKV(id),
-				kvsProvider.getObjectsKV(id),
-				kvsProvider.getGoldObjectsKV(id),
-				kvsProvider.getEvaluationObjectsKV(id),
-				kvsProvider.getWorkersKV(id)
+				kvsProvider.<ContValue>getWorkerAssignsKV(id),
+				kvsProvider.<ContValue>getObjectAssignsKV(id),
+				kvsProvider.<ContValue>getObjectsKV(id),
+				kvsProvider.<ContValue>getGoldObjectsKV(id),
+				kvsProvider.<ContValue>getEvaluationObjectsKV(id),
+				kvsProvider.<ContValue>getWorkersKV(id)
 		);
 		return data;
 	}
@@ -82,13 +77,13 @@ public class KVJobStorage extends BaseJobStorage implements IJobDataLoader{
 	@Override
 	public INominalData getNominalData(String id) {
 		INominalData data = new KVNominalData(
-				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "WorkerAssigns", true),
-				this.<Collection<AssignedLabel<String>>>getKVForJob(id, "ObjectAssigns", true),
-				this.<Collection<LObject<String>>>getKVForJob(id, "Objects", false),
-				this.<Collection<LObject<String>>>getKVForJob(id, "GoldObjects", false),
-				this.<Collection<LObject<String>>>getKVForJob(id, "EvaluationObjects", false),
-				this.<Collection<Worker<String>>>getKVForJob(id, "Workers", false),
-				this.<PureNominalData>getKVForJob(id, "JobSettings", false)
+				kvsProvider.<String>getWorkerAssignsKV(id),
+				kvsProvider.<String>getObjectAssignsKV(id),
+				kvsProvider.<String>getObjectsKV(id),
+				kvsProvider.<String>getGoldObjectsKV(id),
+				kvsProvider.<String>getEvaluationObjectsKV(id),
+				kvsProvider.<String>getWorkersKV(id),
+				kvsProvider.getNominalJobSettingsKV(id)
 		);
 		return data;
 	}
@@ -98,8 +93,8 @@ public class KVJobStorage extends BaseJobStorage implements IJobDataLoader{
 		return new KVResults(
 				new ResultsFactory.DatumContResultFactory(),
 				new ResultsFactory.WorkerContResultFactory(),
-				this.<Collection<DatumContResults>>getKVForJob(id, "ObjectResults", true),
-				this.<Collection<WorkerContResults>>getKVForJob(id, "WorkerResults", true));
+				kvsProvider.getDatumContResultsKV(id),
+				kvsProvider.getWorkerContResultsKV(id));
 	}
 
 	@Override
@@ -109,9 +104,8 @@ public class KVJobStorage extends BaseJobStorage implements IJobDataLoader{
 		return new KVResults(
 				new ResultsFactory.DatumResultFactory(),
 				wrnf,
-				this.<Collection<DatumResult>>getKVForJob(id, "ObjectResults", true),
-				this.<Collection<WorkerResult>>getKVForJob(id, "WorkerResults", true));
+				kvsProvider.getDatumResultsKV(id),
+				kvsProvider.getWorkerResultsKV(id));
 	}
 
-	protected ISafeKVStorage<PureNominalData> getPureNominalDataKV()
 }
