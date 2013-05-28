@@ -1,6 +1,9 @@
 package com.datascience.datastoring.jobs;
 
+import com.datascience.core.base.Project;
 import com.datascience.datastoring.IBackendAdapter;
+import com.datascience.serialization.ISerializer;
+import com.google.gson.JsonObject;
 
 
 /**
@@ -11,6 +14,15 @@ import com.datascience.datastoring.IBackendAdapter;
 public abstract class BaseJobStorage implements IJobStorage {
 
 	protected IBackendAdapter backendAdapter;
+	protected JobFactory jobFactory;
+
+	public BaseJobStorage(ISerializer serializer){
+		jobFactory = new JobFactory(serializer, this);
+	}
+
+	protected <T extends Project> Job<T> createJob(String type, String id, JsonObject settings){
+		return jobFactory.create(type, settings, id);
+	}
 
 	public BaseJobStorage(IBackendAdapter backendAdapter){
 		this.backendAdapter = backendAdapter;

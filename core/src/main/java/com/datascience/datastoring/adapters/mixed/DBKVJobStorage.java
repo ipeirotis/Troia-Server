@@ -1,10 +1,9 @@
-package com.datascience.datastoring.backends.db;
+package com.datascience.datastoring.adapters.mixed;
 
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.datastoring.adapters.kv.*;
-import com.datascience.datastoring.jobs.Job;
+import com.datascience.datastoring.backends.db.BaseDBJobStorage;
 import com.datascience.core.base.*;
-import com.datascience.datastoring.datamodels.kv.KVCleaner;
 import com.datascience.datastoring.datamodels.kv.KVData;
 import com.datascience.datastoring.datamodels.kv.KVNominalData;
 import com.datascience.datastoring.datamodels.kv.KVResults;
@@ -24,7 +23,7 @@ import java.util.Collection;
 /**
  * @Author: konrad
  */
-public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper>{
+public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper> {
 
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;

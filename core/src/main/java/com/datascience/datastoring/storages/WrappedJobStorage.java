@@ -6,7 +6,6 @@ import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 
-import java.sql.SQLException;
 import java.util.Collection;
 
 /**
@@ -22,8 +21,13 @@ public abstract class WrappedJobStorage implements IJobStorage {
 	}
 
 	@Override
-	public void clearAndInitialize() throws SQLException{
-		wrappedJobStorage.clearAndInitialize();
+	public void clear() throws Exception {
+		wrappedJobStorage.clear();
+	}
+
+	@Override
+	public void initialize() throws Exception {
+		wrappedJobStorage.initialize();
 	}
 
 	@Override

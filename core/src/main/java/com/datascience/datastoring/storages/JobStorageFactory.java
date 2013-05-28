@@ -1,12 +1,12 @@
 package com.datascience.datastoring.storages;
 
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
-import com.datascience.datastoring.backends.db.DBKVJobStorage;
+import com.datascience.datastoring.adapters.mixed.DBKVJobStorage;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
 import com.datascience.datastoring.backends.db.DBHelper;
-import com.datascience.datastoring.backends.db.DBKVHelper;
+import com.datascience.datastoring.adapters.mixed.DBKVHelper;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -24,7 +24,7 @@ public class JobStorageFactory {
 		checkArgument(storageParams.length >= 2, "Unknown storage model: " + fullType);
 		String type = (storageParams[0] + "_" + storageParams[1]).toUpperCase();
 		if (type.equals("MEMORY_FULL")){
-			return new MemoryJobStorage();
+			return new MemoryJobStorage(serializer);
 		}
 		if (type.equals("MEMORY_KV")){
 			return new MemoryKVJobStorage(serializer);

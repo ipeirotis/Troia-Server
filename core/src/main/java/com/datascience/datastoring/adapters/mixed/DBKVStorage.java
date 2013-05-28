@@ -1,6 +1,7 @@
-package com.datascience.datastoring.backends.db;
+package com.datascience.datastoring.adapters.mixed;
 
 import com.datascience.datastoring.adapters.kv.IKVStorage;
+import com.datascience.datastoring.backends.db.DBStorage;
 import org.apache.log4j.Logger;
 
 import java.sql.*;

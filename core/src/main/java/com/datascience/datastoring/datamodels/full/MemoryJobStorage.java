@@ -10,8 +10,10 @@ import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.jobs.JobFactory;
+import com.datascience.serialization.ISerializer;
+import com.google.gson.JsonObject;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +25,11 @@ import java.util.Map;
 public class MemoryJobStorage implements IJobStorage {
 
 	private Map<String, Job> storage;
-	
-	public MemoryJobStorage(){
-		storage = new HashMap<String, Job>();
+	protected JobFactory jobFactory;
+
+	public MemoryJobStorage(ISerializer serializer){
+		jobFactory = new JobFactory(serializer, this);
+		initialize();
 	}
 	
 	@Override
@@ -34,12 +38,14 @@ public class MemoryJobStorage implements IJobStorage {
 	}
 
 	@Override
-	public void add(Job job) throws Exception {
+	public <T extends Project> Job<T> create(String type, String id, JsonObject settings) {
+		Job job = jobFactory.create(type, settings, id);
 		storage.put(job.getId(), job);
+		return job;
 	}
 
 	@Override
-	public void remove(Job job) throws Exception {
+	public void remove(Job job) {
 		storage.remove(job.getId());
 	}
 
@@ -49,11 +55,16 @@ public class MemoryJobStorage implements IJobStorage {
 
 	@Override
 	public void stop() throws Exception {
+	}
+
+	@Override
+	public void clear(){
 		storage.clear();
 	}
 
 	@Override
-	public void clearAndInitialize() throws SQLException {
+	public void initialize(){
+		storage = new HashMap<String, Job>();
 	}
 
 	@Override

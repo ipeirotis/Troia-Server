@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * @Author: konrad
  */
-public class KVJobStorage extends BaseJobStorage implements IJobDataLoader{
+public class KVJobStorage extends BaseJobStorage{
 
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;

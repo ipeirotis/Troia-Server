@@ -1,7 +1,13 @@
 package com.datascience.datastoring.jobs;
 
+import com.datascience.core.base.ContValue;
+import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
+import com.datascience.core.nominal.INominalData;
+import com.datascience.core.results.*;
 import com.google.gson.JsonObject;
+
+import java.util.Collection;
 
 /**
  *
@@ -18,5 +24,10 @@ public interface IJobStorage {
 
 	void clear() throws Exception;
 	void initialize() throws Exception;
+
+	IData<ContValue> getContData(String id);
+	INominalData getNominalData(String id);
+	IResults<ContValue, DatumContResults, WorkerContResults> getContResults(String id);
+	IResults<String, DatumResult, WorkerResult> getNominalResults(String id, Collection<String> categories);
 
 }

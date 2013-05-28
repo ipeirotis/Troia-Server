@@ -103,9 +103,9 @@ public class InitializationSupport implements ServletContextListener {
 			if (jobStorage != null)
 				jobStorage.stop();
 		} catch (Exception ex) {
-			logger.error("FAILED Cleaning service - jobDataLoader", ex);
+			logger.error("FAILED Cleaning service - jobStorage", ex);
 		}
-		// executor might be already closed - if jobDataLoader was using it
+		// executor might be already closed - if jobStorage was using it
 		try {
 			if (executor != null)
 				executor.stop();

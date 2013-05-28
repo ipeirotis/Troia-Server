@@ -31,16 +31,17 @@ import static com.datascience.serialization.json.JSONUtils.t;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * TODO XXX FIXME make separate factory for algorithms and use it here
  * @author Konrad Kurdej
  */
 public class JobFactory {
 
 	protected ISerializer serializer;
-	protected IJobDataLoader jobDataLoader;
+	protected IJobStorage jobStorage;
 
-	public JobFactory(ISerializer serializer, IJobDataLoader jobDataLoader){
+	public JobFactory(ISerializer serializer, IJobStorage jobStorage){
 		this.serializer = serializer;
-		this.jobDataLoader = jobDataLoader;
+		this.jobStorage = jobStorage;
 	}
 
 	protected interface AlgorithmCreator {
@@ -130,8 +131,8 @@ public class JobFactory {
 											   String id){
 		checkArgument(ALG_FACTORY.containsKey(t(algorithm)), "Unknown Job algorithm: ", algorithm);
 		NominalAlgorithm na = ALG_FACTORY.get(t(algorithm)).create(jo);
-		INominalData data = jobDataLoader.getNominalData(id);
-		IResults<String, DatumResult, WorkerResult> results = jobDataLoader.getNominalResults(id, categories);
+		INominalData data = jobStorage.getNominalData(id);
+		IResults<String, DatumResult, WorkerResult> results = jobStorage.getNominalResults(id, categories);
 		NominalProject np = new NominalProject(na, data, results);
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
@@ -164,8 +165,8 @@ public class JobFactory {
 		ContinuousIpeirotis alg = new ContinuousIpeirotis();
 		alg.setEpsilon(jo.has(Constants.EPSILON) ? jo.get(Constants.EPSILON).getAsDouble() : 1e-6);
 		alg.setIterations(jo.has(Constants.ITERATIONS) ? jo.get(Constants.ITERATIONS).getAsInt() : 10);
-		IData<ContValue> data = jobDataLoader.getContData(id);
-		IResults<ContValue, DatumContResults, WorkerContResults> results = jobDataLoader.getContResults(id);
+		IData<ContValue> data = jobStorage.getContData(id);
+		IResults<ContValue, DatumContResults, WorkerContResults> results = jobStorage.getContResults(id);
 		ContinuousProject cp = new ContinuousProject(alg, data, results);
 		this.<ContValue>handleSchedulerLoading(jo, cp);
 		cp.setInitializationData(jo);

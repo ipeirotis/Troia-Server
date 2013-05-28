@@ -1,8 +1,9 @@
-package com.datascience.datastoring.backends.db;
+package com.datascience.datastoring.adapters.mixed;
 
 import com.datascience.datastoring.Constants;
 import com.datascience.datastoring.adapters.kv.IKVStorage;
 import com.datascience.datastoring.adapters.kv.MemcachedDBKVStorage;
+import com.datascience.datastoring.backends.db.DBStorage;
 import net.spy.memcached.MemcachedClient;
 
 import java.io.IOException;

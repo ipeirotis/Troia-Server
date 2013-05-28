@@ -152,12 +152,12 @@ public abstract class DBStorage {
 		close();
 	}
 
-	protected PreparedStatement initStatement(String command) throws SQLException {
+	public PreparedStatement initStatement(String command) throws SQLException {
 		ensureConnection();
 		return connection.prepareCall(command);
 	}
 
-	protected void cleanup(Statement sql, ResultSet result) throws SQLException {
+	public void cleanup(Statement sql, ResultSet result) throws SQLException {
 		if (sql != null) {
 			sql.close();
 		}
