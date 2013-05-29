@@ -29,9 +29,12 @@ public abstract class BaseDBJobStorage<T extends DBStorage> implements IJobStora
 	}
 
 	@Override
-	public void clearAndInitialize() throws SQLException{
+	public void clear() throws Exception {
 		helper.execute();
 	}
+
+	@Override
+	public void initialize() {}
 
 	@Override
 	public void stop() throws Exception {

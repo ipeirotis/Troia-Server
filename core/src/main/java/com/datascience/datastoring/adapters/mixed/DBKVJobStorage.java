@@ -59,7 +59,6 @@ public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper> {
 
 	@Override
 	public void stop() throws Exception {
-		kvsProvider.stop();
 		// TODO out there move them to implementations
 		jobTypes.shutdown();
 		jobSettings.shutdown();
