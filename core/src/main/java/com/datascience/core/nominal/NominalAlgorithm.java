@@ -5,6 +5,8 @@ import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
 
+import java.util.Map;
+
 /**
  * @Author: konrad
  */
@@ -32,6 +34,10 @@ public abstract class NominalAlgorithm extends Algorithm<String, INominalData, D
 
 	public double prior(String categoryName) {
 		return priorCalculator.getPrior(data, getModel(), categoryName);
+	}
+
+	public Map<String, Double> getCategoryPriors() {
+		return priorCalculator.getPriors(data, getModel());
 	}
 
 	@Override

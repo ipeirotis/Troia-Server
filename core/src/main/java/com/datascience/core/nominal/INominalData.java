@@ -17,6 +17,9 @@ public interface INominalData extends IData<String> {
 	void setPriorFixed(boolean fixedPriors);
 	boolean arePriorsFixed();
 
+	/*
+		be aware that this can be null. it's better to get priors from an algoritm
+	 */
 	double getCategoryPrior(String name);
 	Map<String, Double> getCategoryPriors();
 	void setCategoryPriors(Collection<CategoryValue> priors);
