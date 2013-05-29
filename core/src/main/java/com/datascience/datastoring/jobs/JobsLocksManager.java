@@ -6,11 +6,11 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 import com.datascience.executor.NotSafeRWLock;
 
-public class JobsManager{
+public class JobsLocksManager {
 
 	private Map<String, ReadWriteLock> locks;
 	
-	public JobsManager(){
+	public JobsLocksManager(){
 		locks = new HashMap<String, ReadWriteLock>();
 	}
 

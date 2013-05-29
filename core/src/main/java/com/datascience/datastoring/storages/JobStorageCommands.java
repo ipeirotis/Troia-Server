@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.executor.SynchronizedCommand;
-import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 
 /**
  *
@@ -20,7 +20,7 @@ public class JobStorageCommands{
 		protected IJobStorage jobStorage;
 		protected Job job;
 		
-		public Adder(IJobStorage jobStorage, JobsManager jm, Job job) {
+		public Adder(IJobStorage jobStorage, JobsLocksManager jm, Job job) {
 			super(jm.getLock(job.getId()), false);
 			this.jobStorage = jobStorage;
 			this.job = job;
@@ -42,7 +42,7 @@ public class JobStorageCommands{
 		protected IJobStorage jobStorage;
 		protected Job job;
 		
-		public Remover(IJobStorage jobStorage, JobsManager jm, Job job) {
+		public Remover(IJobStorage jobStorage, JobsLocksManager jm, Job job) {
 			super(jm.getLock(job.getId()), true);
 			this.jobStorage = jobStorage;
 			this.job = job;

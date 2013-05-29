@@ -14,7 +14,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.core.Response;
 
-import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
@@ -72,12 +72,12 @@ public class InitializationSupport implements ServletContextListener {
 		ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
 		scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
 
-		JobsManager jobsManager = factory.loadJobsManager();
-		scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
+		JobsLocksManager jobsLocksManager = factory.loadJobsManager();
+		scontext.setAttribute(Constants.JOBS_MANAGER, jobsLocksManager);
 
 		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
 
-		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsManager);
+		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsLocksManager);
 		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
 
 		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);

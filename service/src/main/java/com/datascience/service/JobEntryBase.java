@@ -13,7 +13,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
@@ -41,7 +41,7 @@ public abstract class JobEntryBase<T extends Project> {
 	ISerializer serializer;
 	ICommandStatusesContainer statusesContainer;
 	IJobStorage jobStorage;
-	JobsManager jobsManager;
+	JobsLocksManager jobsLocksManager;
 
 	Type objectsType;
 	Type assignsType;
@@ -62,7 +62,7 @@ public abstract class JobEntryBase<T extends Project> {
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
 		statusesContainer = (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
-		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
+		jobsLocksManager = (JobsLocksManager) context.getAttribute(Constants.JOBS_MANAGER);
 
 		Logger.getAnonymousLogger().info(uriInfo.getPath());
 	}
@@ -71,7 +71,7 @@ public abstract class JobEntryBase<T extends Project> {
 		command.setJobId(jid);
 		command.setJobStorage(jobStorage);
 		RequestExecutorCommand rec = new RequestExecutorCommand(
-				statusesContainer.initNewStatus(), command, jobsManager.getLock(jid), statusesContainer);
+				statusesContainer.initNewStatus(), command, jobsLocksManager.getLock(jid), statusesContainer);
 		executor.add(rec);
 		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
 	}
