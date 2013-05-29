@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -78,29 +77,29 @@ public class EdgeCasesTest {
 				return "IDS";
 			}
 		},
-		new ProjectCreator() {
-			@Override
-			public NominalProject create() {
-				return getProject(new BatchMV());
-			}
-			@Override
-			public String toString(){
-				return "BMV";
-			}
-		},
-		new ProjectCreator() {
-			@Override
-			public NominalProject create() {
-				IncrementalMV algorithm = new IncrementalMV();
-				NominalProject project = getProject(algorithm);
-				project.getData().addNewUpdatableAlgorithm(algorithm);
-				return project;
-			}
-			@Override
-			public String toString(){
-				return "IMV";
-			}
-		},
+//		new ProjectCreator() {
+//			@Override
+//			public NominalProject create() {
+//				return getProject(new BatchMV());
+//			}
+//			@Override
+//			public String toString(){
+//				return "BMV";
+//			}
+//		},
+//		new ProjectCreator() {
+//			@Override
+//			public NominalProject create() {
+//				IncrementalMV algorithm = new IncrementalMV();
+//				NominalProject project = getProject(algorithm);
+//				project.getData().addNewUpdatableAlgorithm(algorithm);
+//				return project;
+//			}
+//			@Override
+//			public String toString(){
+//				return "IMV";
+//			}
+//		},
 	};
 
 	final static AssignsCreator[] ASSIGNS_CREATORS = new AssignsCreator[]{
