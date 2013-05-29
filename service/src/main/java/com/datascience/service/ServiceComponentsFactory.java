@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.JobFactory;
-import com.datascience.datastoring.jobs.JobManager;
+import com.datascience.datastoring.jobs.JobsManager;
 import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.datastoring.storages.*;
 import com.datascience.executor.CachedCommandStatusesContainer;
@@ -50,9 +50,9 @@ public class ServiceComponentsFactory {
 		return jobStorage;
 	}
 
-	public JobManager loadJobManager(IJobStorage jobStorage, ISerializer serializer) {
+	public JobsManager loadJobManager(IJobStorage jobStorage, ISerializer serializer) {
 		JobFactory jobFactory = new JobFactory(serializer, jobStorage);
-		return new JobManager(jobStorage, jobFactory);
+		return new JobsManager(jobStorage, jobFactory);
 	}
 	
 	public IRandomUniqIDGenerator loadIdGenerator(){

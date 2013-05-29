@@ -1,5 +1,6 @@
 package com.datascience.datastoring.storages;
 
+import com.datascience.datastoring.adapters.memory.MemoryKVsProvider;
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.datamodels.kv.KVJobStorage;
@@ -26,7 +27,7 @@ public class JobStorageFactory {
 			return new MemoryJobStorage();
 		}
 		if (type.equals("MEMORY_KV")){
-			return new KVJobStorage(null);
+			return new KVJobStorage(new MemoryKVsProvider());
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
 		if (type.equals("DB_FULL")){

@@ -8,7 +8,7 @@ import com.datascience.core.commands.ProjectCommand;
  */
 public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 
-	protected IJobStorage jobStorage;
+	protected JobsManager jobsManager;
 	protected String jobId;
 	protected U project;
 
@@ -18,8 +18,8 @@ public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 	
 	protected Job getJob() throws Exception {
 		assertState(jobId != null, "No job ID");
-		assertState(jobStorage != null, "No jobStorage set");
-		Job tmp_job = jobStorage.get(jobId);
+		assertState(jobsManager != null, "No jobStorage set");
+		Job tmp_job = jobsManager.get(jobId);
 		assertArgument(tmp_job != null, "Job with ID " + jobId + " does not exist or is of different kind");
 		// old: ^^^^ || !expectedClass.isAssignableFrom(tmp_job.getProject().getClass())) {
 		return tmp_job;
@@ -29,8 +29,8 @@ public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 		jobId = jid;
 	}
 	
-	public void setJobStorage(IJobStorage js){
-		jobStorage = js;
+	public void setJobsManager(JobsManager jobsManager){
+		this.jobsManager = jobsManager;
 	}
 
 	protected void prepareExecution() throws Exception{

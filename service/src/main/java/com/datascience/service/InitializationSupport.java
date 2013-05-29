@@ -14,7 +14,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.core.Response;
 
-import com.datascience.datastoring.jobs.JobManager;
+import com.datascience.datastoring.jobs.JobsManager;
 import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
@@ -97,17 +97,17 @@ public class InitializationSupport implements ServletContextListener {
 
 	public static void destroyContext(ServletContext scontext){
 		logger.info("STARTED Cleaning service");
-		JobManager jobManager = (JobManager) scontext.getAttribute(Constants.JOBS_MANAGER);
+		JobsManager jobsManager = (JobsManager) scontext.getAttribute(Constants.JOBS_MANAGER);
 
 		ProjectCommandExecutor executor =
 				(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
 		try {
-			if (jobManager != null)
-				jobManager.stop();
+			if (jobsManager != null)
+				jobsManager.stop();
 		} catch (Exception ex) {
-			logger.error("FAILED Cleaning service - jobStorage", ex);
+			logger.error("FAILED Cleaning service - jobsManager", ex);
 		}
-		// executor might be already closed - if jobStorage was using it
+		// executor might be already closed - if jobsManager was using it
 		try {
 			if (executor != null)
 				executor.stop();

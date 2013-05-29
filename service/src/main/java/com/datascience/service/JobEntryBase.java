@@ -13,6 +13,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
+import com.datascience.datastoring.jobs.JobsManager;
 import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
@@ -20,7 +21,6 @@ import com.datascience.core.commands.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
-import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
 import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
@@ -40,7 +40,7 @@ public abstract class JobEntryBase<T extends Project> {
 	ProjectCommandExecutor executor;
 	ISerializer serializer;
 	ICommandStatusesContainer statusesContainer;
-	IJobStorage jobStorage;
+	JobsManager jobsManager;
 	JobsLocksManager jobsLocksManager;
 
 	Type objectsType;
@@ -57,7 +57,7 @@ public abstract class JobEntryBase<T extends Project> {
 	protected abstract JobCommand getPredictionZipCommand(String path);
 
 	public void postConstruct() throws Exception{
-		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
+		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
 		statusesContainer = (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
@@ -69,7 +69,7 @@ public abstract class JobEntryBase<T extends Project> {
 
 	protected Response buildResponseOnCommand(JobCommand command){
 		command.setJobId(jid);
-		command.setJobStorage(jobStorage);
+		command.setJobsManager(jobsManager);
 		RequestExecutorCommand rec = new RequestExecutorCommand(
 				statusesContainer.initNewStatus(), command, jobsLocksManager.getLock(jid), statusesContainer);
 		executor.add(rec);

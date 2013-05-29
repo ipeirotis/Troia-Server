@@ -6,12 +6,12 @@ import com.google.gson.JsonObject;
 import static com.google.common.base.Preconditions.checkArgument;
 
 
-public class JobManager {
+public class JobsManager {
 
 	protected IJobStorage jobStorage;
 	protected JobFactory jobFactory;
 
-	public JobManager(IJobStorage jobStorage, JobFactory jobFactory){
+	public JobsManager(IJobStorage jobStorage, JobFactory jobFactory){
 		this.jobStorage = jobStorage;
 		this.jobFactory = jobFactory;
 	}
