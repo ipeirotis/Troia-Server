@@ -15,7 +15,7 @@ import java.util.Collection;
 public interface IJobStorage {
 
 	<T extends Project> Job<T> get(String id) throws Exception;
-	<T extends Project> Job<T> add(Job<T> job) throws Exception;
+	<T extends Project> void add(Job<T> job) throws Exception;
 	void remove(Job job) throws Exception;
 
 	void test() throws Exception;

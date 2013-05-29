@@ -14,6 +14,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.core.Response;
 
+import com.datascience.datastoring.jobs.JobManager;
 import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
@@ -73,12 +74,13 @@ public class InitializationSupport implements ServletContextListener {
 		scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
 
 		JobsLocksManager jobsLocksManager = factory.loadJobsManager();
-		scontext.setAttribute(Constants.JOBS_MANAGER, jobsLocksManager);
+		scontext.setAttribute(Constants.JOBS_LOCKS_MANAGER, jobsLocksManager);
 
 		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
 
 		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsLocksManager);
-		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
+		scontext.setAttribute(Constants.JOBS_MANAGER,
+				factory.loadJobManager(jobStorage, serializer));
 
 		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
 		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
@@ -95,13 +97,13 @@ public class InitializationSupport implements ServletContextListener {
 
 	public static void destroyContext(ServletContext scontext){
 		logger.info("STARTED Cleaning service");
-		IJobStorage jobStorage =
-				(IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
+		JobManager jobManager = (JobManager) scontext.getAttribute(Constants.JOBS_MANAGER);
+
 		ProjectCommandExecutor executor =
 				(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
 		try {
-			if (jobStorage != null)
-				jobStorage.stop();
+			if (jobManager != null)
+				jobManager.stop();
 		} catch (Exception ex) {
 			logger.error("FAILED Cleaning service - jobStorage", ex);
 		}

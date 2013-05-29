@@ -62,7 +62,7 @@ public abstract class JobEntryBase<T extends Project> {
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
 		statusesContainer = (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
-		jobsLocksManager = (JobsLocksManager) context.getAttribute(Constants.JOBS_MANAGER);
+		jobsLocksManager = (JobsLocksManager) context.getAttribute(Constants.JOBS_LOCKS_MANAGER);
 
 		Logger.getAnonymousLogger().info(uriInfo.getPath());
 	}

@@ -24,10 +24,11 @@ public class JobStorageFactory {
 		checkArgument(storageParams.length >= 2, "Unknown storage model: " + fullType);
 		String type = (storageParams[0] + "_" + storageParams[1]).toUpperCase();
 		if (type.equals("MEMORY_FULL")){
-			return new MemoryJobStorage(serializer);
+			return new MemoryJobStorage();
 		}
 		if (type.equals("MEMORY_KV")){
-			return new MemoryKVJobStorage(serializer);
+//			return new MemoryKVJobStorage();
+			return null; // TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
 		if (type.equals("DB_FULL")){
 			return new DBJobStorage(new DBHelper(connectionProperties, properties), serializer);

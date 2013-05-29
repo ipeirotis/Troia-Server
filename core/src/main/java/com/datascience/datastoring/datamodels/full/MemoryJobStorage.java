@@ -10,9 +10,6 @@ import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
-import com.datascience.datastoring.jobs.JobFactory;
-import com.datascience.serialization.ISerializer;
-import com.google.gson.JsonObject;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,10 +22,8 @@ import java.util.Map;
 public class MemoryJobStorage implements IJobStorage {
 
 	private Map<String, Job> storage;
-	protected JobFactory jobFactory;
 
-	public MemoryJobStorage(ISerializer serializer){
-		jobFactory = new JobFactory(serializer, this);
+	public MemoryJobStorage(){
 		initialize();
 	}
 	
@@ -38,10 +33,8 @@ public class MemoryJobStorage implements IJobStorage {
 	}
 
 	@Override
-	public <T extends Project> Job<T> create(String type, String id, JsonObject settings) {
-		Job job = jobFactory.create(type, settings, id);
+	public <T extends Project> void add(Job<T> job) {
 		storage.put(job.getId(), job);
-		return job;
 	}
 
 	@Override

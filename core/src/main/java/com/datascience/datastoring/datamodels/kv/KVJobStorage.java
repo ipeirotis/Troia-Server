@@ -5,7 +5,6 @@ import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 import com.datascience.datastoring.jobs.*;
-import com.datascience.serialization.ISerializer;
 import com.google.gson.JsonObject;
 
 import java.util.Collection;
@@ -18,13 +17,11 @@ public class KVJobStorage extends BaseJobStorage{
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
 	protected KVCleaner cleaner;
-	protected JobFactory jobFactory;
 	protected IKVsProvider kvsProvider;
 
-	public KVJobStorage(ISerializer serializer, IKVsProvider kvsProvider){
+	public KVJobStorage(IKVsProvider kvsProvider){
 		super(kvsProvider);
 		this.kvsProvider = kvsProvider;
-		jobFactory = new JobFactory(serializer, this);
 		initializeStorage();
 	}
 
@@ -35,11 +32,9 @@ public class KVJobStorage extends BaseJobStorage{
 	}
 
 	@Override
-	public <T extends Project> Job<T>  create(String type, String id, JsonObject settings) throws Exception {
-		Job<T> job = jobFactory.create(type, settings, id);
+	public <T extends Project> void add(Job<T> job) throws Exception {
 		jobTypes.put(job.getId(), job.getProject().getKind());
 		jobSettings.put(job.getId(), job.getProject().getInitializationData());
-		return job;
 	}
 
 	@Override
