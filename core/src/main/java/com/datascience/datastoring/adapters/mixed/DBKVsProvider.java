@@ -4,6 +4,7 @@ import com.datascience.core.nominal.PureNominalData;
 import com.datascience.datastoring.adapters.kv.*;
 import com.datascience.datastoring.backends.db.BaseDBJobStorage;
 import com.datascience.core.base.*;
+import com.datascience.datastoring.datamodels.kv.BaseKVsProvider;
 import com.datascience.datastoring.datamodels.kv.KVData;
 import com.datascience.datastoring.datamodels.kv.KVNominalData;
 import com.datascience.datastoring.datamodels.kv.KVResults;
@@ -23,14 +24,16 @@ import java.util.Collection;
 /**
  * @Author: konrad
  */
-public class DBKVJobStorage extends BaseDBJobStorage<DBKVHelper> {
+public class DBKVsProvider extends BaseKVsProvider {
+
+	private DBKVHelper helper;
 
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
 	protected TransformationsFactory.ITransformationCreator transforationCreator;
 
-	public DBKVJobStorage(DBKVHelper helper, ISerializer serializer, String transformation) throws SQLException {
-		super(helper, serializer);
+	public DBKVsProvider(DBKVHelper helper, ISerializer serializer, String transformation) throws SQLException {
+		this.helper = helper;
 		jobSettings = getKV("JobSettings", JsonObject.class);
 		jobTypes = getKV("JobTypes", String.class);
 		transforationCreator = TransformationsFactory.create(transformation);

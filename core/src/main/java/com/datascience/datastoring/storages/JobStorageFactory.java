@@ -36,7 +36,7 @@ public class JobStorageFactory {
 		if (type.equals("DB_KV")){
 			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
 			return new KVJobStorage(null);
-//			return new DBKVJobStorage(
+//			return new DBKVsProvider(
 //				new DBKVHelper(connectionProperties, properties, storageParams.length == 4 && storageParams[2].toUpperCase().equals("MEMCACHE")),
 //				serializer,
 //				storageParams[storageParams.length-1]);

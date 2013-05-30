@@ -9,17 +9,20 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerContResults;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
+import com.datascience.utils.ITransformation;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-public abstract class BaseKVsProvider implements IKVsProvider {
+/**
+ * @param <T> backend's data type
+ */
+public abstract class BaseKVsProvider<T> implements IKVsProvider {
 
-	abstract protected <V> ISafeKVStorage<V> getKV(String table, Type expectedType);
-	abstract protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, Type expectedType);
-	abstract protected <V> ISafeKVStorage<Collection<V>> getMultiItemKVForJob(String id, String table,
-																			  Type expectedType);
+	abstract protected <V> ISafeKVStorage<V> getKV(String table, ITransformation<V, T> transformation);
+	abstract protected <V> ISafeKVStorage<V> getKVForJob(String id, String table, ITransformation<V, T> transformation);
 
 	protected ISafeKVStorage<JsonObject> jobSettings;
 	protected ISafeKVStorage<String> jobTypes;
@@ -27,6 +30,24 @@ public abstract class BaseKVsProvider implements IKVsProvider {
 	public BaseKVsProvider(){
 		jobSettings = getKV("JobSettings", JsonObject.class);
 		jobTypes = getKV("JobTypes", String.class);
+	}
+
+	protected <V> ISafeKVStorage<V> getSingleRowKVForJob(String id, String table, ITransformation<V, T> transformation){
+		return getKVForJob(id, table, transformation);
+	}
+
+	protected <V> ISafeKVStorage<Collection<V>> getMultirowKVForJob(String id, String table, Type expectedType){
+		return getKVForJob(id + "_", table, expectedType);
+	}
+
+	@Override
+	public ISafeKVStorage<JsonObject> getSettingsKV() {
+		return jobSettings;
+	}
+
+	@Override
+	public ISafeKVStorage<String> getKindsKV() {
+		return jobTypes;
 	}
 
 	@Override
@@ -41,28 +62,28 @@ public abstract class BaseKVsProvider implements IKVsProvider {
 
 	@Override
 	public <T> ISafeKVStorage<Collection<AssignedLabel<T>>> getWorkerAssignsKV(String id) {
-//		return getKVForJob(id, "WorkerAssigns", )
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getMultirowKVForJob(id, "WorkerAssigns", new TypeToken<Collection<AssignedLabel<T>>>(){}.getType());
 	}
 
 	@Override
 	public <T> ISafeKVStorage<Collection<AssignedLabel<T>>> getObjectAssignsKV(String id) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getMultirowKVForJob(id, "ObjectAssigns", new TypeToken<Collection<AssignedLabel<T>>>(){}.getType());
+
 	}
 
 	@Override
 	public <T> ISafeKVStorage<Collection<LObject<T>>> getObjectsKV(String id) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getSingleRowKVForJob(id, "Objects", new TypeToken<Collection<LObject<T>>>(){}.getType());
 	}
 
 	@Override
 	public <T> ISafeKVStorage<Collection<LObject<T>>> getGoldObjectsKV(String id) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getSingleRowKVForJob(id, "GoldObjects", new TypeToken<Collection<LObject<T>>>(){}.getType());
 	}
 
 	@Override
 	public <T> ISafeKVStorage<Collection<LObject<T>>> getEvaluationObjectsKV(String id) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return getSingleRowKVForJob(id, "EvaluationObjects", new TypeToken<Collection<LObject<T>>>(){}.getType());
 	}
 
 	@Override
@@ -95,19 +116,4 @@ public abstract class BaseKVsProvider implements IKVsProvider {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
-	@Override
-	public void clear() throws Exception {
-		// TODO XXX
-	}
-
-	@Override
-	public void rebuild() throws Exception {
-		// TODO XXX
-	}
-
-	@Override
-	public String getID() {
-		// TODO XXX
-		return "TODO XXX";
-	}
 }
