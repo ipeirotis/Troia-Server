@@ -6,63 +6,65 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
+import com.datascience.utils.transformations.CastingTransform;
 import com.google.gson.JsonObject;
 
 import java.util.Collection;
 
 public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Object>{
+
 	@Override
 	public ITransformation<JsonObject, Object> createSettingsTransform() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<JsonObject>();
 	}
 
 	@Override
 	public ITransformation<String, Object> createKindTransform() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<String>();
 	}
 
 	@Override
 	public <T> ITransformation<Collection<AssignedLabel<T>>, Object> createAssignsTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<Collection<AssignedLabel<T>>>();
 	}
 
 	@Override
 	public <T> ITransformation<Collection<LObject<T>>, Object> createObjectsTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<Collection<LObject<T>>>();
 	}
 
 	@Override
-	public <T> ITransformation<Collection<Worker<T>>, String> createWorkersTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public <T> ITransformation<Collection<Worker<T>>, Object> createWorkersTransformation() {
+		return new CastingTransform<Collection<Worker<T>>>();
 	}
 
 	@Override
-	public <T> ITransformation<Collection<Worker<T>>, PureNominalData> createPureNominalDataTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	public ITransformation<PureNominalData, Object> createPureNominalDataTransformation() {
+		return new CastingTransform<PureNominalData>();
 	}
 
 	@Override
 	public ITransformation<DatumContResults, Object> createDatumContResultsTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<DatumContResults>();
 	}
 
 	@Override
 	public ITransformation<WorkerContResults, Object> createWorkerContResultsTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<WorkerContResults>();
 	}
 
 	@Override
 	public ITransformation<DatumResult, Object> createDatumStringResultsTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<DatumResult>();
 	}
 
 	@Override
 	public ITransformation<WorkerResult, Object> createWorkerStringResultsTransformation(ResultsFactory.WorkerResultNominalFactory wrnf) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return new CastingTransform<WorkerResult>();
 	}
 
 	@Override
 	public String getID() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return "MEMORY";
 	}
 }

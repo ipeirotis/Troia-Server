@@ -18,9 +18,9 @@ public interface ICoreTransformsFactory<V> {
 	<T>ITransformation<Collection<AssignedLabel<T>>, V> createAssignsTransformation();
 	<T>ITransformation<Collection<LObject<T>>, V> createObjectsTransformation();
 
-	<T>ITransformation<Collection<Worker<T>>, String> createWorkersTransformation();
+	<T>ITransformation<Collection<Worker<T>>, V> createWorkersTransformation();
 
-	<T>ITransformation<Collection<Worker<T>>, PureNominalData> createPureNominalDataTransformation();
+	ITransformation<PureNominalData, V> createPureNominalDataTransformation();
 
 	ITransformation<DatumContResults, V> createDatumContResultsTransformation();
 	ITransformation<WorkerContResults, V> createWorkerContResultsTransformation();
