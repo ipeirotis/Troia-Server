@@ -4,10 +4,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
-import com.datascience.core.results.DatumContResults;
-import com.datascience.core.results.DatumResult;
-import com.datascience.core.results.WorkerContResults;
-import com.datascience.core.results.WorkerResult;
+import com.datascience.core.results.*;
 import com.datascience.datastoring.IBackendAdapter;
 import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 import com.google.gson.JsonObject;
@@ -33,7 +30,7 @@ public interface IKVsProvider extends IBackendAdapter{
 	ISafeKVStorage<Collection<DatumContResults>>getDatumContResultsKV(String id);
 	ISafeKVStorage<Collection<WorkerContResults>>getWorkerContResultsKV(String id);
 
-	ISafeKVStorage<Collection<DatumResult>>getDatumResultsKV(String id);
-	ISafeKVStorage<Collection<WorkerResult>>getWorkerResultsKV(String id);
+	ISafeKVStorage<Collection<DatumResult>>getDatumResultsKV(String id, ResultsFactory.DatumResultFactory resultFactory);
+	ISafeKVStorage<Collection<WorkerResult>>getWorkerResultsKV(String id, ResultsFactory.WorkerResultNominalFactory resultFactory);
 
 }

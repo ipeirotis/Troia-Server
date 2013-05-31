@@ -19,7 +19,7 @@ public class DefaultSafeKVStorage<V> implements ISafeKVStorage<V>{
 	}
 
 	public DefaultSafeKVStorage(IKVStorage<V> wrapped, String prefix){
-		this(wrapped, Logger.getLogger(DefaultSafeKVStorage.class), prefix);
+		this(wrapped, Logger.getLogger(wrapped.getClass()), prefix);
 	}
 
 	protected void log(String cmd, Exception ex){
