@@ -1,6 +1,7 @@
 package com.datascience.datastoring.backends.db;
 
 import com.datascience.datastoring.Constants;
+import com.datascience.datastoring.IBackend;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
@@ -14,7 +15,7 @@ import java.util.Set;
  * User: artur
  * Date: 4/10/13
  */
-public abstract class DBStorage {
+public abstract class DBStorage implements IBackend {
 
 	protected final static Logger logger = Logger.getLogger(DBStorage.class);
 	protected final static int VALIDATION_TIMEOUT = 2;

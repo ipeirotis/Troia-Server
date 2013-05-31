@@ -4,10 +4,7 @@ import com.datascience.core.nominal.PureNominalData;
 import com.datascience.datastoring.adapters.kv.*;
 import com.datascience.datastoring.backends.db.BaseDBJobStorage;
 import com.datascience.core.base.*;
-import com.datascience.datastoring.datamodels.kv.BaseKVsProvider;
-import com.datascience.datastoring.datamodels.kv.KVData;
-import com.datascience.datastoring.datamodels.kv.KVNominalData;
-import com.datascience.datastoring.datamodels.kv.KVResults;
+import com.datascience.datastoring.datamodels.kv.*;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
@@ -24,7 +21,7 @@ import java.util.Collection;
 /**
  * @Author: konrad
  */
-public class DBKVsProvider extends BaseKVsProvider {
+public class DBKVsProvider extends TransformingKVsProvider<> {
 
 	private DBKVHelper helper;
 

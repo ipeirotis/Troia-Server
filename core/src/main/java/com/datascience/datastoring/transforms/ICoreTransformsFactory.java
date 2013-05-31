@@ -1,4 +1,4 @@
-package com.datascience.datastoring.datamodels.kv;
+package com.datascience.datastoring.transforms;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
