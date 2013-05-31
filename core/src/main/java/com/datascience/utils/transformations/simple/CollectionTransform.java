@@ -1,4 +1,4 @@
-package com.datascience.utils.transformations;
+package com.datascience.utils.transformations.simple;
 
 import com.datascience.utils.ITransformation;
 import com.google.common.base.Joiner;

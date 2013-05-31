@@ -2,7 +2,6 @@ package com.datascience.datastoring.adapters.mixed;
 
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.datastoring.adapters.kv.*;
-import com.datascience.datastoring.backends.db.BaseDBJobStorage;
 import com.datascience.core.base.*;
 import com.datascience.datastoring.datamodels.kv.*;
 import com.datascience.core.nominal.INominalData;
@@ -10,7 +9,7 @@ import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
 import com.datascience.utils.ITransformation;
-import com.datascience.utils.transformations.*;
+import com.datascience.utils.transformations.simple.TransformationsFactory;
 import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;

@@ -1,4 +1,4 @@
-package com.datascience.utils.transformations;
+package com.datascience.utils.transformations.simple;
 
 import com.datascience.core.base.Worker;
 import com.datascience.utils.ITransformation;

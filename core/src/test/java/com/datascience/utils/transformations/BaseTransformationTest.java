@@ -6,6 +6,7 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
+import com.datascience.utils.transformations.simple.TransformationsFactory;
 import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;

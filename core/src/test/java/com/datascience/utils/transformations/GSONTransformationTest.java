@@ -1,5 +1,6 @@
 package com.datascience.utils.transformations;
 
+import com.datascience.utils.transformations.simple.TransformationsFactory;
 import org.junit.Assert;
 import org.junit.Ignore;
 
