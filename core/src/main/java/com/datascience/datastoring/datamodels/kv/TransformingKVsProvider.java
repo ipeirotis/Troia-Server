@@ -16,13 +16,17 @@ import java.util.List;
 
 public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
-	static protected List<String> KVs = Lists.newArrayList();
+	static protected List<String> KVs = Lists.newArrayList(
+			"JobSettings", "JobTypes", "WorkerAssigns", "ObjectAssigns",
+			"GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResult"
+			);
 
 	protected IBackendKVFactory<T> kvFactory;
 	protected ICoreTransformsFactory<T> transformsFactory;
 
-	public TransformingKVsProvider(IBackendKVFactory<T> kvFactory){
+	public TransformingKVsProvider(IBackendKVFactory<T> kvFactory, ICoreTransformsFactory<T> transformsFactory){
 		this.kvFactory = kvFactory;
+		this.transformsFactory = transformsFactory;
 	}
 
 	protected <V> ISafeKVStorage<V> finishKV(IKVStorage<T> storage, ITransformation<V, T> transformation){
@@ -124,6 +128,6 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	@Override
 	public String getID() {
-		return kvFactory.getID() + " " + transformsFactory.getID();
+		return kvFactory.getID() + "_" + transformsFactory.getID();
 	}
 }
