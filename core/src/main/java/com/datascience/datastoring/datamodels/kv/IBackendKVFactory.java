@@ -9,4 +9,5 @@ public interface IBackendKVFactory<V> {
 	void remove(String kvId);
 
 	IBackend getBackend();
+	String getID();
 }

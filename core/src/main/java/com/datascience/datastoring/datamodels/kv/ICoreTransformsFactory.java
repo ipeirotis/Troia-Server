@@ -26,4 +26,6 @@ public interface ICoreTransformsFactory<V> {
 	ITransformation<WorkerContResults, V> createWorkerContResultsTransformation();
 	ITransformation<DatumResult, V> createDatumStringResultsTransformation();
 	ITransformation<WorkerResult, V> createWorkerStringResultsTransformation(ResultsFactory.WorkerResultNominalFactory wrnf);
+
+	String getID();
 }

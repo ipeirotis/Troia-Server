@@ -124,6 +124,6 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	@Override
 	public String getID() {
-		return "TODO";
+		return kvFactory.getID() + " " + transformsFactory.getID();
 	}
 }
