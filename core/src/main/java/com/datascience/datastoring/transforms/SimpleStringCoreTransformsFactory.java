@@ -7,14 +7,11 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
-import com.datascience.utils.transformations.IdTransformation;
-import com.datascience.utils.transformations.JSONStrTransformation;
 import com.datascience.utils.transformations.simple.*;
-import com.google.gson.JsonObject;
 
 import java.util.Collection;
 
-public class SimpleStringCoreTransformsFactory implements ICoreTransformsFactory<String>{
+public class SimpleStringCoreTransformsFactory extends BaseStringCoreTransformsFactory{
 
 	protected String objectSeparator;
 	protected String collectionSeparator;
@@ -34,16 +31,6 @@ public class SimpleStringCoreTransformsFactory implements ICoreTransformsFactory
 
 	public SimpleStringCoreTransformsFactory(){
 		this("|", "$", ";");
-	}
-
-	@Override
-	public ITransformation<JsonObject, String> createSettingsTransform() {
-		return new JSONStrTransformation();
-	}
-
-	@Override
-	public ITransformation<String, String> createKindTransform() {
-		return new IdTransformation<String>();
 	}
 
 	@Override
