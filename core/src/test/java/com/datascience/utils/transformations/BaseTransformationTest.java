@@ -5,8 +5,8 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.transforms.ICoreTransformsFactory;
 import com.datascience.utils.ITransformation;
-import com.datascience.utils.transformations.simple.TransformationsFactory;
 import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import java.util.*;
  */
 public abstract class BaseTransformationTest {
 
-	protected abstract TransformationsFactory.ITransformationCreator getCreator();
+	protected abstract ICoreTransformsFactory<String> getCreator();
 
 	private abstract static class LabelCreator<T>{
 		abstract T create(int k);
@@ -83,12 +83,12 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testStringAssignsTransformation(){
-		testAssignsTransformation(new StringLabelCreator(), getCreator().createStringAssignsTransformation());
+		testAssignsTransformation(new StringLabelCreator(), getCreator().<String>createAssignsTransformation());
 	}
 
 	@Test
 	public void testContValueAssignsTransformation(){
-		testAssignsTransformation(new ContValueLabelCreator(), getCreator().createContAssignsTransformation());
+		testAssignsTransformation(new ContValueLabelCreator(), getCreator().<ContValue>createAssignsTransformation());
 	}
 
 	private <T> void testObjectsTransformation(LabelCreator<T> creator, ITransformation<Collection<LObject<T>>, String> transformation){
@@ -113,12 +113,12 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testStringObjectsTransformation(){
-		testObjectsTransformation(new StringLabelCreator(), getCreator().createStringObjectsTransformation());
+		testObjectsTransformation(new StringLabelCreator(), getCreator().<String>createObjectsTransformation());
 	}
 
 	@Test
 	public void testContValueObjectsTransformation(){
-		testObjectsTransformation(new ContValueLabelCreator(), getCreator().createContObjectsTransformation());
+		testObjectsTransformation(new ContValueLabelCreator(), getCreator().<ContValue>createObjectsTransformation());
 	}
 
 	@Test
