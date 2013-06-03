@@ -7,6 +7,7 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
+import com.datascience.utils.Labels;
 import com.datascience.utils.transformations.simple.*;
 
 import java.util.Collection;
@@ -35,13 +36,16 @@ public class SimpleStringCoreTransformsFactory extends BaseStringCoreTransformsF
 
 	@Override
 	public <T> ITransformation<Collection<AssignedLabel<T>>, String> createAssignsTransformation() {
-		AssignTransform<T> assignTransform = new AssignTransform<T>(objectSeparator, stringTransform);
+
+		AssignTransform<T> assignTransform = new AssignTransform<T>(objectSeparator,
+				Labels.<T, ITransformation>returnForKind(stringTransform, contValueTransform)); // TODO FIXME XXX drop need for labels
 		return new CollectionTransform<AssignedLabel<T>>(collectionSeparator, assignTransform);
 	}
 
 	@Override
 	public <T> ITransformation<Collection<LObject<T>>, String> createObjectsTransformation() {
-		LObjectTransform<T> objectTransform = new LObjectTransform<T>(objectSeparator, stringTransform);
+		LObjectTransform<T> objectTransform = new LObjectTransform<T>(objectSeparator,
+				Labels.<T, ITransformation>returnForKind(stringTransform, contValueTransform)); // TODO FIXME XXX drop need for labels
 		return new CollectionTransform<LObject<T>>(collectionSeparator, objectTransform);	}
 
 	@Override
@@ -52,7 +56,7 @@ public class SimpleStringCoreTransformsFactory extends BaseStringCoreTransformsF
 
 	@Override
 	public ITransformation<PureNominalData, String> createPureNominalDataTransformation() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return null;   // TODO FIXME XXX something should be here ...
 	}
 
 	@Override
