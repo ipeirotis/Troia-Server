@@ -94,12 +94,11 @@ public class KVJobStorage extends BaseJobStorage{
 	@Override
 	public IResults<String, DatumResult, WorkerResult> getNominalResults(String id, Collection<String> categories) {
 		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
+		ResultsFactory.DatumResultFactory drf = new ResultsFactory.DatumResultFactory();
 		wrnf.setCategories(categories);
-		return new KVResults(
-				new ResultsFactory.DatumResultFactory(),
-				wrnf,
-				kvsProvider.getDatumResultsKV(id),
-				kvsProvider.getWorkerResultsKV(id));
+		return new KVResults(drf, wrnf,
+				kvsProvider.getDatumResultsKV(id, drf),
+				kvsProvider.getWorkerResultsKV(id, wrnf));
 	}
 
 }
