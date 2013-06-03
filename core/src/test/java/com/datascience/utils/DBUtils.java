@@ -54,5 +54,10 @@ public class DBUtils {
 		protected String getInsertPrefix(){
 			return "MERGE INTO";
 		}
+
+		@Override
+		public void test() throws Exception {
+			//To change body of implemented methods use File | Settings | File Templates.
+		}
 	}
 }

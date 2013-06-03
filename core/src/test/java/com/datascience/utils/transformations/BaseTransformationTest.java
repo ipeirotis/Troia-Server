@@ -59,8 +59,8 @@ public abstract class BaseTransformationTest {
 		return objects;
 	}
 
-	private Collection<Worker> createWorkers(int k){
-		Collection<Worker> workers = new LinkedList<Worker>();
+	private <T> Collection<Worker<T>> createWorkers(int k){
+		Collection<Worker<T>> workers = new LinkedList<Worker<T>>();
 		for (int i =0; i<k; i++){
 			workers.add(new Worker("worker"+i));
 		}
@@ -123,12 +123,12 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testWorkersTransformation(){
-		Collection<Worker> workers = createWorkers(5);
-		ITransformation<Collection<Worker>, String> transformation = getCreator().createWorkersTransformation();
-		ArrayList<Worker> transformedWorkers = new ArrayList<Worker>(transformation.inverse(transformation.transform(workers)));
+		Collection<Worker<String>> workers = createWorkers(5);
+		ITransformation<Collection<Worker<String>>, String> transformation = getCreator().createWorkersTransformation();
+		ArrayList<Worker<String>> transformedWorkers = new ArrayList<Worker<String>>(transformation.inverse(transformation.transform(workers)));
 		Assert.assertEquals(workers.size(), transformedWorkers.size());
 		int i =0;
-		for (Worker w : workers){
+		for (Worker<String> w : workers){
 			Worker w2 = transformedWorkers.get(i);
 			Assert.assertEquals(w, w2);
 			i++;
