@@ -1,6 +1,8 @@
 package com.datascience.utils.transformations;
 
-import com.datascience.utils.transformations.simple.TransformationsFactory;
+import com.datascience.datastoring.transforms.CoreTransformsFactoriesFactory;
+import com.datascience.datastoring.transforms.ICoreTransformsFactory;
+import com.datascience.datastoring.transforms.SimpleStringCoreTransformsFactory;
 import org.junit.Assert;
 
 /**
@@ -10,9 +12,9 @@ import org.junit.Assert;
 public class StringTransformationTest extends BaseTransformationTest {
 
 	@Override
-	protected TransformationsFactory.ITransformationCreator getCreator() {
-		TransformationsFactory.ITransformationCreator creator = TransformationsFactory.create("SIMPLE");
-		Assert.assertTrue(creator instanceof TransformationsFactory.StringTransformationCreator);
+	protected ICoreTransformsFactory<String> getCreator() {
+		ICoreTransformsFactory<String> creator = CoreTransformsFactoriesFactory.create("SIMPLE");
+		Assert.assertTrue(creator instanceof SimpleStringCoreTransformsFactory);
 		return creator;
 	}
 }

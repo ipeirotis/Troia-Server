@@ -114,7 +114,8 @@ public class CachedAndDBJobStorageTest {
 	public void testMixedStorages() throws Exception {
 		DBHelper dbHelper = new DBUtils().getDBHelper();
 		IJobStorage dbJobStorage = new DBJobStorage(dbHelper, new GSONSerializer());
-		dbJobStorage.clearAndInitialize();
+		dbJobStorage.clear();
+		dbJobStorage.initialize();
 
 		JobFactory jobFactory = new JobFactory(new GSONSerializer(), dbJobStorage);
 		JsonObject jo = new JsonObject();

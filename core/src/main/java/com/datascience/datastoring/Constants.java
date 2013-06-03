@@ -5,6 +5,10 @@ package com.datascience.datastoring;
  * @author konrad
  */
 public class Constants {
+
+	public static final String t(String constant){
+		return constant.toUpperCase();
+	}
 	
 	// from config file
 	public static final String DB_NAME = "DB_NAME";

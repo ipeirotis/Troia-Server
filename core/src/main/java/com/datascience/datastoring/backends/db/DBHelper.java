@@ -8,7 +8,7 @@ import java.util.Properties;
  * User: artur
  * Date: 4/10/13
  */
-public class DBHelper extends DBStorage {
+public abstract class DBHelper extends DBStorage {
 
 	{
 		TABLES = Arrays.asList(new String[] {"Projects"});

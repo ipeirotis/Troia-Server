@@ -1,6 +1,8 @@
 package com.datascience.utils.transformations;
 
-import com.datascience.utils.transformations.simple.TransformationsFactory;
+import com.datascience.datastoring.transforms.CoreTransformsFactoriesFactory;
+import com.datascience.datastoring.transforms.ICoreTransformsFactory;
+import com.datascience.datastoring.transforms.SerializerBasedCoreTransformsFactory;
 import org.junit.Assert;
 import org.junit.Ignore;
 
@@ -12,9 +14,9 @@ import org.junit.Ignore;
 public class GSONTransformationTest extends BaseTransformationTest {
 
 	@Override
-	protected TransformationsFactory.ITransformationCreator getCreator() {
-		TransformationsFactory.ITransformationCreator creator = TransformationsFactory.create("GSON");
-		Assert.assertTrue(creator instanceof TransformationsFactory.SerializationBasedTransformationCreator);
+	protected ICoreTransformsFactory<String> getCreator() {
+		ICoreTransformsFactory<String> creator = CoreTransformsFactoriesFactory.create("JSON");
+		Assert.assertTrue(creator instanceof SerializerBasedCoreTransformsFactory);
 		return creator;
 	}
 }

@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * User: artur
  * Date: 4/10/13
  */
-public class DBKVHelper extends DBStorage {
+public abstract class DBKVHelper extends DBStorage {
 
 	{
 		TABLES = Arrays.asList(new String[] {

@@ -10,8 +10,6 @@ import com.datascience.datastoring.datamodels.kv.*;
  */
 public class DBKVsFactory<T> implements IBackendKVFactory<T> {
 
-	private DBKVHelper helper;
-
 	@Override
 	public IKVStorage<T> getKV(String id) {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
