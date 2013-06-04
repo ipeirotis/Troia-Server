@@ -90,8 +90,8 @@ public abstract class ProxyLikeJobStorageTest {
 	}
 
 	@Test
-	public void testStop() throws Exception {
-		proxy.stop();
+	public void testClear() throws Exception {
+		proxy.clear();
 		assertEmpty(storage, 0, jobs.length);
 	}
 }

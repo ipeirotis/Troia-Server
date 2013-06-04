@@ -16,7 +16,7 @@ public abstract class CachedJobStorageBaseTest extends ProxyLikeJobStorageTest{
 
 	@Test
 	public void testLogic() throws Exception {
-		proxy.stop();
+		proxy.clear();
 		assertEmpty(storage, 0, jobs.length);
 		assertEmpty(proxy, 0, jobs.length);
 		proxy.add(jobs[0]);
