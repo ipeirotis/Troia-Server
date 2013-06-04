@@ -48,7 +48,8 @@ public class JobsManager {
 		jobStorage.initialize();
 	}
 
-	public String getID(){
+	@Override
+	public String toString(){
 		return "JM:" + jobStorage;
 	}
 }

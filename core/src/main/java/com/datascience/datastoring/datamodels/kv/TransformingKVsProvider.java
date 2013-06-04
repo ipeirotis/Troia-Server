@@ -159,4 +159,9 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 	public String getID() {
 		return kvFactory.getID() + "_" + transformsFactory.getID();
 	}
+
+	@Override
+	public String toString(){
+		return getID();
+	}
 }

@@ -101,4 +101,8 @@ public class KVJobStorage extends BaseJobStorage{
 				kvsProvider.getWorkerResultsKV(id, wrnf));
 	}
 
+	@Override
+	public String toString(){
+		return "KV:" + kvsProvider.toString();
+	}
 }
