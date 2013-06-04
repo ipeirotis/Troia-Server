@@ -7,6 +7,7 @@ import com.datascience.datastoring.datamodels.kv.KVJobStorage;
 import com.datascience.datastoring.datamodels.kv.TransformingKVsProvider;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.transforms.CastingCoreTransformsFactory;
+import com.datascience.datastoring.transforms.SingletonsCoreTransformsFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.datastoring.backends.db.DBHelper;
 
@@ -30,7 +31,7 @@ public class JobStorageFactory {
 		}
 		if (type.equals("MEMORY_KV")){
 			return new KVJobStorage(new TransformingKVsProvider<Object>(
-					new MemoryKVFactory(), new CastingCoreTransformsFactory()
+					new MemoryKVFactory(), new SingletonsCoreTransformsFactory<Object>(new CastingCoreTransformsFactory())
 			));
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
