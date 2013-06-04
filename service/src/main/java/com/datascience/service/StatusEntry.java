@@ -9,9 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import com.datascience.datastoring.jobs.JobsManager;
 import org.joda.time.DateTime;
 
-import com.datascience.datastoring.jobs.IJobStorage;
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/status/")
@@ -29,8 +29,8 @@ public class StatusEntry {
 		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 	}
 
-	private IJobStorage getJobStorage(){
-		return (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
+	private JobsManager getJobsManager(){
+		return (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 	}
 
 	@GET
@@ -40,7 +40,7 @@ public class StatusEntry {
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("status", "OK");
 		content.put("deploy_time", getInitializationTimestamp().toString());
-		content.put("job_storage", getJobStorage().toString());
+		content.put("job_storage", getJobsManager().toString());
 		content.put("job_storage_status", getJobStorageStatus());
 		content.put("memory", getMemoryStats());
 		return getResponseBuilder().makeOKResponse(content);
@@ -48,7 +48,7 @@ public class StatusEntry {
 
 	protected String getJobStorageStatus() {
 		try {
-			getJobStorage().test();
+			getJobsManager().test();
 			return "OK";
 		} catch (Exception e) {
 			return "FAIL: " + e.getMessage();
