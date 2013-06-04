@@ -24,6 +24,11 @@ public abstract class BaseDBJobStorage<T extends DBStorage> implements IJobStora
 		jobFactory = new JobFactory(serializer, this);
 	}
 
+	@Override
+	public void setJobFactory(JobFactory jobFactory){
+		this.jobFactory = jobFactory;
+	}
+
 	public T getHelper(){
 		return helper;
 	}

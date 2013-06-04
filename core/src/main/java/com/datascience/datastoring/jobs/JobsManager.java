@@ -13,6 +13,7 @@ public class JobsManager {
 
 	public JobsManager(IJobStorage jobStorage, JobFactory jobFactory){
 		this.jobStorage = jobStorage;
+		jobStorage.setJobFactory(jobFactory);
 		this.jobFactory = jobFactory;
 	}
 

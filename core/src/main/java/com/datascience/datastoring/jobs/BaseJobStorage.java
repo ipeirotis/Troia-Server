@@ -24,6 +24,11 @@ public abstract class BaseJobStorage implements IJobStorage {
 		return jobFactory.create(type, settings, id);
 	}
 
+	@Override
+	public void setJobFactory(JobFactory jobFactory){
+		this.jobFactory = jobFactory;
+	}
+
 	public BaseJobStorage(IBackendAdapter backendAdapter){
 		this.backendAdapter = backendAdapter;
 	}

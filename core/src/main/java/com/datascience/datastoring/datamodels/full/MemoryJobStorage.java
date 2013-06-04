@@ -10,6 +10,7 @@ import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.jobs.JobFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +27,11 @@ public class MemoryJobStorage implements IJobStorage {
 	public MemoryJobStorage(){
 		initialize();
 	}
-	
+
+	@Override
+	public void setJobFactory(JobFactory jobFactory){
+	}
+
 	@Override
 	public <T extends Project> Job<T> get(String id) throws Exception {
 		return storage.get(id);

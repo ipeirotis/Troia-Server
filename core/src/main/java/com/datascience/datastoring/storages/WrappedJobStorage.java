@@ -5,6 +5,7 @@ import com.datascience.core.base.IData;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.jobs.JobFactory;
 
 import java.util.Collection;
 
@@ -18,6 +19,11 @@ public abstract class WrappedJobStorage implements IJobStorage {
 
 	public WrappedJobStorage(final IJobStorage wrappedJobStorage){
 		this.wrappedJobStorage = wrappedJobStorage;
+	}
+
+	@Override
+	public void setJobFactory(JobFactory jobFactory){
+		wrappedJobStorage.setJobFactory(jobFactory);
 	}
 
 	@Override
