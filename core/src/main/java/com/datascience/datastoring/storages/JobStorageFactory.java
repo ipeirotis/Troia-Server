@@ -7,6 +7,8 @@ import com.datascience.datastoring.datamodels.kv.KVJobStorage;
 import com.datascience.datastoring.datamodels.kv.TransformingKVsProvider;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.transforms.CastingCoreTransformsFactory;
+import com.datascience.datastoring.transforms.SerializerBasedCoreTransformsFactory;
+import com.datascience.datastoring.transforms.SimpleStringCoreTransformsFactory;
 import com.datascience.datastoring.transforms.SingletonsCoreTransformsFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.datastoring.backends.db.DBHelper;
@@ -31,7 +33,19 @@ public class JobStorageFactory {
 		}
 		if (type.equals("MEMORY_KV")){
 			return new KVJobStorage(new TransformingKVsProvider<Object>(
-					new MemoryKVFactory(), new SingletonsCoreTransformsFactory<Object>(new CastingCoreTransformsFactory())
+					new MemoryKVFactory<Object>(), new SingletonsCoreTransformsFactory<Object>(new CastingCoreTransformsFactory())
+			));
+			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
+		}
+		if (type.equals("MEMORY_KV_JSON")){
+			return new KVJobStorage(new TransformingKVsProvider<String>(
+					new MemoryKVFactory<String>(), new SingletonsCoreTransformsFactory<String>(new SerializerBasedCoreTransformsFactory(serializer))
+			));
+			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
+		}
+		if (type.equals("MEMORY_KV_SIMPLE")){
+			return new KVJobStorage(new TransformingKVsProvider<String>(
+					new MemoryKVFactory<String>(), new SingletonsCoreTransformsFactory<String>(new SimpleStringCoreTransformsFactory())
 			));
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}

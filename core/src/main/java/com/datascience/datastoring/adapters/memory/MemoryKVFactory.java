@@ -9,15 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MemoryKVFactory implements IBackendKVFactory<Object>, IBackend{
+public class MemoryKVFactory<V> implements IBackendKVFactory<V>, IBackend{
 
-	protected Map<String, IKVStorage<Object>> kvs = new HashMap<String, IKVStorage<Object>>();
+	protected Map<String, IKVStorage<V>> kvs = new HashMap<String, IKVStorage<V>>();
 
 	@Override
-	public IKVStorage<Object> getKV(String id) {
-		IKVStorage<Object> kv = kvs.get(id);
+	public IKVStorage<V> getKV(String id) {
+		IKVStorage<V> kv = kvs.get(id);
 		if (kv == null) {
-			kv = new MemoryKVStorage<Object>();
+			kv = new MemoryKVStorage<V>();
 			kvs.put(id, kv);
 		}
 		return kv;

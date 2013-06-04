@@ -40,7 +40,7 @@ public class StatusEntry {
 		Map<String, Object> content = new HashMap<String, Object>();
 		content.put("status", "OK");
 		content.put("deploy_time", getInitializationTimestamp().toString());
-		content.put("job_storage", getJobsManager().toString());
+		content.put("job_storage", getJobsManager().getID());
 		content.put("job_storage_status", getJobStorageStatus());
 		content.put("memory", getMemoryStats());
 		return getResponseBuilder().makeOKResponse(content);

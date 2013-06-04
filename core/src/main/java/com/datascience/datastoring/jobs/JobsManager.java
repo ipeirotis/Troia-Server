@@ -47,4 +47,8 @@ public class JobsManager {
 		} catch (Exception ex){}
 		jobStorage.initialize();
 	}
+
+	public String getID(){
+		return "JM:" + jobStorage;
+	}
 }

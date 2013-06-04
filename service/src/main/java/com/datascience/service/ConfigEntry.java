@@ -1,6 +1,6 @@
 package com.datascience.service;
 
-import com.datascience.datastoring.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.JobsManager;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.resource.Singleton;
 import org.apache.log4j.Logger;
@@ -57,7 +57,7 @@ public class ConfigEntry {
 		model.put(Constants.IS_FREEZED, freezed);
 		model.put("items", items);
 		model.put(Constants.IS_INITIALIZED, scontext.getAttribute(Constants.IS_INITIALIZED));
-		model.put("storages", new String[] {"MEMORY_FULL", "MEMORY_KV", "DB_FULL", "DB_KV_MEMCACHE_JSON", "DB_KV_MEMCACHE_SIMPLE", "DB_KV_JSON", "DB_KV_SIMPLE"});
+		model.put("storages", new String[] {"MEMORY_FULL", "MEMORY_KV", "MEMORY_KV_JSON", "MEMORY_KV_SIMPLE", "DB_FULL", "DB_KV_MEMCACHE_JSON", "DB_KV_MEMCACHE_SIMPLE", "DB_KV_JSON", "DB_KV_SIMPLE"});
 		model.put(Constants.JOBS_STORAGE, ((Properties) scontext.getAttribute(Constants.PROPERTIES)).getProperty(Constants.JOBS_STORAGE));
 		return Response.ok(new Viewable("/config", model)).build();
 	}
@@ -89,10 +89,9 @@ public class ConfigEntry {
 	@Path("resetDB")
 	public Response resetDB(){
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
-			IJobStorage js = (IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE);
+			JobsManager jm = (JobsManager) scontext.getAttribute(Constants.JOBS_MANAGER);
 			try {
-				js.clear();
-				js.initialize();
+				jm.rebuild();
 			} catch (Exception e){
 				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
