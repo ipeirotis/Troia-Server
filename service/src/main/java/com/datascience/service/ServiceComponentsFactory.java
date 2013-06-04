@@ -43,9 +43,9 @@ public class ServiceComponentsFactory {
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
 
-		IJobStorage internalJobStorage = JobStorageFactory.create(type, connectionProperties, properties, serializer);
-		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsLocksManager);
-		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
+		IJobStorage jobStorage = JobStorageFactory.create(type, connectionProperties, properties, serializer);
+//		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsLocksManager);
+//		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
 		logger.info("Job Storage loaded");
 		return jobStorage;
 	}
