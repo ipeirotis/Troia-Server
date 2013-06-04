@@ -1,6 +1,7 @@
 package com.datascience.datastoring.datamodels.kv;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
@@ -55,28 +56,55 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 	}
 
 	@Override
-	public <T> ISafeKVStorage<Collection<AssignedLabel<T>>> getWorkerAssignsKV(String id) {
-		return getKVForJob(id, "WorkerAssigns", transformsFactory.createAssignsTransformation());
+	public ISafeKVStorage<Collection<AssignedLabel<String>>> getNominalWorkerAssignsKV(String id) {
+		return getKVForJob(id, "WorkerAssigns", transformsFactory.createNominalAssignsTransformation());
 	}
 
 	@Override
-	public <T> ISafeKVStorage<Collection<AssignedLabel<T>>> getObjectAssignsKV(String id) {
-		return getKVForJob(id, "ObjectAssigns", transformsFactory.createAssignsTransformation());
+	public ISafeKVStorage<Collection<AssignedLabel<String>>> getNominalObjectAssignsKV(String id) {
+		return getKVForJob(id, "ObjectAssigns", transformsFactory.createNominalAssignsTransformation());
 	}
 
 	@Override
-	public <T> ISafeKVStorage<Collection<LObject<T>>> getObjectsKV(String id) {
-		return getKVForJob(id, "Objects", transformsFactory.createObjectsTransformation());
+	public ISafeKVStorage<Collection<LObject<String>>> getNominalObjectsKV(String id) {
+		return getKVForJob(id, "Objects", transformsFactory.createNominalObjectsTransformation());
 	}
 
 	@Override
-	public <T> ISafeKVStorage<Collection<LObject<T>>> getGoldObjectsKV(String id) {
-		return getKVForJob(id, "GoldObjects", transformsFactory.createObjectsTransformation());
+	public ISafeKVStorage<Collection<LObject<String>>> getNominalGoldObjectsKV(String id) {
+		return getKVForJob(id, "GoldObjects", transformsFactory.createNominalObjectsTransformation());
 	}
 
 	@Override
-	public <T> ISafeKVStorage<Collection<LObject<T>>> getEvaluationObjectsKV(String id) {
-		return getKVForJob(id, "EvaluationObjects", transformsFactory.createObjectsTransformation());	}
+	public ISafeKVStorage<Collection<LObject<String>>> getNominalEvaluationObjectsKV(String id) {
+		return getKVForJob(id, "EvaluationObjects", transformsFactory.createNominalObjectsTransformation());
+	}
+
+	@Override
+	public ISafeKVStorage<Collection<AssignedLabel<ContValue>>> getContWorkerAssignsKV(String id) {
+		return getKVForJob(id, "WorkerAssigns", transformsFactory.createContAssignsTransformation());
+	}
+
+	@Override
+	public ISafeKVStorage<Collection<AssignedLabel<ContValue>>> getContObjectAssignsKV(String id) {
+		return getKVForJob(id, "ObjectAssigns", transformsFactory.createContAssignsTransformation());
+	}
+
+	@Override
+	public ISafeKVStorage<Collection<LObject<ContValue>>> getContObjectsKV(String id) {
+		return getKVForJob(id, "Objects", transformsFactory.createContObjectsTransformation());
+	}
+
+	@Override
+	public ISafeKVStorage<Collection<LObject<ContValue>>> getContGoldObjectsKV(String id) {
+		return getKVForJob(id, "GoldObjects", transformsFactory.createContObjectsTransformation());
+	}
+
+	@Override
+	public ISafeKVStorage<Collection<LObject<ContValue>>> getContEvaluationObjectsKV(String id) {
+		return getKVForJob(id, "EvaluationObjects", transformsFactory.createContObjectsTransformation());
+	}
+
 
 	@Override
 	public ISafeKVStorage<Collection<Worker>> getWorkersKV(String id) {

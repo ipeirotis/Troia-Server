@@ -83,12 +83,12 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testStringAssignsTransformation(){
-		testAssignsTransformation(new StringLabelCreator(), getCreator().<String>createAssignsTransformation());
+		testAssignsTransformation(new StringLabelCreator(), getCreator().createNominalAssignsTransformation());
 	}
 
 	@Test
 	public void testContValueAssignsTransformation(){
-		testAssignsTransformation(new ContValueLabelCreator(), getCreator().<ContValue>createAssignsTransformation());
+		testAssignsTransformation(new ContValueLabelCreator(), getCreator().createContAssignsTransformation());
 	}
 
 	private <T> void testObjectsTransformation(LabelCreator<T> creator, ITransformation<Collection<LObject<T>>, String> transformation){
@@ -113,12 +113,12 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testStringObjectsTransformation(){
-		testObjectsTransformation(new StringLabelCreator(), getCreator().<String>createObjectsTransformation());
+		testObjectsTransformation(new StringLabelCreator(), getCreator().createNominalObjectsTransformation());
 	}
 
 	@Test
 	public void testContValueObjectsTransformation(){
-		testObjectsTransformation(new ContValueLabelCreator(), getCreator().<ContValue>createObjectsTransformation());
+		testObjectsTransformation(new ContValueLabelCreator(), getCreator().createContObjectsTransformation());
 	}
 
 	@Test

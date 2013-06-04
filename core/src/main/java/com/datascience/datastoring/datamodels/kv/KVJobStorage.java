@@ -58,12 +58,12 @@ public class KVJobStorage extends BaseJobStorage{
 	@Override
 	public IData<ContValue> getContData(String id) {
 		KVData<ContValue> data = new KVData<ContValue>(
-				kvsProvider.<ContValue>getWorkerAssignsKV(id),
-				kvsProvider.<ContValue>getObjectAssignsKV(id),
-				kvsProvider.<ContValue>getObjectsKV(id),
-				kvsProvider.<ContValue>getGoldObjectsKV(id),
-				kvsProvider.<ContValue>getEvaluationObjectsKV(id),
-				kvsProvider.<ContValue>getWorkersKV(id)
+				kvsProvider.getContWorkerAssignsKV(id),
+				kvsProvider.getContObjectAssignsKV(id),
+				kvsProvider.getContObjectsKV(id),
+				kvsProvider.getContGoldObjectsKV(id),
+				kvsProvider.getContEvaluationObjectsKV(id),
+				kvsProvider.getWorkersKV(id)
 		);
 		return data;
 	}
@@ -71,12 +71,12 @@ public class KVJobStorage extends BaseJobStorage{
 	@Override
 	public INominalData getNominalData(String id) {
 		INominalData data = new KVNominalData(
-				kvsProvider.<String>getWorkerAssignsKV(id),
-				kvsProvider.<String>getObjectAssignsKV(id),
-				kvsProvider.<String>getObjectsKV(id),
-				kvsProvider.<String>getGoldObjectsKV(id),
-				kvsProvider.<String>getEvaluationObjectsKV(id),
-				kvsProvider.<String>getWorkersKV(id),
+				kvsProvider.getNominalWorkerAssignsKV(id),
+				kvsProvider.getNominalObjectAssignsKV(id),
+				kvsProvider.getNominalObjectsKV(id),
+				kvsProvider.getNominalGoldObjectsKV(id),
+				kvsProvider.getNominalEvaluationObjectsKV(id),
+				kvsProvider.getWorkersKV(id),
 				kvsProvider.getNominalJobSettingsKV(id)
 		);
 		return data;

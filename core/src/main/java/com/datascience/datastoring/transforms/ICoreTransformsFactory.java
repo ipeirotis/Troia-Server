@@ -1,6 +1,7 @@
 package com.datascience.datastoring.transforms;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
@@ -15,8 +16,11 @@ public interface ICoreTransformsFactory<V> {
 	ITransformation<JsonObject, V> createSettingsTransform();
 	ITransformation<String, V> createKindTransform();
 
-	<T>ITransformation<Collection<AssignedLabel<T>>, V> createAssignsTransformation();
-	<T>ITransformation<Collection<LObject<T>>, V> createObjectsTransformation();
+	ITransformation<Collection<AssignedLabel<String>>, V> createNominalAssignsTransformation();
+	ITransformation<Collection<LObject<String>>, V> createNominalObjectsTransformation();
+
+	ITransformation<Collection<AssignedLabel<ContValue>>, V> createContAssignsTransformation();
+	ITransformation<Collection<LObject<ContValue>>, V> createContObjectsTransformation();
 
 	ITransformation<Collection<Worker>, V> createWorkersTransformation();
 

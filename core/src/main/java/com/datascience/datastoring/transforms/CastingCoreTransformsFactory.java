@@ -1,6 +1,7 @@
 package com.datascience.datastoring.transforms;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
@@ -11,7 +12,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Collection;
 
-public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Object>{
+public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Object> {
 
 	@Override
 	public ITransformation<JsonObject, Object> createSettingsTransform() {
@@ -24,13 +25,23 @@ public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Obje
 	}
 
 	@Override
-	public <T> ITransformation<Collection<AssignedLabel<T>>, Object> createAssignsTransformation() {
-		return new CastingTransform<Collection<AssignedLabel<T>>>();
+	public ITransformation<Collection<AssignedLabel<String>>, Object> createNominalAssignsTransformation() {
+		return new CastingTransform<Collection<AssignedLabel<String>>>();
 	}
 
 	@Override
-	public <T> ITransformation<Collection<LObject<T>>, Object> createObjectsTransformation() {
-		return new CastingTransform<Collection<LObject<T>>>();
+	public ITransformation<Collection<LObject<String>>, Object> createNominalObjectsTransformation() {
+		return new CastingTransform<Collection<LObject<String>>>();
+	}
+
+	@Override
+	public ITransformation<Collection<AssignedLabel<ContValue>>, Object> createContAssignsTransformation() {
+		return new CastingTransform<Collection<AssignedLabel<ContValue>>>();
+	}
+
+	@Override
+	public ITransformation<Collection<LObject<ContValue>>, Object> createContObjectsTransformation() {
+		return new CastingTransform<Collection<LObject<ContValue>>>();
 	}
 
 	@Override

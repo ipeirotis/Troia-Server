@@ -8,18 +8,15 @@ import com.google.gson.JsonObject;
 /**
  * @Author: konrad
  */
-public abstract class BaseStringCoreTransformsFactory implements ICoreTransformsFactory<String> {
-
-	protected ITransformation<JsonObject, String> jsonObjectStringITransformation = new JSONStrTransformation();
-	protected ITransformation<String, String> identicalTransform = new IdTransformation<String>();
+public abstract class SingletonsStringCoreTransformsFactory implements ICoreTransformsFactory<String> {
 
 	@Override
 	public ITransformation<JsonObject, String> createSettingsTransform() {
-		return jsonObjectStringITransformation;
+		return new JSONStrTransformation();
 	}
 
 	@Override
 	public ITransformation<String, String> createKindTransform() {
-		return identicalTransform;
+		return new IdTransformation<String>();
 	}
 }

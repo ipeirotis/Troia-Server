@@ -7,12 +7,11 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
-import com.datascience.utils.Labels;
 import com.datascience.utils.transformations.simple.*;
 
 import java.util.Collection;
 
-public class SimpleStringCoreTransformsFactory extends BaseStringCoreTransformsFactory{
+public class SimpleStringCoreTransformsFactory extends SingletonsStringCoreTransformsFactory {
 
 	protected String objectSeparator;
 	protected String collectionSeparator;
@@ -35,18 +34,30 @@ public class SimpleStringCoreTransformsFactory extends BaseStringCoreTransformsF
 	}
 
 	@Override
-	public <T> ITransformation<Collection<AssignedLabel<T>>, String> createAssignsTransformation() {
+	public ITransformation<Collection<AssignedLabel<String>>, String> createNominalAssignsTransformation() {
 
-		AssignTransform<T> assignTransform = new AssignTransform<T>(objectSeparator,
-				Labels.<T, ITransformation>returnForKind(stringTransform, contValueTransform)); // TODO FIXME XXX drop need for labels
-		return new CollectionTransform<AssignedLabel<T>>(collectionSeparator, assignTransform);
+		AssignTransform<String> assignTransform = new AssignTransform<String>(objectSeparator, stringTransform);
+		return new CollectionTransform<AssignedLabel<String>>(collectionSeparator, assignTransform);
 	}
 
 	@Override
-	public <T> ITransformation<Collection<LObject<T>>, String> createObjectsTransformation() {
-		LObjectTransform<T> objectTransform = new LObjectTransform<T>(objectSeparator,
-				Labels.<T, ITransformation>returnForKind(stringTransform, contValueTransform)); // TODO FIXME XXX drop need for labels
-		return new CollectionTransform<LObject<T>>(collectionSeparator, objectTransform);	}
+	public ITransformation<Collection<LObject<String>>, String> createNominalObjectsTransformation() {
+		LObjectTransform<String> objectTransform = new LObjectTransform<String>(objectSeparator, stringTransform);
+		return new CollectionTransform<LObject<String>>(collectionSeparator, objectTransform);
+	}
+
+	@Override
+	public ITransformation<Collection<AssignedLabel<ContValue>>, String> createContAssignsTransformation() {
+
+		AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
+		return new CollectionTransform<AssignedLabel<ContValue>>(collectionSeparator, assignTransform);
+	}
+
+	@Override
+	public ITransformation<Collection<LObject<ContValue>>, String> createContObjectsTransformation() {
+		LObjectTransform<ContValue> objectTransform = new LObjectTransform<ContValue>(objectSeparator, contValueTransform);
+		return new CollectionTransform<LObject<ContValue>>(collectionSeparator, objectTransform);
+	}
 
 	@Override
 	public ITransformation<Collection<Worker>, String> createWorkersTransformation() {
