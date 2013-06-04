@@ -15,7 +15,7 @@ public abstract class WorkerQualityCalculator {
 
 	private ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator;
 	
-	public abstract double getError(NominalProject project, Worker<String> w, String from, String to);
+	public abstract double getError(NominalProject project, Worker w, String from, String to);
 
 	public WorkerQualityCalculator(ILabelProbabilityDistributionCostCalculator lpdcc){
 		this.labelProbabilityDistributionCostCalculator = lpdcc;
@@ -35,7 +35,7 @@ public abstract class WorkerQualityCalculator {
 
 	public Map<String, Double> getCosts(NominalProject project){
 		Map<String, Double> ret = new HashMap<String, Double>();
-		for (Worker<String> w : project.getData().getWorkers()){
+		for (Worker w : project.getData().getWorkers()){
 			ret.put(w.getName(), getCost(project, w));
 		}
 		return ret;
@@ -45,7 +45,7 @@ public abstract class WorkerQualityCalculator {
 		return Quality.fromCost(project, getCost(project, w));
 	}
 
-	private Map<String, Double> getSoftLabelForHardCategoryLabel(NominalProject project, Worker<String> w, String label) {
+	private Map<String, Double> getSoftLabelForHardCategoryLabel(NominalProject project, Worker w, String label) {
 		// Pr(c | label) = Pr(label | c) * Pr (c) / Pr(label)
 		Map<String, Double> worker_prior = project.getResults().getWorkerResult(w).getPrior(
 				project.getData().getWorkerAssigns(w),

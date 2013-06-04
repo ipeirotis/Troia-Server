@@ -34,9 +34,9 @@ public class GH83_DawidSkeneTest extends AbstractBase {
 
 		project.initializeCategories(getCategories(), priors, null);
 
-		Worker<String> w1 = new Worker<String>("A2G061ZJVQXGE");
-		Worker<String> w2 = new Worker<String>("A224TK7J4KA1LV");
-		Worker<String> w3 = new Worker<String>("A2ZUENR4ZLC3MN");
+		Worker w1 = new Worker("A2G061ZJVQXGE");
+		Worker w2 = new Worker("A224TK7J4KA1LV");
+		Worker w3 = new Worker("A2ZUENR4ZLC3MN");
 		project.getData().addAssign(new AssignedLabel<String>(w1, new LObject<String>("21K74J79KQW6KZ5ZI8OFKD455U4HJ6"), "blank"));
 		project.getData().addAssign(new AssignedLabel<String>(w1, new LObject<String>("2FWPLSP75KLMPN1Y0O8QMQVJZMCZTJ"), "yes"));
 		project.getData().addAssign(new AssignedLabel<String>(w2, new LObject<String>("283PHIT3HVWAEB01E1AQA1727RZCKR"), "yes"));

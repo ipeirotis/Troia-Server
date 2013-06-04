@@ -9,10 +9,10 @@ import java.util.Collection;
  */
 public interface IData<T> {
 
-	void addWorker(Worker<T> worker);
-	Worker<T> getWorker(String workerId);
-	Worker<T> getOrCreateWorker(String workerId);
-	Collection<Worker<T>> getWorkers();
+	void addWorker(Worker worker);
+	Worker getWorker(String workerId);
+	Worker getOrCreateWorker(String workerId);
+	Collection<Worker> getWorkers();
 
 	/** Should check whether object is gold or evaluation one */
 	void addObject(LObject<T> object);
@@ -32,8 +32,8 @@ public interface IData<T> {
 	Collection<AssignedLabel<T>> getAssigns();
 
 	/** This assumes that assigns are compared only on object and worker */
-	boolean hasAssign(LObject<T> object, Worker<T> worker);
-	Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker);
+	boolean hasAssign(LObject<T> object, Worker worker);
+	Collection<AssignedLabel<T>> getWorkerAssigns(Worker worker);
 
 	Collection<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject);
 

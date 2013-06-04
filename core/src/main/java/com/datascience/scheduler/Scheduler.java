@@ -12,7 +12,7 @@ public class Scheduler<T> implements IScheduler<T> {
 	protected IIterablePriorityQueue<LObject<T>> queue;
 	protected IData<T> data;
 	protected IPriorityCalculator<T> calculator;
-	protected ISchedulerForWorker<T> workerScheduler;
+	protected ISchedulerForWorker workerScheduler;
 
 	public Scheduler() {
 		queue = new IterablePriorityQueue<LObject<T>>(getObjectComparator());
@@ -57,7 +57,7 @@ public class Scheduler<T> implements IScheduler<T> {
 	}
 
 	@Override
-	public LObject<T> nextObject(Worker<T> worker) {
+	public LObject<T> nextObject(Worker worker) {
 		return workerScheduler.nextObjectForWorker(queue.iterator(), worker);
 	}
 
@@ -67,7 +67,7 @@ public class Scheduler<T> implements IScheduler<T> {
 	}
 
 	@Override
-	public void setSchedulerForWorker(ISchedulerForWorker<T> schedulerForWorker){
+	public void setSchedulerForWorker(ISchedulerForWorker schedulerForWorker){
 		workerScheduler = schedulerForWorker;
 	}
 

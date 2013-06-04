@@ -76,7 +76,7 @@ public class BaseTestScenario {
     public static void loadAssignedLabels() {
         Collection<AssignedLabel<String>> assignedLabels = testHelper.LoadWorkerAssignedLabels(inputDir + "input.txt");
         for (AssignedLabel<String> assign : assignedLabels) {
-            Worker<String> worker = data.getOrCreateWorker(assign.getWorker().getName());
+            Worker worker = data.getOrCreateWorker(assign.getWorker().getName());
             data.addWorker(worker);
             assign.setWorker(worker);
             LObject<String> object = data.getOrCreateObject(assign.getLobject().getName());
@@ -163,7 +163,7 @@ public class BaseTestScenario {
         Map<String, Double> result = new HashMap<String, Double>();
         Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
 
-        for (Worker<String> worker : project.getData().getWorkers()) {
+        for (Worker worker : project.getData().getWorkers()) {
             result.put(worker.getName(), workerEstimator.getCost(project, worker));
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }
@@ -198,7 +198,7 @@ public class BaseTestScenario {
         Map<String, Double> result = new HashMap<String, Double>();
         Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
 
-		for (Worker<String> worker : project.getData().getWorkers()) {
+		for (Worker worker : project.getData().getWorkers()) {
             result.put(worker.getName(), workerEvaluator.getCost(project, worker));
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }

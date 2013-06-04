@@ -20,7 +20,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 	private void initWorkers() {
 		double initial_rho = 0.9;
-		for (Worker<ContValue> w : data.getWorkers()) {
+		for (Worker w : data.getWorkers()) {
 			WorkerContResults wcr = new WorkerContResults();
 			wcr.setEst_rho(initial_rho);
 			wcr.computeZetaValues(getData().getWorkerAssigns(w));
@@ -82,7 +82,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 	protected double getLogLikelihood() {
 
 		double result = 0d;
-		for (Worker<ContValue> worker : data.getWorkers()){
+		for (Worker worker : data.getWorkers()){
 			WorkerContResults wr = results.getWorkerResult(worker);
 			for (AssignedLabel<ContValue> al : wr.getZetaValues()) {
 				HashMap<LObject<ContValue>, Double> zetas = estimateObjectZetas(worker);
@@ -153,7 +153,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		return diff;
 	}
 
-	private HashMap<LObject<ContValue>, Double> estimateObjectZetas(Worker<ContValue> workerToIgnore) {
+	private HashMap<LObject<ContValue>, Double> estimateObjectZetas(Worker workerToIgnore) {
 
 		HashMap<LObject<ContValue>, Double> result = new HashMap<LObject<ContValue>, Double>();
 
@@ -164,7 +164,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 			Double betasum = 0.0;
 
 			for (AssignedLabel<ContValue> al : data.getAssignsForObject(object)) {
-				Worker<ContValue>  worker = al.getWorker();
+				Worker worker = al.getWorker();
 				if(worker.equals(workerToIgnore))
 					continue;
 				WorkerContResults wr = results.getWorkerResult(worker);
@@ -188,7 +188,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 		// See equation 10
 
 		double diff = 0.0;
-		for (Worker<ContValue> worker : data.getWorkers()){
+		for (Worker worker : data.getWorkers()){
 			WorkerContResults wr = results.getWorkerResult(worker);
 			Double sum_prod = 0.0;
 			Double sum_zi = 0.0;
@@ -225,7 +225,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 		Double nominatorSigma = 0.0;
 		Double denominatorSigma = 0.0;
-		for (Worker<ContValue> worker : data.getWorkers()){
+		for (Worker worker : data.getWorkers()){
 			WorkerContResults wcr = results.getWorkerResult(worker);
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);
@@ -240,7 +240,7 @@ public class ContinuousIpeirotis extends Algorithm<ContValue, IData<ContValue>, 
 
 		Double nominatorMu = 0.0;
 		Double denominatorMu = 0.0;
-		for (Worker<ContValue> worker : data.getWorkers()){
+		for (Worker worker : data.getWorkers()){
 			WorkerContResults wcr = results.getWorkerResult(worker);
 			Double b = wcr.getBeta();
 			Double coef = Math.sqrt(b * b - b);

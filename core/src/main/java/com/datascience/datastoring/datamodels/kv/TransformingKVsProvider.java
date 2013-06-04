@@ -79,7 +79,7 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 		return getKVForJob(id, "EvaluationObjects", transformsFactory.createObjectsTransformation());	}
 
 	@Override
-	public <T> ISafeKVStorage<Collection<Worker<T>>> getWorkersKV(String id) {
+	public ISafeKVStorage<Collection<Worker>> getWorkersKV(String id) {
 		return getKVForJob(id, "Workers", transformsFactory.createWorkersTransformation());
 	}
 

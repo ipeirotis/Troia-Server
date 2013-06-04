@@ -33,7 +33,7 @@ public class BatchMV extends MajorityVote {
 	}
 
 	public void computeForWorkers(){
-		for (Worker<String> worker: getData().getWorkers()){
+		for (Worker worker: getData().getWorkers()){
 			computeWorkersConfusionMatrix(worker);
 		}
 	}

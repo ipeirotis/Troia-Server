@@ -32,7 +32,7 @@ public class EmpiricalData extends InMemoryData<ContValue> {
 
 			LObject<ContValue> lObject = getOrCreateObject(objectname);
 
-			Worker<ContValue> worker = getOrCreateWorker(workername);
+			Worker worker = getOrCreateWorker(workername);
 			AssignedLabel<ContValue> al = new AssignedLabel<ContValue>(worker, lObject, new ContValue(value));
 			addAssign(al);
 		}
@@ -75,7 +75,7 @@ public class EmpiricalData extends InMemoryData<ContValue> {
 			Double mu = Double.parseDouble(entries[2]);
 			Double sigma = Double.parseDouble(entries[3]);
 
-			Worker<ContValue> w = getOrCreateWorker(workername);
+			Worker w = getOrCreateWorker(workername);
 			WorkerContResults wr = new WorkerContResults();
 			wr.setTrueMu(mu);
 			wr.setTrueSigma(sigma);

@@ -34,8 +34,8 @@ public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Obje
 	}
 
 	@Override
-	public <T> ITransformation<Collection<Worker<T>>, Object> createWorkersTransformation() {
-		return new CastingTransform<Collection<Worker<T>>>();
+	public ITransformation<Collection<Worker>, Object> createWorkersTransformation() {
+		return new CastingTransform<Collection<Worker>>();
 	}
 
 	@Override

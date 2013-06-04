@@ -36,9 +36,9 @@ public class SerializerBasedCoreTransformsFactory extends BaseStringCoreTransfor
 	}
 
 	@Override
-	public <T> ITransformation<Collection<Worker<T>>, String> createWorkersTransformation() {
-		return new SerializationTransform<Collection<Worker<T>>>(serializer,
-				new TypeToken<Collection<Worker<T>>>(){}.getType()); // TODO XXX FIXME
+	public ITransformation<Collection<Worker>, String> createWorkersTransformation() {
+		return new SerializationTransform<Collection<Worker>>(serializer,
+				new TypeToken<Collection<Worker>>(){}.getType()); // TODO XXX FIXME
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class SchedulerCommands {
 
 		@Override
 		protected LObject<T> getNextObject(){
-			Worker<T> worker = project.getData().getOrCreateWorker(workerName);
+			Worker worker = project.getData().getOrCreateWorker(workerName);
 			return checkAndgetScheduler().nextObject(worker);
 		}
 	}

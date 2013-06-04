@@ -50,13 +50,13 @@ public class SyntheticDataWriter {
 	}
 
 	public void writeTrueWorkerDataToFile(
-			Map<Worker<ContValue>, WorkerContResults> workerContResults,
+			Map<Worker, WorkerContResults> workerContResults,
 			String filename) throws IOException {
 
 		BufferedWriter bw = openFile(filename);
 		try {
-			for (Map.Entry<Worker<ContValue>, WorkerContResults> e : workerContResults.entrySet()) {
-				Worker<ContValue> w = e.getKey();
+			for (Map.Entry<Worker, WorkerContResults> e : workerContResults.entrySet()) {
+				Worker w = e.getKey();
 				WorkerContResults wcr = e.getValue();
 				String line = w.getName() + "\t" +
 						wcr.getTrueRho() + "\t" +

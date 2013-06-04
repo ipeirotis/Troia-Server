@@ -21,7 +21,7 @@ import java.util.Map;
 public class MVTest {
 
 	protected ArrayList<String> categories;
-	protected ArrayList<Worker<String>> workers;
+	protected ArrayList<Worker> workers;
 	protected ArrayList<LObject<String>> objects;
 	protected ArrayList<LObject<String>> goldObjects;
 	protected ArrayList<AssignedLabel<String>> assigns;
@@ -34,9 +34,9 @@ public class MVTest {
 		categories = new ArrayList<String>();
 		categories.add("AAA");
 		categories.add("BBB");
-		workers = new ArrayList<Worker<String>>();
+		workers = new ArrayList<Worker>();
 		for (i=0;i<nWorkers;i++) {
-			workers.add(new Worker<String>("worker" + i));
+			workers.add(new Worker("worker" + i));
 		}
 		objects = new ArrayList<LObject<String>>();
 		for (i=0;i<nObjects;i++) {

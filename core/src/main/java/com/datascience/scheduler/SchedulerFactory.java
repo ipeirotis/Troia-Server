@@ -21,7 +21,7 @@ public class SchedulerFactory<T> {
 
 	protected interface ISchedulerCreator<T> extends Creator<IScheduler<T>>{}
 	protected interface IPriorityCalculatorCreator<T> extends Creator<IPriorityCalculator<T>>{}
-	protected interface ISchedulerForWorkerCreator<T> extends Creator<ISchedulerForWorker<T>>{}
+	protected interface ISchedulerForWorkerCreator<T> extends Creator<ISchedulerForWorker>{}
 
 	protected Map<String, ISchedulerCreator<T>> SCHEDULER_CREATORS = new HashMap<String, ISchedulerCreator<T>>();
 	protected Map<String, IPriorityCalculatorCreator<T>> CALCULATORS = new HashMap<String, IPriorityCalculatorCreator<T>>();
@@ -104,8 +104,8 @@ public class SchedulerFactory<T> {
 		return new ISchedulerForWorkerCreator<T>() {
 
 			@Override
-			public ISchedulerForWorker<T> create(JsonObject params) {
-				return (ISchedulerForWorker<T>) new SchedulersForWorker.ConfusionMatrixBased();
+			public ISchedulerForWorker create(JsonObject params) {
+				return (ISchedulerForWorker) new SchedulersForWorker.ConfusionMatrixBased();
 			}
 		};
 	}
@@ -114,7 +114,7 @@ public class SchedulerFactory<T> {
 		return new ISchedulerForWorkerCreator<T>() {
 
 			@Override
-			public ISchedulerForWorker<T> create(JsonObject params) {
+			public ISchedulerForWorker create(JsonObject params) {
 				return new SchedulersForWorker.FirstNotSeen<T>();
 			}
 		};
@@ -144,7 +144,7 @@ public class SchedulerFactory<T> {
 				CALCULATORS, "priority calculator");
 	}
 
-	public ISchedulerForWorker<T> createSchedulerForWorker(JsonObject params){
+	public ISchedulerForWorker createSchedulerForWorker(JsonObject params){
 		return createWithDefault(params, Constants.SCHEDULER_FOR_WORKERS, Constants.FOR_WORKERS_FIRST_NOT_SEEN,
 				SCHEDULERS_FOR_WORKERS, "scheduler for workers");
 	}

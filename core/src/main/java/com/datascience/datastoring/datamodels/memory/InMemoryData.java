@@ -16,30 +16,30 @@ import java.util.*;
 public class InMemoryData<T> extends AbstractData<T> {
 
 	protected Set<AssignedLabel<T>> assigns;
-	protected Set<Worker<T>> workers;
-	protected Map<String, Worker<T>> mapWorkers;
+	protected Set<Worker> workers;
+	protected Map<String, Worker> mapWorkers;
 	protected Map<String, LObject<T>> mapObjects;
 	protected Set<LObject<T>> objects;
 	protected Set<LObject<T>> goldObjects;
 	protected Set<LObject<T>> evaluationObjects;
 	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
-	protected Map<Worker<T>, Set<AssignedLabel<T>>> workersAssigns;
+	protected Map<Worker, Set<AssignedLabel<T>>> workersAssigns;
 
 	public InMemoryData(){
 		assigns = new HashSet<AssignedLabel<T>>();
-		workers = new HashSet<Worker<T>>();
+		workers = new HashSet<Worker>();
 		objects = new HashSet<LObject<T>>();
 		goldObjects = new HashSet<LObject<T>>();
 		evaluationObjects = new HashSet<LObject<T>>();
 		datums = new HashMap<LObject<T>, Set<AssignedLabel<T>>>();
-		workersAssigns = new HashMap<Worker<T>, Set<AssignedLabel<T>>>();
-		mapWorkers = new HashMap<String, Worker<T>>();
+		workersAssigns = new HashMap<Worker, Set<AssignedLabel<T>>>();
+		mapWorkers = new HashMap<String, Worker>();
 		mapObjects = new HashMap<String, LObject<T>>();
 		newDataObservers = new LinkedList<INewDataObserver<T>>();
 	}
 
 	@Override
-	protected void uncheckedAddWorker(Worker<T> worker){
+	protected void uncheckedAddWorker(Worker worker){
 		if (!workers.contains(worker)){
 			workers.add(worker);
 			mapWorkers.put(worker.getName(), worker);
@@ -49,12 +49,12 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Worker<T> getWorker(String workerId){
+	public Worker getWorker(String workerId){
 		return mapWorkers.get(workerId);
 	}
 
 	@Override
-	public Set<Worker<T>> getWorkers() {
+	public Set<Worker> getWorkers() {
 		return workers;
 	}
 
@@ -136,7 +136,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker){
+	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker worker){
 		return workersAssigns.get(worker);
 	}
 
@@ -146,7 +146,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 		LObject<T> object = assign.getLobject();
 		addObject(object);
 		forceAddAssign(assign, datums.get(object));
-		Worker<T> worker = assign.getWorker();
+		Worker worker = assign.getWorker();
 		addWorker(worker);
 		forceAddAssign(assign, workersAssigns.get(worker));
 		notifyNewAssign(assign);
@@ -156,7 +156,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	 * This assumes that assigns are compared only on object and worker
 	 */
 	@Override
-	public boolean hasAssign(LObject<T> object, Worker<T> worker){
+	public boolean hasAssign(LObject<T> object, Worker worker){
 		AssignedLabel<T> assign = new AssignedLabel<T>(worker, object, null);
 		return assigns.contains(assign);
 	}

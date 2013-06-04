@@ -12,8 +12,8 @@ import static org.junit.Assert.assertTrue;
 public class ContDataComparator {
 
 	protected IData<ContValue> data;
-	protected Worker<ContValue> worker1;
-	protected Worker<ContValue> worker2;
+	protected Worker worker1;
+	protected Worker worker2;
 	protected LObject<ContValue> object1;
 	protected LObject<ContValue> object2;
 	protected LObject<ContValue> object3;
@@ -28,8 +28,8 @@ public class ContDataComparator {
 	}
 
 	public void fillContData(IData<ContValue> data){
-		worker1 = new Worker<ContValue>("worker1");
-		worker2 = new Worker<ContValue>("worker2");
+		worker1 = new Worker("worker1");
+		worker2 = new Worker("worker2");
 		object1 = new LObject<ContValue>("object1");
 		object2 = new LObject<ContValue>("gobject2");
 		object3 = new LObject<ContValue>("object3");

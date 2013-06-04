@@ -28,7 +28,7 @@ public class KVResults<T, U, V> extends AbstractResults<T, U, V> {
 	}
 
 	@Override
-	protected V uncheckedGetWorkerResult(Worker<T> worker) {
+	protected V uncheckedGetWorkerResult(Worker worker) {
 		return workersKV.get(worker.getName());
 	}
 
@@ -43,12 +43,12 @@ public class KVResults<T, U, V> extends AbstractResults<T, U, V> {
 	}
 
 	@Override
-	public boolean hasWorkerResult(Worker<T> worker) {
+	public boolean hasWorkerResult(Worker worker) {
 		return workersKV.contains(worker.getName());
 	}
 
 	@Override
-	public void addWorkerResult(Worker<T> worker, V result) {
+	public void addWorkerResult(Worker worker, V result) {
 		workersKV.put(worker.getName(), result);
 	}
 }

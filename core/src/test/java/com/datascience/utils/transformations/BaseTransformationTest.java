@@ -41,7 +41,7 @@ public abstract class BaseTransformationTest {
 	private <T> Collection<AssignedLabel<T>> createAssignedLabels(int k, LabelCreator<T> labelCreator){
 		Collection<AssignedLabel<T>> labels = new LinkedList<AssignedLabel<T>>();
 		for (int i = 0; i< k; i++){
-			labels.add(new AssignedLabel<T>(new Worker<T>("worker"+i), new LObject<T>("object"+i), labelCreator.create(i)));
+			labels.add(new AssignedLabel<T>(new Worker("worker"+i), new LObject<T>("object"+i), labelCreator.create(i)));
 		}
 		return labels;
 	}
@@ -59,8 +59,8 @@ public abstract class BaseTransformationTest {
 		return objects;
 	}
 
-	private <T> Collection<Worker<T>> createWorkers(int k){
-		Collection<Worker<T>> workers = new LinkedList<Worker<T>>();
+	private Collection<Worker> createWorkers(int k){
+		Collection<Worker> workers = new LinkedList<Worker>();
 		for (int i =0; i<k; i++){
 			workers.add(new Worker("worker"+i));
 		}
@@ -123,12 +123,12 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testWorkersTransformation(){
-		Collection<Worker<String>> workers = createWorkers(5);
-		ITransformation<Collection<Worker<String>>, String> transformation = getCreator().createWorkersTransformation();
-		ArrayList<Worker<String>> transformedWorkers = new ArrayList<Worker<String>>(transformation.inverse(transformation.transform(workers)));
+		Collection<Worker> workers = createWorkers(5);
+		ITransformation<Collection<Worker>, String> transformation = getCreator().createWorkersTransformation();
+		ArrayList<Worker> transformedWorkers = new ArrayList<Worker>(transformation.inverse(transformation.transform(workers)));
 		Assert.assertEquals(workers.size(), transformedWorkers.size());
 		int i =0;
-		for (Worker<String> w : workers){
+		for (Worker w : workers){
 			Worker w2 = transformedWorkers.get(i);
 			Assert.assertEquals(w, w2);
 			i++;

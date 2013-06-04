@@ -418,8 +418,8 @@ public class DSBaseTestScenario extends BaseTestScenario {
     public void test_GoldTestsPerWorker() {
         HashMap<String, String> workerQuality = summaryResultsParser.getWorkerQuality();
         double avgNoGoldTests = 0.0;
-		Collection<Worker<String>> workers = data.getWorkers();
-        for (Worker<String> worker : workers) {
+		Collection<Worker> workers = data.getWorkers();
+        for (Worker worker : workers) {
             for (AssignedLabel<String> assign : project.getData().getWorkerAssigns(worker)) {
                 if (assign.getLobject().isGold()) {
                     avgNoGoldTests += 1;

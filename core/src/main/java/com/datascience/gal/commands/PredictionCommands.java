@@ -30,7 +30,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<Collection<MatrixValue<String>>>> wq = new ArrayList<WorkerValue<Collection<MatrixValue<String>>>>();
-			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
+			for (Entry<Worker, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
 				Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
 				ConfusionMatrix confusionMatrix = e.getValue().getConfusionMatrix();
 				for (String c1 : confusionMatrix.getCategories())
@@ -55,7 +55,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
-			for (Worker<String> w : project.getData().getWorkers()){
+			for (Worker w : project.getData().getWorkers()){
 				QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
 				wq.add(new WorkerValue<Double>(w.getName(), wspq.getWorkerWage(qualifiedWage, costThreshold)));
 			}
@@ -75,7 +75,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
-			for (Worker<String> w : project.getData().getWorkers()){
+			for (Worker w : project.getData().getWorkers()){
 				wq.add(new WorkerValue<Double>(w.getName(), wqc.getQuality(project, w)));
 			}
 			setResult(wq);
@@ -226,7 +226,7 @@ public class PredictionCommands {
 					header.add(lc);
 				ret.add(header);
 
-				for (Worker<String> w : project.getData().getWorkers()){
+				for (Worker w : project.getData().getWorkers()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(w.getName());
 					for (String lc : lca){

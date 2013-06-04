@@ -43,7 +43,7 @@ public class ResultsJSONingTest {
 		results.addDatumResult(obj, dr);
 		String serialized = gson.toJson(results);
 		LObject<String> imaginaryObj = new LObject<String>("ImaginaryObj");
-		Worker<String> imaginaryWorker = new Worker<String>("ImaginaryWorker");
+		Worker imaginaryWorker = new Worker("ImaginaryWorker");
 
 		InMemoryResults<String, DatumResult, WorkerResult> deserialized = gson.fromJson(serialized, new TypeToken<InMemoryResults<String, DatumResult, WorkerResult>>(){}.getType());
 //		Assert.assertEquals(deserialized.getOrCreateDatumResult(imaginaryObj).getClass(),

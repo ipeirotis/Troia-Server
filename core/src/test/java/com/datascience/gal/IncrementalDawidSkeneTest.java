@@ -52,7 +52,7 @@ public class IncrementalDawidSkeneTest {
 
 	@Test
 	public final void testGetErrorRateForWorker() {
-		Worker<String> w = new Worker<String>("worker1");
+		Worker w = new Worker("worker1");
 		project.getData().addWorker(w);
 		double errorRate = ((AbstractDawidSkene)project.getAlgorithm()).getErrorRateForWorker(
 				w,

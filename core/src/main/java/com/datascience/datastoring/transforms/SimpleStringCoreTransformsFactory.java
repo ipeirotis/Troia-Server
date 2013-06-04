@@ -49,9 +49,9 @@ public class SimpleStringCoreTransformsFactory extends BaseStringCoreTransformsF
 		return new CollectionTransform<LObject<T>>(collectionSeparator, objectTransform);	}
 
 	@Override
-	public <T> ITransformation<Collection<Worker<T>>, String> createWorkersTransformation() {
+	public ITransformation<Collection<Worker>, String> createWorkersTransformation() {
 		WorkerTransform workerTransform = new WorkerTransform();
-		return new CollectionTransform<Worker<T>>(collectionSeparator, workerTransform);
+		return new CollectionTransform<Worker>(collectionSeparator, workerTransform);
 	}
 
 	@Override

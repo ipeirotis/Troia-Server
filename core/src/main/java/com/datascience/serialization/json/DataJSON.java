@@ -34,7 +34,7 @@ public class DataJSON {
 			for (JsonElement je: jo.get("assigns").getAsJsonArray()){
 				ShallowAssign<T> sassign = jsonDeserializationContext.deserialize(je, ShallowAssign.class);
 
-				Worker<T> worker = data.getOrCreateWorker(sassign.worker);
+				Worker worker = data.getOrCreateWorker(sassign.worker);
 				LObject<T> object = data.getObject(sassign.object);
 				data.addAssign(new AssignedLabel<T>(worker, object, sassign.label));
 			}
@@ -102,23 +102,23 @@ public class DataJSON {
 		public AssignedLabel<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
 			ShallowAssign<T> sassign = context.deserialize(element, this.type);
 			return new AssignedLabel<T>(
-					new Worker<T>(sassign.worker),
+					new Worker(sassign.worker),
 					new LObject<T>(sassign.object),
 					sassign.label);
 		}
 	}
 	
-	public static class WorkerSerializer<T> implements JsonSerializer<Worker<T>> {
+	public static class WorkerSerializer implements JsonSerializer<Worker> {
 		@Override
-		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
+		public JsonElement serialize(Worker w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());
 		}
 	}
 
-	public static class WorkerDeserializer<T> implements JsonDeserializer<Worker<T>> {
+	public static class WorkerDeserializer<T> implements JsonDeserializer<Worker> {
 		@Override
-		public Worker<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-			return new Worker<T>(element.getAsString());
+		public Worker deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+			return new Worker(element.getAsString());
 		}
 	}
 

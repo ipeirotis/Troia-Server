@@ -55,7 +55,7 @@ public class JSONUtils {
 	public static final Type shallowAssignContValue = new TypeToken<ShallowAssign<ContValue>>(){}.getType();
 
 
-	public static final Type workersStringType = new TypeToken<Collection<Worker<String>>>() {}.getType();
+	public static final Type workersStringType = new TypeToken<Collection<Worker>>() {}.getType();
 	public static final Type workersCollection = new TypeToken<Collection<Worker>>() {}.getType();
 
 	public JSONUtils() {

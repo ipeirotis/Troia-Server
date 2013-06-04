@@ -49,7 +49,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		model = (NominalModel) o;
 	}
 
-	public double getErrorRateForWorker(Worker<String> worker, String from, String to){
+	public double getErrorRateForWorker(Worker worker, String from, String to){
 		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
 	}
 
@@ -107,7 +107,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return getObjectClassProbabilities(object, null);
 	}
 
-	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
+	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker workerToIgnore) {
 		Map<String, Double> result = new HashMap<String, Double>();
 
 		// If this is a gold example, just put the probability estimate to be
@@ -149,7 +149,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 			// We go through all the labels assigned to the d object
 			for (AssignedLabel<String> al : data.getAssignsForObject(object)) {
-				Worker<String> w = al.getWorker();
+				Worker w = al.getWorker();
 
 				// If we are trying to estimate the category probability
 				// distribution

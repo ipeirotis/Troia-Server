@@ -5,7 +5,7 @@ import com.google.common.base.Objects;
 /**
  * @Author: konrad
  */
-public class Worker<T> {
+public class Worker {
 
 	protected String name;
 

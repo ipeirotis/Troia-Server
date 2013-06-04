@@ -55,7 +55,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	 * from old batch DS code
 	 * @param worker
 	 */
-	public void computeWorkersConfusionMatrix(Worker<String> worker){
+	public void computeWorkersConfusionMatrix(Worker worker){
 		WorkerResult wr = results.getOrCreateWorkerResult(worker);
 		wr.empty();
 

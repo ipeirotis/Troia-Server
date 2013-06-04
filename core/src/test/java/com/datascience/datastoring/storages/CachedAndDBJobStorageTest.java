@@ -36,7 +36,7 @@ import org.junit.Test;
 public class CachedAndDBJobStorageTest {
 
 	private INominalData initializeNominalData() {
-		ArrayList<Worker<String>> workers;
+		ArrayList<Worker> workers;
 		ArrayList<LObject<String>> objects;
 		ArrayList<LObject<String>> goldObjects;
 		ArrayList<AssignedLabel<String>> assigns;
@@ -53,9 +53,9 @@ public class CachedAndDBJobStorageTest {
 
 		nominalData.setCategories(categories);
 
-		workers = new ArrayList<Worker<String>>();
+		workers = new ArrayList<Worker>();
 		for (i = 0; i < nWorkers; i++) {
-			workers.add(new Worker<String>("worker" + i));
+			workers.add(new Worker("worker" + i));
 		}
 
 		objects = new ArrayList<LObject<String>>();

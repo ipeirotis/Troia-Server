@@ -37,7 +37,7 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 		return results;
 	}
 
-	public W getWorkerResults(Worker<T> worker){
+	public W getWorkerResults(Worker worker){
 		return results.getWorkerResult(worker);
 	}
 

@@ -118,7 +118,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	@Override
-	public void newWorker(Worker<String> worker) {
+	public void newWorker(Worker worker) {
 	}
 }
 

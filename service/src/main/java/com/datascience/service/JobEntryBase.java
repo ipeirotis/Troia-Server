@@ -202,6 +202,6 @@ public abstract class JobEntryBase<T extends Project> {
 	@Path("nextObject/{wid:[a-zA-Z_0-9/:.-]+}")
 	@GET
 	public Response schedulerNextObject(@PathParam("wid") String worker){
-		return buildResponseOnCommand(new SchedulerCommands.GetNextObjectForWorker<T>(worker));
+		return buildResponseOnCommand(new SchedulerCommands.GetNextObjectForWorker(worker));
 	}
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface IResults<T, U, V> {
 
-	Map<Worker<T>, V> getWorkerResults(Collection<Worker<T>> workers);
+	Map<Worker, V> getWorkerResults(Collection<Worker> workers);
 	Map<LObject<T>, U> getDatumResults(Collection<LObject<T>> objects);
 
 	U getOrCreateDatumResult(LObject<T> obj);
@@ -22,11 +22,11 @@ public interface IResults<T, U, V> {
 	boolean hasDatumResult(LObject<T> obj);
 	void addDatumResult(LObject<T> obj, U result);
 
-	V getOrCreateWorkerResult(Worker<T> wor);
-	V createEmptyWorkerResult(Worker<T> wor);
-	V getWorkerResult(Worker<T> worker);
-	boolean hasWorkerResult(Worker<T> worker);
-	void addWorkerResult(Worker<T> worker, V result);
+	V getOrCreateWorkerResult(Worker wor);
+	V createEmptyWorkerResult(Worker wor);
+	V getWorkerResult(Worker worker);
+	boolean hasWorkerResult(Worker worker);
+	void addWorkerResult(Worker worker, V result);
 
 	void setNotifyEnabled(boolean enabled);
 	boolean isNotifyEnabled();

@@ -24,7 +24,7 @@ public interface IKVsProvider extends IBackendAdapter{
 	<T> ISafeKVStorage<Collection<LObject<T>>>getObjectsKV(String id);
 	<T> ISafeKVStorage<Collection<LObject<T>>>getGoldObjectsKV(String id);
 	<T> ISafeKVStorage<Collection<LObject<T>>>getEvaluationObjectsKV(String id);
-	<T> ISafeKVStorage<Collection<Worker<T>>>getWorkersKV(String id);
+	ISafeKVStorage<Collection<Worker>>getWorkersKV(String id);
 	ISafeKVStorage<PureNominalData>getNominalJobSettingsKV(String id);
 
 	ISafeKVStorage<Collection<DatumContResults>>getDatumContResultsKV(String id);

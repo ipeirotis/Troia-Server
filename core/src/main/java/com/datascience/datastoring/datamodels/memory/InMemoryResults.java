@@ -17,12 +17,12 @@ import java.util.Map;
 public class InMemoryResults<T, U, V> extends AbstractResults<T, U, V> {
 
 	protected Map<LObject<T>, U> datumResults;
-	protected Map<Worker<T>, V> workerResults;
+	protected Map<Worker, V> workerResults;
 
 	public InMemoryResults(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
 		super(datumCreator, workerCreator);
 		datumResults = new HashMap<LObject<T>, U>();
-		workerResults = new HashMap<Worker<T>, V>();
+		workerResults = new HashMap<Worker, V>();
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class InMemoryResults<T, U, V> extends AbstractResults<T, U, V> {
 	}
 
 	@Override
-	protected V uncheckedGetWorkerResult(Worker<T> worker){
+	protected V uncheckedGetWorkerResult(Worker worker){
 		return workerResults.get(worker);
 	}
 
@@ -47,12 +47,12 @@ public class InMemoryResults<T, U, V> extends AbstractResults<T, U, V> {
 	}
 
 	@Override
-	public boolean hasWorkerResult(Worker<T> worker){
+	public boolean hasWorkerResult(Worker worker){
 		return workerResults.containsKey(worker);
 	}
 
 	@Override
-	public void addWorkerResult(Worker<T> worker, V result){
+	public void addWorkerResult(Worker worker, V result){
 		workerResults.put(worker, result);
 		notifyNewWorkerResults(worker, result);
 	}

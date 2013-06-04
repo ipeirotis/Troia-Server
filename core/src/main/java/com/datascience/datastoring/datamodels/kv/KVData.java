@@ -21,14 +21,14 @@ public class KVData<T> extends AbstractData<T> {
 	protected ISafeKVStorage<Collection<LObject<T>>> objects;// SINGLE ROW!
 	protected ISafeKVStorage<Collection<LObject<T>>> goldObjects;// SINGLE ROW
 	protected ISafeKVStorage<Collection<LObject<T>>> evaluationObjects;// SINGLE ROW
-	protected ISafeKVStorage<Collection<Worker<T>>> workers; //SINGLE ROW!
+	protected ISafeKVStorage<Collection<Worker>> workers; //SINGLE ROW!
 
 	public KVData(ISafeKVStorage<Collection<AssignedLabel<T>>> workersAssigns,
 				  ISafeKVStorage<Collection<AssignedLabel<T>>> objectsAssigns,
 				  ISafeKVStorage<Collection<LObject<T>>> objects,
 				  ISafeKVStorage<Collection<LObject<T>>> goldObjects,
 				  ISafeKVStorage<Collection<LObject<T>>> evaluationObjects,
-				  ISafeKVStorage<Collection<Worker<T>>> workers){
+				  ISafeKVStorage<Collection<Worker>> workers){
 		this.workersAssigns = workersAssigns;
 		this.objectsAssigns = objectsAssigns;
 		this.objects = objects;
@@ -57,8 +57,8 @@ public class KVData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	protected void uncheckedAddWorker(Worker<T> worker) {
-		Collection<Worker<T>> oldWorkers = workers.get("");
+	protected void uncheckedAddWorker(Worker worker) {
+		Collection<Worker> oldWorkers = workers.get("");
 		if (!oldWorkers.contains(worker)){
 			oldWorkers.add(worker);
 			workers.put("", oldWorkers);
@@ -68,15 +68,15 @@ public class KVData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Worker<T> getWorker(String workerId) {
-		for (Worker<T> w : workers.get(""))
+	public Worker getWorker(String workerId) {
+		for (Worker w : workers.get(""))
 			if (w.getName().equals(workerId))
 				return w;
 		return null;
 	}
 
 	@Override
-	public Collection<Worker<T>> getWorkers() {
+	public Collection<Worker> getWorkers() {
 		return workers.get("");
 	}
 
@@ -189,14 +189,14 @@ public class KVData<T> extends AbstractData<T> {
 	@Override
 	public Collection<AssignedLabel<T>> getAssigns() {
 		Collection<AssignedLabel<T>> ret = new LinkedList<AssignedLabel<T>>();
-		for (Worker<T> w : getWorkers()){
+		for (Worker w : getWorkers()){
 			ret.addAll(workersAssigns.get(w.getName()));
 		}
 		return ret;
 	}
 
 	@Override
-	public boolean hasAssign(LObject<T> object, Worker<T> worker) {
+	public boolean hasAssign(LObject<T> object, Worker worker) {
 		if (objectsAssigns.contains(object.getName()))
 			for (AssignedLabel<T> al : objectsAssigns.get(object.getName())){
 				if (al.getWorker().equals(worker))
@@ -206,7 +206,7 @@ public class KVData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker) {
+	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker worker) {
 		return workersAssigns.get(worker.getName());
 	}
 
