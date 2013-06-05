@@ -51,7 +51,7 @@ public class JobStorageFactory {
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
 		if (type.equals("DB_FULL")){
-			return new DBJobStorage(new DBFullAdapter(new DBBackend(connectionProperties, properties)), serializer);
+			return new DBJobStorage(new DBFullAdapter(new DBBackend(connectionProperties, properties, true)), serializer);
 		}
 		if (type.equals("DB_KV")){
 			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);

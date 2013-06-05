@@ -16,26 +16,29 @@ public class DBBackend implements IBackend {
 
 	protected final static Logger logger = Logger.getLogger(DBBackend.class);
 	protected final static int VALIDATION_TIMEOUT = 2;
+	protected boolean utf8;
 	protected String dbUrl;
 	protected String dbName;
 	protected Connection connection;
 	protected Properties connectionProperties;
 	protected String extraOptions;
 
-	public DBBackend(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
+	public DBBackend(Properties connectionProperties, Properties properties, boolean utf8) throws ClassNotFoundException {
 		this(
 				properties.getProperty(Constants.DB_URL),
 				properties.getProperty(Constants.DB_DRIVER_CLASS),
 				connectionProperties,
 				properties.getProperty(Constants.DB_NAME),
-				"?useUnicode=true&characterEncoding=utf-8");
+				utf8 ? "?useUnicode=true&characterEncoding=utf-8" : "",
+				utf8);
 	}
 
-	public DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {
+	public DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions, boolean utf8) throws ClassNotFoundException {
 		this.dbUrl = dbUrl;
 		this.dbName = dbName;
 		this.connectionProperties = connectionProperties;
 		this.extraOptions = extraOptions;
+		this.utf8 = utf8;
 		Class.forName(driverClass);
 	}
 
@@ -116,7 +119,9 @@ public class DBBackend implements IBackend {
 	}
 
 	protected void createTable(String tableName, String tableColumns) throws SQLException {
-		executeSQL("CREATE TABLE " + tableName + " (" + tableColumns + ") DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		String createTable = "CREATE TABLE " + tableName + " (" + tableColumns + ") ";
+		createTable += utf8 ? "DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;" : ";";
+		executeSQL(createTable);
 		logger.info("Table " + tableName + " successfully created");
 	}
 
@@ -146,7 +151,9 @@ public class DBBackend implements IBackend {
 
 	protected void createDatabase() throws SQLException{
 		logger.info("Creating database");
-		executeSQL("CREATE DATABASE " + dbName + " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;");
+		String createDatabase = "CREATE DATABASE " + dbName;
+		createDatabase += utf8 ? " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;" : " ;";
+		executeSQL(createDatabase);
 		useDatabase();
 		logger.info("Database created successfully");
 	}
