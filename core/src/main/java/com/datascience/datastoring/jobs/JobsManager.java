@@ -42,6 +42,10 @@ public class JobsManager {
 		jobStorage.stop();
 	}
 
+	public synchronized void update(Job job) throws Exception {
+		jobStorage.update(job);
+	}
+
 	public synchronized void rebuild() throws Exception {
 		try {
 			jobStorage.clear();

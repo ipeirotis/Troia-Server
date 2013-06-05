@@ -3,6 +3,7 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
@@ -48,11 +49,14 @@ public class DataJSON {
 		@Override
 		public InMemoryNominalData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
 			Deserializer<String> deserializer = new Deserializer<String>();
-			InMemoryNominalData ret = (InMemoryNominalData) deserializer.deserialize(element, type, context);
-			ret.setPriorFixed(element.getAsJsonObject().get("fixedPriors").getAsBoolean());
-			ret.setCategories((Set<String>) context.deserialize(element.getAsJsonObject().get("categories"), JSONUtils.stringSetType));
-			ret.setCategoryPriors((Collection<CategoryValue>) context.deserialize(element.getAsJsonObject().get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
-			ret.setCostMatrix((CostMatrix<String>) context.deserialize(element.getAsJsonObject().get("costMatrix"), CostMatrix.class));
+			InMemoryNominalData ret = new InMemoryNominalData(deserializer.deserialize(element, type, context));
+			JsonObject jo = element.getAsJsonObject();
+			ret.setPriorFixed(jo.get("fixedPriors").getAsBoolean());
+			ret.setCategories((Collection<String>) context.deserialize(jo.get("categories"), JSONUtils.stringSetType));
+			if (jo.has("categoryPriors"))
+				ret.setCategoryPriors((Collection<CategoryValue>) context.deserialize(jo.get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
+			if (jo.has("costMatrix"))
+				ret.setCostMatrix((CostMatrix<String>) context.deserialize(jo.get("costMatrix"), CostMatrix.class));
 			return ret;
 		}
 	}
@@ -75,7 +79,13 @@ public class DataJSON {
 			JsonObject ret = serializer.serialize(data, type, jsonSerializationContext).getAsJsonObject();
 			ret.addProperty("fixedPriors", data.arePriorsFixed());
 			ret.add("categories", jsonSerializationContext.serialize(data.getCategories()));
-			ret.add("categoryPriors", jsonSerializationContext.serialize(data.getCategoryPriors()));
+			if (data.getCategoryPriors() != null){
+				JsonArray categoryPriors = new JsonArray();
+				for (Map.Entry<String, Double> e: data.getCategoryPriors().entrySet()){
+					categoryPriors.add(jsonSerializationContext.serialize(new CategoryValue(e.getKey(), e.getValue())));
+				}
+				ret.add("categoryPriors", categoryPriors);
+			}
 			ret.add("costMatrix", jsonSerializationContext.serialize(data.getCostMatrix()));
 			return ret;
 		}

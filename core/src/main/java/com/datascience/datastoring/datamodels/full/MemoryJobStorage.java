@@ -48,6 +48,10 @@ public class MemoryJobStorage implements IJobStorage {
 	}
 
 	@Override
+	public void update(Job job) {
+	}
+
+	@Override
 	public void test() throws Exception {
 	}
 

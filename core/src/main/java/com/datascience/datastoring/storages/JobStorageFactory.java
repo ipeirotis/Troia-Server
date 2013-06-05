@@ -1,6 +1,8 @@
 package com.datascience.datastoring.storages;
 
+import com.datascience.datastoring.adapters.db.DBFullAdapter;
 import com.datascience.datastoring.adapters.memory.MemoryKVFactory;
+import com.datascience.datastoring.backends.db.DBBackend;
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.datamodels.kv.KVJobStorage;
@@ -11,7 +13,6 @@ import com.datascience.datastoring.transforms.SerializerBasedCoreTransformsFacto
 import com.datascience.datastoring.transforms.SimpleStringCoreTransformsFactory;
 import com.datascience.datastoring.transforms.SingletonsCoreTransformsFactory;
 import com.datascience.serialization.ISerializer;
-import com.datascience.datastoring.backends.db.DBHelper;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -49,9 +50,9 @@ public class JobStorageFactory {
 			));
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
-//		if (type.equals("DB_FULL")){
-//			return new DBJobStorage(new DBHelper(connectionProperties, properties), serializer);
-//		}
+		if (type.equals("DB_FULL")){
+			return new DBJobStorage(new DBFullAdapter(new DBBackend(connectionProperties, properties)), serializer);
+		}
 		if (type.equals("DB_KV")){
 			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
 			return new KVJobStorage(null);

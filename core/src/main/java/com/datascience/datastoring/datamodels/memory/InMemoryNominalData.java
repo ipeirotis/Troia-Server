@@ -2,6 +2,7 @@ package com.datascience.datastoring.datamodels.memory;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
@@ -20,6 +21,19 @@ public class InMemoryNominalData extends InMemoryData<String> implements INomina
 
 	public InMemoryNominalData(){
 		jobData = new PureNominalData();
+	}
+
+	public InMemoryNominalData(InMemoryData<String> data){
+		jobData = new PureNominalData();
+		this.assigns = data.assigns;
+		this.workers = data.workers;
+		this.mapWorkers = data.mapWorkers;
+		this.mapObjects = data.mapObjects;
+		this.objects = data.objects;
+		this.goldObjects = data.goldObjects;
+		this.evaluationObjects = data.evaluationObjects;
+		this.datums = data.datums;
+		this.workersAssigns = data.workersAssigns;
 	}
 
 	@Override

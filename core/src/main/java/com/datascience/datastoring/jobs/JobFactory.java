@@ -5,6 +5,7 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.core.base.Project;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
@@ -22,6 +23,7 @@ import com.datascience.serialization.json.JSONUtils;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public class JobFactory {
 
 	protected interface JobCreator{
 		Job create(JsonObject jo, String id);
+//		Job create(String initializationData, String jsonData, String jsonResults, String model, String id);
 	}
 
 	final Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
@@ -177,15 +180,24 @@ public class JobFactory {
 											 String jsonResults, String model, String id){
 		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
 		Job<T> job = create(type, jo, id);
-		job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
-		job.getProject().setResults(serializer.<InMemoryResults>parse(jsonResults, InMemoryResults.class));
-		handleSchedulerLoading(jo, job.getProject());
+		//TODO: add new metod to JobCreator
+		if (type.equals(NominalProject.kind)) {
+			InMemoryNominalData data = serializer.parse(jsonData, InMemoryNominalData.class);
+			job.getProject().setResults(serializer.<InMemoryResults<String, DatumResult, WorkerResult>>parse(jsonResults, new TypeToken<InMemoryResults<String, DatumResult, WorkerResult>>() {}.getType()));
+			job.getProject().setData(data);
+			((ResultsFactory.WorkerResultNominalFactory)((AbstractResults<String, DatumResult, WorkerResult>)job.getProject().getResults()).getWorkerResultsCreator()).setCategories(data.getCategories());
+		}
+		else {
+			job.getProject().setResults(serializer.<InMemoryResults<ContValue, DatumContResults, WorkerContResults>>parse(jsonResults, new TypeToken<InMemoryResults<ContValue, DatumContResults, WorkerContResults>>() {}.getType()));
+			job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
+		}
 		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));
+		handleSchedulerLoading(jo, job.getProject());
 		return job;
 	}
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
-		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown algorithm type: ", type);
+		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown job type: ", type);
 		return JOB_FACTORY.get(t(type)).create(initializationData, id);
 	}
 }

@@ -31,6 +31,10 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	abstract protected U uncheckedGetDatumResults(LObject<T> obj);
 	abstract protected V uncheckedGetWorkerResult(Worker worker);
 
+	public ResultsFactory.WorkerResultCreator<V> getWorkerResultsCreator(){
+		return workerCreator;
+	}
+
 	@Override
 	public Map<Worker, V> getWorkerResults(Collection<Worker> workers){
 		Map<Worker, V> results = new HashMap<Worker, V>(workers.size());

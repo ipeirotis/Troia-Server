@@ -1,6 +1,7 @@
 package com.datascience.core.base;
 
 
+import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.results.IResults;
 import com.datascience.scheduler.IScheduler;
 import com.google.gson.JsonObject;
@@ -55,10 +56,15 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 
 	public void setData(U data){
 		this.data = data;
+		if (algorithm instanceof INewDataObserver) {
+			this.data.addNewUpdatableAlgorithm((INewDataObserver) algorithm);
+		}
+		algorithm.setData(this.data);
 	}
 
 	public void setResults(IResults<T, V, W> results){
 		this.results = results;
+		algorithm.setResults(results);
 	}
 
 	public JsonObject getInitializationData(){

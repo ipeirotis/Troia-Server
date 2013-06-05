@@ -2,43 +2,36 @@ package com.datascience.datastoring.backends.db;
 
 import com.datascience.datastoring.Constants;
 import com.datascience.datastoring.IBackend;
-import com.datascience.datastoring.IBackendAdapter;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: artur
- * Date: 4/10/13
+ * Date: 6/4/13
  */
-public abstract class DBStorage implements IBackend, IBackendAdapter {
+public class DBBackend implements IBackend {
 
-	protected final static Logger logger = Logger.getLogger(DBStorage.class);
+	protected final static Logger logger = Logger.getLogger(DBBackend.class);
 	protected final static int VALIDATION_TIMEOUT = 2;
-	protected List<String> TABLES;
-
 	protected String dbUrl;
 	protected String dbName;
 	protected Connection connection;
 	protected Properties connectionProperties;
-
 	protected String extraOptions;
 
-	public DBStorage(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
+	public DBBackend(Properties connectionProperties, Properties properties) throws ClassNotFoundException {
 		this(
-			properties.getProperty(Constants.DB_URL),
-			properties.getProperty(Constants.DB_DRIVER_CLASS),
-			connectionProperties,
-			properties.getProperty(Constants.DB_NAME),
-			"?useUnicode=true&characterEncoding=utf-8");
+				properties.getProperty(Constants.DB_URL),
+				properties.getProperty(Constants.DB_DRIVER_CLASS),
+				connectionProperties,
+				properties.getProperty(Constants.DB_NAME),
+				"?useUnicode=true&characterEncoding=utf-8");
 	}
 
-	public DBStorage(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {
+	public DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions) throws ClassNotFoundException {
 		this.dbUrl = dbUrl;
 		this.dbName = dbName;
 		this.connectionProperties = connectionProperties;
@@ -46,15 +39,21 @@ public abstract class DBStorage implements IBackend, IBackendAdapter {
 		Class.forName(driverClass);
 	}
 
-	//IBackendAdapter methods
 	@Override
-	public IBackend getBackend(){
-		return this;
+	public void test() throws Exception {
+		connectDatabase();
+		ensureConnection();
+		if (!connection.isValid(VALIDATION_TIMEOUT))
+			throw new Exception("DBBackend: connection not valid");
 	}
 
 	@Override
-	public void rebuild() throws  Exception {
-		connectDB();
+	public void stop() throws Exception {
+		close();
+	}
+
+	public void rebuild(Map<String, String> tables) throws  Exception {
+		connectDatabase();
 		if (dbName != null) {
 			try {
 				dropDatabase();
@@ -71,16 +70,15 @@ public abstract class DBStorage implements IBackend, IBackendAdapter {
 		} else {
 			dropAllObjects();
 		}
-		for (String tableName : TABLES){
-			createTable(tableName);
-			createIndex(tableName);
+		for (Map.Entry<String, String> e : tables.entrySet()){
+			createTable(e.getKey(), e.getValue());
+			createIndex(e.getKey());
 		}
 		close();
 	}
 
-	@Override
 	public void clear() throws SQLException {
-		connectDB();
+		connectDatabase();
 		if (dbName != null) {
 			try {
 				dropDatabase();
@@ -94,15 +92,50 @@ public abstract class DBStorage implements IBackend, IBackendAdapter {
 		close();
 	}
 
-	//IBackend methods
-	@Override
-	public void test() throws Exception{
-
+	public Connection getConnection(){
+		return connection;
 	}
 
-	@Override
-	public void stop() throws Exception{
-		close();
+	public void checkTables(List<String> tables) throws  Exception{
+		Statement stmt = connection.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
+		Set<String> tableNamesSet = new HashSet<String>();
+		int i=0;
+		while(rs.next()){
+			tableNamesSet.add(rs.getString("TABLE_NAME"));
+			i++;
+		}
+		for (String tableName : tables){
+			if (!tableNamesSet.contains(tableName)){
+				throw new Exception("There is no table named: " + tableName);
+			}
+		}
+		if (tables.size() != i)
+			throw new Exception("Invalid tables size");
+		cleanupStatement(stmt, null);
+	}
+
+	protected void createTable(String tableName, String tableColumns) throws SQLException {
+		executeSQL("CREATE TABLE " + tableName + " (" + tableColumns + ") DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		logger.info("Table " + tableName + " successfully created");
+	}
+
+	protected void createIndex(String tableName) throws  SQLException{
+		executeSQL("CREATE INDEX " + tableName + "Index on " + tableName + " (id);");
+		logger.info("Index on table " + tableName + " successfully created");
+	}
+
+	protected void connectDatabase() throws SQLException {
+		String dbPath = String.format("%s%s", dbUrl, extraOptions);
+		logger.info("Trying to connect with: " + dbPath);
+		connection = DriverManager.getConnection(dbPath, connectionProperties);
+		logger.info("Connected to " + dbPath);
+		try{
+			useDatabase();
+		}
+		catch (SQLException ex){
+			logger.warn("Can't use database: " + dbName);
+		}
 	}
 
 	protected void dropDatabase() throws SQLException {
@@ -118,27 +151,8 @@ public abstract class DBStorage implements IBackend, IBackendAdapter {
 		logger.info("Database created successfully");
 	}
 
-	public void useDatabase() throws  SQLException{
+	protected void useDatabase() throws  SQLException{
 		executeSQL("USE " + dbName + ";");
-	}
-
-	public void checkTables() throws  Exception{
-		Statement stmt = connection.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
-		Set<String> tableNamesSet = new HashSet<String>();
-		int i=0;
-		while(rs.next()){
-			tableNamesSet.add(rs.getString("TABLE_NAME"));
-			i++;
-		}
-		for (String tableName : TABLES){
-			if (!tableNamesSet.contains(tableName)){
-				throw new Exception("There is no table named: " + tableName);
-			}
-		}
-		if (TABLES.size() != i)
-			throw new Exception("Invalid tables size");
-		cleanup(stmt, null);
 	}
 
 	protected void dropAllObjects() throws SQLException {
@@ -147,60 +161,34 @@ public abstract class DBStorage implements IBackend, IBackendAdapter {
 		logger.info("Droping objects - done");
 	}
 
-	protected abstract void createTable(String tableName) throws SQLException;
+	public void ensureConnection() throws SQLException {
+		if (!connection.isValid(VALIDATION_TIMEOUT)) {
+			connectDatabase();
+		}
+	}
 
-	protected void createIndex(String tableName) throws  SQLException{
-		executeSQL("CREATE INDEX " + tableName + "Index on " + tableName + " (id);");
-		logger.info("Index on table " + tableName + " successfully created");
+	protected void close() throws SQLException {
+		connection.close();
 	}
 
 	protected void executeSQL(String sql) throws SQLException {
 		PreparedStatement stmt = initStatement(sql);
 		stmt.executeUpdate();
-		cleanup(stmt, null);
+		cleanupStatement(stmt, null);
 	}
 
-	public void connectDB() throws SQLException {
-		String dbPath = String.format("%s%s", dbUrl, extraOptions);
-		logger.info("Trying to connect with: " + dbPath);
-		connection = DriverManager.getConnection(dbPath, connectionProperties);
-		logger.info("Connected to " + dbPath);
-		try{
-			useDatabase();
-		}
-		catch (SQLException ex){
-			logger.warn("Can't use database: " + dbName);
-		}
-	}
-
-	public void ensureConnection() throws SQLException {
-		if (!connection.isValid(VALIDATION_TIMEOUT)) {
-			connectDB();
-		}
-	}
-
-	public void close() throws SQLException {
-		logger.info("closing db connections");
-		connection.close();
-	}
-
-
-	public PreparedStatement initStatement(String command) throws SQLException {
+	protected PreparedStatement initStatement(String command) throws SQLException {
 		ensureConnection();
 		return connection.prepareCall(command);
 	}
 
-	public void cleanup(Statement sql, ResultSet result) throws SQLException {
+	protected void cleanupStatement(Statement sql, ResultSet result) throws SQLException {
 		if (sql != null) {
 			sql.close();
 		}
 		if (result != null) {
 			result.close();
 		}
-	}
-
-	public Connection getConnection(){
-		return connection;
 	}
 
 	protected String getInsertPrefix(){
