@@ -10,13 +10,13 @@ import java.util.UUID;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
-import com.datascience.datastoring.backends.db.BaseDBJobStorage;
 import com.datascience.datastoring.backends.db.DBHelper;
 import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.jobs.BaseJobStorage;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
 
@@ -28,7 +28,7 @@ import com.datascience.datastoring.jobs.Job;
  * FIXME: possible sql injection!
  * @author konrad
  */
-public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
+public class DBJobStorage extends BaseJobStorage {
 
 	private static Logger logger = Logger.getLogger(DBJobStorage.class);
 
@@ -36,18 +36,18 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
 	private static final String INSERT_DS_PARAMS = "(id, kind, data, results, initializationData, model)";
 	private static final String DELETE_DS = "DELETE FROM Projects WHERE id = (?);";
 
-	public DBJobStorage(DBHelper helper, ISerializer serializer) throws SQLException{
-		super(helper, serializer);
+	public DBJobStorage(DBHelper adapter, ISerializer serializer) throws SQLException{
+		super(adapter, serializer);
 	}
 
 	@Override
 	public <T extends Project> Job<T>  get(String id) throws SQLException {
 		logger.debug("Getting job from DB: " + id);
 		ResultSet dsResults = null;
-		helper.ensureConnection();
+		adapter.ensureConnection();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = helper.getConnection().prepareStatement(GET_DS);
+			dsStatement = adapter.getConnection().prepareStatement(GET_DS);
 			dsStatement.setString(1, id);
 			dsResults = dsStatement.executeQuery();
 			if (!dsResults.next()) {
@@ -74,10 +74,10 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
 	@Override
 	public void add(Job job) throws SQLException{
 		logger.debug("Adding job to DB: " + job.getId());
-		helper.ensureConnection();
+		adapter.ensureConnection();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = helper.getConnection().prepareStatement(helper.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
+			dsStatement = adapter.getConnection().prepareStatement(adapter.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
 			dsStatement.setString(1, job.getId());
 			dsStatement.setString(2, job.getProject().getKind());
 			dsStatement.setString(3, serializer.serialize(job.getProject().getData()));
@@ -96,10 +96,10 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
 	@Override
 	public void remove(Job job) throws Exception {
 		logger.debug("Removing job from DB: " + job.getId());
-		helper.ensureConnection();
+		adapter.ensureConnection();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = helper.getConnection().prepareStatement(DELETE_DS);
+			dsStatement = adapter.getConnection().prepareStatement(DELETE_DS);
 			dsStatement.setString(1, job.getId());
 			dsStatement.executeUpdate();
 			dsStatement.close();
@@ -122,13 +122,13 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
 
 	@Override
 	public void test() throws Exception{
-		helper.ensureConnection();
+		adapter.ensureConnection();
 		UUID uuid = UUID.randomUUID();
 		String jid = "TEST_CONNECTION_" + uuid.toString();
 		String content = "TEST_CONTENT_" + uuid.toString();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = helper.getConnection().prepareStatement(helper.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
+			dsStatement = adapter.getConnection().prepareStatement(adapter.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
 			dsStatement.setString(1, jid);
 			dsStatement.setString(2, "TEST_KIND");
 			dsStatement.setString(3, content);
@@ -138,7 +138,7 @@ public class DBJobStorage extends BaseDBJobStorage<DBHelper> {
 			dsStatement.executeUpdate();
 			dsStatement.close();
 
-			dsStatement = helper.getConnection().prepareStatement(DELETE_DS);
+			dsStatement = adapter.getConnection().prepareStatement(DELETE_DS);
 			dsStatement.setString(1, jid);
 			dsStatement.executeUpdate();
 		} finally {

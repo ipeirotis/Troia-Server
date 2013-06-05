@@ -16,7 +16,8 @@ public abstract class BaseJobStorage implements IJobStorage {
 	protected IBackendAdapter backendAdapter;
 	protected JobFactory jobFactory;
 
-	public BaseJobStorage(ISerializer serializer){
+	public BaseJobStorage(IBackendAdapter backendAdapter, ISerializer serializer){
+		this(backendAdapter);
 		jobFactory = new JobFactory(serializer, this);
 	}
 
@@ -28,7 +29,6 @@ public abstract class BaseJobStorage implements IJobStorage {
 	public void setJobFactory(JobFactory jobFactory){
 		this.jobFactory = jobFactory;
 	}
-
 	public BaseJobStorage(IBackendAdapter backendAdapter){
 		this.backendAdapter = backendAdapter;
 	}
@@ -53,4 +53,7 @@ public abstract class BaseJobStorage implements IJobStorage {
 		backendAdapter.rebuild();
 	}
 
+	@Override
+	public void update(Job job) throws Exception{
+	}
 }

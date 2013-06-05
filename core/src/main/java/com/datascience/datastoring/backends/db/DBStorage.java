@@ -2,6 +2,7 @@ package com.datascience.datastoring.backends.db;
 
 import com.datascience.datastoring.Constants;
 import com.datascience.datastoring.IBackend;
+import com.datascience.datastoring.IBackendAdapter;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 
@@ -15,7 +16,7 @@ import java.util.Set;
  * User: artur
  * Date: 4/10/13
  */
-public abstract class DBStorage implements IBackend {
+public abstract class DBStorage implements IBackend, IBackendAdapter {
 
 	protected final static Logger logger = Logger.getLogger(DBStorage.class);
 	protected final static int VALIDATION_TIMEOUT = 2;
@@ -45,7 +46,14 @@ public abstract class DBStorage implements IBackend {
 		Class.forName(driverClass);
 	}
 
-	public void execute() throws SQLException {
+	//IBackendAdapter methods
+	@Override
+	public IBackend getBackend(){
+		return this;
+	}
+
+	@Override
+	public void rebuild() throws  Exception {
 		connectDB();
 		if (dbName != null) {
 			try {
@@ -67,6 +75,33 @@ public abstract class DBStorage implements IBackend {
 			createTable(tableName);
 			createIndex(tableName);
 		}
+		close();
+	}
+
+	@Override
+	public void clear() throws SQLException {
+		connectDB();
+		if (dbName != null) {
+			try {
+				dropDatabase();
+			}
+			catch (SQLException ex){
+				logger.warn("Can't drop database: " + dbName);
+			}
+		} else {
+			dropAllObjects();
+		}
+		close();
+	}
+
+	//IBackend methods
+	@Override
+	public void test() throws Exception{
+
+	}
+
+	@Override
+	public void stop() throws Exception{
 		close();
 	}
 
@@ -149,9 +184,6 @@ public abstract class DBStorage implements IBackend {
 		connection.close();
 	}
 
-	public void stop() throws Exception{
-		close();
-	}
 
 	public PreparedStatement initStatement(String command) throws SQLException {
 		ensureConnection();
