@@ -6,6 +6,7 @@ import com.datascience.utils.ITransformation;
 import com.datascience.utils.transformations.CollectionElementsTransform;
 import com.datascience.utils.transformations.thrift.generated.Assign;
 import com.datascience.utils.transformations.thrift.generated.Assigns;
+import com.datascience.utils.transformations.thrift.generated.Label;
 import com.datascience.utils.transformations.thrift.generated.Workers;
 import com.google.common.base.Throwables;
 import org.apache.log4j.Logger;
@@ -64,6 +65,19 @@ public class ThriftCoreTransforms {
 				hadnleError("When transforming from stream", e);
 			}
 			return null;
+		}
+	}
+
+	static public class LabelTransform<T> implements ITransformation<T, Label>{
+
+		@Override
+		public Label transform(T object) {
+			return null;  //To change body of implemented methods use File | Settings | File Templates.
+		}
+
+		@Override
+		public T inverse(Label object) {
+			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}
 	}
 

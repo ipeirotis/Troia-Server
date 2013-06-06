@@ -19,7 +19,7 @@ import java.util.*;
  */
 public abstract class BaseTransformationTest {
 
-	protected abstract ICoreTransformsFactory<String> getCreator();
+	protected abstract ICoreTransformsFactory getCreator();
 
 	private abstract static class LabelCreator<T>{
 		abstract T create(int k);
