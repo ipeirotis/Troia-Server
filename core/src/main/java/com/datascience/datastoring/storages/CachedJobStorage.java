@@ -126,6 +126,10 @@ public class CachedJobStorage extends WrappedJobStorage{
 		super.finalize();
 		stop();
 	}
+
+	@Override
+	public void flush(Job job){
+	}
 	
 	@Override
 	public String toString() {

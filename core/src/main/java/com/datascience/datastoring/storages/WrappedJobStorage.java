@@ -23,11 +23,6 @@ public abstract class WrappedJobStorage implements IJobStorage {
 	}
 
 	@Override
-	public void update(Job job) throws Exception{
-		wrappedJobStorage.update(job);
-	}
-
-	@Override
 	public void setJobFactory(JobFactory jobFactory){
 		wrappedJobStorage.setJobFactory(jobFactory);
 	}

@@ -43,7 +43,7 @@ public abstract class JobCommand<T, U> extends ProjectCommand<T> {
 	@Override
 	protected void afterExecution() throws Exception {
 		if (modifies())
-			jobsManager.update(job);
+			jobsManager.flush(job);
 	}
 
 	protected void assertState(boolean condition, String message){

@@ -48,7 +48,7 @@ public class MemoryJobStorage implements IJobStorage {
 	}
 
 	@Override
-	public void update(Job job) {
+	public void flush(Job job) {
 	}
 
 	@Override

@@ -56,6 +56,10 @@ public class KVJobStorage extends BaseJobStorage{
 	}
 
 	@Override
+	public void flush(Job job){
+	}
+
+	@Override
 	public IData<ContValue> getContData(String id) {
 		KVData<ContValue> data = new KVData<ContValue>(
 				kvsProvider.getContWorkerAssignsKV(id),

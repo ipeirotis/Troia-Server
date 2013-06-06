@@ -52,8 +52,4 @@ public abstract class BaseJobStorage implements IJobStorage {
 	public void initialize() throws Exception{
 		backendAdapter.rebuild();
 	}
-
-	@Override
-	public void update(Job job) throws Exception{
-	}
 }

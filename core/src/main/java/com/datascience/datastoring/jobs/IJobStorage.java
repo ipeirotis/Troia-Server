@@ -17,7 +17,7 @@ public interface IJobStorage {
 	<T extends Project> Job<T> get(String id) throws Exception;
 	<T extends Project> void add(Job<T> job) throws Exception;
 	void remove(Job job) throws Exception;
-	void update(Job job) throws Exception;
+	void flush(Job job) throws Exception;
 
 	void setJobFactory(JobFactory jobFactory);
 

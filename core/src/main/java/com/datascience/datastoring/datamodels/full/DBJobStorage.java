@@ -56,7 +56,7 @@ public class DBJobStorage extends BaseJobStorage {
 	}
 
 	@Override
-	public void update(Job job) throws Exception {
+	public void flush(Job job) throws Exception {
 		add(job);
 	}
 

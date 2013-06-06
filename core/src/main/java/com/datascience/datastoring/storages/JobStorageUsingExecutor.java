@@ -51,6 +51,10 @@ public class JobStorageUsingExecutor extends WrappedJobStorage{
 	}
 
 	@Override
+	public void flush(Job job){
+	}
+
+	@Override
 	public String toString() {
 		return wrappedJobStorage.toString() + "UsingExecutor";
 	}
