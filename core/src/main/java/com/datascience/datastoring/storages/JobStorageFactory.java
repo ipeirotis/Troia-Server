@@ -2,6 +2,7 @@ package com.datascience.datastoring.storages;
 
 import com.datascience.datastoring.adapters.db.DBFullAdapter;
 import com.datascience.datastoring.adapters.memory.MemoryKVFactory;
+import com.datascience.datastoring.adapters.mixed.DBKVsFactory;
 import com.datascience.datastoring.backends.db.DBBackend;
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
@@ -55,7 +56,9 @@ public class JobStorageFactory {
 		}
 		if (type.equals("DB_KV")){
 			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
-			return new KVJobStorage(null);
+			return new KVJobStorage(new TransformingKVsProvider<String>(
+					new DBKVsFactory<String>(connectionProperties, properties, true), new SingletonsCoreTransformsFactory<String>(new SimpleStringCoreTransformsFactory())
+			));
 //			return new DBKVsFactory(
 //				new DBKVHelper(connectionProperties, properties, storageParams.length == 4 && storageParams[2].toUpperCase().equals("MEMCACHE")),
 //				serializer,

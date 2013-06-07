@@ -6,7 +6,7 @@ import com.datascience.datastoring.adapters.kv.IKVStorage;
 public interface IBackendKVFactory<V> {
 
 	IKVStorage<V> getKV(String id);
-	void remove(String kvId);
+	void remove(String kvId) throws Exception;
 
 	IBackend getBackend();
 	String getID();

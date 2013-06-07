@@ -22,10 +22,6 @@ public class KVJobStorage extends BaseJobStorage{
 	public KVJobStorage(IKVsProvider kvsProvider){
 		super(kvsProvider);
 		this.kvsProvider = kvsProvider;
-		initializeStorage();
-	}
-
-	protected void initializeStorage(){
 		cleaner = new KVCleaner();
 		jobSettings = kvsProvider.getSettingsKV();
 		jobTypes = kvsProvider.getKindsKV();
@@ -51,8 +47,8 @@ public class KVJobStorage extends BaseJobStorage{
 		Project p = job.getProject();
 		cleaner.cleanUp((KVResults) p.getResults(), p.getData());
 		cleaner.cleanUp((KVData) p.getData()); // order is important ...
-		jobTypes.remove("");
-		jobSettings.remove("");
+		jobTypes.remove(job.getId());
+		jobSettings.remove(job.getId());
 	}
 
 	@Override

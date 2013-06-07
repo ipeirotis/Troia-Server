@@ -20,7 +20,7 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	static protected List<String> KVs = Lists.newArrayList(
 			"JobSettings", "JobTypes", "WorkerAssigns", "ObjectAssigns",
-			"GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResult"
+			"GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "NominalJobSettings"
 			);
 
 	protected IBackendKVFactory<T> kvFactory;
@@ -39,9 +39,9 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 		return finishKV(kvFactory.getKV(table), transformation);
 	}
 
-	protected <V> ISafeKVStorage<V> getKVForJob(String jobid, String table, ITransformation transformation){
+	protected <V> ISafeKVStorage<V> getKVForJob(String jobid, String table, ITransformation transformation, boolean multiRows){
 		IKVStorage<T> kvstorage = kvFactory.getKV(table);
-		kvstorage = new KVKeyPrefixingWrapper<T>(kvstorage, jobid + "_");
+		kvstorage = new KVKeyPrefixingWrapper<T>(kvstorage, multiRows ? jobid + "_" : jobid);
 		return finishKV(kvstorage, transformation);
 	}
 
@@ -57,83 +57,82 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	@Override
 	public ISafeKVStorage<Collection<AssignedLabel<String>>> getNominalWorkerAssignsKV(String id) {
-		return getKVForJob(id, "WorkerAssigns", transformsFactory.createNominalAssignsTransformation());
+		return getKVForJob(id, "WorkerAssigns", transformsFactory.createNominalAssignsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<AssignedLabel<String>>> getNominalObjectAssignsKV(String id) {
-		return getKVForJob(id, "ObjectAssigns", transformsFactory.createNominalAssignsTransformation());
+		return getKVForJob(id, "ObjectAssigns", transformsFactory.createNominalAssignsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<LObject<String>>> getNominalObjectsKV(String id) {
-		return getKVForJob(id, "Objects", transformsFactory.createNominalObjectsTransformation());
+		return getKVForJob(id, "Objects", transformsFactory.createNominalObjectsTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<LObject<String>>> getNominalGoldObjectsKV(String id) {
-		return getKVForJob(id, "GoldObjects", transformsFactory.createNominalObjectsTransformation());
+		return getKVForJob(id, "GoldObjects", transformsFactory.createNominalObjectsTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<LObject<String>>> getNominalEvaluationObjectsKV(String id) {
-		return getKVForJob(id, "EvaluationObjects", transformsFactory.createNominalObjectsTransformation());
+		return getKVForJob(id, "EvaluationObjects", transformsFactory.createNominalObjectsTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<AssignedLabel<ContValue>>> getContWorkerAssignsKV(String id) {
-		return getKVForJob(id, "WorkerAssigns", transformsFactory.createContAssignsTransformation());
+		return getKVForJob(id, "WorkerAssigns", transformsFactory.createContAssignsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<AssignedLabel<ContValue>>> getContObjectAssignsKV(String id) {
-		return getKVForJob(id, "ObjectAssigns", transformsFactory.createContAssignsTransformation());
+		return getKVForJob(id, "ObjectAssigns", transformsFactory.createContAssignsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<LObject<ContValue>>> getContObjectsKV(String id) {
-		return getKVForJob(id, "Objects", transformsFactory.createContObjectsTransformation());
+		return getKVForJob(id, "Objects", transformsFactory.createContObjectsTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<LObject<ContValue>>> getContGoldObjectsKV(String id) {
-		return getKVForJob(id, "GoldObjects", transformsFactory.createContObjectsTransformation());
+		return getKVForJob(id, "GoldObjects", transformsFactory.createContObjectsTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<LObject<ContValue>>> getContEvaluationObjectsKV(String id) {
-		return getKVForJob(id, "EvaluationObjects", transformsFactory.createContObjectsTransformation());
+		return getKVForJob(id, "EvaluationObjects", transformsFactory.createContObjectsTransformation(), false);
 	}
-
 
 	@Override
 	public ISafeKVStorage<Collection<Worker>> getWorkersKV(String id) {
-		return getKVForJob(id, "Workers", transformsFactory.createWorkersTransformation());
+		return getKVForJob(id, "Workers", transformsFactory.createWorkersTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<PureNominalData> getNominalJobSettingsKV(String id) {
-		return getKVForJob(id, "JobSettings", transformsFactory.createPureNominalDataTransformation());
+		return getKVForJob(id, "NominalJobSettings", transformsFactory.createPureNominalDataTransformation(), false);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<DatumContResults>> getDatumContResultsKV(String id) {
-		return getKVForJob(id, "ObjectResults", transformsFactory.createDatumContResultsTransformation());
+		return getKVForJob(id, "ObjectResults", transformsFactory.createDatumContResultsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<WorkerContResults>> getWorkerContResultsKV(String id) {
-		return getKVForJob(id, "WorkerResults", transformsFactory.createWorkerContResultsTransformation());
+		return getKVForJob(id, "WorkerResults", transformsFactory.createWorkerContResultsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<DatumResult>> getDatumResultsKV(String id, ResultsFactory.DatumResultFactory resultFactory) {
-		return getKVForJob(id, "ObjectResults", transformsFactory.createDatumStringResultsTransformation());
+		return getKVForJob(id, "ObjectResults", transformsFactory.createDatumStringResultsTransformation(), true);
 	}
 
 	@Override
 	public ISafeKVStorage<Collection<WorkerResult>> getWorkerResultsKV(String id, ResultsFactory.WorkerResultNominalFactory resultFactory) {
-		return getKVForJob(id, "WorkerResults", transformsFactory.createWorkerStringResultsTransformation(resultFactory));
+		return getKVForJob(id, "WorkerResults", transformsFactory.createWorkerStringResultsTransformation(resultFactory), true);
 	}
 
 	@Override

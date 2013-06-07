@@ -35,7 +35,6 @@ public class SimpleStringCoreTransformsFactory extends SingletonsStringCoreTrans
 
 	@Override
 	public ITransformation<Collection<AssignedLabel<String>>, String> createNominalAssignsTransformation() {
-
 		AssignTransform<String> assignTransform = new AssignTransform<String>(objectSeparator, stringTransform);
 		return new CollectionTransform<AssignedLabel<String>>(collectionSeparator, assignTransform);
 	}
@@ -48,7 +47,6 @@ public class SimpleStringCoreTransformsFactory extends SingletonsStringCoreTrans
 
 	@Override
 	public ITransformation<Collection<AssignedLabel<ContValue>>, String> createContAssignsTransformation() {
-
 		AssignTransform<ContValue> assignTransform = new AssignTransform<ContValue>(objectSeparator, contValueTransform);
 		return new CollectionTransform<AssignedLabel<ContValue>>(collectionSeparator, assignTransform);
 	}
@@ -67,7 +65,7 @@ public class SimpleStringCoreTransformsFactory extends SingletonsStringCoreTrans
 
 	@Override
 	public ITransformation<PureNominalData, String> createPureNominalDataTransformation() {
-		return null;   // TODO FIXME XXX something should be here ...
+		return new NominalDataTransform();
 	}
 
 	@Override

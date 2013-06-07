@@ -181,6 +181,13 @@ public class DataJSON {
 		}
 	}
 
+	public static class JsonObjectDeserializer implements JsonDeserializer<JsonObject> {
+		@Override
+		public JsonObject deserialize(JsonElement jo, Type type, JsonDeserializationContext ctx) {
+			return jo.getAsJsonObject();
+		}
+	}
+
 	public static class GenericCollectionDeserializer<T> implements JsonDeserializer<Collection<T>> {
 
 		private String collectionName;

@@ -47,7 +47,7 @@ public class DBFullAdapter implements IBackendAdapter {
 
 	@Override
 	public void clear() throws SQLException {
-		backend.clear();
+		backend.clear(tables.keySet());
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class DBFullAdapter implements IBackendAdapter {
 
 	public void test() throws Exception {
 		backend.test();
-		backend.checkTables(Lists.newArrayList(new String[] {"Projects"}));
+		backend.checkTables(tables.keySet());
 	}
 
 	public String[] get(String id) throws SQLException {
@@ -86,12 +86,7 @@ public class DBFullAdapter implements IBackendAdapter {
 			logger.debug("Getting job from DB: " + id + " DONE");
 			return new String[]{kind, initializationData, data, results, model};
 		} finally {
-			if (dsStatement != null) {
-				dsStatement.close();
-			}
-			if (dsResults != null) {
-				dsResults.close();
-			}
+			backend.cleanupStatement(dsStatement, dsResults);
 		}
 	}
 
@@ -108,9 +103,7 @@ public class DBFullAdapter implements IBackendAdapter {
 			dsStatement.executeUpdate();
 			logger.debug("Adding job to DB: " + data[0] + " DONE");
 		} finally {
-			if (dsStatement != null) {
-				dsStatement.close();
-			}
+			backend.cleanupStatement(dsStatement, null);
 		}
 	}
 
@@ -125,9 +118,7 @@ public class DBFullAdapter implements IBackendAdapter {
 			dsStatement.close();
 			logger.debug("Removing job from DB: " + id + " DONE");
 		} finally {
-			if (dsStatement != null) {
-				dsStatement.close();
-			}
+			backend.cleanupStatement(dsStatement, null);
 		}
 	}
 }

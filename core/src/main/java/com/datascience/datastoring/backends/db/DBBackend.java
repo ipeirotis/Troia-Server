@@ -23,7 +23,7 @@ public class DBBackend implements IBackend {
 	protected Properties connectionProperties;
 	protected String extraOptions;
 
-	public DBBackend(Properties connectionProperties, Properties properties, boolean utf8) throws ClassNotFoundException {
+	public DBBackend(Properties connectionProperties, Properties properties, boolean utf8) throws ClassNotFoundException, SQLException {
 		this(
 				properties.getProperty(Constants.DB_URL),
 				properties.getProperty(Constants.DB_DRIVER_CLASS),
@@ -33,13 +33,14 @@ public class DBBackend implements IBackend {
 				utf8);
 	}
 
-	public DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions, boolean utf8) throws ClassNotFoundException {
+	public DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions, boolean utf8) throws ClassNotFoundException, SQLException {
 		this.dbUrl = dbUrl;
 		this.dbName = dbName;
 		this.connectionProperties = connectionProperties;
 		this.extraOptions = extraOptions;
 		this.utf8 = utf8;
 		Class.forName(driverClass);
+		connectDatabase();
 	}
 
 	@Override
@@ -55,24 +56,8 @@ public class DBBackend implements IBackend {
 		close();
 	}
 
-	public void rebuild(Map<String, String> tables) throws  Exception {
+	public void rebuild(Map<String, String> tables) throws SQLException {
 		connectDatabase();
-		if (dbName != null) {
-			try {
-				dropDatabase();
-			}
-			catch (SQLException ex){
-				logger.warn("Can't drop database: " + dbName);
-			}
-			try {
-				createDatabase();
-			}
-			catch (SQLException ex){
-				logger.warn("Can't create database: " + dbName);
-			}
-		} else {
-			dropAllObjects();
-		}
 		for (Map.Entry<String, String> e : tables.entrySet()){
 			createTable(e.getKey(), e.getValue());
 			createIndex(e.getKey());
@@ -80,26 +65,34 @@ public class DBBackend implements IBackend {
 		close();
 	}
 
-	public void clear() throws SQLException {
+	public void clear(Collection<String> tables) throws SQLException {
 		connectDatabase();
-		if (dbName != null) {
-			try {
-				dropDatabase();
-			}
-			catch (SQLException ex){
-				logger.warn("Can't drop database: " + dbName);
-			}
-		} else {
-			dropAllObjects();
+		for (String t : tables){
+			dropTable(t);
 		}
 		close();
+	}
+
+	public PreparedStatement initStatement(String command) throws SQLException {
+		ensureConnection();
+		return connection.prepareCall(command);
+	}
+
+	public void cleanupStatement(Statement sql, ResultSet result) throws SQLException {
+		if (sql != null) {
+			sql.close();
+		}
+		if (result != null) {
+			result.close();
+		}
 	}
 
 	public Connection getConnection(){
 		return connection;
 	}
 
-	public void checkTables(List<String> tables) throws  Exception{
+	public void checkTables(Collection
+									<String> tables) throws  Exception{
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
 		Set<String> tableNamesSet = new HashSet<String>();
@@ -118,11 +111,16 @@ public class DBBackend implements IBackend {
 		cleanupStatement(stmt, null);
 	}
 
-	protected void createTable(String tableName, String tableColumns) throws SQLException {
+	public void createTable(String tableName, String tableColumns) throws SQLException {
 		String createTable = "CREATE TABLE " + tableName + " (" + tableColumns + ") ";
 		createTable += utf8 ? "DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;" : ";";
 		executeSQL(createTable);
 		logger.info("Table " + tableName + " successfully created");
+	}
+
+	public void dropTable(String tableName) throws  SQLException {
+		executeSQL("DROP TABLE " + tableName + ";");
+		logger.info("Table " + tableName + " successfully droped");
 	}
 
 	protected void createIndex(String tableName) throws  SQLException{
@@ -143,30 +141,10 @@ public class DBBackend implements IBackend {
 		}
 	}
 
-	protected void dropDatabase() throws SQLException {
-		logger.info("Deleting database " + dbName);
-		executeSQL("DROP DATABASE " + dbName + ";");
-		logger.info("Database deleted successfully");
-	}
-
-	protected void createDatabase() throws SQLException{
-		logger.info("Creating database");
-		String createDatabase = "CREATE DATABASE " + dbName;
-		createDatabase += utf8 ? " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;" : " ;";
-		executeSQL(createDatabase);
-		useDatabase();
-		logger.info("Database created successfully");
-	}
-
 	protected void useDatabase() throws  SQLException{
 		executeSQL("USE " + dbName + ";");
 	}
 
-	protected void dropAllObjects() throws SQLException {
-		logger.info("Droping objects " + dbName);
-		executeSQL("DROP ALL OBJECTS;");
-		logger.info("Droping objects - done");
-	}
 
 	public void ensureConnection() throws SQLException {
 		if (!connection.isValid(VALIDATION_TIMEOUT)) {
@@ -182,20 +160,6 @@ public class DBBackend implements IBackend {
 		PreparedStatement stmt = initStatement(sql);
 		stmt.executeUpdate();
 		cleanupStatement(stmt, null);
-	}
-
-	protected PreparedStatement initStatement(String command) throws SQLException {
-		ensureConnection();
-		return connection.prepareCall(command);
-	}
-
-	protected void cleanupStatement(Statement sql, ResultSet result) throws SQLException {
-		if (sql != null) {
-			sql.close();
-		}
-		if (result != null) {
-			result.close();
-		}
 	}
 
 	protected String getInsertPrefix(){

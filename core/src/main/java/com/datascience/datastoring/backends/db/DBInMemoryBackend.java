@@ -1,5 +1,6 @@
 package com.datascience.datastoring.backends.db;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -8,7 +9,7 @@ import java.util.*;
  */
 public class DBInMemoryBackend extends DBBackend {
 
-	public DBInMemoryBackend() throws ClassNotFoundException{
+	public DBInMemoryBackend() throws ClassNotFoundException, SQLException {
 		super(getURL(), getDriverClass(), getConnectionProperties(), getDBName(), "", false);
 	}
 
