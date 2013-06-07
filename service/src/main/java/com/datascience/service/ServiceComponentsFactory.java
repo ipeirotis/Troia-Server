@@ -46,7 +46,7 @@ public class ServiceComponentsFactory {
 		IJobStorage jobStorage = JobStorageFactory.create(type, connectionProperties, properties, serializer);
 //		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsLocksManager);
 //		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
-		logger.info("Job Storage loaded");
+		logger.info("Job Storage loaded: " + jobStorage.toString());
 		return jobStorage;
 	}
 

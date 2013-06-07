@@ -35,7 +35,7 @@ public class MemoryKVFactory<V> implements IBackendKVFactory<V>, IBackend{
 
 	@Override
 	public String getID() {
-		return "MEM";
+		return "MEMORY";
 	}
 
 	@Override

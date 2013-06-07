@@ -33,19 +33,19 @@ public class JobStorageFactory {
 		if (type.equals("MEMORY_FULL")){
 			return new MemoryJobStorage();
 		}
-		if (type.equals("MEMORY_KV")){
+		if (fullType.equals("MEMORY_KV")){
 			return new KVJobStorage(new TransformingKVsProvider<Object>(
 					new MemoryKVFactory<Object>(), new SingletonsCoreTransformsFactory<Object>(new CastingCoreTransformsFactory())
 			));
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
-		if (type.equals("MEMORY_KV_JSON")){
+		if (fullType.equals("MEMORY_KV_JSON")){
 			return new KVJobStorage(new TransformingKVsProvider<String>(
 					new MemoryKVFactory<String>(), new SingletonsCoreTransformsFactory<String>(new SerializerBasedCoreTransformsFactory(serializer))
 			));
 			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
 		}
-		if (type.equals("MEMORY_KV_SIMPLE")){
+		if (fullType.equals("MEMORY_KV_SIMPLE")){
 			return new KVJobStorage(new TransformingKVsProvider<String>(
 					new MemoryKVFactory<String>(), new SingletonsCoreTransformsFactory<String>(new SimpleStringCoreTransformsFactory())
 			));

@@ -39,4 +39,9 @@ public class GSONSerializer implements ISerializer {
 	public JsonElement getRaw(Object object){
 		return ju.gson.toJsonTree(object);
 	}
+
+	@Override
+	public String toString(){
+		return "GSON";
+	}
 }
