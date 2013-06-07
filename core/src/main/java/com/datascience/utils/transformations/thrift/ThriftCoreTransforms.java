@@ -4,10 +4,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Worker;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.transformations.CollectionElementsTransform;
-import com.datascience.utils.transformations.thrift.generated.Assign;
-import com.datascience.utils.transformations.thrift.generated.Assigns;
-import com.datascience.utils.transformations.thrift.generated.Label;
-import com.datascience.utils.transformations.thrift.generated.Workers;
+import com.datascience.utils.transformations.thrift.generated.*;
 import com.google.common.base.Throwables;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TBase;
@@ -68,59 +65,59 @@ public class ThriftCoreTransforms {
 		}
 	}
 
-	static public class LabelTransform<T> implements ITransformation<T, Label>{
+	static public class LabelTransform<T> implements ITransformation<T, TLabel>{
 
 		@Override
-		public Label transform(T object) {
+		public TLabel transform(T object) {
 			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}
 
 		@Override
-		public T inverse(Label object) {
-			return null;  //To change body of implemented methods use File | Settings | File Templates.
-		}
-	}
-
-
-	static public class AssignsTransform<T> implements ITransformation<Collection<AssignedLabel<T>>, Assigns> {
-
-		@Override
-		public Assigns transform(Collection<AssignedLabel<T>> object) {
-			return null;  //To change body of implemented methods use File | Settings | File Templates.
-		}
-
-		@Override
-		public Collection<AssignedLabel<T>> inverse(Assigns object) {
+		public T inverse(TLabel object) {
 			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}
 	}
 
-	static public class WorkerTransform implements ITransformation<Worker, com.datascience.utils.transformations.thrift.generated.Worker>{
+
+	static public class AssignsTransform<T> implements ITransformation<Collection<AssignedLabel<T>>, TAssigns> {
 
 		@Override
-		public com.datascience.utils.transformations.thrift.generated.Worker transform(Worker object) {
-			return new com.datascience.utils.transformations.thrift.generated.Worker(object.getName());
+		public TAssigns transform(Collection<AssignedLabel<T>> object) {
+			return null;  //To change body of implemented methods use File | Settings | File Templates.
 		}
 
 		@Override
-		public Worker inverse(com.datascience.utils.transformations.thrift.generated.Worker object) {
+		public Collection<AssignedLabel<T>> inverse(TAssigns object) {
+			return null;  //To change body of implemented methods use File | Settings | File Templates.
+		}
+	}
+
+	static public class WorkerTransform implements ITransformation<Worker, TWorker>{
+
+		@Override
+		public TWorker transform(Worker object) {
+			return new TWorker(object.getName());
+		}
+
+		@Override
+		public Worker inverse(TWorker object) {
 			return new Worker(object.getWorker());
 		}
 	}
 
 
-	static public class WorkersTransform implements ITransformation<Collection<Worker>, com.datascience.utils.transformations.thrift.generated.Workers>{
+	static public class WorkersTransform implements ITransformation<Collection<Worker>, TWorkers>{
 
-		ITransformation<Collection<Worker>, Collection<com.datascience.utils.transformations.thrift.generated.Worker>> helperTransform =
-				new CollectionElementsTransform<Worker, com.datascience.utils.transformations.thrift.generated.Worker>(new WorkerTransform());
+		ITransformation<Collection<Worker>, Collection<TWorker>> helperTransform =
+				new CollectionElementsTransform<Worker, TWorker>(new WorkerTransform());
 
 		@Override
-		public com.datascience.utils.transformations.thrift.generated.Workers transform(Collection<Worker> object) {
-			return new Workers((List) helperTransform.transform(object));
+		public TWorkers transform(Collection<Worker> object) {
+			return new TWorkers((List) helperTransform.transform(object));
 		}
 
 		@Override
-		public Collection<Worker> inverse(com.datascience.utils.transformations.thrift.generated.Workers object) {
+		public Collection<Worker> inverse(TWorkers object) {
 			return helperTransform.inverse(object.getWorkers());
 		}
 	}

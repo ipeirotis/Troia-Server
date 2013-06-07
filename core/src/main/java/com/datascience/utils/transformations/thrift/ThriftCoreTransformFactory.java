@@ -9,7 +9,7 @@ import com.datascience.core.results.*;
 import com.datascience.datastoring.transforms.ICoreTransformsFactory;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.transformations.ComposingTransform;
-import com.datascience.utils.transformations.thrift.generated.Workers;
+import com.datascience.utils.transformations.thrift.generated.TWorkers;
 import com.google.gson.JsonObject;
 import org.apache.thrift.TBase;
 
@@ -58,7 +58,7 @@ public class ThriftCoreTransformFactory implements ICoreTransformsFactory<InputS
 
 	@Override
 	public ITransformation<Collection<Worker>, InputStream> createWorkersTransformation() {
-		return compose(new ThriftCoreTransforms.WorkersTransform(), new Workers());
+		return compose(new ThriftCoreTransforms.WorkersTransform(), new TWorkers());
 	}
 
 	@Override
