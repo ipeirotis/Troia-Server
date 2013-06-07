@@ -11,6 +11,7 @@ import com.datascience.utils.ITransformation;
 import com.datascience.utils.transformations.ComposingTransform;
 import com.datascience.utils.transformations.thrift.generated.Workers;
 import com.google.gson.JsonObject;
+import org.apache.thrift.TBase;
 
 import java.io.InputStream;
 import java.util.Collection;
@@ -19,6 +20,11 @@ import java.util.Collection;
  * @Author: konrad
  */
 public class ThriftCoreTransformFactory implements ICoreTransformsFactory<InputStream> {
+
+	protected <A, B extends TBase> ITransformation<A, InputStream> compose(ITransformation<A, B> base, B object){
+		return new ComposingTransform<A, B, InputStream>(base,
+				new ThriftCoreTransforms.ThriftBaseTransform<B>(object));
+	}
 
 	@Override
 	public ITransformation<JsonObject, InputStream> createSettingsTransform() {
@@ -52,8 +58,7 @@ public class ThriftCoreTransformFactory implements ICoreTransformsFactory<InputS
 
 	@Override
 	public ITransformation<Collection<Worker>, InputStream> createWorkersTransformation() {
-		return new ComposingTransform<Collection<Worker>, Workers, InputStream>(new ThriftCoreTransforms.WorkersTransform(),
-				new ThriftCoreTransforms.ThriftBaseTransform<Workers>(new Workers()));
+		return compose(new ThriftCoreTransforms.WorkersTransform(), new Workers());
 	}
 
 	@Override
