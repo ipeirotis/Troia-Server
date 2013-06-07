@@ -197,7 +197,7 @@ public class JobFactory {
 	}
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
-		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown job type: ", type);
+		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown algorithm type: ", type);
 		return JOB_FACTORY.get(t(type)).create(initializationData, id);
 	}
 }
