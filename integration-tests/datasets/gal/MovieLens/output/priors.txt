@@ -1,0 +1,5 @@
+Prior[3]=0.2
+Prior[2]=0.2
+Prior[1]=0.2
+Prior[5]=0.2
+Prior[4]=0.2
