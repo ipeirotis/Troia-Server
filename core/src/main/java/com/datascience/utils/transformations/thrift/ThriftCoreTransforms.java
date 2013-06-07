@@ -42,6 +42,7 @@ public class ThriftCoreTransforms {
 				PipedOutputStream pipedOutputStream = new PipedOutputStream();
 				PipedInputStream pipedInputStream = new PipedInputStream(pipedOutputStream);
 				object.write(new TBinaryProtocol(new TIOStreamTransport(pipedOutputStream)));
+				// Alternative ^^^ could be TMemoryBuffer
 				pipedOutputStream.flush();
 				return pipedInputStream;
 			} catch (IOException e) {
