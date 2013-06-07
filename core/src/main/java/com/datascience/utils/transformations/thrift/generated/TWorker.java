@@ -30,15 +30,15 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Worker");
+public class TWorker implements org.apache.thrift.TBase<TWorker, TWorker._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TWorker");
 
   private static final org.apache.thrift.protocol.TField WORKER_FIELD_DESC = new org.apache.thrift.protocol.TField("worker", org.apache.thrift.protocol.TType.STRING, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new WorkerStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new WorkerTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TWorkerStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TWorkerTupleSchemeFactory());
   }
 
   public String worker; // required
@@ -108,13 +108,13 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
     tmpMap.put(_Fields.WORKER, new org.apache.thrift.meta_data.FieldMetaData("worker", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Worker.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TWorker.class, metaDataMap);
   }
 
-  public Worker() {
+  public TWorker() {
   }
 
-  public Worker(
+  public TWorker(
     String worker)
   {
     this();
@@ -124,14 +124,14 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public Worker(Worker other) {
+  public TWorker(TWorker other) {
     if (other.isSetWorker()) {
       this.worker = other.worker;
     }
   }
 
-  public Worker deepCopy() {
-    return new Worker(this);
+  public TWorker deepCopy() {
+    return new TWorker(this);
   }
 
   @Override
@@ -143,7 +143,7 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
     return this.worker;
   }
 
-  public Worker setWorker(String worker) {
+  public TWorker setWorker(String worker) {
     this.worker = worker;
     return this;
   }
@@ -202,12 +202,12 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof Worker)
-      return this.equals((Worker)that);
+    if (that instanceof TWorker)
+      return this.equals((TWorker)that);
     return false;
   }
 
-  public boolean equals(Worker that) {
+  public boolean equals(TWorker that) {
     if (that == null)
       return false;
 
@@ -228,13 +228,13 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
     return 0;
   }
 
-  public int compareTo(Worker other) {
+  public int compareTo(TWorker other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    Worker typedOther = (Worker)other;
+    TWorker typedOther = (TWorker)other;
 
     lastComparison = Boolean.valueOf(isSetWorker()).compareTo(typedOther.isSetWorker());
     if (lastComparison != 0) {
@@ -263,7 +263,7 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("Worker(");
+    StringBuilder sb = new StringBuilder("TWorker(");
     boolean first = true;
 
     sb.append("worker:");
@@ -298,15 +298,15 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
     }
   }
 
-  private static class WorkerStandardSchemeFactory implements SchemeFactory {
-    public WorkerStandardScheme getScheme() {
-      return new WorkerStandardScheme();
+  private static class TWorkerStandardSchemeFactory implements SchemeFactory {
+    public TWorkerStandardScheme getScheme() {
+      return new TWorkerStandardScheme();
     }
   }
 
-  private static class WorkerStandardScheme extends StandardScheme<Worker> {
+  private static class TWorkerStandardScheme extends StandardScheme<TWorker> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, Worker struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TWorker struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -335,7 +335,7 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, Worker struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TWorker struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -350,16 +350,16 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
 
   }
 
-  private static class WorkerTupleSchemeFactory implements SchemeFactory {
-    public WorkerTupleScheme getScheme() {
-      return new WorkerTupleScheme();
+  private static class TWorkerTupleSchemeFactory implements SchemeFactory {
+    public TWorkerTupleScheme getScheme() {
+      return new TWorkerTupleScheme();
     }
   }
 
-  private static class WorkerTupleScheme extends TupleScheme<Worker> {
+  private static class TWorkerTupleScheme extends TupleScheme<TWorker> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, Worker struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TWorker struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetWorker()) {
@@ -372,7 +372,7 @@ public class Worker implements org.apache.thrift.TBase<Worker, Worker._Fields>, 
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, Worker struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TWorker struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {

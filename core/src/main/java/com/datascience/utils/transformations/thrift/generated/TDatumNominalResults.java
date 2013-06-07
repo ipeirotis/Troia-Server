@@ -30,15 +30,15 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominalResults, DatumNominalResults._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("DatumNominalResults");
+public class TDatumNominalResults implements org.apache.thrift.TBase<TDatumNominalResults, TDatumNominalResults._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TDatumNominalResults");
 
   private static final org.apache.thrift.protocol.TField CATEGORY_PROBABILITIES_FIELD_DESC = new org.apache.thrift.protocol.TField("categoryProbabilities", org.apache.thrift.protocol.TType.MAP, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new DatumNominalResultsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new DatumNominalResultsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TDatumNominalResultsStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TDatumNominalResultsTupleSchemeFactory());
   }
 
   public Map<String,Double> categoryProbabilities; // required
@@ -110,13 +110,13 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(DatumNominalResults.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TDatumNominalResults.class, metaDataMap);
   }
 
-  public DatumNominalResults() {
+  public TDatumNominalResults() {
   }
 
-  public DatumNominalResults(
+  public TDatumNominalResults(
     Map<String,Double> categoryProbabilities)
   {
     this();
@@ -126,7 +126,7 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public DatumNominalResults(DatumNominalResults other) {
+  public TDatumNominalResults(TDatumNominalResults other) {
     if (other.isSetCategoryProbabilities()) {
       Map<String,Double> __this__categoryProbabilities = new HashMap<String,Double>();
       for (Map.Entry<String, Double> other_element : other.categoryProbabilities.entrySet()) {
@@ -144,8 +144,8 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
     }
   }
 
-  public DatumNominalResults deepCopy() {
-    return new DatumNominalResults(this);
+  public TDatumNominalResults deepCopy() {
+    return new TDatumNominalResults(this);
   }
 
   @Override
@@ -168,7 +168,7 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
     return this.categoryProbabilities;
   }
 
-  public DatumNominalResults setCategoryProbabilities(Map<String,Double> categoryProbabilities) {
+  public TDatumNominalResults setCategoryProbabilities(Map<String,Double> categoryProbabilities) {
     this.categoryProbabilities = categoryProbabilities;
     return this;
   }
@@ -227,12 +227,12 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof DatumNominalResults)
-      return this.equals((DatumNominalResults)that);
+    if (that instanceof TDatumNominalResults)
+      return this.equals((TDatumNominalResults)that);
     return false;
   }
 
-  public boolean equals(DatumNominalResults that) {
+  public boolean equals(TDatumNominalResults that) {
     if (that == null)
       return false;
 
@@ -253,13 +253,13 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
     return 0;
   }
 
-  public int compareTo(DatumNominalResults other) {
+  public int compareTo(TDatumNominalResults other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    DatumNominalResults typedOther = (DatumNominalResults)other;
+    TDatumNominalResults typedOther = (TDatumNominalResults)other;
 
     lastComparison = Boolean.valueOf(isSetCategoryProbabilities()).compareTo(typedOther.isSetCategoryProbabilities());
     if (lastComparison != 0) {
@@ -288,7 +288,7 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("DatumNominalResults(");
+    StringBuilder sb = new StringBuilder("TDatumNominalResults(");
     boolean first = true;
 
     sb.append("categoryProbabilities:");
@@ -323,15 +323,15 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
     }
   }
 
-  private static class DatumNominalResultsStandardSchemeFactory implements SchemeFactory {
-    public DatumNominalResultsStandardScheme getScheme() {
-      return new DatumNominalResultsStandardScheme();
+  private static class TDatumNominalResultsStandardSchemeFactory implements SchemeFactory {
+    public TDatumNominalResultsStandardScheme getScheme() {
+      return new TDatumNominalResultsStandardScheme();
     }
   }
 
-  private static class DatumNominalResultsStandardScheme extends StandardScheme<DatumNominalResults> {
+  private static class TDatumNominalResultsStandardScheme extends StandardScheme<TDatumNominalResults> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, DatumNominalResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TDatumNominalResults struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -372,7 +372,7 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, DatumNominalResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TDatumNominalResults struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -395,16 +395,16 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
 
   }
 
-  private static class DatumNominalResultsTupleSchemeFactory implements SchemeFactory {
-    public DatumNominalResultsTupleScheme getScheme() {
-      return new DatumNominalResultsTupleScheme();
+  private static class TDatumNominalResultsTupleSchemeFactory implements SchemeFactory {
+    public TDatumNominalResultsTupleScheme getScheme() {
+      return new TDatumNominalResultsTupleScheme();
     }
   }
 
-  private static class DatumNominalResultsTupleScheme extends TupleScheme<DatumNominalResults> {
+  private static class TDatumNominalResultsTupleScheme extends TupleScheme<TDatumNominalResults> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, DatumNominalResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TDatumNominalResults struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetCategoryProbabilities()) {
@@ -424,7 +424,7 @@ public class DatumNominalResults implements org.apache.thrift.TBase<DatumNominal
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, DatumNominalResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TDatumNominalResults struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {

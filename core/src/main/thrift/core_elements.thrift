@@ -1,92 +1,94 @@
 namespace java com.datascience.utils.transformations.thrift.generated
 
-struct Settings {
+struct TSettings {
 	1: string settings
 }
 
-struct Kind {
+struct TKind {
 	1: string kind
 }
 
-struct NominalLabel {
+struct TNominalLabel {
 	1: string label
 }
 
-struct ContLabel {
+struct TContLabel {
 	1: double value,
 	2: double zeta
 }
 
-union Label {
-	1: NominalLabel nominalLabel,
-	2: ContLabel contLabel
+union TLabel {
+	1: TNominalLabel nominalLabel,
+	2: TContLabel contLabel
 }
 
-struct Worker {
+struct TWorker {
 	1: string worker
 }
 
-struct Assign {
-	1: Worker worker,
+struct TAssign {
+	1: TWorker worker,
 	2: string object,
-	3: Label label
+	3: TLabel label
 }
 
-struct LObject {
+struct TLObject {
 	1: string id,
-	2: Label goldLabel,
-    3: Label evalLabel
+	2: TLabel goldLabel,
+    3: TLabel evalLabel
 }
 
-struct LObjects {
-	1: list<LObject> objects
+struct TLObjects {
+	1: list<TLObject> objects
 }
 
-struct Assigns {
-	1: list<Assign> assigns
+struct TAssigns {
+	1: list<TAssign> assigns
 }
 
-struct Workers {
-	1: list<Worker> workers
+struct TWorkers {
+	1: list<TWorker> workers
 }
 
-# struct PureNominalData { }
+struct PureNominalData {
+	1: string data
+}
 
 
-struct DatumNominalResults {
+struct TDatumNominalResults {
 	1: map<string, double> categoryProbabilities
 }
 
-struct CMEntry {
+struct TCMEntry {
 	1: string from,
 	2: string to,
 	3: double val
 }
 
-struct ConfusionMatrix { # MultinominalConfusionMatrix
+struct TConfusionMatrix { # MultinominalConfusionMatrix
 	1: set<string> categories,
-	2: list<CMEntry> matrix,
+	2: list<TCMEntry> matrix,
 	3: map<string, double> rowDenominator
 }
 
-struct WorkerNominalResults {
-	1: ConfusionMatrix cm,
-	2: ConfusionMatrix eval_cm
+struct TWorkerNominalResults {
+	1: TConfusionMatrix cm,
+	2: TConfusionMatrix eval_cm
 }
 
 
-struct DatumContResults {
+struct TDatumContResults {
 	1: double est_val,
 	2: double est_zeta,
 	3: double distribMu,
 	4: double distribSigma
 }
 
-struct WorkerContResults {
+struct TWorkerContResults {
 	1: double est_rho,
 	2: double est_mu,
 	3: double est_sigma,
-	4: Assigns zeta,
+	4: TAssigns zeta,
 	5: double true_mu,
 	6: double true_sigma,
 	7: double true_rho

@@ -30,22 +30,22 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, NominalLabel._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("NominalLabel");
+public class PureNominalData implements org.apache.thrift.TBase<PureNominalData, PureNominalData._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("PureNominalData");
 
-  private static final org.apache.thrift.protocol.TField LABEL_FIELD_DESC = new org.apache.thrift.protocol.TField("label", org.apache.thrift.protocol.TType.STRING, (short)1);
+  private static final org.apache.thrift.protocol.TField DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("data", org.apache.thrift.protocol.TType.STRING, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new NominalLabelStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new NominalLabelTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new PureNominalDataStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new PureNominalDataTupleSchemeFactory());
   }
 
-  public String label; // required
+  public String data; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    LABEL((short)1, "label");
+    DATA((short)1, "data");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -60,8 +60,8 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // LABEL
-          return LABEL;
+        case 1: // DATA
+          return DATA;
         default:
           return null;
       }
@@ -105,71 +105,71 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.LABEL, new org.apache.thrift.meta_data.FieldMetaData("label", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(NominalLabel.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(PureNominalData.class, metaDataMap);
   }
 
-  public NominalLabel() {
+  public PureNominalData() {
   }
 
-  public NominalLabel(
-    String label)
+  public PureNominalData(
+    String data)
   {
     this();
-    this.label = label;
+    this.data = data;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public NominalLabel(NominalLabel other) {
-    if (other.isSetLabel()) {
-      this.label = other.label;
+  public PureNominalData(PureNominalData other) {
+    if (other.isSetData()) {
+      this.data = other.data;
     }
   }
 
-  public NominalLabel deepCopy() {
-    return new NominalLabel(this);
+  public PureNominalData deepCopy() {
+    return new PureNominalData(this);
   }
 
   @Override
   public void clear() {
-    this.label = null;
+    this.data = null;
   }
 
-  public String getLabel() {
-    return this.label;
+  public String getData() {
+    return this.data;
   }
 
-  public NominalLabel setLabel(String label) {
-    this.label = label;
+  public PureNominalData setData(String data) {
+    this.data = data;
     return this;
   }
 
-  public void unsetLabel() {
-    this.label = null;
+  public void unsetData() {
+    this.data = null;
   }
 
-  /** Returns true if field label is set (has been assigned a value) and false otherwise */
-  public boolean isSetLabel() {
-    return this.label != null;
+  /** Returns true if field data is set (has been assigned a value) and false otherwise */
+  public boolean isSetData() {
+    return this.data != null;
   }
 
-  public void setLabelIsSet(boolean value) {
+  public void setDataIsSet(boolean value) {
     if (!value) {
-      this.label = null;
+      this.data = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case LABEL:
+    case DATA:
       if (value == null) {
-        unsetLabel();
+        unsetData();
       } else {
-        setLabel((String)value);
+        setData((String)value);
       }
       break;
 
@@ -178,8 +178,8 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case LABEL:
-      return getLabel();
+    case DATA:
+      return getData();
 
     }
     throw new IllegalStateException();
@@ -192,8 +192,8 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
     }
 
     switch (field) {
-    case LABEL:
-      return isSetLabel();
+    case DATA:
+      return isSetData();
     }
     throw new IllegalStateException();
   }
@@ -202,21 +202,21 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof NominalLabel)
-      return this.equals((NominalLabel)that);
+    if (that instanceof PureNominalData)
+      return this.equals((PureNominalData)that);
     return false;
   }
 
-  public boolean equals(NominalLabel that) {
+  public boolean equals(PureNominalData that) {
     if (that == null)
       return false;
 
-    boolean this_present_label = true && this.isSetLabel();
-    boolean that_present_label = true && that.isSetLabel();
-    if (this_present_label || that_present_label) {
-      if (!(this_present_label && that_present_label))
+    boolean this_present_data = true && this.isSetData();
+    boolean that_present_data = true && that.isSetData();
+    if (this_present_data || that_present_data) {
+      if (!(this_present_data && that_present_data))
         return false;
-      if (!this.label.equals(that.label))
+      if (!this.data.equals(that.data))
         return false;
     }
 
@@ -228,20 +228,20 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
     return 0;
   }
 
-  public int compareTo(NominalLabel other) {
+  public int compareTo(PureNominalData other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    NominalLabel typedOther = (NominalLabel)other;
+    PureNominalData typedOther = (PureNominalData)other;
 
-    lastComparison = Boolean.valueOf(isSetLabel()).compareTo(typedOther.isSetLabel());
+    lastComparison = Boolean.valueOf(isSetData()).compareTo(typedOther.isSetData());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetLabel()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.label, typedOther.label);
+    if (isSetData()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.data, typedOther.data);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -263,14 +263,14 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("NominalLabel(");
+    StringBuilder sb = new StringBuilder("PureNominalData(");
     boolean first = true;
 
-    sb.append("label:");
-    if (this.label == null) {
+    sb.append("data:");
+    if (this.data == null) {
       sb.append("null");
     } else {
-      sb.append(this.label);
+      sb.append(this.data);
     }
     first = false;
     sb.append(")");
@@ -298,15 +298,15 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
     }
   }
 
-  private static class NominalLabelStandardSchemeFactory implements SchemeFactory {
-    public NominalLabelStandardScheme getScheme() {
-      return new NominalLabelStandardScheme();
+  private static class PureNominalDataStandardSchemeFactory implements SchemeFactory {
+    public PureNominalDataStandardScheme getScheme() {
+      return new PureNominalDataStandardScheme();
     }
   }
 
-  private static class NominalLabelStandardScheme extends StandardScheme<NominalLabel> {
+  private static class PureNominalDataStandardScheme extends StandardScheme<PureNominalData> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, NominalLabel struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, PureNominalData struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -316,10 +316,10 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
           break;
         }
         switch (schemeField.id) {
-          case 1: // LABEL
+          case 1: // DATA
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.label = iprot.readString();
-              struct.setLabelIsSet(true);
+              struct.data = iprot.readString();
+              struct.setDataIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -335,13 +335,13 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, NominalLabel struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, PureNominalData struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.label != null) {
-        oprot.writeFieldBegin(LABEL_FIELD_DESC);
-        oprot.writeString(struct.label);
+      if (struct.data != null) {
+        oprot.writeFieldBegin(DATA_FIELD_DESC);
+        oprot.writeString(struct.data);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -350,34 +350,34 @@ public class NominalLabel implements org.apache.thrift.TBase<NominalLabel, Nomin
 
   }
 
-  private static class NominalLabelTupleSchemeFactory implements SchemeFactory {
-    public NominalLabelTupleScheme getScheme() {
-      return new NominalLabelTupleScheme();
+  private static class PureNominalDataTupleSchemeFactory implements SchemeFactory {
+    public PureNominalDataTupleScheme getScheme() {
+      return new PureNominalDataTupleScheme();
     }
   }
 
-  private static class NominalLabelTupleScheme extends TupleScheme<NominalLabel> {
+  private static class PureNominalDataTupleScheme extends TupleScheme<PureNominalData> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, NominalLabel struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, PureNominalData struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetLabel()) {
+      if (struct.isSetData()) {
         optionals.set(0);
       }
       oprot.writeBitSet(optionals, 1);
-      if (struct.isSetLabel()) {
-        oprot.writeString(struct.label);
+      if (struct.isSetData()) {
+        oprot.writeString(struct.data);
       }
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, NominalLabel struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, PureNominalData struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
-        struct.label = iprot.readString();
-        struct.setLabelIsSet(true);
+        struct.data = iprot.readString();
+        struct.setDataIsSet(true);
       }
     }
   }

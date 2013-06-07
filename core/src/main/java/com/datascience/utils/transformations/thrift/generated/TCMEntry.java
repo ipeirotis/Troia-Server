@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CMEntry");
+public class TCMEntry implements org.apache.thrift.TBase<TCMEntry, TCMEntry._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TCMEntry");
 
   private static final org.apache.thrift.protocol.TField FROM_FIELD_DESC = new org.apache.thrift.protocol.TField("from", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField TO_FIELD_DESC = new org.apache.thrift.protocol.TField("to", org.apache.thrift.protocol.TType.STRING, (short)2);
@@ -39,8 +39,8 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new CMEntryStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new CMEntryTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TCMEntryStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TCMEntryTupleSchemeFactory());
   }
 
   public String from; // required
@@ -124,13 +124,13 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     tmpMap.put(_Fields.VAL, new org.apache.thrift.meta_data.FieldMetaData("val", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(CMEntry.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TCMEntry.class, metaDataMap);
   }
 
-  public CMEntry() {
+  public TCMEntry() {
   }
 
-  public CMEntry(
+  public TCMEntry(
     String from,
     String to,
     double val)
@@ -145,7 +145,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public CMEntry(CMEntry other) {
+  public TCMEntry(TCMEntry other) {
     __isset_bitfield = other.__isset_bitfield;
     if (other.isSetFrom()) {
       this.from = other.from;
@@ -156,8 +156,8 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     this.val = other.val;
   }
 
-  public CMEntry deepCopy() {
-    return new CMEntry(this);
+  public TCMEntry deepCopy() {
+    return new TCMEntry(this);
   }
 
   @Override
@@ -172,7 +172,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     return this.from;
   }
 
-  public CMEntry setFrom(String from) {
+  public TCMEntry setFrom(String from) {
     this.from = from;
     return this;
   }
@@ -196,7 +196,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     return this.to;
   }
 
-  public CMEntry setTo(String to) {
+  public TCMEntry setTo(String to) {
     this.to = to;
     return this;
   }
@@ -220,7 +220,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     return this.val;
   }
 
-  public CMEntry setVal(double val) {
+  public TCMEntry setVal(double val) {
     this.val = val;
     setValIsSet(true);
     return this;
@@ -304,12 +304,12 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof CMEntry)
-      return this.equals((CMEntry)that);
+    if (that instanceof TCMEntry)
+      return this.equals((TCMEntry)that);
     return false;
   }
 
-  public boolean equals(CMEntry that) {
+  public boolean equals(TCMEntry that) {
     if (that == null)
       return false;
 
@@ -348,13 +348,13 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     return 0;
   }
 
-  public int compareTo(CMEntry other) {
+  public int compareTo(TCMEntry other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    CMEntry typedOther = (CMEntry)other;
+    TCMEntry typedOther = (TCMEntry)other;
 
     lastComparison = Boolean.valueOf(isSetFrom()).compareTo(typedOther.isSetFrom());
     if (lastComparison != 0) {
@@ -403,7 +403,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("CMEntry(");
+    StringBuilder sb = new StringBuilder("TCMEntry(");
     boolean first = true;
 
     sb.append("from:");
@@ -452,15 +452,15 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     }
   }
 
-  private static class CMEntryStandardSchemeFactory implements SchemeFactory {
-    public CMEntryStandardScheme getScheme() {
-      return new CMEntryStandardScheme();
+  private static class TCMEntryStandardSchemeFactory implements SchemeFactory {
+    public TCMEntryStandardScheme getScheme() {
+      return new TCMEntryStandardScheme();
     }
   }
 
-  private static class CMEntryStandardScheme extends StandardScheme<CMEntry> {
+  private static class TCMEntryStandardScheme extends StandardScheme<TCMEntry> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, CMEntry struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TCMEntry struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -505,7 +505,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, CMEntry struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TCMEntry struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -528,16 +528,16 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
 
   }
 
-  private static class CMEntryTupleSchemeFactory implements SchemeFactory {
-    public CMEntryTupleScheme getScheme() {
-      return new CMEntryTupleScheme();
+  private static class TCMEntryTupleSchemeFactory implements SchemeFactory {
+    public TCMEntryTupleScheme getScheme() {
+      return new TCMEntryTupleScheme();
     }
   }
 
-  private static class CMEntryTupleScheme extends TupleScheme<CMEntry> {
+  private static class TCMEntryTupleScheme extends TupleScheme<TCMEntry> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, CMEntry struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TCMEntry struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetFrom()) {
@@ -562,7 +562,7 @@ public class CMEntry implements org.apache.thrift.TBase<CMEntry, CMEntry._Fields
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, CMEntry struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TCMEntry struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {

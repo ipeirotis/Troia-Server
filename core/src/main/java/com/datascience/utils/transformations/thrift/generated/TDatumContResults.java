@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatumContResults implements org.apache.thrift.TBase<DatumContResults, DatumContResults._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("DatumContResults");
+public class TDatumContResults implements org.apache.thrift.TBase<TDatumContResults, TDatumContResults._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TDatumContResults");
 
   private static final org.apache.thrift.protocol.TField EST_VAL_FIELD_DESC = new org.apache.thrift.protocol.TField("est_val", org.apache.thrift.protocol.TType.DOUBLE, (short)1);
   private static final org.apache.thrift.protocol.TField EST_ZETA_FIELD_DESC = new org.apache.thrift.protocol.TField("est_zeta", org.apache.thrift.protocol.TType.DOUBLE, (short)2);
@@ -40,8 +40,8 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new DatumContResultsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new DatumContResultsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TDatumContResultsStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TDatumContResultsTupleSchemeFactory());
   }
 
   public double est_val; // required
@@ -134,13 +134,13 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     tmpMap.put(_Fields.DISTRIB_SIGMA, new org.apache.thrift.meta_data.FieldMetaData("distribSigma", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(DatumContResults.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TDatumContResults.class, metaDataMap);
   }
 
-  public DatumContResults() {
+  public TDatumContResults() {
   }
 
-  public DatumContResults(
+  public TDatumContResults(
     double est_val,
     double est_zeta,
     double distribMu,
@@ -160,7 +160,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public DatumContResults(DatumContResults other) {
+  public TDatumContResults(TDatumContResults other) {
     __isset_bitfield = other.__isset_bitfield;
     this.est_val = other.est_val;
     this.est_zeta = other.est_zeta;
@@ -168,8 +168,8 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     this.distribSigma = other.distribSigma;
   }
 
-  public DatumContResults deepCopy() {
-    return new DatumContResults(this);
+  public TDatumContResults deepCopy() {
+    return new TDatumContResults(this);
   }
 
   @Override
@@ -188,7 +188,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     return this.est_val;
   }
 
-  public DatumContResults setEst_val(double est_val) {
+  public TDatumContResults setEst_val(double est_val) {
     this.est_val = est_val;
     setEst_valIsSet(true);
     return this;
@@ -211,7 +211,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     return this.est_zeta;
   }
 
-  public DatumContResults setEst_zeta(double est_zeta) {
+  public TDatumContResults setEst_zeta(double est_zeta) {
     this.est_zeta = est_zeta;
     setEst_zetaIsSet(true);
     return this;
@@ -234,7 +234,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     return this.distribMu;
   }
 
-  public DatumContResults setDistribMu(double distribMu) {
+  public TDatumContResults setDistribMu(double distribMu) {
     this.distribMu = distribMu;
     setDistribMuIsSet(true);
     return this;
@@ -257,7 +257,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     return this.distribSigma;
   }
 
-  public DatumContResults setDistribSigma(double distribSigma) {
+  public TDatumContResults setDistribSigma(double distribSigma) {
     this.distribSigma = distribSigma;
     setDistribSigmaIsSet(true);
     return this;
@@ -354,12 +354,12 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof DatumContResults)
-      return this.equals((DatumContResults)that);
+    if (that instanceof TDatumContResults)
+      return this.equals((TDatumContResults)that);
     return false;
   }
 
-  public boolean equals(DatumContResults that) {
+  public boolean equals(TDatumContResults that) {
     if (that == null)
       return false;
 
@@ -407,13 +407,13 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     return 0;
   }
 
-  public int compareTo(DatumContResults other) {
+  public int compareTo(TDatumContResults other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    DatumContResults typedOther = (DatumContResults)other;
+    TDatumContResults typedOther = (TDatumContResults)other;
 
     lastComparison = Boolean.valueOf(isSetEst_val()).compareTo(typedOther.isSetEst_val());
     if (lastComparison != 0) {
@@ -472,7 +472,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("DatumContResults(");
+    StringBuilder sb = new StringBuilder("TDatumContResults(");
     boolean first = true;
 
     sb.append("est_val:");
@@ -517,15 +517,15 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     }
   }
 
-  private static class DatumContResultsStandardSchemeFactory implements SchemeFactory {
-    public DatumContResultsStandardScheme getScheme() {
-      return new DatumContResultsStandardScheme();
+  private static class TDatumContResultsStandardSchemeFactory implements SchemeFactory {
+    public TDatumContResultsStandardScheme getScheme() {
+      return new TDatumContResultsStandardScheme();
     }
   }
 
-  private static class DatumContResultsStandardScheme extends StandardScheme<DatumContResults> {
+  private static class TDatumContResultsStandardScheme extends StandardScheme<TDatumContResults> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, DatumContResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TDatumContResults struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -578,7 +578,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, DatumContResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TDatumContResults struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -600,16 +600,16 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
 
   }
 
-  private static class DatumContResultsTupleSchemeFactory implements SchemeFactory {
-    public DatumContResultsTupleScheme getScheme() {
-      return new DatumContResultsTupleScheme();
+  private static class TDatumContResultsTupleSchemeFactory implements SchemeFactory {
+    public TDatumContResultsTupleScheme getScheme() {
+      return new TDatumContResultsTupleScheme();
     }
   }
 
-  private static class DatumContResultsTupleScheme extends TupleScheme<DatumContResults> {
+  private static class TDatumContResultsTupleScheme extends TupleScheme<TDatumContResults> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, DatumContResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TDatumContResults struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetEst_val()) {
@@ -640,7 +640,7 @@ public class DatumContResults implements org.apache.thrift.TBase<DatumContResult
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, DatumContResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TDatumContResults struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {

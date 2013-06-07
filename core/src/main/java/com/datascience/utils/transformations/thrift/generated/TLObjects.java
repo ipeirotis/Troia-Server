@@ -30,18 +30,18 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("LObjects");
+public class TLObjects implements org.apache.thrift.TBase<TLObjects, TLObjects._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TLObjects");
 
   private static final org.apache.thrift.protocol.TField OBJECTS_FIELD_DESC = new org.apache.thrift.protocol.TField("objects", org.apache.thrift.protocol.TType.LIST, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new LObjectsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new LObjectsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TLObjectsStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TLObjectsTupleSchemeFactory());
   }
 
-  public List<LObject> objects; // required
+  public List<TLObject> objects; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -107,16 +107,16 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.OBJECTS, new org.apache.thrift.meta_data.FieldMetaData("objects", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, LObject.class))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TLObject.class))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(LObjects.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TLObjects.class, metaDataMap);
   }
 
-  public LObjects() {
+  public TLObjects() {
   }
 
-  public LObjects(
-    List<LObject> objects)
+  public TLObjects(
+    List<TLObject> objects)
   {
     this();
     this.objects = objects;
@@ -125,18 +125,18 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public LObjects(LObjects other) {
+  public TLObjects(TLObjects other) {
     if (other.isSetObjects()) {
-      List<LObject> __this__objects = new ArrayList<LObject>();
-      for (LObject other_element : other.objects) {
-        __this__objects.add(new LObject(other_element));
+      List<TLObject> __this__objects = new ArrayList<TLObject>();
+      for (TLObject other_element : other.objects) {
+        __this__objects.add(new TLObject(other_element));
       }
       this.objects = __this__objects;
     }
   }
 
-  public LObjects deepCopy() {
-    return new LObjects(this);
+  public TLObjects deepCopy() {
+    return new TLObjects(this);
   }
 
   @Override
@@ -148,22 +148,22 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
     return (this.objects == null) ? 0 : this.objects.size();
   }
 
-  public java.util.Iterator<LObject> getObjectsIterator() {
+  public java.util.Iterator<TLObject> getObjectsIterator() {
     return (this.objects == null) ? null : this.objects.iterator();
   }
 
-  public void addToObjects(LObject elem) {
+  public void addToObjects(TLObject elem) {
     if (this.objects == null) {
-      this.objects = new ArrayList<LObject>();
+      this.objects = new ArrayList<TLObject>();
     }
     this.objects.add(elem);
   }
 
-  public List<LObject> getObjects() {
+  public List<TLObject> getObjects() {
     return this.objects;
   }
 
-  public LObjects setObjects(List<LObject> objects) {
+  public TLObjects setObjects(List<TLObject> objects) {
     this.objects = objects;
     return this;
   }
@@ -189,7 +189,7 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
       if (value == null) {
         unsetObjects();
       } else {
-        setObjects((List<LObject>)value);
+        setObjects((List<TLObject>)value);
       }
       break;
 
@@ -222,12 +222,12 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof LObjects)
-      return this.equals((LObjects)that);
+    if (that instanceof TLObjects)
+      return this.equals((TLObjects)that);
     return false;
   }
 
-  public boolean equals(LObjects that) {
+  public boolean equals(TLObjects that) {
     if (that == null)
       return false;
 
@@ -248,13 +248,13 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
     return 0;
   }
 
-  public int compareTo(LObjects other) {
+  public int compareTo(TLObjects other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    LObjects typedOther = (LObjects)other;
+    TLObjects typedOther = (TLObjects)other;
 
     lastComparison = Boolean.valueOf(isSetObjects()).compareTo(typedOther.isSetObjects());
     if (lastComparison != 0) {
@@ -283,7 +283,7 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("LObjects(");
+    StringBuilder sb = new StringBuilder("TLObjects(");
     boolean first = true;
 
     sb.append("objects:");
@@ -318,15 +318,15 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
     }
   }
 
-  private static class LObjectsStandardSchemeFactory implements SchemeFactory {
-    public LObjectsStandardScheme getScheme() {
-      return new LObjectsStandardScheme();
+  private static class TLObjectsStandardSchemeFactory implements SchemeFactory {
+    public TLObjectsStandardScheme getScheme() {
+      return new TLObjectsStandardScheme();
     }
   }
 
-  private static class LObjectsStandardScheme extends StandardScheme<LObjects> {
+  private static class TLObjectsStandardScheme extends StandardScheme<TLObjects> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, LObjects struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TLObjects struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -340,11 +340,11 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                struct.objects = new ArrayList<LObject>(_list0.size);
+                struct.objects = new ArrayList<TLObject>(_list0.size);
                 for (int _i1 = 0; _i1 < _list0.size; ++_i1)
                 {
-                  LObject _elem2; // required
-                  _elem2 = new LObject();
+                  TLObject _elem2; // required
+                  _elem2 = new TLObject();
                   _elem2.read(iprot);
                   struct.objects.add(_elem2);
                 }
@@ -366,7 +366,7 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, LObjects struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TLObjects struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -374,7 +374,7 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
         oprot.writeFieldBegin(OBJECTS_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.objects.size()));
-          for (LObject _iter3 : struct.objects)
+          for (TLObject _iter3 : struct.objects)
           {
             _iter3.write(oprot);
           }
@@ -388,16 +388,16 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
 
   }
 
-  private static class LObjectsTupleSchemeFactory implements SchemeFactory {
-    public LObjectsTupleScheme getScheme() {
-      return new LObjectsTupleScheme();
+  private static class TLObjectsTupleSchemeFactory implements SchemeFactory {
+    public TLObjectsTupleScheme getScheme() {
+      return new TLObjectsTupleScheme();
     }
   }
 
-  private static class LObjectsTupleScheme extends TupleScheme<LObjects> {
+  private static class TLObjectsTupleScheme extends TupleScheme<TLObjects> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, LObjects struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TLObjects struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetObjects()) {
@@ -407,7 +407,7 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
       if (struct.isSetObjects()) {
         {
           oprot.writeI32(struct.objects.size());
-          for (LObject _iter4 : struct.objects)
+          for (TLObject _iter4 : struct.objects)
           {
             _iter4.write(oprot);
           }
@@ -416,17 +416,17 @@ public class LObjects implements org.apache.thrift.TBase<LObjects, LObjects._Fie
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, LObjects struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TLObjects struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
           org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.objects = new ArrayList<LObject>(_list5.size);
+          struct.objects = new ArrayList<TLObject>(_list5.size);
           for (int _i6 = 0; _i6 < _list5.size; ++_i6)
           {
-            LObject _elem7; // required
-            _elem7 = new LObject();
+            TLObject _elem7; // required
+            _elem7 = new TLObject();
             _elem7.read(iprot);
             struct.objects.add(_elem7);
           }
