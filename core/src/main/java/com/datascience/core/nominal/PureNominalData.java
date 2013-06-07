@@ -24,16 +24,8 @@ public class PureNominalData {
 		return categories;
 	}
 
-	public void setCategories(Collection<String> categories){
-		this.categories = categories;
-	}
-
 	public boolean arePriorsFixed(){
 		return fixedPriors;
-	}
-
-	public void setPriorFixed(boolean fixedPriors){
-		this.fixedPriors = fixedPriors;
 	}
 
 	public double getCategoryPrior(String name){
@@ -67,10 +59,6 @@ public class PureNominalData {
 
 	public CostMatrix<String> getCostMatrix(){
 		return costMatrix;
-	}
-
-	public void setCostMatrix(CostMatrix<String> cm){
-		this.costMatrix = cm;
 	}
 
 	public void initialize(Collection<String> categories, Collection<CategoryValue> priors, CostMatrix<String> costMatrix){

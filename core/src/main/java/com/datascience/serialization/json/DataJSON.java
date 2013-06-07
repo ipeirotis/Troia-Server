@@ -51,12 +51,10 @@ public class DataJSON {
 			Deserializer<String> deserializer = new Deserializer<String>();
 			InMemoryNominalData ret = new InMemoryNominalData(deserializer.deserialize(element, type, context));
 			JsonObject jo = element.getAsJsonObject();
-			ret.setPriorFixed(jo.get("fixedPriors").getAsBoolean());
-			ret.setCategories((Collection<String>) context.deserialize(jo.get("categories"), JSONUtils.stringSetType));
-			if (jo.has("categoryPriors"))
-				ret.setCategoryPriors((Collection<CategoryValue>) context.deserialize(jo.get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
-			if (jo.has("costMatrix"))
-				ret.setCostMatrix((CostMatrix<String>) context.deserialize(jo.get("costMatrix"), CostMatrix.class));
+			ret.initialize(
+					(Collection<String>) context.deserialize(jo.get("categories"), JSONUtils.stringSetType),
+					jo.has("categoryPriors") ? (Collection<CategoryValue>) context.deserialize(jo.get("categoryPriors"), JSONUtils.categoryValuesCollectionType) : null,
+					jo.has("costMatrix") ? (CostMatrix<String>) context.deserialize(jo.get("costMatrix"), CostMatrix.class) : null);
 			return ret;
 		}
 	}

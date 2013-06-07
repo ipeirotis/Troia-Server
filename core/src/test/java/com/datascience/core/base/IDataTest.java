@@ -38,7 +38,7 @@ public class IDataTest {
 			@Override
 			public IData<String> create(){
 				InMemoryNominalData data = new InMemoryNominalData();
-				data.setCategories(Arrays.asList(new String[]{"cat1", "cat2"}));
+				data.initialize(Arrays.asList(new String[]{"cat1", "cat2"}), null, null);
 				return data;
 			}
 		},

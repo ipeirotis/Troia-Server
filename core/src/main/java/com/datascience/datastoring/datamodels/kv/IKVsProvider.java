@@ -33,7 +33,6 @@ public interface IKVsProvider extends IBackendAdapter{
 	ISafeKVStorage<Collection<LObject<ContValue>>>getContEvaluationObjectsKV(String id);
 
 	ISafeKVStorage<Collection<Worker>>getWorkersKV(String id);
-	ISafeKVStorage<PureNominalData>getNominalJobSettingsKV(String id);
 
 	ISafeKVStorage<Collection<DatumContResults>>getDatumContResultsKV(String id);
 	ISafeKVStorage<Collection<WorkerContResults>>getWorkerContResultsKV(String id);

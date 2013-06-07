@@ -50,11 +50,6 @@ public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Obje
 	}
 
 	@Override
-	public ITransformation<PureNominalData, Object> createPureNominalDataTransformation() {
-		return new CastingTransform<PureNominalData>();
-	}
-
-	@Override
 	public ITransformation<DatumContResults, Object> createDatumContResultsTransformation() {
 		return new CastingTransform<DatumContResults>();
 	}

@@ -76,8 +76,7 @@ public class KVJobStorage extends BaseJobStorage{
 				kvsProvider.getNominalObjectsKV(id),
 				kvsProvider.getNominalGoldObjectsKV(id),
 				kvsProvider.getNominalEvaluationObjectsKV(id),
-				kvsProvider.getWorkersKV(id),
-				kvsProvider.getNominalJobSettingsKV(id)
+				kvsProvider.getWorkersKV(id)
 		);
 		return data;
 	}

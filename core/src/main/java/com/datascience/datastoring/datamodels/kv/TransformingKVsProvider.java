@@ -20,7 +20,7 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	static protected List<String> KVs = Lists.newArrayList(
 			"JobSettings", "JobTypes", "WorkerAssigns", "ObjectAssigns",
-			"GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "NominalJobSettings"
+			"GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults"
 			);
 
 	protected IBackendKVFactory<T> kvFactory;
@@ -108,11 +108,6 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 	@Override
 	public ISafeKVStorage<Collection<Worker>> getWorkersKV(String id) {
 		return getKVForJob(id, "Workers", transformsFactory.createWorkersTransformation(), false);
-	}
-
-	@Override
-	public ISafeKVStorage<PureNominalData> getNominalJobSettingsKV(String id) {
-		return getKVForJob(id, "NominalJobSettings", transformsFactory.createPureNominalDataTransformation(), false);
 	}
 
 	@Override

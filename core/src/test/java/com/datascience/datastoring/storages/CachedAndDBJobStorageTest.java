@@ -51,7 +51,7 @@ public class CachedAndDBJobStorageTest {
 		categories.add("cat1");
 		categories.add("cat2");
 
-		nominalData.setCategories(categories);
+		nominalData.initialize(categories, null, null);
 
 		workers = new ArrayList<Worker>();
 		for (i = 0; i < nWorkers; i++) {

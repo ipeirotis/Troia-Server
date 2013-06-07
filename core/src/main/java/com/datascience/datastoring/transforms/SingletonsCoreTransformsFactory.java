@@ -30,8 +30,6 @@ public class SingletonsCoreTransformsFactory<V> implements ICoreTransformsFactor
 
 	protected ITransformation<Collection<Worker>, V> workersTransformation;
 
-	protected ITransformation<PureNominalData, V> pureNominalDataTransformation;
-
 	protected ITransformation<DatumContResults, V> datumContResultsTransformation;
 	protected ITransformation<WorkerContResults, V> workerContResultsTransformation;
 	protected ITransformation<DatumResult, V> datumStringResultsTransformation;
@@ -50,7 +48,6 @@ public class SingletonsCoreTransformsFactory<V> implements ICoreTransformsFactor
 		contAssignsTransformation = inner.createContAssignsTransformation();
 		contObjectsTransformation = inner.createContObjectsTransformation();
 		workersTransformation = inner.createWorkersTransformation();
-		pureNominalDataTransformation = inner.createPureNominalDataTransformation();
 		datumContResultsTransformation = inner.createDatumContResultsTransformation();
 		workerContResultsTransformation = inner.createWorkerContResultsTransformation();
 		datumStringResultsTransformation = inner.createDatumStringResultsTransformation();
@@ -89,11 +86,6 @@ public class SingletonsCoreTransformsFactory<V> implements ICoreTransformsFactor
 	@Override
 	public ITransformation<Collection<Worker>, V> createWorkersTransformation() {
 		return workersTransformation;
-	}
-
-	@Override
-	public ITransformation<PureNominalData, V> createPureNominalDataTransformation() {
-		return pureNominalDataTransformation;
 	}
 
 	@Override

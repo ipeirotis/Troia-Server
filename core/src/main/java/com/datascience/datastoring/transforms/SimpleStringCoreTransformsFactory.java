@@ -64,11 +64,6 @@ public class SimpleStringCoreTransformsFactory extends SingletonsStringCoreTrans
 	}
 
 	@Override
-	public ITransformation<PureNominalData, String> createPureNominalDataTransformation() {
-		return new NominalDataTransform();
-	}
-
-	@Override
 	public ITransformation<DatumContResults, String> createDatumContResultsTransformation() {
 		return new DatumContResultTransform(objectSeparator);
 	}

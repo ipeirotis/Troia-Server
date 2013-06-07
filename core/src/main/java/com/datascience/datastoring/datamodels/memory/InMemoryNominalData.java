@@ -37,18 +37,8 @@ public class InMemoryNominalData extends InMemoryData<String> implements INomina
 	}
 
 	@Override
-	public void setCategories(Collection<String> categories) {
-		jobData.setCategories(categories);
-	}
-
-	@Override
 	public Collection<String> getCategories() {
 		return jobData.getCategories();
-	}
-
-	@Override
-	public void setPriorFixed(boolean fixedPriors) {
-		jobData.setPriorFixed(fixedPriors);
 	}
 
 	@Override
@@ -67,18 +57,8 @@ public class InMemoryNominalData extends InMemoryData<String> implements INomina
 	}
 
 	@Override
-	public void setCategoryPriors(Collection<CategoryValue> priors) {
-		jobData.setCategoryPriors(priors);
-	}
-
-	@Override
 	public CostMatrix<String> getCostMatrix() {
 		return jobData.getCostMatrix();
-	}
-
-	@Override
-	public void setCostMatrix(CostMatrix<String> cm) {
-		jobData.setCostMatrix(cm);
 	}
 
 	@Override

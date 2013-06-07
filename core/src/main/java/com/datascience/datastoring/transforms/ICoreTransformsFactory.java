@@ -24,8 +24,6 @@ public interface ICoreTransformsFactory<V> {
 
 	ITransformation<Collection<Worker>, V> createWorkersTransformation();
 
-	ITransformation<PureNominalData, V> createPureNominalDataTransformation();
-
 	ITransformation<DatumContResults, V> createDatumContResultsTransformation();
 	ITransformation<WorkerContResults, V> createWorkerContResultsTransformation();
 	ITransformation<DatumResult, V> createDatumStringResultsTransformation();

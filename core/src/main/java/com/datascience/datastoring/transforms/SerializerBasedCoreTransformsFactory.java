@@ -56,11 +56,6 @@ public class SerializerBasedCoreTransformsFactory extends SingletonsStringCoreTr
 	}
 
 	@Override
-	public ITransformation<PureNominalData, String> createPureNominalDataTransformation() {
-		return new SerializationTransform<PureNominalData>(serializer, PureNominalData.class); // TODO XXX FIXME
-	}
-
-	@Override
 	public ITransformation<DatumContResults, String> createDatumContResultsTransformation() {
 		return new SerializationTransform<DatumContResults>(serializer, DatumContResults.class);
 	}
