@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("LObject");
+public class TLObject implements org.apache.thrift.TBase<TLObject, TLObject._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TLObject");
 
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField GOLD_LABEL_FIELD_DESC = new org.apache.thrift.protocol.TField("goldLabel", org.apache.thrift.protocol.TType.STRUCT, (short)2);
@@ -39,13 +39,13 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new LObjectStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new LObjectTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TLObjectStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TLObjectTupleSchemeFactory());
   }
 
   public String id; // required
-  public Label goldLabel; // required
-  public Label evalLabel; // required
+  public TLabel goldLabel; // required
+  public TLabel evalLabel; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -118,20 +118,20 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.GOLD_LABEL, new org.apache.thrift.meta_data.FieldMetaData("goldLabel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Label.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TLabel.class)));
     tmpMap.put(_Fields.EVAL_LABEL, new org.apache.thrift.meta_data.FieldMetaData("evalLabel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Label.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TLabel.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(LObject.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TLObject.class, metaDataMap);
   }
 
-  public LObject() {
+  public TLObject() {
   }
 
-  public LObject(
+  public TLObject(
     String id,
-    Label goldLabel,
-    Label evalLabel)
+    TLabel goldLabel,
+    TLabel evalLabel)
   {
     this();
     this.id = id;
@@ -142,20 +142,20 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public LObject(LObject other) {
+  public TLObject(TLObject other) {
     if (other.isSetId()) {
       this.id = other.id;
     }
     if (other.isSetGoldLabel()) {
-      this.goldLabel = new Label(other.goldLabel);
+      this.goldLabel = new TLabel(other.goldLabel);
     }
     if (other.isSetEvalLabel()) {
-      this.evalLabel = new Label(other.evalLabel);
+      this.evalLabel = new TLabel(other.evalLabel);
     }
   }
 
-  public LObject deepCopy() {
-    return new LObject(this);
+  public TLObject deepCopy() {
+    return new TLObject(this);
   }
 
   @Override
@@ -169,7 +169,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     return this.id;
   }
 
-  public LObject setId(String id) {
+  public TLObject setId(String id) {
     this.id = id;
     return this;
   }
@@ -189,11 +189,11 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     }
   }
 
-  public Label getGoldLabel() {
+  public TLabel getGoldLabel() {
     return this.goldLabel;
   }
 
-  public LObject setGoldLabel(Label goldLabel) {
+  public TLObject setGoldLabel(TLabel goldLabel) {
     this.goldLabel = goldLabel;
     return this;
   }
@@ -213,11 +213,11 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     }
   }
 
-  public Label getEvalLabel() {
+  public TLabel getEvalLabel() {
     return this.evalLabel;
   }
 
-  public LObject setEvalLabel(Label evalLabel) {
+  public TLObject setEvalLabel(TLabel evalLabel) {
     this.evalLabel = evalLabel;
     return this;
   }
@@ -251,7 +251,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
       if (value == null) {
         unsetGoldLabel();
       } else {
-        setGoldLabel((Label)value);
+        setGoldLabel((TLabel)value);
       }
       break;
 
@@ -259,7 +259,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
       if (value == null) {
         unsetEvalLabel();
       } else {
-        setEvalLabel((Label)value);
+        setEvalLabel((TLabel)value);
       }
       break;
 
@@ -302,12 +302,12 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof LObject)
-      return this.equals((LObject)that);
+    if (that instanceof TLObject)
+      return this.equals((TLObject)that);
     return false;
   }
 
-  public boolean equals(LObject that) {
+  public boolean equals(TLObject that) {
     if (that == null)
       return false;
 
@@ -346,13 +346,13 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     return 0;
   }
 
-  public int compareTo(LObject other) {
+  public int compareTo(TLObject other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    LObject typedOther = (LObject)other;
+    TLObject typedOther = (TLObject)other;
 
     lastComparison = Boolean.valueOf(isSetId()).compareTo(typedOther.isSetId());
     if (lastComparison != 0) {
@@ -401,7 +401,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("LObject(");
+    StringBuilder sb = new StringBuilder("TLObject(");
     boolean first = true;
 
     sb.append("id:");
@@ -452,15 +452,15 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     }
   }
 
-  private static class LObjectStandardSchemeFactory implements SchemeFactory {
-    public LObjectStandardScheme getScheme() {
-      return new LObjectStandardScheme();
+  private static class TLObjectStandardSchemeFactory implements SchemeFactory {
+    public TLObjectStandardScheme getScheme() {
+      return new TLObjectStandardScheme();
     }
   }
 
-  private static class LObjectStandardScheme extends StandardScheme<LObject> {
+  private static class TLObjectStandardScheme extends StandardScheme<TLObject> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, LObject struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TLObject struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -480,7 +480,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
             break;
           case 2: // GOLD_LABEL
             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.goldLabel = new Label();
+              struct.goldLabel = new TLabel();
               struct.goldLabel.read(iprot);
               struct.setGoldLabelIsSet(true);
             } else { 
@@ -489,7 +489,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
             break;
           case 3: // EVAL_LABEL
             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.evalLabel = new Label();
+              struct.evalLabel = new TLabel();
               struct.evalLabel.read(iprot);
               struct.setEvalLabelIsSet(true);
             } else { 
@@ -507,7 +507,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, LObject struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TLObject struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -532,16 +532,16 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
 
   }
 
-  private static class LObjectTupleSchemeFactory implements SchemeFactory {
-    public LObjectTupleScheme getScheme() {
-      return new LObjectTupleScheme();
+  private static class TLObjectTupleSchemeFactory implements SchemeFactory {
+    public TLObjectTupleScheme getScheme() {
+      return new TLObjectTupleScheme();
     }
   }
 
-  private static class LObjectTupleScheme extends TupleScheme<LObject> {
+  private static class TLObjectTupleScheme extends TupleScheme<TLObject> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, LObject struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TLObject struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetId()) {
@@ -566,7 +566,7 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, LObject struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TLObject struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
@@ -574,12 +574,12 @@ public class LObject implements org.apache.thrift.TBase<LObject, LObject._Fields
         struct.setIdIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.goldLabel = new Label();
+        struct.goldLabel = new TLabel();
         struct.goldLabel.read(iprot);
         struct.setGoldLabelIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.evalLabel = new Label();
+        struct.evalLabel = new TLabel();
         struct.evalLabel.read(iprot);
         struct.setEvalLabelIsSet(true);
       }

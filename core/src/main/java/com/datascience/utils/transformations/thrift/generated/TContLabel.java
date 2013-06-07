@@ -30,25 +30,25 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNominalResults, WorkerNominalResults._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("WorkerNominalResults");
+public class TContLabel implements org.apache.thrift.TBase<TContLabel, TContLabel._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TContLabel");
 
-  private static final org.apache.thrift.protocol.TField CM_FIELD_DESC = new org.apache.thrift.protocol.TField("cm", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField EVAL_CM_FIELD_DESC = new org.apache.thrift.protocol.TField("eval_cm", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+  private static final org.apache.thrift.protocol.TField VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("value", org.apache.thrift.protocol.TType.DOUBLE, (short)1);
+  private static final org.apache.thrift.protocol.TField ZETA_FIELD_DESC = new org.apache.thrift.protocol.TField("zeta", org.apache.thrift.protocol.TType.DOUBLE, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new WorkerNominalResultsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new WorkerNominalResultsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TContLabelStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TContLabelTupleSchemeFactory());
   }
 
-  public ConfusionMatrix cm; // required
-  public ConfusionMatrix eval_cm; // required
+  public double value; // required
+  public double zeta; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    CM((short)1, "cm"),
-    EVAL_CM((short)2, "eval_cm");
+    VALUE((short)1, "value"),
+    ZETA((short)2, "zeta");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -63,10 +63,10 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // CM
-          return CM;
-        case 2: // EVAL_CM
-          return EVAL_CM;
+        case 1: // VALUE
+          return VALUE;
+        case 2: // ZETA
+          return ZETA;
         default:
           return null;
       }
@@ -107,114 +107,116 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
   }
 
   // isset id assignments
+  private static final int __VALUE_ISSET_ID = 0;
+  private static final int __ZETA_ISSET_ID = 1;
+  private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.CM, new org.apache.thrift.meta_data.FieldMetaData("cm", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ConfusionMatrix.class)));
-    tmpMap.put(_Fields.EVAL_CM, new org.apache.thrift.meta_data.FieldMetaData("eval_cm", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ConfusionMatrix.class)));
+    tmpMap.put(_Fields.VALUE, new org.apache.thrift.meta_data.FieldMetaData("value", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
+    tmpMap.put(_Fields.ZETA, new org.apache.thrift.meta_data.FieldMetaData("zeta", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(WorkerNominalResults.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TContLabel.class, metaDataMap);
   }
 
-  public WorkerNominalResults() {
+  public TContLabel() {
   }
 
-  public WorkerNominalResults(
-    ConfusionMatrix cm,
-    ConfusionMatrix eval_cm)
+  public TContLabel(
+    double value,
+    double zeta)
   {
     this();
-    this.cm = cm;
-    this.eval_cm = eval_cm;
+    this.value = value;
+    setValueIsSet(true);
+    this.zeta = zeta;
+    setZetaIsSet(true);
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public WorkerNominalResults(WorkerNominalResults other) {
-    if (other.isSetCm()) {
-      this.cm = new ConfusionMatrix(other.cm);
-    }
-    if (other.isSetEval_cm()) {
-      this.eval_cm = new ConfusionMatrix(other.eval_cm);
-    }
+  public TContLabel(TContLabel other) {
+    __isset_bitfield = other.__isset_bitfield;
+    this.value = other.value;
+    this.zeta = other.zeta;
   }
 
-  public WorkerNominalResults deepCopy() {
-    return new WorkerNominalResults(this);
+  public TContLabel deepCopy() {
+    return new TContLabel(this);
   }
 
   @Override
   public void clear() {
-    this.cm = null;
-    this.eval_cm = null;
+    setValueIsSet(false);
+    this.value = 0.0;
+    setZetaIsSet(false);
+    this.zeta = 0.0;
   }
 
-  public ConfusionMatrix getCm() {
-    return this.cm;
+  public double getValue() {
+    return this.value;
   }
 
-  public WorkerNominalResults setCm(ConfusionMatrix cm) {
-    this.cm = cm;
+  public TContLabel setValue(double value) {
+    this.value = value;
+    setValueIsSet(true);
     return this;
   }
 
-  public void unsetCm() {
-    this.cm = null;
+  public void unsetValue() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __VALUE_ISSET_ID);
   }
 
-  /** Returns true if field cm is set (has been assigned a value) and false otherwise */
-  public boolean isSetCm() {
-    return this.cm != null;
+  /** Returns true if field value is set (has been assigned a value) and false otherwise */
+  public boolean isSetValue() {
+    return EncodingUtils.testBit(__isset_bitfield, __VALUE_ISSET_ID);
   }
 
-  public void setCmIsSet(boolean value) {
-    if (!value) {
-      this.cm = null;
-    }
+  public void setValueIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VALUE_ISSET_ID, value);
   }
 
-  public ConfusionMatrix getEval_cm() {
-    return this.eval_cm;
+  public double getZeta() {
+    return this.zeta;
   }
 
-  public WorkerNominalResults setEval_cm(ConfusionMatrix eval_cm) {
-    this.eval_cm = eval_cm;
+  public TContLabel setZeta(double zeta) {
+    this.zeta = zeta;
+    setZetaIsSet(true);
     return this;
   }
 
-  public void unsetEval_cm() {
-    this.eval_cm = null;
+  public void unsetZeta() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ZETA_ISSET_ID);
   }
 
-  /** Returns true if field eval_cm is set (has been assigned a value) and false otherwise */
-  public boolean isSetEval_cm() {
-    return this.eval_cm != null;
+  /** Returns true if field zeta is set (has been assigned a value) and false otherwise */
+  public boolean isSetZeta() {
+    return EncodingUtils.testBit(__isset_bitfield, __ZETA_ISSET_ID);
   }
 
-  public void setEval_cmIsSet(boolean value) {
-    if (!value) {
-      this.eval_cm = null;
-    }
+  public void setZetaIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ZETA_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case CM:
+    case VALUE:
       if (value == null) {
-        unsetCm();
+        unsetValue();
       } else {
-        setCm((ConfusionMatrix)value);
+        setValue((Double)value);
       }
       break;
 
-    case EVAL_CM:
+    case ZETA:
       if (value == null) {
-        unsetEval_cm();
+        unsetZeta();
       } else {
-        setEval_cm((ConfusionMatrix)value);
+        setZeta((Double)value);
       }
       break;
 
@@ -223,11 +225,11 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case CM:
-      return getCm();
+    case VALUE:
+      return Double.valueOf(getValue());
 
-    case EVAL_CM:
-      return getEval_cm();
+    case ZETA:
+      return Double.valueOf(getZeta());
 
     }
     throw new IllegalStateException();
@@ -240,10 +242,10 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
     }
 
     switch (field) {
-    case CM:
-      return isSetCm();
-    case EVAL_CM:
-      return isSetEval_cm();
+    case VALUE:
+      return isSetValue();
+    case ZETA:
+      return isSetZeta();
     }
     throw new IllegalStateException();
   }
@@ -252,30 +254,30 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof WorkerNominalResults)
-      return this.equals((WorkerNominalResults)that);
+    if (that instanceof TContLabel)
+      return this.equals((TContLabel)that);
     return false;
   }
 
-  public boolean equals(WorkerNominalResults that) {
+  public boolean equals(TContLabel that) {
     if (that == null)
       return false;
 
-    boolean this_present_cm = true && this.isSetCm();
-    boolean that_present_cm = true && that.isSetCm();
-    if (this_present_cm || that_present_cm) {
-      if (!(this_present_cm && that_present_cm))
+    boolean this_present_value = true;
+    boolean that_present_value = true;
+    if (this_present_value || that_present_value) {
+      if (!(this_present_value && that_present_value))
         return false;
-      if (!this.cm.equals(that.cm))
+      if (this.value != that.value)
         return false;
     }
 
-    boolean this_present_eval_cm = true && this.isSetEval_cm();
-    boolean that_present_eval_cm = true && that.isSetEval_cm();
-    if (this_present_eval_cm || that_present_eval_cm) {
-      if (!(this_present_eval_cm && that_present_eval_cm))
+    boolean this_present_zeta = true;
+    boolean that_present_zeta = true;
+    if (this_present_zeta || that_present_zeta) {
+      if (!(this_present_zeta && that_present_zeta))
         return false;
-      if (!this.eval_cm.equals(that.eval_cm))
+      if (this.zeta != that.zeta)
         return false;
     }
 
@@ -287,30 +289,30 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
     return 0;
   }
 
-  public int compareTo(WorkerNominalResults other) {
+  public int compareTo(TContLabel other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    WorkerNominalResults typedOther = (WorkerNominalResults)other;
+    TContLabel typedOther = (TContLabel)other;
 
-    lastComparison = Boolean.valueOf(isSetCm()).compareTo(typedOther.isSetCm());
+    lastComparison = Boolean.valueOf(isSetValue()).compareTo(typedOther.isSetValue());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetCm()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.cm, typedOther.cm);
+    if (isSetValue()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.value, typedOther.value);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetEval_cm()).compareTo(typedOther.isSetEval_cm());
+    lastComparison = Boolean.valueOf(isSetZeta()).compareTo(typedOther.isSetZeta());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetEval_cm()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.eval_cm, typedOther.eval_cm);
+    if (isSetZeta()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.zeta, typedOther.zeta);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -332,23 +334,15 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("WorkerNominalResults(");
+    StringBuilder sb = new StringBuilder("TContLabel(");
     boolean first = true;
 
-    sb.append("cm:");
-    if (this.cm == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.cm);
-    }
+    sb.append("value:");
+    sb.append(this.value);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("eval_cm:");
-    if (this.eval_cm == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.eval_cm);
-    }
+    sb.append("zeta:");
+    sb.append(this.zeta);
     first = false;
     sb.append(")");
     return sb.toString();
@@ -357,12 +351,6 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
     // check for sub-struct validity
-    if (cm != null) {
-      cm.validate();
-    }
-    if (eval_cm != null) {
-      eval_cm.validate();
-    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -375,21 +363,23 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
 
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
+      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+      __isset_bitfield = 0;
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
       throw new java.io.IOException(te);
     }
   }
 
-  private static class WorkerNominalResultsStandardSchemeFactory implements SchemeFactory {
-    public WorkerNominalResultsStandardScheme getScheme() {
-      return new WorkerNominalResultsStandardScheme();
+  private static class TContLabelStandardSchemeFactory implements SchemeFactory {
+    public TContLabelStandardScheme getScheme() {
+      return new TContLabelStandardScheme();
     }
   }
 
-  private static class WorkerNominalResultsStandardScheme extends StandardScheme<WorkerNominalResults> {
+  private static class TContLabelStandardScheme extends StandardScheme<TContLabel> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, WorkerNominalResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TContLabel struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -399,20 +389,18 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
           break;
         }
         switch (schemeField.id) {
-          case 1: // CM
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.cm = new ConfusionMatrix();
-              struct.cm.read(iprot);
-              struct.setCmIsSet(true);
+          case 1: // VALUE
+            if (schemeField.type == org.apache.thrift.protocol.TType.DOUBLE) {
+              struct.value = iprot.readDouble();
+              struct.setValueIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // EVAL_CM
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.eval_cm = new ConfusionMatrix();
-              struct.eval_cm.read(iprot);
-              struct.setEval_cmIsSet(true);
+          case 2: // ZETA
+            if (schemeField.type == org.apache.thrift.protocol.TType.DOUBLE) {
+              struct.zeta = iprot.readDouble();
+              struct.setZetaIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -428,66 +416,60 @@ public class WorkerNominalResults implements org.apache.thrift.TBase<WorkerNomin
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, WorkerNominalResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TContLabel struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.cm != null) {
-        oprot.writeFieldBegin(CM_FIELD_DESC);
-        struct.cm.write(oprot);
-        oprot.writeFieldEnd();
-      }
-      if (struct.eval_cm != null) {
-        oprot.writeFieldBegin(EVAL_CM_FIELD_DESC);
-        struct.eval_cm.write(oprot);
-        oprot.writeFieldEnd();
-      }
+      oprot.writeFieldBegin(VALUE_FIELD_DESC);
+      oprot.writeDouble(struct.value);
+      oprot.writeFieldEnd();
+      oprot.writeFieldBegin(ZETA_FIELD_DESC);
+      oprot.writeDouble(struct.zeta);
+      oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
 
   }
 
-  private static class WorkerNominalResultsTupleSchemeFactory implements SchemeFactory {
-    public WorkerNominalResultsTupleScheme getScheme() {
-      return new WorkerNominalResultsTupleScheme();
+  private static class TContLabelTupleSchemeFactory implements SchemeFactory {
+    public TContLabelTupleScheme getScheme() {
+      return new TContLabelTupleScheme();
     }
   }
 
-  private static class WorkerNominalResultsTupleScheme extends TupleScheme<WorkerNominalResults> {
+  private static class TContLabelTupleScheme extends TupleScheme<TContLabel> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, WorkerNominalResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TContLabel struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetCm()) {
+      if (struct.isSetValue()) {
         optionals.set(0);
       }
-      if (struct.isSetEval_cm()) {
+      if (struct.isSetZeta()) {
         optionals.set(1);
       }
       oprot.writeBitSet(optionals, 2);
-      if (struct.isSetCm()) {
-        struct.cm.write(oprot);
+      if (struct.isSetValue()) {
+        oprot.writeDouble(struct.value);
       }
-      if (struct.isSetEval_cm()) {
-        struct.eval_cm.write(oprot);
+      if (struct.isSetZeta()) {
+        oprot.writeDouble(struct.zeta);
       }
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, WorkerNominalResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TContLabel struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(2);
       if (incoming.get(0)) {
-        struct.cm = new ConfusionMatrix();
-        struct.cm.read(iprot);
-        struct.setCmIsSet(true);
+        struct.value = iprot.readDouble();
+        struct.setValueIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.eval_cm = new ConfusionMatrix();
-        struct.eval_cm.read(iprot);
-        struct.setEval_cmIsSet(true);
+        struct.zeta = iprot.readDouble();
+        struct.setZetaIsSet(true);
       }
     }
   }

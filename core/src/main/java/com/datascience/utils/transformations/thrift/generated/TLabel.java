@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Label");
+public class TLabel extends org.apache.thrift.TUnion<TLabel, TLabel._Fields> {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TLabel");
   private static final org.apache.thrift.protocol.TField NOMINAL_LABEL_FIELD_DESC = new org.apache.thrift.protocol.TField("nominalLabel", org.apache.thrift.protocol.TType.STRUCT, (short)1);
   private static final org.apache.thrift.protocol.TField CONT_LABEL_FIELD_DESC = new org.apache.thrift.protocol.TField("contLabel", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
@@ -100,36 +100,36 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.NOMINAL_LABEL, new org.apache.thrift.meta_data.FieldMetaData("nominalLabel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, NominalLabel.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TNominalLabel.class)));
     tmpMap.put(_Fields.CONT_LABEL, new org.apache.thrift.meta_data.FieldMetaData("contLabel", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, ContLabel.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TContLabel.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Label.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TLabel.class, metaDataMap);
   }
 
-  public Label() {
+  public TLabel() {
     super();
   }
 
-  public Label(_Fields setField, Object value) {
+  public TLabel(_Fields setField, Object value) {
     super(setField, value);
   }
 
-  public Label(Label other) {
+  public TLabel(TLabel other) {
     super(other);
   }
-  public Label deepCopy() {
-    return new Label(this);
+  public TLabel deepCopy() {
+    return new TLabel(this);
   }
 
-  public static Label nominalLabel(NominalLabel value) {
-    Label x = new Label();
+  public static TLabel nominalLabel(TNominalLabel value) {
+    TLabel x = new TLabel();
     x.setNominalLabel(value);
     return x;
   }
 
-  public static Label contLabel(ContLabel value) {
-    Label x = new Label();
+  public static TLabel contLabel(TContLabel value) {
+    TLabel x = new TLabel();
     x.setContLabel(value);
     return x;
   }
@@ -139,15 +139,15 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
   protected void checkType(_Fields setField, Object value) throws ClassCastException {
     switch (setField) {
       case NOMINAL_LABEL:
-        if (value instanceof NominalLabel) {
+        if (value instanceof TNominalLabel) {
           break;
         }
-        throw new ClassCastException("Was expecting value of type NominalLabel for field 'nominalLabel', but got " + value.getClass().getSimpleName());
+        throw new ClassCastException("Was expecting value of type TNominalLabel for field 'nominalLabel', but got " + value.getClass().getSimpleName());
       case CONT_LABEL:
-        if (value instanceof ContLabel) {
+        if (value instanceof TContLabel) {
           break;
         }
-        throw new ClassCastException("Was expecting value of type ContLabel for field 'contLabel', but got " + value.getClass().getSimpleName());
+        throw new ClassCastException("Was expecting value of type TContLabel for field 'contLabel', but got " + value.getClass().getSimpleName());
       default:
         throw new IllegalArgumentException("Unknown field id " + setField);
     }
@@ -160,8 +160,8 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
       switch (setField) {
         case NOMINAL_LABEL:
           if (field.type == NOMINAL_LABEL_FIELD_DESC.type) {
-            NominalLabel nominalLabel;
-            nominalLabel = new NominalLabel();
+            TNominalLabel nominalLabel;
+            nominalLabel = new TNominalLabel();
             nominalLabel.read(iprot);
             return nominalLabel;
           } else {
@@ -170,8 +170,8 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
           }
         case CONT_LABEL:
           if (field.type == CONT_LABEL_FIELD_DESC.type) {
-            ContLabel contLabel;
-            contLabel = new ContLabel();
+            TContLabel contLabel;
+            contLabel = new TContLabel();
             contLabel.read(iprot);
             return contLabel;
           } else {
@@ -190,11 +190,11 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
   protected void standardSchemeWriteValue(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     switch (setField_) {
       case NOMINAL_LABEL:
-        NominalLabel nominalLabel = (NominalLabel)value_;
+        TNominalLabel nominalLabel = (TNominalLabel)value_;
         nominalLabel.write(oprot);
         return;
       case CONT_LABEL:
-        ContLabel contLabel = (ContLabel)value_;
+        TContLabel contLabel = (TContLabel)value_;
         contLabel.write(oprot);
         return;
       default:
@@ -208,13 +208,13 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
     if (setField != null) {
       switch (setField) {
         case NOMINAL_LABEL:
-          NominalLabel nominalLabel;
-          nominalLabel = new NominalLabel();
+          TNominalLabel nominalLabel;
+          nominalLabel = new TNominalLabel();
           nominalLabel.read(iprot);
           return nominalLabel;
         case CONT_LABEL:
-          ContLabel contLabel;
-          contLabel = new ContLabel();
+          TContLabel contLabel;
+          contLabel = new TContLabel();
           contLabel.read(iprot);
           return contLabel;
         default:
@@ -229,11 +229,11 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
   protected void tupleSchemeWriteValue(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
     switch (setField_) {
       case NOMINAL_LABEL:
-        NominalLabel nominalLabel = (NominalLabel)value_;
+        TNominalLabel nominalLabel = (TNominalLabel)value_;
         nominalLabel.write(oprot);
         return;
       case CONT_LABEL:
-        ContLabel contLabel = (ContLabel)value_;
+        TContLabel contLabel = (TContLabel)value_;
         contLabel.write(oprot);
         return;
       default:
@@ -268,29 +268,29 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
   }
 
 
-  public NominalLabel getNominalLabel() {
+  public TNominalLabel getNominalLabel() {
     if (getSetField() == _Fields.NOMINAL_LABEL) {
-      return (NominalLabel)getFieldValue();
+      return (TNominalLabel)getFieldValue();
     } else {
       throw new RuntimeException("Cannot get field 'nominalLabel' because union is currently set to " + getFieldDesc(getSetField()).name);
     }
   }
 
-  public void setNominalLabel(NominalLabel value) {
+  public void setNominalLabel(TNominalLabel value) {
     if (value == null) throw new NullPointerException();
     setField_ = _Fields.NOMINAL_LABEL;
     value_ = value;
   }
 
-  public ContLabel getContLabel() {
+  public TContLabel getContLabel() {
     if (getSetField() == _Fields.CONT_LABEL) {
-      return (ContLabel)getFieldValue();
+      return (TContLabel)getFieldValue();
     } else {
       throw new RuntimeException("Cannot get field 'contLabel' because union is currently set to " + getFieldDesc(getSetField()).name);
     }
   }
 
-  public void setContLabel(ContLabel value) {
+  public void setContLabel(TContLabel value) {
     if (value == null) throw new NullPointerException();
     setField_ = _Fields.CONT_LABEL;
     value_ = value;
@@ -307,19 +307,19 @@ public class Label extends org.apache.thrift.TUnion<Label, Label._Fields> {
 
 
   public boolean equals(Object other) {
-    if (other instanceof Label) {
-      return equals((Label)other);
+    if (other instanceof TLabel) {
+      return equals((TLabel)other);
     } else {
       return false;
     }
   }
 
-  public boolean equals(Label other) {
+  public boolean equals(TLabel other) {
     return other != null && getSetField() == other.getSetField() && getFieldValue().equals(other.getFieldValue());
   }
 
   @Override
-  public int compareTo(Label other) {
+  public int compareTo(TLabel other) {
     int lastComparison = org.apache.thrift.TBaseHelper.compareTo(getSetField(), other.getSetField());
     if (lastComparison == 0) {
       return org.apache.thrift.TBaseHelper.compareTo(getFieldValue(), other.getFieldValue());

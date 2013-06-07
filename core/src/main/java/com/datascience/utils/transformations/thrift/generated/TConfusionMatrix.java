@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix, ConfusionMatrix._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ConfusionMatrix");
+public class TConfusionMatrix implements org.apache.thrift.TBase<TConfusionMatrix, TConfusionMatrix._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TConfusionMatrix");
 
   private static final org.apache.thrift.protocol.TField CATEGORIES_FIELD_DESC = new org.apache.thrift.protocol.TField("categories", org.apache.thrift.protocol.TType.SET, (short)1);
   private static final org.apache.thrift.protocol.TField MATRIX_FIELD_DESC = new org.apache.thrift.protocol.TField("matrix", org.apache.thrift.protocol.TType.LIST, (short)2);
@@ -39,12 +39,12 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new ConfusionMatrixStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new ConfusionMatrixTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TConfusionMatrixStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TConfusionMatrixTupleSchemeFactory());
   }
 
   public Set<String> categories; // required
-  public List<CMEntry> matrix; // required
+  public List<TCMEntry> matrix; // required
   public Map<String,Double> rowDenominator; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -120,21 +120,21 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
     tmpMap.put(_Fields.MATRIX, new org.apache.thrift.meta_data.FieldMetaData("matrix", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, CMEntry.class))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TCMEntry.class))));
     tmpMap.put(_Fields.ROW_DENOMINATOR, new org.apache.thrift.meta_data.FieldMetaData("rowDenominator", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(ConfusionMatrix.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TConfusionMatrix.class, metaDataMap);
   }
 
-  public ConfusionMatrix() {
+  public TConfusionMatrix() {
   }
 
-  public ConfusionMatrix(
+  public TConfusionMatrix(
     Set<String> categories,
-    List<CMEntry> matrix,
+    List<TCMEntry> matrix,
     Map<String,Double> rowDenominator)
   {
     this();
@@ -146,7 +146,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public ConfusionMatrix(ConfusionMatrix other) {
+  public TConfusionMatrix(TConfusionMatrix other) {
     if (other.isSetCategories()) {
       Set<String> __this__categories = new HashSet<String>();
       for (String other_element : other.categories) {
@@ -155,9 +155,9 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
       this.categories = __this__categories;
     }
     if (other.isSetMatrix()) {
-      List<CMEntry> __this__matrix = new ArrayList<CMEntry>();
-      for (CMEntry other_element : other.matrix) {
-        __this__matrix.add(new CMEntry(other_element));
+      List<TCMEntry> __this__matrix = new ArrayList<TCMEntry>();
+      for (TCMEntry other_element : other.matrix) {
+        __this__matrix.add(new TCMEntry(other_element));
       }
       this.matrix = __this__matrix;
     }
@@ -178,8 +178,8 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     }
   }
 
-  public ConfusionMatrix deepCopy() {
-    return new ConfusionMatrix(this);
+  public TConfusionMatrix deepCopy() {
+    return new TConfusionMatrix(this);
   }
 
   @Override
@@ -208,7 +208,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     return this.categories;
   }
 
-  public ConfusionMatrix setCategories(Set<String> categories) {
+  public TConfusionMatrix setCategories(Set<String> categories) {
     this.categories = categories;
     return this;
   }
@@ -232,22 +232,22 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     return (this.matrix == null) ? 0 : this.matrix.size();
   }
 
-  public java.util.Iterator<CMEntry> getMatrixIterator() {
+  public java.util.Iterator<TCMEntry> getMatrixIterator() {
     return (this.matrix == null) ? null : this.matrix.iterator();
   }
 
-  public void addToMatrix(CMEntry elem) {
+  public void addToMatrix(TCMEntry elem) {
     if (this.matrix == null) {
-      this.matrix = new ArrayList<CMEntry>();
+      this.matrix = new ArrayList<TCMEntry>();
     }
     this.matrix.add(elem);
   }
 
-  public List<CMEntry> getMatrix() {
+  public List<TCMEntry> getMatrix() {
     return this.matrix;
   }
 
-  public ConfusionMatrix setMatrix(List<CMEntry> matrix) {
+  public TConfusionMatrix setMatrix(List<TCMEntry> matrix) {
     this.matrix = matrix;
     return this;
   }
@@ -282,7 +282,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     return this.rowDenominator;
   }
 
-  public ConfusionMatrix setRowDenominator(Map<String,Double> rowDenominator) {
+  public TConfusionMatrix setRowDenominator(Map<String,Double> rowDenominator) {
     this.rowDenominator = rowDenominator;
     return this;
   }
@@ -316,7 +316,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
       if (value == null) {
         unsetMatrix();
       } else {
-        setMatrix((List<CMEntry>)value);
+        setMatrix((List<TCMEntry>)value);
       }
       break;
 
@@ -367,12 +367,12 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof ConfusionMatrix)
-      return this.equals((ConfusionMatrix)that);
+    if (that instanceof TConfusionMatrix)
+      return this.equals((TConfusionMatrix)that);
     return false;
   }
 
-  public boolean equals(ConfusionMatrix that) {
+  public boolean equals(TConfusionMatrix that) {
     if (that == null)
       return false;
 
@@ -411,13 +411,13 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     return 0;
   }
 
-  public int compareTo(ConfusionMatrix other) {
+  public int compareTo(TConfusionMatrix other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    ConfusionMatrix typedOther = (ConfusionMatrix)other;
+    TConfusionMatrix typedOther = (TConfusionMatrix)other;
 
     lastComparison = Boolean.valueOf(isSetCategories()).compareTo(typedOther.isSetCategories());
     if (lastComparison != 0) {
@@ -466,7 +466,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("ConfusionMatrix(");
+    StringBuilder sb = new StringBuilder("TConfusionMatrix(");
     boolean first = true;
 
     sb.append("categories:");
@@ -517,15 +517,15 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     }
   }
 
-  private static class ConfusionMatrixStandardSchemeFactory implements SchemeFactory {
-    public ConfusionMatrixStandardScheme getScheme() {
-      return new ConfusionMatrixStandardScheme();
+  private static class TConfusionMatrixStandardSchemeFactory implements SchemeFactory {
+    public TConfusionMatrixStandardScheme getScheme() {
+      return new TConfusionMatrixStandardScheme();
     }
   }
 
-  private static class ConfusionMatrixStandardScheme extends StandardScheme<ConfusionMatrix> {
+  private static class TConfusionMatrixStandardScheme extends StandardScheme<TConfusionMatrix> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, ConfusionMatrix struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TConfusionMatrix struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -557,11 +557,11 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list37 = iprot.readListBegin();
-                struct.matrix = new ArrayList<CMEntry>(_list37.size);
+                struct.matrix = new ArrayList<TCMEntry>(_list37.size);
                 for (int _i38 = 0; _i38 < _list37.size; ++_i38)
                 {
-                  CMEntry _elem39; // required
-                  _elem39 = new CMEntry();
+                  TCMEntry _elem39; // required
+                  _elem39 = new TCMEntry();
                   _elem39.read(iprot);
                   struct.matrix.add(_elem39);
                 }
@@ -603,7 +603,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, ConfusionMatrix struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TConfusionMatrix struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -623,7 +623,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
         oprot.writeFieldBegin(MATRIX_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.matrix.size()));
-          for (CMEntry _iter45 : struct.matrix)
+          for (TCMEntry _iter45 : struct.matrix)
           {
             _iter45.write(oprot);
           }
@@ -650,16 +650,16 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
 
   }
 
-  private static class ConfusionMatrixTupleSchemeFactory implements SchemeFactory {
-    public ConfusionMatrixTupleScheme getScheme() {
-      return new ConfusionMatrixTupleScheme();
+  private static class TConfusionMatrixTupleSchemeFactory implements SchemeFactory {
+    public TConfusionMatrixTupleScheme getScheme() {
+      return new TConfusionMatrixTupleScheme();
     }
   }
 
-  private static class ConfusionMatrixTupleScheme extends TupleScheme<ConfusionMatrix> {
+  private static class TConfusionMatrixTupleScheme extends TupleScheme<TConfusionMatrix> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, ConfusionMatrix struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TConfusionMatrix struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetCategories()) {
@@ -684,7 +684,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
       if (struct.isSetMatrix()) {
         {
           oprot.writeI32(struct.matrix.size());
-          for (CMEntry _iter48 : struct.matrix)
+          for (TCMEntry _iter48 : struct.matrix)
           {
             _iter48.write(oprot);
           }
@@ -703,7 +703,7 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, ConfusionMatrix struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TConfusionMatrix struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
@@ -722,11 +722,11 @@ public class ConfusionMatrix implements org.apache.thrift.TBase<ConfusionMatrix,
       if (incoming.get(1)) {
         {
           org.apache.thrift.protocol.TList _list53 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.matrix = new ArrayList<CMEntry>(_list53.size);
+          struct.matrix = new ArrayList<TCMEntry>(_list53.size);
           for (int _i54 = 0; _i54 < _list53.size; ++_i54)
           {
-            CMEntry _elem55; // required
-            _elem55 = new CMEntry();
+            TCMEntry _elem55; // required
+            _elem55 = new TCMEntry();
             _elem55.read(iprot);
             struct.matrix.add(_elem55);
           }

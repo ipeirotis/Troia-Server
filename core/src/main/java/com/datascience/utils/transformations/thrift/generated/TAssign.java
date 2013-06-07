@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Assign");
+public class TAssign implements org.apache.thrift.TBase<TAssign, TAssign._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TAssign");
 
   private static final org.apache.thrift.protocol.TField WORKER_FIELD_DESC = new org.apache.thrift.protocol.TField("worker", org.apache.thrift.protocol.TType.STRUCT, (short)1);
   private static final org.apache.thrift.protocol.TField OBJECT_FIELD_DESC = new org.apache.thrift.protocol.TField("object", org.apache.thrift.protocol.TType.STRING, (short)2);
@@ -39,13 +39,13 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new AssignStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new AssignTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TAssignStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TAssignTupleSchemeFactory());
   }
 
-  public Worker worker; // required
+  public TWorker worker; // required
   public String object; // required
-  public Label label; // required
+  public TLabel label; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -116,22 +116,22 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.WORKER, new org.apache.thrift.meta_data.FieldMetaData("worker", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Worker.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TWorker.class)));
     tmpMap.put(_Fields.OBJECT, new org.apache.thrift.meta_data.FieldMetaData("object", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.LABEL, new org.apache.thrift.meta_data.FieldMetaData("label", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Label.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TLabel.class)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Assign.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TAssign.class, metaDataMap);
   }
 
-  public Assign() {
+  public TAssign() {
   }
 
-  public Assign(
-    Worker worker,
+  public TAssign(
+    TWorker worker,
     String object,
-    Label label)
+    TLabel label)
   {
     this();
     this.worker = worker;
@@ -142,20 +142,20 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public Assign(Assign other) {
+  public TAssign(TAssign other) {
     if (other.isSetWorker()) {
-      this.worker = new Worker(other.worker);
+      this.worker = new TWorker(other.worker);
     }
     if (other.isSetObject()) {
       this.object = other.object;
     }
     if (other.isSetLabel()) {
-      this.label = new Label(other.label);
+      this.label = new TLabel(other.label);
     }
   }
 
-  public Assign deepCopy() {
-    return new Assign(this);
+  public TAssign deepCopy() {
+    return new TAssign(this);
   }
 
   @Override
@@ -165,11 +165,11 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
     this.label = null;
   }
 
-  public Worker getWorker() {
+  public TWorker getWorker() {
     return this.worker;
   }
 
-  public Assign setWorker(Worker worker) {
+  public TAssign setWorker(TWorker worker) {
     this.worker = worker;
     return this;
   }
@@ -193,7 +193,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
     return this.object;
   }
 
-  public Assign setObject(String object) {
+  public TAssign setObject(String object) {
     this.object = object;
     return this;
   }
@@ -213,11 +213,11 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
     }
   }
 
-  public Label getLabel() {
+  public TLabel getLabel() {
     return this.label;
   }
 
-  public Assign setLabel(Label label) {
+  public TAssign setLabel(TLabel label) {
     this.label = label;
     return this;
   }
@@ -243,7 +243,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
       if (value == null) {
         unsetWorker();
       } else {
-        setWorker((Worker)value);
+        setWorker((TWorker)value);
       }
       break;
 
@@ -259,7 +259,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
       if (value == null) {
         unsetLabel();
       } else {
-        setLabel((Label)value);
+        setLabel((TLabel)value);
       }
       break;
 
@@ -302,12 +302,12 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof Assign)
-      return this.equals((Assign)that);
+    if (that instanceof TAssign)
+      return this.equals((TAssign)that);
     return false;
   }
 
-  public boolean equals(Assign that) {
+  public boolean equals(TAssign that) {
     if (that == null)
       return false;
 
@@ -346,13 +346,13 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
     return 0;
   }
 
-  public int compareTo(Assign other) {
+  public int compareTo(TAssign other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    Assign typedOther = (Assign)other;
+    TAssign typedOther = (TAssign)other;
 
     lastComparison = Boolean.valueOf(isSetWorker()).compareTo(typedOther.isSetWorker());
     if (lastComparison != 0) {
@@ -401,7 +401,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("Assign(");
+    StringBuilder sb = new StringBuilder("TAssign(");
     boolean first = true;
 
     sb.append("worker:");
@@ -455,15 +455,15 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
     }
   }
 
-  private static class AssignStandardSchemeFactory implements SchemeFactory {
-    public AssignStandardScheme getScheme() {
-      return new AssignStandardScheme();
+  private static class TAssignStandardSchemeFactory implements SchemeFactory {
+    public TAssignStandardScheme getScheme() {
+      return new TAssignStandardScheme();
     }
   }
 
-  private static class AssignStandardScheme extends StandardScheme<Assign> {
+  private static class TAssignStandardScheme extends StandardScheme<TAssign> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, Assign struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TAssign struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -475,7 +475,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
         switch (schemeField.id) {
           case 1: // WORKER
             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.worker = new Worker();
+              struct.worker = new TWorker();
               struct.worker.read(iprot);
               struct.setWorkerIsSet(true);
             } else { 
@@ -492,7 +492,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
             break;
           case 3: // LABEL
             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.label = new Label();
+              struct.label = new TLabel();
               struct.label.read(iprot);
               struct.setLabelIsSet(true);
             } else { 
@@ -510,7 +510,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, Assign struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TAssign struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -535,16 +535,16 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
 
   }
 
-  private static class AssignTupleSchemeFactory implements SchemeFactory {
-    public AssignTupleScheme getScheme() {
-      return new AssignTupleScheme();
+  private static class TAssignTupleSchemeFactory implements SchemeFactory {
+    public TAssignTupleScheme getScheme() {
+      return new TAssignTupleScheme();
     }
   }
 
-  private static class AssignTupleScheme extends TupleScheme<Assign> {
+  private static class TAssignTupleScheme extends TupleScheme<TAssign> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, Assign struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TAssign struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetWorker()) {
@@ -569,11 +569,11 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, Assign struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TAssign struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
-        struct.worker = new Worker();
+        struct.worker = new TWorker();
         struct.worker.read(iprot);
         struct.setWorkerIsSet(true);
       }
@@ -582,7 +582,7 @@ public class Assign implements org.apache.thrift.TBase<Assign, Assign._Fields>, 
         struct.setObjectIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.label = new Label();
+        struct.label = new TLabel();
         struct.label.read(iprot);
         struct.setLabelIsSet(true);
       }

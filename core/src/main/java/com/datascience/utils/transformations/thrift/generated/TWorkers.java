@@ -30,22 +30,22 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Assigns");
+public class TWorkers implements org.apache.thrift.TBase<TWorkers, TWorkers._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TWorkers");
 
-  private static final org.apache.thrift.protocol.TField ASSIGNS_FIELD_DESC = new org.apache.thrift.protocol.TField("assigns", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField WORKERS_FIELD_DESC = new org.apache.thrift.protocol.TField("workers", org.apache.thrift.protocol.TType.LIST, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new AssignsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new AssignsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TWorkersStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TWorkersTupleSchemeFactory());
   }
 
-  public List<Assign> assigns; // required
+  public List<TWorker> workers; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    ASSIGNS((short)1, "assigns");
+    WORKERS((short)1, "workers");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -60,8 +60,8 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // ASSIGNS
-          return ASSIGNS;
+        case 1: // WORKERS
+          return WORKERS;
         default:
           return null;
       }
@@ -105,91 +105,91 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.ASSIGNS, new org.apache.thrift.meta_data.FieldMetaData("assigns", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.WORKERS, new org.apache.thrift.meta_data.FieldMetaData("workers", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Assign.class))));
+            new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TWorker.class))));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Assigns.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TWorkers.class, metaDataMap);
   }
 
-  public Assigns() {
+  public TWorkers() {
   }
 
-  public Assigns(
-    List<Assign> assigns)
+  public TWorkers(
+    List<TWorker> workers)
   {
     this();
-    this.assigns = assigns;
+    this.workers = workers;
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public Assigns(Assigns other) {
-    if (other.isSetAssigns()) {
-      List<Assign> __this__assigns = new ArrayList<Assign>();
-      for (Assign other_element : other.assigns) {
-        __this__assigns.add(new Assign(other_element));
+  public TWorkers(TWorkers other) {
+    if (other.isSetWorkers()) {
+      List<TWorker> __this__workers = new ArrayList<TWorker>();
+      for (TWorker other_element : other.workers) {
+        __this__workers.add(new TWorker(other_element));
       }
-      this.assigns = __this__assigns;
+      this.workers = __this__workers;
     }
   }
 
-  public Assigns deepCopy() {
-    return new Assigns(this);
+  public TWorkers deepCopy() {
+    return new TWorkers(this);
   }
 
   @Override
   public void clear() {
-    this.assigns = null;
+    this.workers = null;
   }
 
-  public int getAssignsSize() {
-    return (this.assigns == null) ? 0 : this.assigns.size();
+  public int getWorkersSize() {
+    return (this.workers == null) ? 0 : this.workers.size();
   }
 
-  public java.util.Iterator<Assign> getAssignsIterator() {
-    return (this.assigns == null) ? null : this.assigns.iterator();
+  public java.util.Iterator<TWorker> getWorkersIterator() {
+    return (this.workers == null) ? null : this.workers.iterator();
   }
 
-  public void addToAssigns(Assign elem) {
-    if (this.assigns == null) {
-      this.assigns = new ArrayList<Assign>();
+  public void addToWorkers(TWorker elem) {
+    if (this.workers == null) {
+      this.workers = new ArrayList<TWorker>();
     }
-    this.assigns.add(elem);
+    this.workers.add(elem);
   }
 
-  public List<Assign> getAssigns() {
-    return this.assigns;
+  public List<TWorker> getWorkers() {
+    return this.workers;
   }
 
-  public Assigns setAssigns(List<Assign> assigns) {
-    this.assigns = assigns;
+  public TWorkers setWorkers(List<TWorker> workers) {
+    this.workers = workers;
     return this;
   }
 
-  public void unsetAssigns() {
-    this.assigns = null;
+  public void unsetWorkers() {
+    this.workers = null;
   }
 
-  /** Returns true if field assigns is set (has been assigned a value) and false otherwise */
-  public boolean isSetAssigns() {
-    return this.assigns != null;
+  /** Returns true if field workers is set (has been assigned a value) and false otherwise */
+  public boolean isSetWorkers() {
+    return this.workers != null;
   }
 
-  public void setAssignsIsSet(boolean value) {
+  public void setWorkersIsSet(boolean value) {
     if (!value) {
-      this.assigns = null;
+      this.workers = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case ASSIGNS:
+    case WORKERS:
       if (value == null) {
-        unsetAssigns();
+        unsetWorkers();
       } else {
-        setAssigns((List<Assign>)value);
+        setWorkers((List<TWorker>)value);
       }
       break;
 
@@ -198,8 +198,8 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case ASSIGNS:
-      return getAssigns();
+    case WORKERS:
+      return getWorkers();
 
     }
     throw new IllegalStateException();
@@ -212,8 +212,8 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
     }
 
     switch (field) {
-    case ASSIGNS:
-      return isSetAssigns();
+    case WORKERS:
+      return isSetWorkers();
     }
     throw new IllegalStateException();
   }
@@ -222,21 +222,21 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof Assigns)
-      return this.equals((Assigns)that);
+    if (that instanceof TWorkers)
+      return this.equals((TWorkers)that);
     return false;
   }
 
-  public boolean equals(Assigns that) {
+  public boolean equals(TWorkers that) {
     if (that == null)
       return false;
 
-    boolean this_present_assigns = true && this.isSetAssigns();
-    boolean that_present_assigns = true && that.isSetAssigns();
-    if (this_present_assigns || that_present_assigns) {
-      if (!(this_present_assigns && that_present_assigns))
+    boolean this_present_workers = true && this.isSetWorkers();
+    boolean that_present_workers = true && that.isSetWorkers();
+    if (this_present_workers || that_present_workers) {
+      if (!(this_present_workers && that_present_workers))
         return false;
-      if (!this.assigns.equals(that.assigns))
+      if (!this.workers.equals(that.workers))
         return false;
     }
 
@@ -248,20 +248,20 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
     return 0;
   }
 
-  public int compareTo(Assigns other) {
+  public int compareTo(TWorkers other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    Assigns typedOther = (Assigns)other;
+    TWorkers typedOther = (TWorkers)other;
 
-    lastComparison = Boolean.valueOf(isSetAssigns()).compareTo(typedOther.isSetAssigns());
+    lastComparison = Boolean.valueOf(isSetWorkers()).compareTo(typedOther.isSetWorkers());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetAssigns()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.assigns, typedOther.assigns);
+    if (isSetWorkers()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.workers, typedOther.workers);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -283,14 +283,14 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("Assigns(");
+    StringBuilder sb = new StringBuilder("TWorkers(");
     boolean first = true;
 
-    sb.append("assigns:");
-    if (this.assigns == null) {
+    sb.append("workers:");
+    if (this.workers == null) {
       sb.append("null");
     } else {
-      sb.append(this.assigns);
+      sb.append(this.workers);
     }
     first = false;
     sb.append(")");
@@ -318,15 +318,15 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
     }
   }
 
-  private static class AssignsStandardSchemeFactory implements SchemeFactory {
-    public AssignsStandardScheme getScheme() {
-      return new AssignsStandardScheme();
+  private static class TWorkersStandardSchemeFactory implements SchemeFactory {
+    public TWorkersStandardScheme getScheme() {
+      return new TWorkersStandardScheme();
     }
   }
 
-  private static class AssignsStandardScheme extends StandardScheme<Assigns> {
+  private static class TWorkersStandardScheme extends StandardScheme<TWorkers> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, Assigns struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TWorkers struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -336,21 +336,21 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
           break;
         }
         switch (schemeField.id) {
-          case 1: // ASSIGNS
+          case 1: // WORKERS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                struct.assigns = new ArrayList<Assign>(_list8.size);
-                for (int _i9 = 0; _i9 < _list8.size; ++_i9)
+                org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
+                struct.workers = new ArrayList<TWorker>(_list16.size);
+                for (int _i17 = 0; _i17 < _list16.size; ++_i17)
                 {
-                  Assign _elem10; // required
-                  _elem10 = new Assign();
-                  _elem10.read(iprot);
-                  struct.assigns.add(_elem10);
+                  TWorker _elem18; // required
+                  _elem18 = new TWorker();
+                  _elem18.read(iprot);
+                  struct.workers.add(_elem18);
                 }
                 iprot.readListEnd();
               }
-              struct.setAssignsIsSet(true);
+              struct.setWorkersIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -366,17 +366,17 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, Assigns struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TWorkers struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.assigns != null) {
-        oprot.writeFieldBegin(ASSIGNS_FIELD_DESC);
+      if (struct.workers != null) {
+        oprot.writeFieldBegin(WORKERS_FIELD_DESC);
         {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.assigns.size()));
-          for (Assign _iter11 : struct.assigns)
+          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.workers.size()));
+          for (TWorker _iter19 : struct.workers)
           {
-            _iter11.write(oprot);
+            _iter19.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -388,50 +388,50 @@ public class Assigns implements org.apache.thrift.TBase<Assigns, Assigns._Fields
 
   }
 
-  private static class AssignsTupleSchemeFactory implements SchemeFactory {
-    public AssignsTupleScheme getScheme() {
-      return new AssignsTupleScheme();
+  private static class TWorkersTupleSchemeFactory implements SchemeFactory {
+    public TWorkersTupleScheme getScheme() {
+      return new TWorkersTupleScheme();
     }
   }
 
-  private static class AssignsTupleScheme extends TupleScheme<Assigns> {
+  private static class TWorkersTupleScheme extends TupleScheme<TWorkers> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, Assigns struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TWorkers struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetAssigns()) {
+      if (struct.isSetWorkers()) {
         optionals.set(0);
       }
       oprot.writeBitSet(optionals, 1);
-      if (struct.isSetAssigns()) {
+      if (struct.isSetWorkers()) {
         {
-          oprot.writeI32(struct.assigns.size());
-          for (Assign _iter12 : struct.assigns)
+          oprot.writeI32(struct.workers.size());
+          for (TWorker _iter20 : struct.workers)
           {
-            _iter12.write(oprot);
+            _iter20.write(oprot);
           }
         }
       }
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, Assigns struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TWorkers struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
         {
-          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.assigns = new ArrayList<Assign>(_list13.size);
-          for (int _i14 = 0; _i14 < _list13.size; ++_i14)
+          org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.workers = new ArrayList<TWorker>(_list21.size);
+          for (int _i22 = 0; _i22 < _list21.size; ++_i22)
           {
-            Assign _elem15; // required
-            _elem15 = new Assign();
-            _elem15.read(iprot);
-            struct.assigns.add(_elem15);
+            TWorker _elem23; // required
+            _elem23 = new TWorker();
+            _elem23.read(iprot);
+            struct.workers.add(_elem23);
           }
         }
-        struct.setAssignsIsSet(true);
+        struct.setWorkersIsSet(true);
       }
     }
   }

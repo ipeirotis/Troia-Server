@@ -30,8 +30,8 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResults, WorkerContResults._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("WorkerContResults");
+public class TWorkerContResults implements org.apache.thrift.TBase<TWorkerContResults, TWorkerContResults._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TWorkerContResults");
 
   private static final org.apache.thrift.protocol.TField EST_RHO_FIELD_DESC = new org.apache.thrift.protocol.TField("est_rho", org.apache.thrift.protocol.TType.DOUBLE, (short)1);
   private static final org.apache.thrift.protocol.TField EST_MU_FIELD_DESC = new org.apache.thrift.protocol.TField("est_mu", org.apache.thrift.protocol.TType.DOUBLE, (short)2);
@@ -43,14 +43,14 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new WorkerContResultsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new WorkerContResultsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TWorkerContResultsStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TWorkerContResultsTupleSchemeFactory());
   }
 
   public double est_rho; // required
   public double est_mu; // required
   public double est_sigma; // required
-  public Assigns zeta; // required
+  public TAssigns zeta; // required
   public double true_mu; // required
   public double true_sigma; // required
   public double true_rho; // required
@@ -149,7 +149,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     tmpMap.put(_Fields.EST_SIGMA, new org.apache.thrift.meta_data.FieldMetaData("est_sigma", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     tmpMap.put(_Fields.ZETA, new org.apache.thrift.meta_data.FieldMetaData("zeta", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, Assigns.class)));
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, TAssigns.class)));
     tmpMap.put(_Fields.TRUE_MU, new org.apache.thrift.meta_data.FieldMetaData("true_mu", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     tmpMap.put(_Fields.TRUE_SIGMA, new org.apache.thrift.meta_data.FieldMetaData("true_sigma", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -157,17 +157,17 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     tmpMap.put(_Fields.TRUE_RHO, new org.apache.thrift.meta_data.FieldMetaData("true_rho", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(WorkerContResults.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TWorkerContResults.class, metaDataMap);
   }
 
-  public WorkerContResults() {
+  public TWorkerContResults() {
   }
 
-  public WorkerContResults(
+  public TWorkerContResults(
     double est_rho,
     double est_mu,
     double est_sigma,
-    Assigns zeta,
+    TAssigns zeta,
     double true_mu,
     double true_sigma,
     double true_rho)
@@ -191,21 +191,21 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public WorkerContResults(WorkerContResults other) {
+  public TWorkerContResults(TWorkerContResults other) {
     __isset_bitfield = other.__isset_bitfield;
     this.est_rho = other.est_rho;
     this.est_mu = other.est_mu;
     this.est_sigma = other.est_sigma;
     if (other.isSetZeta()) {
-      this.zeta = new Assigns(other.zeta);
+      this.zeta = new TAssigns(other.zeta);
     }
     this.true_mu = other.true_mu;
     this.true_sigma = other.true_sigma;
     this.true_rho = other.true_rho;
   }
 
-  public WorkerContResults deepCopy() {
-    return new WorkerContResults(this);
+  public TWorkerContResults deepCopy() {
+    return new TWorkerContResults(this);
   }
 
   @Override
@@ -229,7 +229,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return this.est_rho;
   }
 
-  public WorkerContResults setEst_rho(double est_rho) {
+  public TWorkerContResults setEst_rho(double est_rho) {
     this.est_rho = est_rho;
     setEst_rhoIsSet(true);
     return this;
@@ -252,7 +252,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return this.est_mu;
   }
 
-  public WorkerContResults setEst_mu(double est_mu) {
+  public TWorkerContResults setEst_mu(double est_mu) {
     this.est_mu = est_mu;
     setEst_muIsSet(true);
     return this;
@@ -275,7 +275,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return this.est_sigma;
   }
 
-  public WorkerContResults setEst_sigma(double est_sigma) {
+  public TWorkerContResults setEst_sigma(double est_sigma) {
     this.est_sigma = est_sigma;
     setEst_sigmaIsSet(true);
     return this;
@@ -294,11 +294,11 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __EST_SIGMA_ISSET_ID, value);
   }
 
-  public Assigns getZeta() {
+  public TAssigns getZeta() {
     return this.zeta;
   }
 
-  public WorkerContResults setZeta(Assigns zeta) {
+  public TWorkerContResults setZeta(TAssigns zeta) {
     this.zeta = zeta;
     return this;
   }
@@ -322,7 +322,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return this.true_mu;
   }
 
-  public WorkerContResults setTrue_mu(double true_mu) {
+  public TWorkerContResults setTrue_mu(double true_mu) {
     this.true_mu = true_mu;
     setTrue_muIsSet(true);
     return this;
@@ -345,7 +345,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return this.true_sigma;
   }
 
-  public WorkerContResults setTrue_sigma(double true_sigma) {
+  public TWorkerContResults setTrue_sigma(double true_sigma) {
     this.true_sigma = true_sigma;
     setTrue_sigmaIsSet(true);
     return this;
@@ -368,7 +368,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return this.true_rho;
   }
 
-  public WorkerContResults setTrue_rho(double true_rho) {
+  public TWorkerContResults setTrue_rho(double true_rho) {
     this.true_rho = true_rho;
     setTrue_rhoIsSet(true);
     return this;
@@ -417,7 +417,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
       if (value == null) {
         unsetZeta();
       } else {
-        setZeta((Assigns)value);
+        setZeta((TAssigns)value);
       }
       break;
 
@@ -504,12 +504,12 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof WorkerContResults)
-      return this.equals((WorkerContResults)that);
+    if (that instanceof TWorkerContResults)
+      return this.equals((TWorkerContResults)that);
     return false;
   }
 
-  public boolean equals(WorkerContResults that) {
+  public boolean equals(TWorkerContResults that) {
     if (that == null)
       return false;
 
@@ -584,13 +584,13 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     return 0;
   }
 
-  public int compareTo(WorkerContResults other) {
+  public int compareTo(TWorkerContResults other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    WorkerContResults typedOther = (WorkerContResults)other;
+    TWorkerContResults typedOther = (TWorkerContResults)other;
 
     lastComparison = Boolean.valueOf(isSetEst_rho()).compareTo(typedOther.isSetEst_rho());
     if (lastComparison != 0) {
@@ -679,7 +679,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("WorkerContResults(");
+    StringBuilder sb = new StringBuilder("TWorkerContResults(");
     boolean first = true;
 
     sb.append("est_rho:");
@@ -743,15 +743,15 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     }
   }
 
-  private static class WorkerContResultsStandardSchemeFactory implements SchemeFactory {
-    public WorkerContResultsStandardScheme getScheme() {
-      return new WorkerContResultsStandardScheme();
+  private static class TWorkerContResultsStandardSchemeFactory implements SchemeFactory {
+    public TWorkerContResultsStandardScheme getScheme() {
+      return new TWorkerContResultsStandardScheme();
     }
   }
 
-  private static class WorkerContResultsStandardScheme extends StandardScheme<WorkerContResults> {
+  private static class TWorkerContResultsStandardScheme extends StandardScheme<TWorkerContResults> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, WorkerContResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TWorkerContResults struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -787,7 +787,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
             break;
           case 4: // ZETA
             if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-              struct.zeta = new Assigns();
+              struct.zeta = new TAssigns();
               struct.zeta.read(iprot);
               struct.setZetaIsSet(true);
             } else { 
@@ -829,7 +829,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, WorkerContResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TWorkerContResults struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -862,16 +862,16 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
 
   }
 
-  private static class WorkerContResultsTupleSchemeFactory implements SchemeFactory {
-    public WorkerContResultsTupleScheme getScheme() {
-      return new WorkerContResultsTupleScheme();
+  private static class TWorkerContResultsTupleSchemeFactory implements SchemeFactory {
+    public TWorkerContResultsTupleScheme getScheme() {
+      return new TWorkerContResultsTupleScheme();
     }
   }
 
-  private static class WorkerContResultsTupleScheme extends TupleScheme<WorkerContResults> {
+  private static class TWorkerContResultsTupleScheme extends TupleScheme<TWorkerContResults> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, WorkerContResults struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TWorkerContResults struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetEst_rho()) {
@@ -920,7 +920,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, WorkerContResults struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TWorkerContResults struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(7);
       if (incoming.get(0)) {
@@ -936,7 +936,7 @@ public class WorkerContResults implements org.apache.thrift.TBase<WorkerContResu
         struct.setEst_sigmaIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.zeta = new Assigns();
+        struct.zeta = new TAssigns();
         struct.zeta.read(iprot);
         struct.setZetaIsSet(true);
       }

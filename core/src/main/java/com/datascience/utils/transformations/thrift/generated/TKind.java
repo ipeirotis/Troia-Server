@@ -30,15 +30,15 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Kind");
+public class TKind implements org.apache.thrift.TBase<TKind, TKind._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TKind");
 
   private static final org.apache.thrift.protocol.TField KIND_FIELD_DESC = new org.apache.thrift.protocol.TField("kind", org.apache.thrift.protocol.TType.STRING, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new KindStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new KindTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TKindStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TKindTupleSchemeFactory());
   }
 
   public String kind; // required
@@ -108,13 +108,13 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
     tmpMap.put(_Fields.KIND, new org.apache.thrift.meta_data.FieldMetaData("kind", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Kind.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TKind.class, metaDataMap);
   }
 
-  public Kind() {
+  public TKind() {
   }
 
-  public Kind(
+  public TKind(
     String kind)
   {
     this();
@@ -124,14 +124,14 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public Kind(Kind other) {
+  public TKind(TKind other) {
     if (other.isSetKind()) {
       this.kind = other.kind;
     }
   }
 
-  public Kind deepCopy() {
-    return new Kind(this);
+  public TKind deepCopy() {
+    return new TKind(this);
   }
 
   @Override
@@ -143,7 +143,7 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
     return this.kind;
   }
 
-  public Kind setKind(String kind) {
+  public TKind setKind(String kind) {
     this.kind = kind;
     return this;
   }
@@ -202,12 +202,12 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof Kind)
-      return this.equals((Kind)that);
+    if (that instanceof TKind)
+      return this.equals((TKind)that);
     return false;
   }
 
-  public boolean equals(Kind that) {
+  public boolean equals(TKind that) {
     if (that == null)
       return false;
 
@@ -228,13 +228,13 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
     return 0;
   }
 
-  public int compareTo(Kind other) {
+  public int compareTo(TKind other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    Kind typedOther = (Kind)other;
+    TKind typedOther = (TKind)other;
 
     lastComparison = Boolean.valueOf(isSetKind()).compareTo(typedOther.isSetKind());
     if (lastComparison != 0) {
@@ -263,7 +263,7 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("Kind(");
+    StringBuilder sb = new StringBuilder("TKind(");
     boolean first = true;
 
     sb.append("kind:");
@@ -298,15 +298,15 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
     }
   }
 
-  private static class KindStandardSchemeFactory implements SchemeFactory {
-    public KindStandardScheme getScheme() {
-      return new KindStandardScheme();
+  private static class TKindStandardSchemeFactory implements SchemeFactory {
+    public TKindStandardScheme getScheme() {
+      return new TKindStandardScheme();
     }
   }
 
-  private static class KindStandardScheme extends StandardScheme<Kind> {
+  private static class TKindStandardScheme extends StandardScheme<TKind> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, Kind struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TKind struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -335,7 +335,7 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, Kind struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TKind struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -350,16 +350,16 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
 
   }
 
-  private static class KindTupleSchemeFactory implements SchemeFactory {
-    public KindTupleScheme getScheme() {
-      return new KindTupleScheme();
+  private static class TKindTupleSchemeFactory implements SchemeFactory {
+    public TKindTupleScheme getScheme() {
+      return new TKindTupleScheme();
     }
   }
 
-  private static class KindTupleScheme extends TupleScheme<Kind> {
+  private static class TKindTupleScheme extends TupleScheme<TKind> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, Kind struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TKind struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetKind()) {
@@ -372,7 +372,7 @@ public class Kind implements org.apache.thrift.TBase<Kind, Kind._Fields>, java.i
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, Kind struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TKind struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {

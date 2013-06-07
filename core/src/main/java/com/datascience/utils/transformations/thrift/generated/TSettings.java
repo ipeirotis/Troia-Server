@@ -30,15 +30,15 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fields>, java.io.Serializable, Cloneable {
-  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Settings");
+public class TSettings implements org.apache.thrift.TBase<TSettings, TSettings._Fields>, java.io.Serializable, Cloneable {
+  private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("TSettings");
 
   private static final org.apache.thrift.protocol.TField SETTINGS_FIELD_DESC = new org.apache.thrift.protocol.TField("settings", org.apache.thrift.protocol.TType.STRING, (short)1);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
-    schemes.put(StandardScheme.class, new SettingsStandardSchemeFactory());
-    schemes.put(TupleScheme.class, new SettingsTupleSchemeFactory());
+    schemes.put(StandardScheme.class, new TSettingsStandardSchemeFactory());
+    schemes.put(TupleScheme.class, new TSettingsTupleSchemeFactory());
   }
 
   public String settings; // required
@@ -108,13 +108,13 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
     tmpMap.put(_Fields.SETTINGS, new org.apache.thrift.meta_data.FieldMetaData("settings", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
-    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Settings.class, metaDataMap);
+    org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(TSettings.class, metaDataMap);
   }
 
-  public Settings() {
+  public TSettings() {
   }
 
-  public Settings(
+  public TSettings(
     String settings)
   {
     this();
@@ -124,14 +124,14 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
   /**
    * Performs a deep copy on <i>other</i>.
    */
-  public Settings(Settings other) {
+  public TSettings(TSettings other) {
     if (other.isSetSettings()) {
       this.settings = other.settings;
     }
   }
 
-  public Settings deepCopy() {
-    return new Settings(this);
+  public TSettings deepCopy() {
+    return new TSettings(this);
   }
 
   @Override
@@ -143,7 +143,7 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
     return this.settings;
   }
 
-  public Settings setSettings(String settings) {
+  public TSettings setSettings(String settings) {
     this.settings = settings;
     return this;
   }
@@ -202,12 +202,12 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
   public boolean equals(Object that) {
     if (that == null)
       return false;
-    if (that instanceof Settings)
-      return this.equals((Settings)that);
+    if (that instanceof TSettings)
+      return this.equals((TSettings)that);
     return false;
   }
 
-  public boolean equals(Settings that) {
+  public boolean equals(TSettings that) {
     if (that == null)
       return false;
 
@@ -228,13 +228,13 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
     return 0;
   }
 
-  public int compareTo(Settings other) {
+  public int compareTo(TSettings other) {
     if (!getClass().equals(other.getClass())) {
       return getClass().getName().compareTo(other.getClass().getName());
     }
 
     int lastComparison = 0;
-    Settings typedOther = (Settings)other;
+    TSettings typedOther = (TSettings)other;
 
     lastComparison = Boolean.valueOf(isSetSettings()).compareTo(typedOther.isSetSettings());
     if (lastComparison != 0) {
@@ -263,7 +263,7 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("Settings(");
+    StringBuilder sb = new StringBuilder("TSettings(");
     boolean first = true;
 
     sb.append("settings:");
@@ -298,15 +298,15 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
     }
   }
 
-  private static class SettingsStandardSchemeFactory implements SchemeFactory {
-    public SettingsStandardScheme getScheme() {
-      return new SettingsStandardScheme();
+  private static class TSettingsStandardSchemeFactory implements SchemeFactory {
+    public TSettingsStandardScheme getScheme() {
+      return new TSettingsStandardScheme();
     }
   }
 
-  private static class SettingsStandardScheme extends StandardScheme<Settings> {
+  private static class TSettingsStandardScheme extends StandardScheme<TSettings> {
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot, Settings struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot, TSettings struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TField schemeField;
       iprot.readStructBegin();
       while (true)
@@ -335,7 +335,7 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
       struct.validate();
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot, Settings struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot, TSettings struct) throws org.apache.thrift.TException {
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
@@ -350,16 +350,16 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
 
   }
 
-  private static class SettingsTupleSchemeFactory implements SchemeFactory {
-    public SettingsTupleScheme getScheme() {
-      return new SettingsTupleScheme();
+  private static class TSettingsTupleSchemeFactory implements SchemeFactory {
+    public TSettingsTupleScheme getScheme() {
+      return new TSettingsTupleScheme();
     }
   }
 
-  private static class SettingsTupleScheme extends TupleScheme<Settings> {
+  private static class TSettingsTupleScheme extends TupleScheme<TSettings> {
 
     @Override
-    public void write(org.apache.thrift.protocol.TProtocol prot, Settings struct) throws org.apache.thrift.TException {
+    public void write(org.apache.thrift.protocol.TProtocol prot, TSettings struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
       if (struct.isSetSettings()) {
@@ -372,7 +372,7 @@ public class Settings implements org.apache.thrift.TBase<Settings, Settings._Fie
     }
 
     @Override
-    public void read(org.apache.thrift.protocol.TProtocol prot, Settings struct) throws org.apache.thrift.TException {
+    public void read(org.apache.thrift.protocol.TProtocol prot, TSettings struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(1);
       if (incoming.get(0)) {
