@@ -4,6 +4,7 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
+import com.datascience.core.nominal.IIncrementalNominalModel;
 import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
 import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public class IncrementalMV extends MajorityVote implements INewDataObserver {
 
-	private IncrementalNominalModel model;
+	private IIncrementalNominalModel model;
 
 	public IncrementalMV(){
 		super(
@@ -27,7 +28,7 @@ public class IncrementalMV extends MajorityVote implements INewDataObserver {
 	}
 
 	@Override
-	public IncrementalNominalModel getModel() {
+	public IIncrementalNominalModel getModel() {
 		return model;
 	}
 
@@ -38,7 +39,7 @@ public class IncrementalMV extends MajorityVote implements INewDataObserver {
 
 	@Override
 	public void setModel(Object o){
-		model = (IncrementalNominalModel) o;
+		model = (IIncrementalNominalModel) o;
 	}
 
 	@Override
