@@ -199,7 +199,13 @@ public class DataJSON {
 		@Override
 		public Collection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
 			Collection<T> ret = new ArrayList<T>();
-			for (JsonElement je : jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray()){
+			JsonArray jArray;
+			if (jsonElement.isJsonArray()) {
+				jArray = jsonElement.getAsJsonArray();
+			} else {
+				jArray = jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray();
+			}
+			for (JsonElement je : jArray){
 				ret.add((T)context.deserialize(je, this.type));
 			}
 			return ret;
