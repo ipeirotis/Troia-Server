@@ -113,7 +113,7 @@ public class CachedAndDBJobStorageTest {
 	@Test
 	public void testMixedStorages() throws Exception {
 		IJobStorage dbJobStorage = new DBJobStorage(new DBFullAdapter(new DBInMemoryBackend()), new GSONSerializer());
-		dbJobStorage.clear();
+//		dbJobStorage.clear();
 		dbJobStorage.initialize();
 
 		JobFactory jobFactory = new JobFactory(new GSONSerializer(), dbJobStorage);

@@ -1,11 +1,11 @@
 package com.datascience.serialization.json;
 
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.IncrementalNominalModel;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.gal.IncrementalDawidSkene;
@@ -91,8 +91,8 @@ public class NominalModelTest {
 			project.getData().addAssign(al);
 		Assert.assertFalse(project.getData().arePriorsFixed());
 		Assert.assertTrue(project.getAlgorithm().getModel() instanceof IncrementalNominalModel);
-		Assert.assertEquals(2, project.getAlgorithm().getModel().categoryPriors.size());
-		Assert.assertEquals(3, ((IncrementalNominalModel) project.getAlgorithm().getModel()).priorDenominator);
+		Assert.assertEquals(2, project.getAlgorithm().getModel().getCategoryPriors().size());
+		Assert.assertEquals(3, ((IncrementalNominalModel) project.getAlgorithm().getModel()).getPriorDenominator());
 		Assert.assertNull(project.getData().getCategoryPriors());
 	}
 
@@ -103,8 +103,8 @@ public class NominalModelTest {
 			project.getData().addAssign(al);
 		Assert.assertTrue(project.getData().arePriorsFixed());
 		Assert.assertTrue(project.getAlgorithm().getModel() instanceof IncrementalNominalModel);
-		Assert.assertEquals(0, project.getAlgorithm().getModel().categoryPriors.size());
-		Assert.assertEquals(0, ((IncrementalNominalModel) project.getAlgorithm().getModel()).priorDenominator);
+		Assert.assertEquals(0, project.getAlgorithm().getModel().getCategoryPriors().size());
+		Assert.assertEquals(0, ((IncrementalNominalModel) project.getAlgorithm().getModel()).getPriorDenominator());
 		for (String s : categories)
 			Assert.assertEquals(0.5, ((IncrementalDawidSkene)project.getAlgorithm()).prior(s), 1e-6);
 	}

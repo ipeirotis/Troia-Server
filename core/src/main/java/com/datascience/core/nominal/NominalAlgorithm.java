@@ -4,6 +4,7 @@ import com.datascience.core.base.Algorithm;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 
 /**
  * @Author: konrad
@@ -12,7 +13,7 @@ public abstract class NominalAlgorithm extends Algorithm<String, INominalData, D
 
 	protected IErrorRateCalculator errorRateCalculator;
 	protected ICategoryPriorCalculator priorCalculator;
-	protected NominalModel model;
+	protected INominalModel model;
 
 	public NominalAlgorithm(IErrorRateCalculator errorRateCalculator, ICategoryPriorCalculator priorCalculator){
 		this.errorRateCalculator = errorRateCalculator;
@@ -35,7 +36,13 @@ public abstract class NominalAlgorithm extends Algorithm<String, INominalData, D
 	}
 
 	@Override
-	public NominalModel getModel(){
+	public INominalModel getModel(){
 		return model;
 	}
+
+	@Override
+	public void setModel(Object o){
+		model = (INominalModel) o;
+	}
+
 }

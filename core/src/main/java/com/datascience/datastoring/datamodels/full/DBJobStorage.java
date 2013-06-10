@@ -1,20 +1,21 @@
 package com.datascience.datastoring.datamodels.full;
 
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.Collection;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
 import com.datascience.core.base.Project;
+import com.datascience.datastoring.datamodels.memory.*;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
 import com.datascience.datastoring.adapters.db.DBFullAdapter;
-import com.datascience.datastoring.datamodels.memory.InMemoryData;
-import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
-import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
 import com.datascience.datastoring.jobs.BaseJobStorage;
 import com.datascience.serialization.ISerializer;
 import com.datascience.datastoring.jobs.Job;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * @author konrad
@@ -92,6 +93,14 @@ public class DBJobStorage extends BaseJobStorage {
 		ResultsFactory.WorkerResultNominalFactory wrnf = new ResultsFactory.WorkerResultNominalFactory();
 		wrnf.setCategories(categories);
 		return new InMemoryResults<String, DatumResult, WorkerResult>(new ResultsFactory.DatumResultFactory(), wrnf);
+	}
+
+	@Override
+	public NominalModel getNominalModel(String id, Type t){
+		if (t.equals(new TypeToken<NominalModel>(){}.getType()))
+			return new NominalModel();
+		else
+			return new IncrementalNominalModel();
 	}
 
 	@Override

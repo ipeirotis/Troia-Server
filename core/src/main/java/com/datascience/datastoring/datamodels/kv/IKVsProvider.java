@@ -4,12 +4,14 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.PureNominalData;
+import com.datascience.core.nominal.IIncrementalNominalModel;
+import com.datascience.core.nominal.INominalModel;
 import com.datascience.core.results.*;
 import com.datascience.datastoring.IBackendAdapter;
 import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 import com.google.gson.JsonObject;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -25,6 +27,8 @@ public interface IKVsProvider extends IBackendAdapter{
 	ISafeKVStorage<Collection<LObject<String>>>getNominalObjectsKV(String id);
 	ISafeKVStorage<Collection<LObject<String>>>getNominalGoldObjectsKV(String id);
 	ISafeKVStorage<Collection<LObject<String>>>getNominalEvaluationObjectsKV(String id);
+	ISafeKVStorage<INominalModel>getNominalModel(String id);
+	ISafeKVStorage<IIncrementalNominalModel>getIncrementalNominalModel(String id);
 
 	ISafeKVStorage<Collection<AssignedLabel<ContValue>>>getContWorkerAssignsKV(String id);
 	ISafeKVStorage<Collection<AssignedLabel<ContValue>>>getContObjectAssignsKV(String id);

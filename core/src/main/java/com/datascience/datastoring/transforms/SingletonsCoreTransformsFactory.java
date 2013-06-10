@@ -4,11 +4,13 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.PureNominalData;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
 import com.google.gson.JsonObject;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -24,6 +26,8 @@ public class SingletonsCoreTransformsFactory<V> implements ICoreTransformsFactor
 
 	protected ITransformation<Collection<AssignedLabel<String>>, V> nominalAssignsTransformation;
 	protected ITransformation<Collection<LObject<String>>, V> nominalObjectsTransformation;
+	protected ITransformation<NominalModel, V> nominalModelTransformation;
+	protected ITransformation<IncrementalNominalModel, V> incrementalNominalModelVITransformation;
 
 	protected ITransformation<Collection<AssignedLabel<ContValue>>, V> contAssignsTransformation;
 	protected ITransformation<Collection<LObject<ContValue>>, V> contObjectsTransformation;
@@ -45,6 +49,8 @@ public class SingletonsCoreTransformsFactory<V> implements ICoreTransformsFactor
 		kindTransform = inner.createKindTransform();
 		nominalAssignsTransformation = inner.createNominalAssignsTransformation();
 		nominalObjectsTransformation = inner.createNominalObjectsTransformation();
+		nominalModelTransformation = inner.createNominalModelTransformation();
+		incrementalNominalModelVITransformation = inner.createIncrementalNominalModelTransformation();
 		contAssignsTransformation = inner.createContAssignsTransformation();
 		contObjectsTransformation = inner.createContObjectsTransformation();
 		workersTransformation = inner.createWorkersTransformation();
@@ -71,6 +77,16 @@ public class SingletonsCoreTransformsFactory<V> implements ICoreTransformsFactor
 	@Override
 	public ITransformation<Collection<LObject<String>>, V> createNominalObjectsTransformation() {
 		return nominalObjectsTransformation;
+	}
+
+	@Override
+	public ITransformation<NominalModel, V> createNominalModelTransformation() {
+		return nominalModelTransformation;
+	}
+
+	@Override
+	public ITransformation<IncrementalNominalModel, V> createIncrementalNominalModelTransformation() {
+		return incrementalNominalModelVITransformation;
 	}
 
 	@Override

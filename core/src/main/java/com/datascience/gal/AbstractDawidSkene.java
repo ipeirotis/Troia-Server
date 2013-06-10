@@ -15,11 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
+import com.datascience.core.nominal.INominalModel;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.ICategoryPriorCalculator;
 import com.datascience.core.stats.IErrorRateCalculator;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
 
@@ -42,11 +43,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	@Override
 	public Type getModelType() {
 		return new TypeToken<NominalModel>() {} .getType();
-	}
-
-	@Override
-	public void setModel(Object o){
-		model = (NominalModel) o;
 	}
 
 	public double getErrorRateForWorker(Worker worker, String from, String to){
@@ -100,7 +96,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 			}
 		}
 
-		model.categoryPriors = priors;
+		model.setCategoryPriors(priors);
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object) {

@@ -4,12 +4,14 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.PureNominalData;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.transformations.CastingTransform;
 import com.google.gson.JsonObject;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Object> {
@@ -32,6 +34,16 @@ public class CastingCoreTransformsFactory implements ICoreTransformsFactory<Obje
 	@Override
 	public ITransformation<Collection<LObject<String>>, Object> createNominalObjectsTransformation() {
 		return new CastingTransform<Collection<LObject<String>>>();
+	}
+
+	@Override
+	public ITransformation<NominalModel, Object> createNominalModelTransformation() {
+		return new CastingTransform<NominalModel>();
+	}
+
+	@Override
+	public ITransformation<IncrementalNominalModel, Object> createIncrementalNominalModelTransformation() {
+		return new CastingTransform<IncrementalNominalModel>();
 	}
 
 	@Override

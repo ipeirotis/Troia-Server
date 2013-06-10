@@ -2,11 +2,16 @@ package com.datascience.datastoring.datamodels.kv;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.INominalData;
+import com.datascience.core.nominal.INominalModel;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.core.results.*;
 import com.datascience.datastoring.adapters.kv.ISafeKVStorage;
 import com.datascience.datastoring.jobs.*;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -98,6 +103,14 @@ public class KVJobStorage extends BaseJobStorage{
 		return new KVResults(drf, wrnf,
 				kvsProvider.getDatumResultsKV(id, drf),
 				kvsProvider.getWorkerResultsKV(id, wrnf));
+	}
+
+	@Override
+	public INominalModel getNominalModel(String id, Type t){
+		if (t.equals(new TypeToken<NominalModel>(){}.getType()))
+			return new KVNominalModel(kvsProvider.getNominalModel(id));
+		else
+			return new KVIncrementalNominalModel(kvsProvider.getIncrementalNominalModel(id));
 	}
 
 	@Override

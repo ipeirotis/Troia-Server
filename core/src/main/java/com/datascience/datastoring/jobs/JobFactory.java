@@ -140,6 +140,7 @@ public class JobFactory {
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
+		na.setModel(jobStorage.getNominalModel(id, na.getModelType()));
 		np.initializeCategories(categories, categoryPriors, costMatrix);
 		this.<String>handleSchedulerLoading(jo, np);
 		np.setInitializationData(jo);

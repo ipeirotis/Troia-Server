@@ -2,12 +2,13 @@ package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
+import com.datascience.core.nominal.INominalModel;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.results.*;
-import com.datascience.datastoring.jobs.Job;
 import com.datascience.datastoring.jobs.JobFactory;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -45,6 +46,11 @@ public abstract class WrappedJobStorage implements IJobStorage {
 	@Override
 	public INominalData getNominalData(String id) {
 		return wrappedJobStorage.getNominalData(id);
+	}
+
+	@Override
+	public INominalModel getNominalModel(String id, Type t) {
+		return wrappedJobStorage.getNominalModel(id, t);
 	}
 
 	@Override

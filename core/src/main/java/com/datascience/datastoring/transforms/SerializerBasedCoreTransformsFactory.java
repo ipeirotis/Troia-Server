@@ -4,7 +4,8 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.PureNominalData;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.core.results.*;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.SerializationTransform;
@@ -12,6 +13,7 @@ import com.datascience.serialization.json.JSONUtils;
 import com.datascience.utils.ITransformation;
 import com.google.common.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
@@ -35,6 +37,16 @@ public class SerializerBasedCoreTransformsFactory extends SingletonsStringCoreTr
 	public ITransformation<Collection<LObject<String>>, String> createNominalObjectsTransformation() {
 		return new SerializationTransform<Collection<LObject<String>>>(serializer,
 				JSONUtils.objectsStringType);
+	}
+
+	@Override
+	public ITransformation<NominalModel, String> createNominalModelTransformation() {
+		return new SerializationTransform<NominalModel>(serializer, NominalModel.class);
+	}
+
+	@Override
+	public ITransformation<IncrementalNominalModel, String> createIncrementalNominalModelTransformation() {
+		return new SerializationTransform<IncrementalNominalModel>(serializer, IncrementalNominalModel.class);
 	}
 
 	@Override

@@ -4,11 +4,13 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.PureNominalData;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.core.results.*;
 import com.datascience.utils.ITransformation;
 import com.google.gson.JsonObject;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 public interface ICoreTransformsFactory<V> {
@@ -18,6 +20,8 @@ public interface ICoreTransformsFactory<V> {
 
 	ITransformation<Collection<AssignedLabel<String>>, V> createNominalAssignsTransformation();
 	ITransformation<Collection<LObject<String>>, V> createNominalObjectsTransformation();
+	ITransformation<NominalModel, V> createNominalModelTransformation();
+	ITransformation<IncrementalNominalModel, V> createIncrementalNominalModelTransformation();
 
 	ITransformation<Collection<AssignedLabel<ContValue>>, V> createContAssignsTransformation();
 	ITransformation<Collection<LObject<ContValue>>, V> createContObjectsTransformation();
