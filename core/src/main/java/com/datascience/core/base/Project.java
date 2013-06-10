@@ -74,6 +74,7 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 	public void setScheduler(IScheduler<T> scheduler){
 		this.scheduler = scheduler;
 		this.scheduler.registerOnProject(this);
+		this.scheduler.update();
 	}
 
 	public IScheduler<T> getScheduler(){
