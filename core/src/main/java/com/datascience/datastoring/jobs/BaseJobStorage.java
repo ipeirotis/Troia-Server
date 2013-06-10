@@ -5,7 +5,6 @@ import com.datascience.datastoring.IBackendAdapter;
 import com.datascience.serialization.ISerializer;
 import com.google.gson.JsonObject;
 
-
 /**
  * Could use <T extends backendAdapter> but using name backendAdapter would be missleading
  * It would be even better to turn it into wrapper but than we couldn't implement more (interface etc.)

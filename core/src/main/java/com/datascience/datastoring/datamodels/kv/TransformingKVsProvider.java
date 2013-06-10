@@ -6,7 +6,6 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.IIncrementalNominalModel;
 import com.datascience.core.nominal.INominalModel;
-import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.core.results.*;
 import com.datascience.datastoring.IBackend;
 import com.datascience.datastoring.adapters.kv.*;
@@ -15,7 +14,6 @@ import com.datascience.utils.ITransformation;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +21,7 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	static protected List<String> KVs = Lists.newArrayList(
 			"JobSettings", "JobTypes", "WorkerAssigns", "ObjectAssigns",
-			"GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "Model"
+			"Objects", "GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "Model"
 			);
 
 	protected IBackendKVFactory<T> kvFactory;

@@ -9,10 +9,7 @@ import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.datamodels.kv.KVJobStorage;
 import com.datascience.datastoring.datamodels.kv.TransformingKVsProvider;
 import com.datascience.datastoring.jobs.IJobStorage;
-import com.datascience.datastoring.transforms.CastingCoreTransformsFactory;
-import com.datascience.datastoring.transforms.SerializerBasedCoreTransformsFactory;
-import com.datascience.datastoring.transforms.SimpleStringCoreTransformsFactory;
-import com.datascience.datastoring.transforms.SingletonsCoreTransformsFactory;
+import com.datascience.datastoring.transforms.*;
 import com.datascience.serialization.ISerializer;
 
 import java.sql.SQLException;
@@ -26,6 +23,21 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class JobStorageFactory {
 
+	public static class TransformationFactory {
+		public static ICoreTransformsFactory<String> createStringTransformationFactory(String type, ISerializer serializer){
+			if (type.equals("JSON"))
+				return new SingletonsCoreTransformsFactory<String>(new SerializerBasedCoreTransformsFactory(serializer));
+			if (type.equals("SIMPLE"))
+				return new SingletonsCoreTransformsFactory<String>(new SimpleStringCoreTransformsFactory());
+			//TODO: avro, thirft
+			return null;
+		}
+
+		public static ICoreTransformsFactory<Object> createObjectTransformationFactory(){
+			return new SingletonsCoreTransformsFactory<Object>(new CastingCoreTransformsFactory());
+		}
+	}
+
 	public static IJobStorage create(String fullType, Properties connectionProperties, Properties properties, ISerializer serializer) throws SQLException, ClassNotFoundException{
 		String[] storageParams = fullType.split("_");
 		checkArgument(storageParams.length >= 2, "Unknown storage model: " + fullType);
@@ -33,23 +45,15 @@ public class JobStorageFactory {
 		if (type.equals("MEMORY_FULL")){
 			return new MemoryJobStorage();
 		}
-		if (fullType.equals("MEMORY_KV")){
-			return new KVJobStorage(new TransformingKVsProvider<Object>(
-					new MemoryKVFactory<Object>(), new SingletonsCoreTransformsFactory<Object>(new CastingCoreTransformsFactory())
-			));
-			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
-		}
-		if (fullType.equals("MEMORY_KV_JSON")){
-			return new KVJobStorage(new TransformingKVsProvider<String>(
-					new MemoryKVFactory<String>(), new SingletonsCoreTransformsFactory<String>(new SerializerBasedCoreTransformsFactory(serializer))
-			));
-			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
-		}
-		if (fullType.equals("MEMORY_KV_SIMPLE")){
-			return new KVJobStorage(new TransformingKVsProvider<String>(
-					new MemoryKVFactory<String>(), new SingletonsCoreTransformsFactory<String>(new SimpleStringCoreTransformsFactory())
-			));
-			// TODO FIXME XXX separate factory for KVs that gives IKVsProvider
+		if (type.equals("MEMORY_KV")){
+			if (fullType.equals(type))
+				return new KVJobStorage(new TransformingKVsProvider<Object>(
+						new MemoryKVFactory<Object>(), TransformationFactory.createObjectTransformationFactory()
+				));
+			else
+				return new KVJobStorage(new TransformingKVsProvider<String>(
+						new MemoryKVFactory<String>(), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
+				));
 		}
 		if (type.equals("DB_FULL")){
 			return new DBJobStorage(new DBFullAdapter(new DBBackend(connectionProperties, properties, true)), serializer);
@@ -57,12 +61,8 @@ public class JobStorageFactory {
 		if (type.equals("DB_KV")){
 			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
 			return new KVJobStorage(new TransformingKVsProvider<String>(
-					new DBKVsFactory<String>(connectionProperties, properties, true), new SingletonsCoreTransformsFactory<String>(new SimpleStringCoreTransformsFactory())
+					new DBKVsFactory<String>(connectionProperties, properties, true), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
 			));
-//			return new DBKVsFactory(
-//				new DBKVHelper(connectionProperties, properties, storageParams.length == 4 && storageParams[2].toUpperCase().equals("MEMCACHE")),
-//				serializer,
-//				storageParams[storageParams.length-1]);
 		}
 		throw new IllegalArgumentException("Unknown storage model: " + fullType);
 	}

@@ -5,6 +5,8 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.datastoring.transforms.ICoreTransformsFactory;
 import com.datascience.utils.ITransformation;
 import com.datascience.utils.transformations.ComposingTransform;
@@ -43,6 +45,18 @@ public class ThriftCoreTransformFactory implements ICoreTransformsFactory<InputS
 	@Override
 	public ITransformation<Collection<LObject<String>>, InputStream> createNominalObjectsTransformation() {
 		return compose(null, new TLObjects());
+	}
+
+	@Override
+	public ITransformation<NominalModel, InputStream> createNominalModelTransformation() {
+		//TODO!!!
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
+	}
+
+	@Override
+	public ITransformation<IncrementalNominalModel, InputStream> createIncrementalNominalModelTransformation() {
+		//TODO!!!
+		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
 	@Override
