@@ -13,13 +13,15 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * User: artur
  * Date: 5/16/13
  */
 public abstract class BaseTransformationTest {
 
-	protected abstract ICoreTransformsFactory<String> getCreator();
+	protected abstract ICoreTransformsFactory getCreator();
 
 	private abstract static class LabelCreator<T>{
 		abstract T create(int k);
@@ -101,10 +103,7 @@ public abstract class BaseTransformationTest {
 				for (LObject<T> obj : objects){
 					LObject<T> obj2 = transformedObjects.get(i);
 					Assert.assertEquals(obj, obj2);
-					if (gold)
-						Assert.assertEquals(obj.getGoldLabel(), obj2.getGoldLabel());
-					if (eval)
-						Assert.assertEquals(obj.getEvaluationLabel(), obj2.getEvaluationLabel());
+					assertTrue(obj.deepEquals(obj2));
 					i++;
 				}
 			}
