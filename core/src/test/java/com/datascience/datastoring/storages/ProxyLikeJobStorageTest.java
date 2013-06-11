@@ -1,5 +1,6 @@
 package com.datascience.datastoring.storages;
 
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.Job;
 import org.junit.Test;
@@ -89,8 +90,8 @@ public abstract class ProxyLikeJobStorageTest {
 	}
 
 	@Test
-	public void testStop() throws Exception {
-		proxy.stop();
+	public void testClear() throws Exception {
+		proxy.clear();
 		assertEmpty(storage, 0, jobs.length);
 	}
 }

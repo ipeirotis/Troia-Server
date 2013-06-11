@@ -17,7 +17,7 @@ public class ProbabilityDistributions {
 		if (data.arePriorsFixed())
 			return data.getCategoryPriors();
 		else
-			return alg.getModel().categoryPriors;
+			return alg.getModel().getCategoryPriors();
 	}
 
 	public static Map<String, Double> generateMV_PD(Collection<String> categories,

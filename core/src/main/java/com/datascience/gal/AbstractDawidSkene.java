@@ -15,12 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
+import com.datascience.core.nominal.INominalModel;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.ICategoryPriorCalculator;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
+import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.utils.ProbabilityDistributions;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,12 +46,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return new TypeToken<NominalModel>() {} .getType();
 	}
 
-	@Override
-	public void setModel(Object o){
-		model = (NominalModel) o;
-	}
-
-	public double getErrorRateForWorker(Worker<String> worker, String from, String to){
+	public double getErrorRateForWorker(Worker worker, String from, String to){
 		WorkerResult wr = results.getOrCreateWorkerResult(worker);
 		results.addWorkerResult(worker, wr);
 		return wr.getErrorRate(errorRateCalculator, from, to);
@@ -103,14 +99,14 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 			}
 		}
 
-		model.categoryPriors = priors;
+		model.setCategoryPriors(priors);
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object) {
 		return getObjectClassProbabilities(object, null);
 	}
 
-	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
+	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker workerToIgnore) {
 		Map<String, Double> result = new HashMap<String, Double>();
 
 		// If this is a gold example, just put the probability estimate to be
@@ -152,7 +148,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 			// We go through all the labels assigned to the d object
 			for (AssignedLabel<String> al : data.getAssignsForObject(object)) {
-				Worker<String> w = al.getWorker();
+				Worker w = al.getWorker();
 
 				// If we are trying to estimate the category probability
 				// distribution

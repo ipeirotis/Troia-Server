@@ -115,9 +115,20 @@ public class CachedJobStorage extends WrappedJobStorage{
 	}
 
 	@Override
+	public void clear() throws Exception {
+		cache.invalidateAll();
+		cache.cleanUp();
+		wrappedJobStorage.clear();
+	}
+
+	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
 		stop();
+	}
+
+	@Override
+	public void flush(Job job){
 	}
 	
 	@Override

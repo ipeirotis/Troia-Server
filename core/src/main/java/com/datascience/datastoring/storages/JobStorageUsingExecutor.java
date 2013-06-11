@@ -4,7 +4,7 @@ import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.core.base.Project;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 
 /**
  *
@@ -13,14 +13,14 @@ import com.datascience.datastoring.jobs.JobsManager;
 public class JobStorageUsingExecutor extends WrappedJobStorage{
 
 	protected ProjectCommandExecutor executor;
-	protected JobsManager jobsManager;
+	protected JobsLocksManager jobsLocksManager;
 	
 	public JobStorageUsingExecutor(IJobStorage internalStorage,
 			ProjectCommandExecutor executor,
-			JobsManager jobsManager){
+			JobsLocksManager jobsLocksManager){
 		super(internalStorage);
 		this.executor = executor;
-		this.jobsManager = jobsManager;
+		this.jobsLocksManager = jobsLocksManager;
 	}
 	
 	@Override
@@ -31,12 +31,12 @@ public class JobStorageUsingExecutor extends WrappedJobStorage{
 
 	@Override
 	public void add(Job job) throws Exception {
-		executor.add(new JobStorageCommands.Adder(wrappedJobStorage, jobsManager, job));
+		executor.add(new JobStorageCommands.Adder(wrappedJobStorage, jobsLocksManager, job));
 	}
 
 	@Override
 	public void remove(Job job) throws Exception {
-		executor.add(new JobStorageCommands.Remover(wrappedJobStorage, jobsManager, job));
+		executor.add(new JobStorageCommands.Remover(wrappedJobStorage, jobsLocksManager, job));
 	}
 
 	@Override
@@ -48,6 +48,10 @@ public class JobStorageUsingExecutor extends WrappedJobStorage{
 	public void stop() throws Exception {
 		executor.stop();
 		wrappedJobStorage.stop();
+	}
+
+	@Override
+	public void flush(Job job){
 	}
 
 	@Override

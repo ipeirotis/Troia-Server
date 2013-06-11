@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class GenericSerializationTest {
 			data.addObject(lObject);
 		}
 		for (int i = 0; i < 4; i++) {
-			Worker<Double> worker = new Worker<Double>("worker" + i);
+			Worker worker = new Worker("worker" + i);
 			for (LObject<Double> lObject : lObjects) {
 				AssignedLabel<Double> assign = new AssignedLabel<Double>(worker, lObject, labels.get(random.nextInt(labels.size())));
 				data.addAssign(assign);

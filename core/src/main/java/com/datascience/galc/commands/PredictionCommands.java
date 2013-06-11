@@ -57,7 +57,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerContQuality> result = new LinkedList<WorkerContQuality>();
-			for (Map.Entry<Worker<ContValue>, WorkerContResults> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
+			for (Map.Entry<Worker, WorkerContResults> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
 				result.add(new WorkerContQuality(e.getKey().getName(), e.getValue()));
 			}
 			setResult(result);

@@ -40,7 +40,7 @@ public class SchedulerNewDataNotificator<T> implements ISchedulerNotificator<T>,
 	}
 
 	@Override
-	public void newWorker(Worker<T> worker) {
+	public void newWorker(Worker worker) {
 		// We ignore it
 	}
 

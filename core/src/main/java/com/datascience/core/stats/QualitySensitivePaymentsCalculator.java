@@ -21,7 +21,7 @@ public class QualitySensitivePaymentsCalculator {
 	NominalProject project;
 	WorkerResult workerResult;
 
-	public QualitySensitivePaymentsCalculator(NominalProject project, Worker<String> worker){
+	public QualitySensitivePaymentsCalculator(NominalProject project, Worker worker){
 		this.project = project;
 		categories = this.project.getData().getCategories();
 		workerResult = this.project.getResults().getWorkerResult(worker);

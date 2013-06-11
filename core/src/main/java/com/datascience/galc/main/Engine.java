@@ -74,7 +74,7 @@ class ReportGenerator {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("Name\tLabels\tEstMean\tEstStDev\tEstCorrelation\tTrueMean\tTrueStDev\tTrueCorrelation\n");
-		for (Worker<ContValue> w : ip.getData().getWorkers()){
+		for (Worker w : ip.getData().getWorkers()){
 			WorkerContResults wr = ip.getResults().getWorkerResult(w);
 			sb.append(w.getName() + "\t" + ip.getData().getWorkerAssigns(w).size() + "\t" + wr.getEst_mu() + "\t" + wr.getEst_sigma() + "\t" + wr.getEst_rho() + "\t" + wr.getTrueMu() + "\t" + wr.getTrueSigma() + "\t" + wr.getTrueRho());
 			sb.append("\n");

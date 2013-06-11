@@ -3,8 +3,8 @@ package test.java.integration.tests.galc;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.datastoring.memory.InMemoryData;
-import com.datascience.datastoring.memory.InMemoryResults;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
@@ -118,12 +118,12 @@ public class ContinuousBaseTestScenario {
     @Test
     public void test_Workers_Labels() {
         Map<String, HashMap<String, Object>> expWorkersResults = workersResultsParser.getWorkersResults();
-        Map<Worker<ContValue>, WorkerContResults> workersResults = project.getResults().getWorkerResults(project.getData().getWorkers());
+        Map<Worker, WorkerContResults> workersResults = project.getResults().getWorkerResults(project.getData().getWorkers());
         assertEquals(expWorkersResults.size(), workersResults.size());
-        Iterator<Entry<Worker<ContValue>, WorkerContResults>> entries = workersResults.entrySet().iterator();
+        Iterator<Entry<Worker, WorkerContResults>> entries = workersResults.entrySet().iterator();
         while (entries.hasNext()) {
-            Entry<Worker<ContValue>, WorkerContResults> entry = entries.next();
-            Worker<ContValue> worker = entry.getKey();
+            Entry<Worker, WorkerContResults> entry = entries.next();
+            Worker worker = entry.getKey();
             String workerName = worker.getName();
             int expectedNoAssigns = Integer.parseInt(expWorkersResults.get(workerName).get("labels").toString());
             int actualNoAssigns = project.getData().getWorkerAssigns(worker).size();
@@ -134,12 +134,12 @@ public class ContinuousBaseTestScenario {
     @Test
     public void test_Workers_EstimatedValues() {
         Map<String, HashMap<String, Object>> expWorkersResults = workersResultsParser.getWorkersResults();
-        Map<Worker<ContValue>, WorkerContResults> workersResults = project.getResults().getWorkerResults(project.getData().getWorkers());
+        Map<Worker, WorkerContResults> workersResults = project.getResults().getWorkerResults(project.getData().getWorkers());
         assertEquals(expWorkersResults.size(), workersResults.size());
-        Iterator<Entry<Worker<ContValue>, WorkerContResults>> entries = workersResults.entrySet().iterator();
+        Iterator<Entry<Worker, WorkerContResults>> entries = workersResults.entrySet().iterator();
         while (entries.hasNext()) {
-            Entry<Worker<ContValue>, WorkerContResults> entry = entries.next();
-            Worker<ContValue> worker = entry.getKey();
+            Entry<Worker, WorkerContResults> entry = entries.next();
+            Worker worker = entry.getKey();
             String workerName = worker.getName();
             WorkerContResults workerContResults = entry.getValue();
             Double expectedEstMu = (Double) expWorkersResults.get(workerName).get("est_mu");

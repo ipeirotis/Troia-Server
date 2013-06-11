@@ -1,14 +1,17 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.datastoring.memory.InMemoryData;
-import com.datascience.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.adapters.db.DBFullAdapter;
+import com.datascience.datastoring.backends.db.DBInMemoryBackend;
+import com.datascience.datastoring.datamodels.full.DBJobStorage;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.Job;
 import com.datascience.datastoring.jobs.JobFactory;
@@ -16,8 +19,6 @@ import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.results.IResults;
 import com.datascience.serialization.json.GSONSerializer;
-import com.datascience.utils.DBHelper;
-import com.datascience.utils.DBUtils;
 import com.google.gson.JsonObject;
 
 import java.util.*;
@@ -29,13 +30,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- *
- * @author dana
- */
+*
+* @author dana
+*/
 public class CachedAndDBJobStorageTest {
 
 	private INominalData initializeNominalData() {
-		ArrayList<Worker<String>> workers;
+		ArrayList<Worker> workers;
 		ArrayList<LObject<String>> objects;
 		ArrayList<LObject<String>> goldObjects;
 		ArrayList<AssignedLabel<String>> assigns;
@@ -50,11 +51,11 @@ public class CachedAndDBJobStorageTest {
 		categories.add("cat1");
 		categories.add("cat2");
 
-		nominalData.setCategories(categories);
+		nominalData.initialize(categories, null, null);
 
-		workers = new ArrayList<Worker<String>>();
+		workers = new ArrayList<Worker>();
 		for (i = 0; i < nWorkers; i++) {
-			workers.add(new Worker<String>("worker" + i));
+			workers.add(new Worker("worker" + i));
 		}
 
 		objects = new ArrayList<LObject<String>>();
@@ -111,9 +112,9 @@ public class CachedAndDBJobStorageTest {
 
 	@Test
 	public void testMixedStorages() throws Exception {
-		DBHelper dbHelper = new DBUtils().getDBHelper();
-		IJobStorage dbJobStorage = new DBJobStorage(dbHelper, new GSONSerializer());
-		dbJobStorage.clearAndInitialize();
+		IJobStorage dbJobStorage = new DBJobStorage(new DBFullAdapter(new DBInMemoryBackend()), new GSONSerializer());
+//		dbJobStorage.clear();
+		dbJobStorage.initialize();
 
 		JobFactory jobFactory = new JobFactory(new GSONSerializer(), dbJobStorage);
 		JsonObject jo = new JsonObject();
@@ -128,7 +129,7 @@ public class CachedAndDBJobStorageTest {
 		String job1Kind = job1.getProject().getKind();
 		IResults job1Results = job1.getProject().getResults();
                 Assert.assertFalse(job1Results == null);
-                
+
 		Job job2 = jobFactory.createNominalJob(jo, "job2");
 		job2.getProject().setData(nominalData);
 		job2.getProject().getAlgorithm().compute();

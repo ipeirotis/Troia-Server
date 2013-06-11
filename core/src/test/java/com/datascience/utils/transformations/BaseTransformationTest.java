@@ -5,6 +5,7 @@ import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.results.*;
+import com.datascience.datastoring.transforms.ICoreTransformsFactory;
 import com.datascience.utils.ITransformation;
 import com.google.common.collect.Lists;
 import org.junit.Assert;
@@ -12,13 +13,15 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * User: artur
  * Date: 5/16/13
  */
 public abstract class BaseTransformationTest {
 
-	protected abstract TransformationsFactory.ITransformationCreator getCreator();
+	protected abstract ICoreTransformsFactory getCreator();
 
 	private abstract static class LabelCreator<T>{
 		abstract T create(int k);
@@ -40,7 +43,7 @@ public abstract class BaseTransformationTest {
 	private <T> Collection<AssignedLabel<T>> createAssignedLabels(int k, LabelCreator<T> labelCreator){
 		Collection<AssignedLabel<T>> labels = new LinkedList<AssignedLabel<T>>();
 		for (int i = 0; i< k; i++){
-			labels.add(new AssignedLabel<T>(new Worker<T>("worker"+i), new LObject<T>("object"+i), labelCreator.create(i)));
+			labels.add(new AssignedLabel<T>(new Worker("worker"+i), new LObject<T>("object"+i), labelCreator.create(i)));
 		}
 		return labels;
 	}
@@ -82,7 +85,7 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testStringAssignsTransformation(){
-		testAssignsTransformation(new StringLabelCreator(), getCreator().createStringAssignsTransformation());
+		testAssignsTransformation(new StringLabelCreator(), getCreator().createNominalAssignsTransformation());
 	}
 
 	@Test
@@ -100,10 +103,7 @@ public abstract class BaseTransformationTest {
 				for (LObject<T> obj : objects){
 					LObject<T> obj2 = transformedObjects.get(i);
 					Assert.assertEquals(obj, obj2);
-					if (gold)
-						Assert.assertEquals(obj.getGoldLabel(), obj2.getGoldLabel());
-					if (eval)
-						Assert.assertEquals(obj.getEvaluationLabel(), obj2.getEvaluationLabel());
+					assertTrue(obj.deepEquals(obj2));
 					i++;
 				}
 			}
@@ -112,7 +112,7 @@ public abstract class BaseTransformationTest {
 
 	@Test
 	public void testStringObjectsTransformation(){
-		testObjectsTransformation(new StringLabelCreator(), getCreator().createStringObjectsTransformation());
+		testObjectsTransformation(new StringLabelCreator(), getCreator().createNominalObjectsTransformation());
 	}
 
 	@Test

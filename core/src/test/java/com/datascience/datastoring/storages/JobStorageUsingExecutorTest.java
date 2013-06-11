@@ -2,7 +2,7 @@ package com.datascience.datastoring.storages;
 
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 
 /**
  *
@@ -16,7 +16,7 @@ public class JobStorageUsingExecutorTest extends ProxyLikeJobStorageTest{
 	
 	@Override
 	public IJobStorage getProxy(IJobStorage jobStorage){
-		return new JobStorageUsingExecutor(jobStorage, new ProjectCommandExecutor(1), new JobsManager());
+		return new JobStorageUsingExecutor(jobStorage, new ProjectCommandExecutor(1), new JobsLocksManager());
 	}
 	
 }

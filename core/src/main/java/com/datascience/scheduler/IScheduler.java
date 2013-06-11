@@ -14,10 +14,10 @@ public interface IScheduler<T> {
 	void update(LObject<T> object);
 
 	LObject<T> nextObject();
-	LObject<T> nextObject(Worker<T> worker);
+	LObject<T> nextObject(Worker worker);
 
 	void setUpQueue(IPriorityCalculator<T> calculator);
-	void setSchedulerForWorker(ISchedulerForWorker<T> schedulerForWorker);
+	void setSchedulerForWorker(ISchedulerForWorker schedulerForWorker);
 	<V, W> void registerOnProject(Project<T, ?, V, W> project);
 	IData<T> getData();
 	IPriorityCalculator<T> getCalculator();

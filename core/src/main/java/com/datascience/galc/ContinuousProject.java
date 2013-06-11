@@ -12,6 +12,8 @@ import com.datascience.core.results.WorkerContResults;
  */
 public class ContinuousProject extends Project<ContValue, IData<ContValue>, DatumContResults, WorkerContResults> {
 
+	public static final String kind = "CONTINUOUS";
+
 	public ContinuousProject(ContinuousIpeirotis ci,
 							 IData<ContValue> data,
 							 IResults<ContValue, DatumContResults, WorkerContResults> results){
@@ -22,6 +24,6 @@ public class ContinuousProject extends Project<ContValue, IData<ContValue>, Datu
 
 	@Override
 	public String getKind(){
-		return "CONTINUOUS";
+		return kind;
 	}
 }

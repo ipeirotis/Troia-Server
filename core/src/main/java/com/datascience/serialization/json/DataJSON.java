@@ -3,13 +3,14 @@ package com.datascience.serialization.json;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import com.datascience.core.base.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
-import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
@@ -34,7 +35,7 @@ public class DataJSON {
 			for (JsonElement je: jo.get("assigns").getAsJsonArray()){
 				ShallowAssign<T> sassign = jsonDeserializationContext.deserialize(je, ShallowAssign.class);
 
-				Worker<T> worker = data.getOrCreateWorker(sassign.worker);
+				Worker worker = data.getOrCreateWorker(sassign.worker);
 				LObject<T> object = data.getObject(sassign.object);
 				data.addAssign(new AssignedLabel<T>(worker, object, sassign.label));
 			}
@@ -48,11 +49,12 @@ public class DataJSON {
 		@Override
 		public InMemoryNominalData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
 			Deserializer<String> deserializer = new Deserializer<String>();
-			InMemoryNominalData ret = (InMemoryNominalData) deserializer.deserialize(element, type, context);
-			ret.setPriorFixed(element.getAsJsonObject().get("fixedPriors").getAsBoolean());
-			ret.setCategories((Set<String>) context.deserialize(element.getAsJsonObject().get("categories"), JSONUtils.stringSetType));
-			ret.setCategoryPriors((Collection<CategoryValue>) context.deserialize(element.getAsJsonObject().get("categoryPriors"), JSONUtils.categoryValuesCollectionType));
-			ret.setCostMatrix((CostMatrix<String>) context.deserialize(element.getAsJsonObject().get("costMatrix"), CostMatrix.class));
+			InMemoryNominalData ret = new InMemoryNominalData(deserializer.deserialize(element, type, context));
+			JsonObject jo = element.getAsJsonObject();
+			ret.initialize(
+					(Collection<String>) context.deserialize(jo.get("categories"), JSONUtils.stringSetType),
+					jo.has("categoryPriors") ? (Collection<CategoryValue>) context.deserialize(jo.get("categoryPriors"), JSONUtils.categoryValuesCollectionType) : null,
+					jo.has("costMatrix") ? (CostMatrix<String>) context.deserialize(jo.get("costMatrix"), CostMatrix.class) : null);
 			return ret;
 		}
 	}
@@ -75,7 +77,13 @@ public class DataJSON {
 			JsonObject ret = serializer.serialize(data, type, jsonSerializationContext).getAsJsonObject();
 			ret.addProperty("fixedPriors", data.arePriorsFixed());
 			ret.add("categories", jsonSerializationContext.serialize(data.getCategories()));
-			ret.add("categoryPriors", jsonSerializationContext.serialize(data.getCategoryPriors()));
+			if (data.getCategoryPriors() != null){
+				JsonArray categoryPriors = new JsonArray();
+				for (Map.Entry<String, Double> e: data.getCategoryPriors().entrySet()){
+					categoryPriors.add(jsonSerializationContext.serialize(new CategoryValue(e.getKey(), e.getValue())));
+				}
+				ret.add("categoryPriors", categoryPriors);
+			}
 			ret.add("costMatrix", jsonSerializationContext.serialize(data.getCostMatrix()));
 			return ret;
 		}
@@ -102,23 +110,23 @@ public class DataJSON {
 		public AssignedLabel<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
 			ShallowAssign<T> sassign = context.deserialize(element, this.type);
 			return new AssignedLabel<T>(
-					new Worker<T>(sassign.worker),
+					new Worker(sassign.worker),
 					new LObject<T>(sassign.object),
 					sassign.label);
 		}
 	}
 	
-	public static class WorkerSerializer<T> implements JsonSerializer<Worker<T>> {
+	public static class WorkerSerializer implements JsonSerializer<Worker> {
 		@Override
-		public JsonElement serialize(Worker<T> w, Type type, JsonSerializationContext ctx) {
+		public JsonElement serialize(Worker w, Type type, JsonSerializationContext ctx) {
 			return new JsonPrimitive(w.getName());
 		}
 	}
 
-	public static class WorkerDeserializer<T> implements JsonDeserializer<Worker<T>> {
+	public static class WorkerDeserializer<T> implements JsonDeserializer<Worker> {
 		@Override
-		public Worker<T> deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-			return new Worker<T>(element.getAsString());
+		public Worker deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
+			return new Worker(element.getAsString());
 		}
 	}
 
@@ -171,6 +179,13 @@ public class DataJSON {
 		}
 	}
 
+	public static class JsonObjectDeserializer implements JsonDeserializer<JsonObject> {
+		@Override
+		public JsonObject deserialize(JsonElement jo, Type type, JsonDeserializationContext ctx) {
+			return jo.getAsJsonObject();
+		}
+	}
+
 	public static class GenericCollectionDeserializer<T> implements JsonDeserializer<Collection<T>> {
 
 		private String collectionName;
@@ -184,7 +199,13 @@ public class DataJSON {
 		@Override
 		public Collection<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
 			Collection<T> ret = new ArrayList<T>();
-			for (JsonElement je : jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray()){
+			JsonArray jArray;
+			if (jsonElement.isJsonArray()) {
+				jArray = jsonElement.getAsJsonArray();
+			} else {
+				jArray = jsonElement.getAsJsonObject().get(collectionName).getAsJsonArray();
+			}
+			for (JsonElement je : jArray){
 				ret.add((T)context.deserialize(je, this.type));
 			}
 			return ret;

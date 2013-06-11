@@ -10,10 +10,10 @@ import com.google.common.base.Objects;
 public class AssignedLabel<T> {
 
 	protected LObject<T> lobject;
-	protected Worker<T> worker;
+	protected Worker worker;
 	protected T label;
 	
-	public AssignedLabel(Worker<T> worker, LObject<T> object, T label){
+	public AssignedLabel(Worker worker, LObject<T> object, T label){
 		this.label = label;
 		this.lobject = object;
 		this.worker = worker;
@@ -35,11 +35,11 @@ public class AssignedLabel<T> {
 		this.label = label;
 	}
 
-	public Worker<T> getWorker() {
+	public Worker getWorker() {
 		return worker;
 	}
 
-	public void setWorker(Worker<T> worker) {
+	public void setWorker(Worker worker) {
 		this.worker = worker;
 	}
 

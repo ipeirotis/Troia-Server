@@ -3,9 +3,10 @@ package com.datascience.datastoring.jobs;
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.IData;
-import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.core.base.Project;
-import com.datascience.datastoring.memory.InMemoryResults;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalAlgorithm;
@@ -22,6 +23,7 @@ import com.datascience.serialization.json.JSONUtils;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ import static com.datascience.serialization.json.JSONUtils.t;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
+ * TODO XXX FIXME make separate factory for algorithms and use it here
  * @author Konrad Kurdej
  */
 public class JobFactory {
@@ -49,10 +52,11 @@ public class JobFactory {
 
 	protected interface JobCreator{
 		Job create(JsonObject jo, String id);
+//		Job create(String initializationData, String jsonData, String jsonResults, String model, String id);
 	}
 
-	final static Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
-	final static Map<String, JobCreator> JOB_FACTORY = new HashMap();
+	final Map<String, AlgorithmCreator> ALG_FACTORY = new HashMap();
+	final Map<String, JobCreator> JOB_FACTORY = new HashMap();
 	{
 
 		AlgorithmCreator bds = new AlgorithmCreator() {
@@ -136,6 +140,7 @@ public class JobFactory {
 		if (na instanceof INewDataObserver) {
 			na.getData().addNewUpdatableAlgorithm((INewDataObserver) na);
 		}
+		na.setModel(jobStorage.getNominalModel(id, na.getModelType()));
 		np.initializeCategories(categories, categoryPriors, costMatrix);
 		this.<String>handleSchedulerLoading(jo, np);
 		np.setInitializationData(jo);
@@ -176,10 +181,19 @@ public class JobFactory {
 											 String jsonResults, String model, String id){
 		JsonObject jo = new JsonParser().parse(initializationData).getAsJsonObject();
 		Job<T> job = create(type, jo, id);
-		job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
-		job.getProject().setResults(serializer.<InMemoryResults>parse(jsonResults, InMemoryResults.class));
-		handleSchedulerLoading(jo, job.getProject());
+		//TODO: add new metod to JobCreator
+		if (type.equals(NominalProject.kind)) {
+			InMemoryNominalData data = serializer.parse(jsonData, InMemoryNominalData.class);
+			job.getProject().setResults(serializer.<InMemoryResults<String, DatumResult, WorkerResult>>parse(jsonResults, new TypeToken<InMemoryResults<String, DatumResult, WorkerResult>>() {}.getType()));
+			job.getProject().setData(data);
+			((ResultsFactory.WorkerResultNominalFactory)((AbstractResults<String, DatumResult, WorkerResult>)job.getProject().getResults()).getWorkerResultsCreator()).setCategories(data.getCategories());
+		}
+		else {
+			job.getProject().setResults(serializer.<InMemoryResults<ContValue, DatumContResults, WorkerContResults>>parse(jsonResults, new TypeToken<InMemoryResults<ContValue, DatumContResults, WorkerContResults>>() {}.getType()));
+			job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
+		}
 		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));
+		handleSchedulerLoading(jo, job.getProject());
 		return job;
 	}
 

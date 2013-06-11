@@ -9,7 +9,7 @@ import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class BatchDawidSkeneTest {
 
 	@Test
 	public final void testAddLabelWithWrongCategory() {
-		Worker<String> w = project.getData().getOrCreateWorker("worker");
+		Worker w = project.getData().getOrCreateWorker("worker");
 		LObject<String> obj = project.getData().getOrCreateObject("object1");
 		project.getData().addAssign(new AssignedLabel<String>(w, obj, "category1"));
 		try {

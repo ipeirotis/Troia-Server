@@ -7,6 +7,7 @@ import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: konrad
@@ -33,7 +34,7 @@ public class BatchMV extends MajorityVote {
 	}
 
 	public void computeForWorkers(){
-		for (Worker<String> worker: getData().getWorkers()){
+		for (Worker worker: getData().getWorkers()){
 			computeWorkersConfusionMatrix(worker);
 		}
 	}
@@ -45,8 +46,10 @@ public class BatchMV extends MajorityVote {
 				categoryPriors.put(c, 0.);
 			for (AssignedLabel<String> al : data.getAssigns())
 				categoryPriors.put(al.getLabel(), categoryPriors.get(al.getLabel()) + 1);
+			Map<String, Double> priors = model.getCategoryPriors();
 			for (String c : data.getCategories())
-				model.categoryPriors.put(c, categoryPriors.get(c) / data.getAssigns().size());
+				priors.put(c, categoryPriors.get(c) / data.getAssigns().size());
+			model.setCategoryPriors(priors);
 		}
 	}
 }

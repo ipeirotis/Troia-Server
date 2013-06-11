@@ -1,0 +1,180 @@
+package com.datascience.datastoring.datamodels.memory;
+
+import com.datascience.core.algorithms.INewDataObserver;
+import com.datascience.core.base.AbstractData;
+import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
+import com.datascience.core.base.Worker;
+
+import java.util.*;
+
+/**
+ * Observable - notifies updatable algorithms about new data
+ * Also it is factory for new objects and workers
+ * @Author: konrad
+ */
+public class InMemoryData<T> extends AbstractData<T> {
+
+	protected Set<AssignedLabel<T>> assigns;
+	protected Set<Worker> workers;
+	protected Map<String, Worker> mapWorkers;
+	protected Map<String, LObject<T>> mapObjects;
+	protected Set<LObject<T>> objects;
+	protected Set<LObject<T>> goldObjects;
+	protected Set<LObject<T>> evaluationObjects;
+	protected Map<LObject<T>, Set<AssignedLabel<T>>> datums;
+	protected Map<Worker, Set<AssignedLabel<T>>> workersAssigns;
+
+	public InMemoryData(){
+		assigns = new HashSet<AssignedLabel<T>>();
+		workers = new HashSet<Worker>();
+		objects = new HashSet<LObject<T>>();
+		goldObjects = new HashSet<LObject<T>>();
+		evaluationObjects = new HashSet<LObject<T>>();
+		datums = new HashMap<LObject<T>, Set<AssignedLabel<T>>>();
+		workersAssigns = new HashMap<Worker, Set<AssignedLabel<T>>>();
+		mapWorkers = new HashMap<String, Worker>();
+		mapObjects = new HashMap<String, LObject<T>>();
+		newDataObservers = new LinkedList<INewDataObserver<T>>();
+	}
+
+	@Override
+	protected void uncheckedAddWorker(Worker worker){
+		if (!workers.contains(worker)){
+			workers.add(worker);
+			mapWorkers.put(worker.getName(), worker);
+			notifyNewWorker(worker);
+			workersAssigns.put(worker, new HashSet<AssignedLabel<T>>());
+		}
+	}
+
+	@Override
+	public Worker getWorker(String workerId){
+		return mapWorkers.get(workerId);
+	}
+
+	@Override
+	public Set<Worker> getWorkers() {
+		return workers;
+	}
+
+	@Override
+	protected void uncheckedAddObject(LObject<T> object){
+		if (objects.contains(object)) {
+			LObject oldObject = getObject(object.getName());
+			if (object.isGold() && !oldObject.isGold()) {
+				oldObject.setGoldLabel(object.getGoldLabel());
+				addGoldObject(oldObject);
+			}
+			if (object.isEvaluation() && !oldObject.isEvaluation()) {
+				oldObject.setEvaluationLabel(object.getEvaluationLabel());
+				addEvaluationObject(oldObject);
+			}
+			return;
+		}
+
+		objects.add(object);
+		mapObjects.put(object.getName(), object);
+		datums.put(object, new HashSet<AssignedLabel<T>>());
+		notifyNewObject(object);
+
+		if (object.isGold()) {
+			addGoldObject(object);
+		}
+		if (object.isEvaluation()) {
+			addEvaluationObject(object);
+		}
+	}
+
+	@Override
+	public LObject<T> getObject(String objectId){
+		return mapObjects.get(objectId);
+	}
+
+	@Override
+	public Set<LObject<T>> getObjects(){
+		return objects;
+	}
+
+	private void addGoldObject(LObject<T> object){
+		goldObjects.add(object);
+		notifyNewGoldObject(object);
+	}
+
+	@Override
+	protected LObject<T> uncheckedGetGoldObject(String objectId){
+		return mapObjects.get(objectId);
+	}
+
+	@Override
+	public Set<LObject<T>> getGoldObjects(){
+		return goldObjects;
+	}
+
+	@Override
+	public void markObjectAsGold(LObject<T> object, T label){
+		if (!objects.contains(object)) {
+			throw new IllegalArgumentException("Object %s is not in this Data".format(object.getName()));
+		}
+		object.setGoldLabel(label);
+		if (!goldObjects.contains(object))
+			addGoldObject(object);
+	}
+
+	private void addEvaluationObject(LObject<T> object){
+		evaluationObjects.add(object);
+	}
+
+	@Override
+	public Set<LObject<T>> getEvaluationObjects(){
+		return evaluationObjects;
+	}
+
+	@Override
+	protected LObject<T> uncheckedGetEvaluationObject(String objectId){
+		return mapObjects.get(objectId);
+	}
+
+	@Override
+	public Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker worker){
+		return workersAssigns.get(worker);
+	}
+
+	@Override
+	public void addAssign(AssignedLabel<T> assign){
+		forceAddAssign(assign, assigns);
+		LObject<T> object = assign.getLobject();
+		addObject(object);
+		forceAddAssign(assign, datums.get(object));
+		Worker worker = assign.getWorker();
+		addWorker(worker);
+		forceAddAssign(assign, workersAssigns.get(worker));
+		notifyNewAssign(assign);
+	}
+
+	/**
+	 * This assumes that assigns are compared only on object and worker
+	 */
+	@Override
+	public boolean hasAssign(LObject<T> object, Worker worker){
+		AssignedLabel<T> assign = new AssignedLabel<T>(worker, object, null);
+		return assigns.contains(assign);
+	}
+
+	@Override
+	public Collection<AssignedLabel<T>> uncheckedGetAssignsForObject(LObject<T> lObject){
+		return datums.get(lObject);
+	}
+
+	@Override
+	public Set<AssignedLabel<T>> getAssigns(){
+		return assigns;
+	}
+
+	private void forceAddAssign(AssignedLabel<T> assign, Set<AssignedLabel<T>> assigns) {
+		if (!assigns.add(assign)) {
+			assigns.remove(assign);
+			assigns.add(assign);
+		}
+	}
+}

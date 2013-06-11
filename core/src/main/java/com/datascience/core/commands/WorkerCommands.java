@@ -15,14 +15,14 @@ import java.util.Map;
  */
 public class WorkerCommands {
 
-	protected static <T> Map<String, Object> getWorkerStats(Project project, Worker<T> worker){
+	protected static Map<String, Object> getWorkerStats(Project project, Worker worker){
 		Map<String, Object> ret = new HashMap<String, Object>();
 		ret.put("name", worker.getName());
 		ret.put("assigns", project.getData().getWorkerAssigns(worker));
 		return ret;
 	}
 
-	static public class GetWorkers<T> extends JobCommand<Collection<Map<String, Object>>, Project<T, ?, ?, ?>> {
+	static public class GetWorkers extends JobCommand<Collection<Map<String, Object>>, Project<?, ?, ?, ?>> {
 		
 		public GetWorkers(){
 			super(false);
@@ -31,14 +31,14 @@ public class WorkerCommands {
 		@Override
 		protected void realExecute() {
 			Collection<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-			for (Worker<T> w : project.getData().getWorkers()){
+			for (Worker w : project.getData().getWorkers()){
 				ret.add(getWorkerStats(project, w));
 			}
 			setResult(ret);
 		}
 	}
 	
-	static public class GetWorker<T> extends JobCommand<Map<String, Object>, Project> {
+	static public class GetWorker extends JobCommand<Map<String, Object>, Project> {
 				
 		String workerId;
 		public GetWorker(String workerId){
@@ -48,7 +48,7 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			Worker<T> w = ParamChecking.worker(project.getData(), workerId);
+			Worker w = ParamChecking.worker(project.getData(), workerId);
 			setResult(getWorkerStats(project, w));
 		}
 	}

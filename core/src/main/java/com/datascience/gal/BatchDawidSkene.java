@@ -45,12 +45,12 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 	}
 
 	private void rebuildWorkerConfusionMatrices() {
-		for (Worker<String> worker : data.getWorkers()) {
+		for (Worker worker : data.getWorkers()) {
 			rebuildWorkerConfusionMatrix(worker);
 		}
 	}
 
-	private void rebuildWorkerConfusionMatrix(Worker<String> worker) {
+	private void rebuildWorkerConfusionMatrix(Worker worker) {
 		WorkerResult wr = results.getOrCreateWorkerResult(worker);
 		wr.empty();
 

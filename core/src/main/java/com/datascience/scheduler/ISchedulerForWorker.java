@@ -11,7 +11,7 @@ import java.util.Iterator;
  */
 public interface ISchedulerForWorker<T> {
 
-	LObject<T> nextObjectForWorker(Iterator<LObject<T>> objects, Worker<T> worker);
+	LObject<T> nextObjectForWorker(Iterator<LObject<T>> objects, Worker worker);
 	String getId();
 	void setProject(Project<T, ?, ?, ?> project);
 }

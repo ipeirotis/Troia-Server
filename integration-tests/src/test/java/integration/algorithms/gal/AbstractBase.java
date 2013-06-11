@@ -4,7 +4,7 @@ import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.Algorithm;
 import com.datascience.core.base.Project;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
 import org.junit.Test;

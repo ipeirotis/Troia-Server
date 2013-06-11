@@ -2,11 +2,11 @@ package com.datascience.serialization.json;
 
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.datastoring.memory.InMemoryResults;
+import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerResult;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -43,7 +43,7 @@ public class ResultsJSONingTest {
 		results.addDatumResult(obj, dr);
 		String serialized = gson.toJson(results);
 		LObject<String> imaginaryObj = new LObject<String>("ImaginaryObj");
-		Worker<String> imaginaryWorker = new Worker<String>("ImaginaryWorker");
+		Worker imaginaryWorker = new Worker("ImaginaryWorker");
 
 		InMemoryResults<String, DatumResult, WorkerResult> deserialized = gson.fromJson(serialized, new TypeToken<InMemoryResults<String, DatumResult, WorkerResult>>(){}.getType());
 //		Assert.assertEquals(deserialized.getOrCreateDatumResult(imaginaryObj).getClass(),

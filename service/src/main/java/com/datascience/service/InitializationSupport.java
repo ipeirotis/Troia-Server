@@ -15,6 +15,7 @@ import javax.servlet.ServletContextListener;
 import javax.ws.rs.core.Response;
 
 import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
 import org.apache.log4j.Logger;
@@ -72,13 +73,14 @@ public class InitializationSupport implements ServletContextListener {
 		ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
 		scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
 
-		JobsManager jobsManager = factory.loadJobsManager();
-		scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
+		JobsLocksManager jobsLocksManager = factory.loadJobsManager();
+		scontext.setAttribute(Constants.JOBS_LOCKS_MANAGER, jobsLocksManager);
 
 		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
 
-		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsManager);
-		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
+		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsLocksManager);
+		scontext.setAttribute(Constants.JOBS_MANAGER,
+				factory.loadJobManager(jobStorage, serializer));
 
 		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
 		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
@@ -95,17 +97,17 @@ public class InitializationSupport implements ServletContextListener {
 
 	public static void destroyContext(ServletContext scontext){
 		logger.info("STARTED Cleaning service");
-		IJobStorage jobStorage =
-				(IJobStorage) scontext.getAttribute(Constants.JOBS_STORAGE);
+		JobsManager jobsManager = (JobsManager) scontext.getAttribute(Constants.JOBS_MANAGER);
+
 		ProjectCommandExecutor executor =
 				(ProjectCommandExecutor) scontext.getAttribute(Constants.COMMAND_EXECUTOR);
 		try {
-			if (jobStorage != null)
-				jobStorage.stop();
+			if (jobsManager != null)
+				jobsManager.stop();
 		} catch (Exception ex) {
-			logger.error("FAILED Cleaning service - jobStorage", ex);
+			logger.error("FAILED Cleaning service - jobsManager", ex);
 		}
-		// executor might be already closed - if jobStorage was using it
+		// executor might be already closed - if jobsManager was using it
 		try {
 			if (executor != null)
 				executor.stop();

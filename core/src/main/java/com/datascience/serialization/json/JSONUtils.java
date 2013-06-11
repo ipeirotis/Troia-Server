@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.datascience.core.base.*;
-import com.datascience.datastoring.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
-import com.datascience.datastoring.memory.InMemoryNominalData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.ConfusionMatrix;
 import com.datascience.core.stats.MatrixValue;
@@ -55,7 +55,7 @@ public class JSONUtils {
 	public static final Type shallowAssignContValue = new TypeToken<ShallowAssign<ContValue>>(){}.getType();
 
 
-	public static final Type workersStringType = new TypeToken<Collection<Worker<String>>>() {}.getType();
+	public static final Type workersStringType = new TypeToken<Collection<Worker>>() {}.getType();
 	public static final Type workersCollection = new TypeToken<Collection<Worker>>() {}.getType();
 
 	public JSONUtils() {
@@ -95,6 +95,7 @@ public class JSONUtils {
 		builder.registerTypeAdapter(ResultsFactory.WorkerResultCreator.class, new DataJSON.WorkerCreatorDeserializer());
 
 		builder.registerTypeAdapter(JsonObject.class, new DataJSON.JsonObjectSerializer());
+		builder.registerTypeAdapter(JsonObject.class, new DataJSON.JsonObjectDeserializer());
 
 		builder.registerTypeAdapter(objectsStringType,
 				new DataJSON.GenericCollectionDeserializer<LObject<String>>(

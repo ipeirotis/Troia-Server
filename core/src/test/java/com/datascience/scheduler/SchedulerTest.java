@@ -1,8 +1,8 @@
 package com.datascience.scheduler;
 
 import com.datascience.core.base.*;
-import com.datascience.datastoring.memory.InMemoryData;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class SchedulerTest {
 	private void addAssign(IData<ContValue> data, String worker, String object) {
 		data.addAssign(
 				new AssignedLabel<ContValue>(
-						new Worker<ContValue>(worker),
+						new Worker(worker),
 						new LObject<ContValue>(object),
 						new ContValue(0.)
 				)
@@ -65,7 +65,7 @@ public class SchedulerTest {
 			for (int j = 0; j <= i; j++) {
 				data.addAssign(
 						new AssignedLabel<ContValue>(
-								new Worker<ContValue>("worker" + j),
+								new Worker("worker" + j),
 								obj,
 								new ContValue(0.)
 						)

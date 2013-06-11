@@ -15,5 +15,5 @@ public interface INewDataObserver<T> {
 
 	// Those two might be important for scheduling system
 	void newObject(LObject<T> object);
-	void newWorker(Worker<T> worker);
+	void newWorker(Worker worker);
 }

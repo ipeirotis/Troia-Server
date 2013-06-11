@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class IncrementalDawidSkeneTest {
 
 	@Test
 	public final void testGetErrorRateForWorker() {
-		Worker<String> w = new Worker<String>("worker1");
+		Worker w = new Worker("worker1");
 		project.getData().addWorker(w);
 		double errorRate = ((AbstractDawidSkene)project.getAlgorithm()).getErrorRateForWorker(
 				w,
