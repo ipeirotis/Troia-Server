@@ -21,6 +21,9 @@ public class NominalModel implements INominalModel{
 		categoryPriors = map;
 	}
 
+	/*
+		be aware that this can be null. it's better to get priors from an algoritm
+	 */
 	@Override
 	public Map<String, Double> getCategoryPriors(){
 		return categoryPriors;

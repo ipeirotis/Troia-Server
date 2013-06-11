@@ -140,6 +140,6 @@ public class QualitySensitivePaymentsCalculator {
 	}
 
 	public Double getWorkerWage(double qualifiedWage, double costThreshold){
-		return getWorkerWage(qualifiedWage, costThreshold, project.getData().getCategoryPriors());
+		return getWorkerWage(qualifiedWage, costThreshold, project.getAlgorithm().getCategoryPriors());
 	}
 }

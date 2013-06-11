@@ -189,7 +189,7 @@ public class PredictionCommands {
 
 			@Override
 			public List<List<Object>> call(){
-				String[] lda = new String[]{"MaxLikelihood", "MinCost"};
+				String[] lda = new String[]{"MinCost"}; // TROIA-393 {"MaxLikelihood", "MinCost"}
 				List<List<Object>> ret = new ArrayList<List<Object>>();
 
 				List<Object> header = new ArrayList<Object>();
@@ -217,7 +217,7 @@ public class PredictionCommands {
 		class GetWorkersQuality extends GetStatistics {
 
 			public List<List<Object>> call(){
-				String[] lca = new String[]{"MaxLikelihood", "MinCost", "ExpectedCost"};
+				String[] lca = new String[]{"MinCost", "ExpectedCost"}; // TROIA-393 {"MaxLikelihood", "MinCost", "ExpectedCost"}
 				List<List<Object>> ret = new ArrayList<List<Object>>();
 				List<Object> header = new ArrayList<Object>();
 

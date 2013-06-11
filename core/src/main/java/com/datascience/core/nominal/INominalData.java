@@ -10,7 +10,9 @@ import java.util.Map;
  * @Author: konrad
  */
 public interface INominalData extends IData<String> {
-
+	/*
+		be aware that this can be null. it's better to get priors from an algoritm
+	 */
 	Collection<String> getCategories();
 	boolean arePriorsFixed();
 	double getCategoryPrior(String name);

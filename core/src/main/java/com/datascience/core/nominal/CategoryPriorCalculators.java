@@ -1,6 +1,5 @@
 package com.datascience.core.nominal;
 
-
 import java.util.HashMap;
 import java.util.Map;
 

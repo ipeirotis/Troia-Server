@@ -19,6 +19,7 @@ import com.datascience.core.nominal.INominalModel;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.ICategoryPriorCalculator;
+import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.utils.ProbabilityDistributions;
@@ -46,7 +47,9 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	}
 
 	public double getErrorRateForWorker(Worker worker, String from, String to){
-		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
+		WorkerResult wr = results.getOrCreateWorkerResult(worker);
+		results.addWorkerResult(worker, wr);
+		return wr.getErrorRate(errorRateCalculator, from, to);
 	}
 
 	protected double getLogLikelihood() {

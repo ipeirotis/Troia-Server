@@ -75,7 +75,7 @@ public class WorkerContResults {
 			double label = al.getLabel().getValue();
 			Double z = (label - getEst_mu()) / getEst_sigma();
 			AssignedLabel zl = new AssignedLabel<ContValue>(al.getWorker(), al.getLobject(), new ContValue(z));
-			getZetaValues().add(zl);
+			zeta.add(zl);
 		}
 	}
 
