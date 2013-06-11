@@ -21,7 +21,7 @@ public class CachedWithRegularDumpJobStorageTest extends CachedJobStorageTest {
 	@Override
 	public IJobStorage getProxy(IJobStorage jobStorage){
 		internalStorage = jobStorage;
-		return new CachedWithRegularDumpJobStorage(jobStorage, 2, 1, TimeUnit.NANOSECONDS);
+		return new CachedWithRegularDumpJobStorage(jobStorage, 2, 10, TimeUnit.SECONDS);
 	}
 	
 	@Test
