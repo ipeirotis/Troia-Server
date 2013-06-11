@@ -2,7 +2,6 @@ package com.datascience.datastoring.datamodels.memory;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
-import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.PureNominalData;
 import com.datascience.core.nominal.CategoryValue;
 import com.datascience.core.nominal.INominalData;
@@ -10,7 +9,6 @@ import com.datascience.utils.CostMatrix;
 
 import java.util.*;
 
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * User: artur
