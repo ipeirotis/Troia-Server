@@ -20,6 +20,14 @@ public class CategoryPriorCalculators {
 		}
 
 		@Override
+		public Map<String, Double> getPriors(INominalData data, INominalModel model) {
+			if (data.arePriorsFixed())
+				return data.getCategoryPriors();
+			else
+				return model.getCategoryPriors();
+		}
+
+		@Override
 		public void initializeModelPriors(INominalData data, INominalModel model) {
 			Map<String, Double> priors = new HashMap<String, Double>();
 			for (String c : data.getCategories()){
@@ -39,6 +47,19 @@ public class CategoryPriorCalculators {
 				return 1. / (double) data.getCategories().size();
 			else
 				return model.getCategoryPriors().get(categoryName) / ((IIncrementalNominalModel) model).getPriorDenominator();
+		}
+
+		@Override
+		public Map<String, Double> getPriors(INominalData data, INominalModel model) {
+			if (data.arePriorsFixed())
+				return data.getCategoryPriors();
+			else{
+				Map<String, Double> ret = new HashMap<String, Double>();
+				for (String cat : data.getCategories()){
+					ret.put(cat, getPrior(data, model, cat));
+				}
+				return ret;
+			}
 		}
 
 		@Override

@@ -5,9 +5,8 @@ import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
-import com.datascience.datastoring.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.gal.BatchDawidSkene;
-import static com.datascience.scheduler.CostBasedPriorityCalculatorTest.setUpNominalProject;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
@@ -28,8 +27,8 @@ public class QualitySensitivePaymentsTest {
 		return project;
 	}
 
-	protected Worker<String> worker(int i){
-		return new Worker<String>("worker" + i);
+	protected Worker worker(int i){
+		return new Worker("worker" + i);
 	}
 
 	protected AssignedLabel<String> assign(int i, LObject<String> obj, String label){
@@ -59,7 +58,7 @@ public class QualitySensitivePaymentsTest {
                 project.setData(data);
                 project.getAlgorithm().compute();
                 
-                for (Worker<String> w : project.getData().getWorkers()){
+                for (Worker w : project.getData().getWorkers()){
                     QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
                     Double wage = wspq.getWorkerWage(1.0, 0.01);  
                 }

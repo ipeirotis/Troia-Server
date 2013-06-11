@@ -9,9 +9,7 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.DecisionEngine;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.core.nominal.decision.WorkerEstimator;
-import com.datascience.datastoring.storages.MemoryJobStorage;
-import com.datascience.mv.BatchMV;
-import com.datascience.mv.IncrementalMV;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -116,7 +114,7 @@ public class EdgeCasesTest {
 		new AssignsCreator() {
 			@Override
 			public AssignedLabel<String>[] create() {
-				return new AssignedLabel[]{new AssignedLabel<String>(new Worker<String>("worker"), new LObject<String>("object"), categories.get(0))};
+				return new AssignedLabel[]{new AssignedLabel<String>(new Worker("worker"), new LObject<String>("object"), categories.get(0))};
 			}
 			@Override
 			public String toString(){
@@ -127,10 +125,10 @@ public class EdgeCasesTest {
 			@Override
 			public AssignedLabel<String>[] create() {
 				return new AssignedLabel[]{
-						new AssignedLabel<String>(new Worker<String>("worker1"), new LObject<String>("object"), categories.get(0)),
-						new AssignedLabel<String>(new Worker<String>("worker2"), new LObject<String>("object"), categories.get(1)),
-						new AssignedLabel<String>(new Worker<String>("worker3"), new LObject<String>("object"), categories.get(0)),
-						new AssignedLabel<String>(new Worker<String>("worker4"), new LObject<String>("object"), categories.get(2))};
+						new AssignedLabel<String>(new Worker("worker1"), new LObject<String>("object"), categories.get(0)),
+						new AssignedLabel<String>(new Worker("worker2"), new LObject<String>("object"), categories.get(1)),
+						new AssignedLabel<String>(new Worker("worker3"), new LObject<String>("object"), categories.get(0)),
+						new AssignedLabel<String>(new Worker("worker4"), new LObject<String>("object"), categories.get(2))};
 			}
 			@Override
 			public String toString(){
@@ -141,10 +139,10 @@ public class EdgeCasesTest {
 			@Override
 			public AssignedLabel<String>[] create() {
 				return new AssignedLabel[]{
-						new AssignedLabel<String>(new Worker<String>("worker"), new LObject<String>("object1"), categories.get(0)),
-						new AssignedLabel<String>(new Worker<String>("worker"), new LObject<String>("object2"), categories.get(1)),
-						new AssignedLabel<String>(new Worker<String>("worker"), new LObject<String>("object3"), categories.get(0)),
-						new AssignedLabel<String>(new Worker<String>("worker"), new LObject<String>("object4"), categories.get(2))};
+						new AssignedLabel<String>(new Worker("worker"), new LObject<String>("object1"), categories.get(0)),
+						new AssignedLabel<String>(new Worker("worker"), new LObject<String>("object2"), categories.get(1)),
+						new AssignedLabel<String>(new Worker("worker"), new LObject<String>("object3"), categories.get(0)),
+						new AssignedLabel<String>(new Worker("worker"), new LObject<String>("object4"), categories.get(2))};
 			}
 			@Override
 			public String toString(){
@@ -155,10 +153,10 @@ public class EdgeCasesTest {
 			@Override
 			public AssignedLabel<String>[] create() {
 				return new AssignedLabel[]{
-						new AssignedLabel<String>(new Worker<String>("worker1"), new LObject<String>("object1"), categories.get(0)),
-						new AssignedLabel<String>(new Worker<String>("worker2"), new LObject<String>("object2"), categories.get(1)),
-						new AssignedLabel<String>(new Worker<String>("worker3"), new LObject<String>("object3"), categories.get(0)),
-						new AssignedLabel<String>(new Worker<String>("worker4"), new LObject<String>("object4"), categories.get(2))};
+						new AssignedLabel<String>(new Worker("worker1"), new LObject<String>("object1"), categories.get(0)),
+						new AssignedLabel<String>(new Worker("worker2"), new LObject<String>("object2"), categories.get(1)),
+						new AssignedLabel<String>(new Worker("worker3"), new LObject<String>("object3"), categories.get(0)),
+						new AssignedLabel<String>(new Worker("worker4"), new LObject<String>("object4"), categories.get(2))};
 			}
 			@Override
 			public String toString(){
