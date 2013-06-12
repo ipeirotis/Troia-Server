@@ -21,11 +21,15 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	protected ResultsFactory.DatumResultCreator<U> datumCreator;
 	protected ResultsFactory.WorkerResultCreator<V> workerCreator;
 
-	public AbstractResults(ResultsFactory.DatumResultCreator<U> datumCreator, ResultsFactory.WorkerResultCreator<V> workerCreator){
-		this.datumCreator = datumCreator;
-		this.workerCreator = workerCreator;
+	public AbstractResults(){
 		newResultsListeners = new LinkedList<INewResultsListener<T, U, V>>();
 		notifyEnabled = false;
+	}
+
+	public AbstractResults(ResultsFactory.DatumResultCreator<U> datumCreator, ResultsFactory.WorkerResultCreator<V> workerCreator){
+		this();
+		this.datumCreator = datumCreator;
+		this.workerCreator = workerCreator;
 	}
 
 	abstract protected U uncheckedGetDatumResults(LObject<T> obj);

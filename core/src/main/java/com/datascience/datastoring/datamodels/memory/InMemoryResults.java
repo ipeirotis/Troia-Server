@@ -19,6 +19,11 @@ public class InMemoryResults<T, U, V> extends AbstractResults<T, U, V> {
 	protected Map<LObject<T>, U> datumResults;
 	protected Map<Worker, V> workerResults;
 
+	//needed for gson deserialization
+	public InMemoryResults(){
+		super();
+	}
+
 	public InMemoryResults(ResultsFactory.DatumResultCreator datumCreator, ResultsFactory.WorkerResultCreator workerCreator){
 		super(datumCreator, workerCreator);
 		datumResults = new HashMap<LObject<T>, U>();
