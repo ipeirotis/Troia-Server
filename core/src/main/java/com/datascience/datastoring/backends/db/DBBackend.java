@@ -106,8 +106,8 @@ public class DBBackend implements IBackend {
 				throw new Exception("There is no table named: " + tableName);
 			}
 		}
-		if (tables.size() != i)
-			throw new Exception("Invalid tables size");
+//		if (tables.size() != i)
+//			throw new Exception("Invalid tables size");
 		cleanupStatement(stmt, null);
 	}
 

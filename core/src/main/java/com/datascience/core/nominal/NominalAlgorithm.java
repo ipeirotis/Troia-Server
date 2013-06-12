@@ -5,7 +5,9 @@ import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.core.results.DatumResult;
 import com.datascience.datastoring.datamodels.memory.NominalModel;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -51,4 +53,8 @@ public abstract class NominalAlgorithm extends Algorithm<String, INominalData, D
 		model = (INominalModel) o;
 	}
 
+	@Override
+	public Type getModelType() {
+		return new TypeToken<NominalModel>() {} .getType();
+	}
 }

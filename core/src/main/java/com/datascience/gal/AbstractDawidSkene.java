@@ -9,21 +9,17 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
-import com.datascience.core.nominal.INominalModel;
 import com.datascience.core.nominal.NominalAlgorithm;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.ICategoryPriorCalculator;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
-import com.datascience.datastoring.datamodels.memory.NominalModel;
 import com.datascience.utils.ProbabilityDistributions;
-import com.google.gson.reflect.TypeToken;
 
 import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
@@ -39,11 +35,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	@Override
 	public IErrorRateCalculator getErrorRateCalculator(){
 		return errorRateCalculator;
-	}
-
-	@Override
-	public Type getModelType() {
-		return new TypeToken<NominalModel>() {} .getType();
 	}
 
 	public double getErrorRateForWorker(Worker worker, String from, String to){
