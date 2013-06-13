@@ -167,28 +167,8 @@ public class BaseTestScenario {
             result.put(worker.getName(), workerEstimator.getCost(project, worker));
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }
-
         Map<String, Double> workersQuality = Quality.fromCosts(project, result);
-        double quality = 0.0;
-
-        if (estimationType.equals("n")) {
-            //compute the non weighted worker quality
-            for (Map.Entry<String, Double> workerQuality : workersQuality.entrySet()) {
-                quality += workerQuality.getValue();
-            }
-            //calculate the average
-            quality /= workersQuality.size();
-            return quality;
-        } else {
-            //compute the weighted worker quality
-            int totalNoLabels = 0;
-            for (Map.Entry<String, Double> workerQuality : workersQuality.entrySet()) {
-                quality += workerQuality.getValue() * workerAssignedLabels.get(workerQuality.getKey());
-                totalNoLabels += workerAssignedLabels.get(workerQuality.getKey());
-            }
-            quality /= totalNoLabels;
-            return quality;
-        }
+		return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
     public double evaluateWorkerQuality(String method, String estimationType) {
@@ -204,37 +184,26 @@ public class BaseTestScenario {
         }
 
         Map<String, Double> workersQuality = Quality.fromCosts(project, result);
-        double quality = 0.0;
-        double denominator = 0.;
-
-        if (estimationType.equals("n")) {
-            //compute the non-weighted worker quality
-            for (Map.Entry<String, Double> workerQuality : workersQuality.entrySet()) {
-                Double val = workerQuality.getValue();
-                if (val == null || val.isNaN()) {
-                    continue;
-                }
-                quality += val;
-                denominator += 1.;
-            }
-            //calculate the average
-            quality /= denominator;
-            return quality;
-        } else {
-            //compute the weighted worker quality
-            int totalNoLabels = 0;
-            for (Map.Entry<String, Double> workerQuality : workersQuality.entrySet()) {
-                Double val = workerQuality.getValue();
-                if (val == null || val.isNaN()) {
-                    continue;
-                }
-
-                quality += val * workerAssignedLabels.get(workerQuality.getKey());
-                totalNoLabels += workerAssignedLabels.get(workerQuality.getKey());
-            }
-            denominator += totalNoLabels;
-            quality /= denominator;
-            return quality;
-        }
+		return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
+
+	private double getAverageValue(Map<String, Double> values, Map<String, Integer> weight){
+		double quality = 0.;
+		int cnt = 0;
+		for (Map.Entry<String, Double> e : values.entrySet()) {
+			Double val = e.getValue();
+			if (val == null || val.isNaN()) {
+				continue;
+			}
+			if (weight != null) {
+				cnt += weight.get(e.getKey());
+				quality += e.getValue() * weight.get(e.getKey());
+			}
+			else {
+				quality += e.getValue();
+				cnt++;
+			}
+		}
+		return quality/cnt;
+	}
 }

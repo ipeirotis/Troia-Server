@@ -21,8 +21,6 @@ import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
 
-import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
-
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	protected int iterations = 10;
@@ -116,7 +114,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 
 		if (labels.isEmpty()){
-			return getPriorBasedDistribution(getData(), this);
+			return getCategoryPriors();
 		}
 
 		// If it is not gold, then we proceed to estimate the class

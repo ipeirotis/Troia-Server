@@ -13,13 +13,6 @@ import static com.datascience.utils.ProbabilityDistributions.generateConstantDis
  */
 public class ProbabilityDistributions {
 
-	static public Map<String, Double> getPriorBasedDistribution(INominalData data, NominalAlgorithm alg){
-		if (data.arePriorsFixed())
-			return data.getCategoryPriors();
-		else
-			return alg.getModel().getCategoryPriors();
-	}
-
 	public static Map<String, Double> generateMV_PD(Collection<String> categories,
 													Collection<AssignedLabel<String>> assigns){
 		Map<String, Double> pd = generateConstantDistribution(categories, 0.);

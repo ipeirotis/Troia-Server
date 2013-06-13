@@ -8,15 +8,14 @@ import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCal
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
-import com.datascience.utils.ProbabilityDistributions;
 import org.junit.Test;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
+import static com.datascience.core.nominal.Quality.getExpSpammerCost;
+import static com.datascience.core.nominal.Quality.getMinSpammerCost;
 import static org.junit.Assert.assertEquals;
 
 public class DSBaseTestScenario extends BaseTestScenario {
@@ -114,14 +113,8 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
     @Test
     public void test_DataCost_Estm_NoVote_Exp() {
-        //TODO this test does not make sense with the current form
         HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-        double avgClassificationCost = 0.0;
-        Map<String, Double> temp = getPriorBasedDistribution(data, project.getAlgorithm());
-        for (Double val : temp.values()) {
-            avgClassificationCost += val;
-        }
-        avgClassificationCost /= temp.size();
+        double avgClassificationCost = getExpSpammerCost(project);
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_NoVote_Exp] Baseline classification cost (random spammer)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
@@ -129,14 +122,8 @@ public class DSBaseTestScenario extends BaseTestScenario {
 
     @Test
     public void test_DataCost_Estm_NoVote_Min() {
-        //TODO this tests does not make sense with the current form
         HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-        double avgClassificationCost = 0.0;
-        Map<String, Double> temp = getPriorBasedDistribution(data, project.getAlgorithm());
-        for (Double val : temp.values()) {
-            avgClassificationCost += val;
-        }
-        avgClassificationCost /= temp.size();
+        double avgClassificationCost = getMinSpammerCost(project);
         String expectedClassificationCost = dataQuality.get("[DataCost_Estm_NoVote_Min] Baseline classification cost (strategic spammer)");
         String actualClassificationCost = testHelper.format(avgClassificationCost);
         assertEquals(expectedClassificationCost, actualClassificationCost);
