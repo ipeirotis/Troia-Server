@@ -124,7 +124,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 		// Estimate denominator for Eq 2.5 of Dawid&Skene, which is the same
 		// across all categories
-		double denominator = 0.0;
 
 		// To compute the denominator, we also compute the nominators across
 		// all categories, so it saves us time to save the nominators as we
@@ -153,22 +152,33 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 				double evidence_for_category = getErrorRateForWorker(w, category, assigned_category);
 				if (Double.isNaN(evidence_for_category))
 					continue;
-				categoryNominator *= evidence_for_category;
+
+				if (evidence_for_category == 0.){
+					categoryNominator = Double.NEGATIVE_INFINITY;
+					break;
+				}
+				categoryNominator += Math.log(evidence_for_category);
 			}
 
 			categoryNominators.put(category, categoryNominator);
-			denominator += categoryNominator;
 		}
+		double M = Double.NEGATIVE_INFINITY;
+		for (double log_ci: categoryNominators.values()){
+			M = Math.max(log_ci, M);
+		}
+		if (M == Double.NEGATIVE_INFINITY) {
+			return null; // all returned zero so denominator would be 0
+		}
+		double denominator = 0.;
+		for (double log_ci: categoryNominators.values()){
+			denominator += Math.exp(log_ci - M);
+		}
+		denominator = Math.log(denominator) + M;
 
 		for (String c : data.getCategories()) {
-			double nominator = categoryNominators.get(c);
-			if (denominator == 0.0) {
-				// result.put(category, 0.0);
-				return null;
-			} else {
-				double probability = com.datascience.utils.Utils.round(nominator / denominator, 5);
-				result.put(c, probability);
-			}
+			double log_nominator = categoryNominators.get(c);
+			double probability = Math.exp(log_nominator - denominator);
+			result.put(c, probability);
 		}
 
 		return result;
