@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.datascience.core.base.*;
+import com.datascience.core.commands.Utils;
 import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.core.nominal.CategoryValue;
@@ -14,26 +15,31 @@ import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.stats.MatrixValue;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * @Author: konrad
  */
 public class DataJSON {
 
-	public static class Deserializer<T> implements JsonDeserializer<InMemoryData<T>> {
+	private static abstract class Deserializer<T> implements JsonDeserializer<InMemoryData<T>> {
+
+		public abstract Type getLObjectType();
+
+		public abstract Type getShallowAssignType();
+
 
 		@Override
 		public InMemoryData<T> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 			InMemoryData<T> data = new InMemoryData<T>();
 			JsonObject jo = jsonElement.getAsJsonObject();
 			for (JsonElement je: jo.get("objects").getAsJsonArray()){
-				LObject<T> object = jsonDeserializationContext.deserialize(je, LObject.class);
-				data.addObject((object));
+				LObject<T> object = jsonDeserializationContext.deserialize(je, getLObjectType());
+				data.addObject(object);
 			}
 
 			for (JsonElement je: jo.get("assigns").getAsJsonArray()){
-				ShallowAssign<T> sassign = jsonDeserializationContext.deserialize(je, ShallowAssign.class);
-
+				Utils.ShallowAssign<T> sassign = jsonDeserializationContext.deserialize(je, getShallowAssignType());
 				Worker worker = data.getOrCreateWorker(sassign.worker);
 				LObject<T> object = data.getObject(sassign.object);
 				data.addAssign(new AssignedLabel<T>(worker, object, sassign.label));
@@ -43,11 +49,37 @@ public class DataJSON {
 		}
 	}
 
+	public static class ContValueDataDeserializer extends Deserializer<ContValue>{
+		@Override
+		public Type getLObjectType() {
+			return new TypeToken<LObject<ContValue>>(){}.getType();
+		}
+
+		@Override
+		public Type getShallowAssignType() {
+			return new TypeToken<Utils.ShallowAssign<ContValue>>(){}.getType();
+		}
+	}
+
+
+
+	public static class StringDataDeserializer extends Deserializer<String>{
+		@Override
+		public Type getLObjectType() {
+			return new TypeToken<LObject<String>>(){}.getType();
+		}
+
+		@Override
+		public Type getShallowAssignType() {
+			return new TypeToken<Utils.ShallowAssign<String>>(){}.getType();
+		}
+	}
+
 	public static class NominalDeserializer implements JsonDeserializer<InMemoryNominalData> {
 
 		@Override
 		public InMemoryNominalData deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-			Deserializer<String> deserializer = new Deserializer<String>();
+			Deserializer<String> deserializer = new StringDataDeserializer();
 			InMemoryNominalData ret = new InMemoryNominalData(deserializer.deserialize(element, type, context));
 			JsonObject jo = element.getAsJsonObject();
 			ret.initialize(
@@ -63,8 +95,8 @@ public class DataJSON {
 		@Override
 		public JsonElement serialize(InMemoryData<T> data, Type type, JsonSerializationContext jsonSerializationContext) {
 			JsonObject je = new JsonObject();
-			je.add("objects", jsonSerializationContext.serialize(data.getObjects()));
-			je.add("assigns", jsonSerializationContext.serialize(data.getAssigns()));
+			je.add("objects", jsonSerializationContext.serialize(data.getObjects(), new TypeToken<Collection<LObject<T>>>(){}.getType()));
+			je.add("assigns", jsonSerializationContext.serialize(data.getAssigns(), new TypeToken<Collection<AssignedLabel<T>>>(){}.getType()));
 			return je;
 		}
 	}

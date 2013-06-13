@@ -190,7 +190,7 @@ public class JobFactory {
 		}
 		else {
 			job.getProject().setResults(serializer.<InMemoryResults<ContValue, DatumContResults, WorkerContResults>>parse(jsonResults, new TypeToken<InMemoryResults<ContValue, DatumContResults, WorkerContResults>>() {}.getType()));
-			job.getProject().setData(serializer.<InMemoryData>parse(jsonData, InMemoryData.class));
+			job.getProject().setData(serializer.<InMemoryData<ContValue>>parse(jsonData, new TypeToken<InMemoryData<ContValue>>() {}.getType()));
 		}
 		job.getProject().getAlgorithm().setModel(serializer.parse(model, job.getProject().getAlgorithm().getModelType()));
 		handleSchedulerLoading(jo, job.getProject());

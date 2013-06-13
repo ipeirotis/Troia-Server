@@ -80,8 +80,8 @@ public class JSONUtils {
 		builder.registerTypeAdapter(ConfusionMatrix.class, new MultinominalConfusionMatrixJSON.ConfusionMatrixSerializer());
 		builder.registerTypeAdapter(InMemoryNominalData.class, new DataJSON.NominalDeserializer());
 		builder.registerTypeAdapter(InMemoryNominalData.class, new DataJSON.NominalSerializer());
-		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Deserializer());
 		builder.registerTypeAdapter(InMemoryData.class, new DataJSON.Serializer());
+		builder.registerTypeAdapter(new TypeToken<InMemoryData<ContValue>>(){}.getType(), new DataJSON.ContValueDataDeserializer());
 		builder.registerTypeAdapter(AssignedLabel.class, new DataJSON.AssignSerializer());
 		builder.registerTypeAdapter(assignString, new DataJSON.AssignDeserializer<AssignedLabel<String>>(shallowAssignString));
 		builder.registerTypeAdapter(assignContValue, new DataJSON.AssignDeserializer<AssignedLabel<ContValue>>(shallowAssignContValue));
