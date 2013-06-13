@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.datascience.core.base.ContValue;
 import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -65,29 +66,29 @@ public class GenericSerializationTest {
 	}
 
 	@Test
-	public void dataDoubleJsonTest() {
-		InMemoryData<Double> data = new InMemoryData<Double>();
-		ArrayList<Double> labels = new ArrayList<Double>();
+	public void dataContValueJsonTest() {
+		InMemoryData<ContValue> data = new InMemoryData<ContValue>();
+		ArrayList<ContValue> labels = new ArrayList<ContValue>();
 		for (int i = 0; i < 2; i++) {
-			labels.add(1.0 * i);
+			labels.add(new ContValue(1.0 * i, 2.0 * i));
 		}
-		ArrayList<LObject<Double>> lObjects = new ArrayList<LObject<Double>>();
+		ArrayList<LObject<ContValue>> lObjects = new ArrayList<LObject<ContValue>>();
 		for (int i = 0; i < 2; i++) {
-			LObject<Double> lObject = new LObject<Double>("object" + i);
+			LObject<ContValue> lObject = new LObject<ContValue>("object" + i);
 			lObject.setGoldLabel(labels.get(i));
 			lObjects.add(lObject);
 			data.addObject(lObject);
 		}
 		for (int i = 0; i < 4; i++) {
 			Worker worker = new Worker("worker" + i);
-			for (LObject<Double> lObject : lObjects) {
-				AssignedLabel<Double> assign = new AssignedLabel<Double>(worker, lObject, labels.get(random.nextInt(labels.size())));
+			for (LObject<ContValue> lObject : lObjects) {
+				AssignedLabel<ContValue> assign = new AssignedLabel<ContValue>(worker, lObject, labels.get(random.nextInt(labels.size())));
 				data.addAssign(assign);
 			}
 			data.addWorker(worker);
 		}
 		String json = gson.toJson(data);
-		InMemoryData deserialized = gson.fromJson(json, new TypeToken<InMemoryData>(){}.getType());
+		InMemoryData deserialized = gson.fromJson(json, new TypeToken<InMemoryData<ContValue>>(){}.getType());
 		
 		assertTrue(deserialized.getAssigns().containsAll(data.getAssigns()));
 		assertTrue(deserialized.getObjects().containsAll(data.getObjects()));
