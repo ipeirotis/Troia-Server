@@ -54,7 +54,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Set<Worker> getWorkers() {
+	public Collection<Worker> getWorkers() {
 		return workers;
 	}
 
@@ -92,7 +92,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Set<LObject<T>> getObjects(){
+	public Collection<LObject<T>> getObjects(){
 		return objects;
 	}
 
@@ -107,7 +107,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Set<LObject<T>> getGoldObjects(){
+	public Collection<LObject<T>> getGoldObjects(){
 		return goldObjects;
 	}
 
@@ -126,7 +126,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Set<LObject<T>> getEvaluationObjects(){
+	public Collection<LObject<T>> getEvaluationObjects(){
 		return evaluationObjects;
 	}
 
@@ -167,7 +167,7 @@ public class InMemoryData<T> extends AbstractData<T> {
 	}
 
 	@Override
-	public Set<AssignedLabel<T>> getAssigns(){
+	public Collection<AssignedLabel<T>> getAssigns(){
 		return assigns;
 	}
 

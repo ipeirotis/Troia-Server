@@ -32,7 +32,7 @@ public class SyntheticDataWriter {
 		return new BufferedWriter(new FileWriter(outfile));
 	}
 
-	public void writeAssignedLabelsToFile(Set<AssignedLabel<ContValue>> assigns, 
+	public void writeAssignedLabelsToFile(Collection<AssignedLabel<ContValue>> assigns,
 			String filename) throws IOException {
 
 		BufferedWriter bw = openFile(filename);
@@ -70,7 +70,7 @@ public class SyntheticDataWriter {
 		}
 	}
 	
-	public void writeTrueObjectDataToFile(Set<LObject<ContValue>> lObjects, 
+	public void writeTrueObjectDataToFile(Collection<LObject<ContValue>> lObjects,
 			String filename) throws IOException {
 
 		BufferedWriter bw = openFile(filename);
@@ -89,7 +89,7 @@ public class SyntheticDataWriter {
 		}
 	}
 
-	public void writeGoldObjectDataToFile(Set<LObject<ContValue>> lObjects, 
+	public void writeGoldObjectDataToFile(Collection<LObject<ContValue>> lObjects,
 			String filename) throws IOException {
 
 		BufferedWriter bw = openFile(filename);
