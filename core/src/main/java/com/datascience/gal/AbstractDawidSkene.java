@@ -43,15 +43,16 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 	protected double getLogLikelihood() {
 		double result = 0;
-		for (AssignedLabel<String> al : data.getAssigns()){
-			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(al.getLobject()).getCategoryProbabilites();
-			for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
-				Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
-				if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
-					continue;
-				else
-					result += Math.log(e.getValue()) + Math.log(labelingProbability);
-
+		for (LObject<String> obj : data.getObjects()){
+			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(obj).getCategoryProbabilites();
+			for (AssignedLabel<String> al : data.getAssignsForObject(obj)){
+				for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
+					Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
+					if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
+						continue;
+					else
+						result += Math.log(e.getValue()) + Math.log(labelingProbability);
+				}
 			}
 		}
 		return result;
