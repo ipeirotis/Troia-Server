@@ -9,7 +9,6 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,17 +125,17 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 		// Estimate denominator for Eq 2.5 of Dawid&Skene, which is the same
 		// across all categories
-		BigDecimal denominator = BigDecimal.ZERO;
+		double denominator = 0.0;
 
 		// To compute the denominator, we also compute the nominators across
 		// all categories, so it saves us time to save the nominators as we
 		// compute them
-		Map<String, BigDecimal> categoryNominators = new HashMap<String, BigDecimal>();
+		Map<String, Double> categoryNominators = new HashMap<String, Double>();
 
 		for (String category : data.getCategories()) {
 
 			// We estimate now Equation 2.5 of Dawid & Skene
-			BigDecimal categoryNominator = BigDecimal.valueOf(prior(category));
+			double categoryNominator = prior(category);
 
 			// We go through all the labels assigned to the d object
 			for (AssignedLabel<String> al : data.getAssignsForObject(object)) {
@@ -152,23 +151,23 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 					continue;
 
 				String assigned_category = al.getLabel();
-				double evidence_for_category =getErrorRateForWorker(w, category, assigned_category);
+				double evidence_for_category = getErrorRateForWorker(w, category, assigned_category);
 				if (Double.isNaN(evidence_for_category))
 					continue;
-				categoryNominator = categoryNominator.multiply(BigDecimal.valueOf(evidence_for_category));
+				categoryNominator *= evidence_for_category;
 			}
 
 			categoryNominators.put(category, categoryNominator);
-			denominator = denominator.add(categoryNominator);
+			denominator += categoryNominator;
 		}
 
 		for (String c : data.getCategories()) {
-			BigDecimal nominator = categoryNominators.get(c);
-			if (denominator.compareTo(BigDecimal.ZERO) == 0) {
+			double nominator = categoryNominators.get(c);
+			if (denominator == 0.0) {
 				// result.put(category, 0.0);
 				return null;
 			} else {
-				double probability = nominator.divide(denominator, BigDecimal.ROUND_HALF_UP).doubleValue();
+				double probability = com.datascience.utils.Utils.round(nominator / denominator, 5);
 				result.put(c, probability);
 			}
 		}
