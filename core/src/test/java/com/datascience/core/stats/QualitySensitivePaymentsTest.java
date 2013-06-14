@@ -37,33 +37,32 @@ public class QualitySensitivePaymentsTest {
 
 	@Test
 	public void testZeroWorkerQuality(){
-                NominalProject project = setUpNominalProject();
+		NominalProject project = setUpNominalProject();
 		INominalData data = project.getData();
 		LObject<String> object1 = data.getOrCreateObject("object1");
 		LObject<String> object2 = data.getOrCreateObject("object2");
 
+		LObject<String> goldObj1 = new LObject<String>("object1");
+		goldObj1.setGoldLabel("cat1");
+		LObject<String> goldObj2 = new LObject<String>("object2");
+		goldObj2.setGoldLabel("cat2");
+		data.addObject(goldObj1);
+		data.addObject(goldObj2);
+
 		data.addAssign(assign(1, object1, "cat2"));
 		data.addAssign(assign(1, object2, "cat1"));
-                data.addAssign(assign(2, object1, "cat1"));
-                data.addAssign(assign(2, object2, "cat1"));
-                data.addAssign(assign(3, object1, "cat1"));
-                data.addAssign(assign(3, object2, "cat2"));
+		data.addAssign(assign(2, object1, "cat1"));
+		data.addAssign(assign(2, object2, "cat1"));
+		data.addAssign(assign(3, object1, "cat1"));
+		data.addAssign(assign(3, object2, "cat2"));
                 
-        	LObject<String> goldObj1 = new LObject<String>("object1");
-            	goldObj1.setGoldLabel("cat1");
-                LObject<String> goldObj2 = new LObject<String>("object2");
-            	goldObj2.setGoldLabel("cat2");
-                data.addObject(goldObj1);
-                data.addObject(goldObj2);
-                project.setData(data);
-                project.getAlgorithm().compute();
-                
-                for (Worker w : project.getData().getWorkers()){
-                    QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
-                    Double wage = wspq.getWorkerWage(1.0, 0.01);  
-                }
-		
-		
+
+		project.setData(data);
+		project.getAlgorithm().compute();
+
+		for (Worker w : project.getData().getWorkers()){
+			QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
+			Double wage = wspq.getWorkerWage(1.0, 0.01);
+		}
 	}
-    
 }
