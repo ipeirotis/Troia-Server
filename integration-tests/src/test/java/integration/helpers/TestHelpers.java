@@ -8,6 +8,7 @@ import com.datascience.utils.CostMatrix;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -16,25 +17,21 @@ public class TestHelpers {
     DataManager dataManager = DataManager.getInstance();
     FileReaders fileReader = new FileReaders();
 
-    public String format(Double result) {
-        int decimalPlace = 4;
-        if (null == result || Double.isNaN(result)) {
-            return "N/A";
+    public Double format(Double result) {
+        if (Double.isNaN(result)) {
+            return Double.NaN;
         }
 
-        BigDecimal bd = new BigDecimal(Double.toString(result));
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
-        return String.format(Locale.ENGLISH, "%2.4f", bd.doubleValue());
+        DecimalFormat df = new DecimalFormat("#.0000");
+        return Double.valueOf(df.format(result));
     }
 
-    public String formatPercent(Double result) {
+    public Double formatPercent(Double result) {
         if (null == result || Double.isNaN(result)) {
-            return "N/A";
+            return Double.NaN;
         } else {
-            NumberFormat percentFormat = NumberFormat.getPercentInstance();
-            percentFormat.setMinimumFractionDigits(2);
-            percentFormat.setMaximumFractionDigits(2);
-            return percentFormat.format(result);
+            DecimalFormat df = new DecimalFormat("#.00");
+            return Double.valueOf(df.format(result));
         }
     }
 

@@ -15,6 +15,8 @@ import com.datascience.utils.CostMatrix;
 import test.java.integration.helpers.SummaryResultsParser;
 import test.java.integration.helpers.TestHelpers;
 import test.java.integration.helpers.TestSettings;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ public class BaseTestScenario {
 
     public final static String DATA_BASE_DIR = TestSettings.GAL_TESTDATA_BASEDIR;
     public final static String RESULTS_BASE_DIR = TestSettings.GAL_RESULTS_BASEDIR;
+    public final static double TOLERANCE = 0.05;
     protected static String inputDir;
     protected static String outputDir;
     protected static TestHelpers testHelper = new TestHelpers();
@@ -32,29 +35,29 @@ public class BaseTestScenario {
     protected static INominalData data;
 
     public static void setUp(NominalAlgorithm algorithm, String testName, boolean loadEvaluationLabels) {
-		inputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "input" + TestSettings.FILEPATH_SEPARATOR;
-		outputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "output" + TestSettings.FILEPATH_SEPARATOR;
-		summaryResultsParser = new SummaryResultsParser(outputDir + "summary.txt");
+        inputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "input" + TestSettings.FILEPATH_SEPARATOR;
+        outputDir = DATA_BASE_DIR + testName + TestSettings.FILEPATH_SEPARATOR + "output" + TestSettings.FILEPATH_SEPARATOR;
+        summaryResultsParser = new SummaryResultsParser(outputDir + "summary.txt");
 
-		Collection<String> categories = testHelper.LoadCategories(inputDir + "categories.txt");
-		Collection<CategoryValue> priors = testHelper.loadCategoryPriors(inputDir + "categories.txt");
-		CostMatrix<String> costs = testHelper.loadCostsMatrix(inputDir + "costs.txt");
+        Collection<String> categories = testHelper.LoadCategories(inputDir + "categories.txt");
+        Collection<CategoryValue> priors = testHelper.loadCategoryPriors(inputDir + "categories.txt");
+        CostMatrix<String> costs = testHelper.loadCostsMatrix(inputDir + "costs.txt");
 
-		IJobStorage js = new MemoryJobStorage();
-		project = new NominalProject(algorithm, js.getNominalData(testName), js.getNominalResults(testName, categories));
-		data = project.getData();
-		if (algorithm instanceof INewDataObserver) {
-			data.addNewUpdatableAlgorithm((INewDataObserver) algorithm);
-		}
-		project.initializeCategories(categories, priors, costs);
-		loadData(loadEvaluationLabels);
+        IJobStorage js = new MemoryJobStorage();
+        project = new NominalProject(algorithm, js.getNominalData(testName), js.getNominalResults(testName, categories));
+        data = project.getData();
+        if (algorithm instanceof INewDataObserver) {
+            data.addNewUpdatableAlgorithm((INewDataObserver) algorithm);
+        }
+        project.initializeCategories(categories, priors, costs);
+        loadData(loadEvaluationLabels);
         project.getAlgorithm().compute();
     }
 
     public static void loadData(boolean loadEvaluationLabels) {
         loadAssignedLabels();
-        loadGoldLabels(); 
-        if (loadEvaluationLabels){
+        loadGoldLabels();
+        if (loadEvaluationLabels) {
             loadEvaluationLabels();
         }
     }
@@ -168,7 +171,7 @@ public class BaseTestScenario {
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }
         Map<String, Double> workersQuality = Quality.fromCosts(project, result);
-		return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
+        return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
     public double evaluateWorkerQuality(String method, String estimationType) {
@@ -178,32 +181,39 @@ public class BaseTestScenario {
         Map<String, Double> result = new HashMap<String, Double>();
         Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
 
-		for (Worker worker : project.getData().getWorkers()) {
+        for (Worker worker : project.getData().getWorkers()) {
             result.put(worker.getName(), workerEvaluator.getCost(project, worker));
             workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
         }
 
         Map<String, Double> workersQuality = Quality.fromCosts(project, result);
-		return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
+        return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
-	private double getAverageValue(Map<String, Double> values, Map<String, Integer> weight){
-		double quality = 0.;
-		int cnt = 0;
-		for (Map.Entry<String, Double> e : values.entrySet()) {
-			Double val = e.getValue();
-			if (val == null || val.isNaN()) {
-				continue;
-			}
-			if (weight != null) {
-				cnt += weight.get(e.getKey());
-				quality += e.getValue() * weight.get(e.getKey());
-			}
-			else {
-				quality += e.getValue();
-				cnt++;
-			}
-		}
-		return quality/cnt;
-	}
+    private double getAverageValue(Map<String, Double> values, Map<String, Integer> weight) {
+        double quality = 0.;
+        int cnt = 0;
+        for (Map.Entry<String, Double> e : values.entrySet()) {
+            Double val = e.getValue();
+            if (val == null || val.isNaN()) {
+                continue;
+            }
+            if (weight != null) {
+                cnt += weight.get(e.getKey());
+                quality += e.getValue() * weight.get(e.getKey());
+            } else {
+                quality += e.getValue();
+                cnt++;
+            }
+        }
+        return quality / cnt;
+    }
+
+    public void testCondition(Double expectedValue, Double actualValue) {
+        if (expectedValue.isNaN() && actualValue.isNaN()) {
+            assertEquals(expectedValue, actualValue);
+        } else {
+            assertTrue(Math.abs(expectedValue - actualValue) / 100 < TOLERANCE);
+        }
+    }
 }

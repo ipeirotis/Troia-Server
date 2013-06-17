@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
 public class MVBaseTestScenario extends BaseTestScenario {
 
     public static class Setup {
@@ -38,7 +36,7 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
     @Test
     public void test_ProbabilityDistributions_MV() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
 		Collection<LObject<String>> objects = data.getObjects();
 
         //init the categoryProbabilities hashmap
@@ -63,146 +61,112 @@ public class MVBaseTestScenario extends BaseTestScenario {
 
         for (String categoryName : data.getCategories()) {
             String metricName = "[MV_Pr[" + categoryName + "]] Majority Vote estimate for prior probability of category " + categoryName;
-            String expectedCategoryProbability = dataQuality.get(metricName);
-            String actualCategoryProbability = testHelper.format(categoryProbabilities.get(categoryName));
-            assertEquals(expectedCategoryProbability, actualCategoryProbability);
+            Double expectedCategoryProbability = dataQuality.get(metricName);
+            Double actualCategoryProbability = testHelper.format(categoryProbabilities.get(categoryName));
+            testCondition(expectedCategoryProbability, actualCategoryProbability);
         }
     }
 
     @Test
     public void test_DataCost_Estm_MV_Exp() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("EXPECTEDCOST");
-
-        double avgClassificationCost = estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null);
-
-        String expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_Exp] Estimated classification cost (MV_Exp metric)");
-        String actualClassificationCost = testHelper.format(avgClassificationCost);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        Double actualClassificationCost = estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null);
+        Double expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_Exp] Estimated classification cost (MV_Exp metric)");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataCost_Estm_MV_ML() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MAXLIKELIHOOD");
-
-        double avgClassificationCost = estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null);
-
-        String expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_ML] Estimated classification cost (MV_ML metric)");
-        String actualClassificationCost = testHelper.format(avgClassificationCost);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        Double actualClassificationCost = estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null);
+        Double expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_ML] Estimated classification cost (MV_ML metric)");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataCost_Estm_MV_Min() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MINCOST");
-
-        double avgClassificationCost = estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null);
-
-        String expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_Min] Estimated classification cost (MV_Min metric)");
-        String actualClassificationCost = testHelper.format(avgClassificationCost);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        Double actualClassificationCost = estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null);
+        Double expectedClassificationCost = dataQuality.get("[DataCost_Estm_MV_Min] Estimated classification cost (MV_Min metric)");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataCost_Eval_MV_ML() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-
-        double avgClassificationCost = evaluateMissclassificationCost("MAXLIKELIHOOD");
-
-        String expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_ML] Actual classification cost for majority vote classification");
-        String actualClassificationCost = testHelper.format(avgClassificationCost);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+        Double actualClassificationCost = evaluateMissclassificationCost("MAXLIKELIHOOD");
+        Double expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_ML] Actual classification cost for majority vote classification");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataCost_Eval_MV_Min() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-
-        double avgClassificationCost = evaluateMissclassificationCost("MINCOST");
-
-        String expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_Min] Actual classification cost for naive min-cost classification");
-        String actualClassificationCost = testHelper.format(avgClassificationCost);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+        Double actualClassificationCost = evaluateMissclassificationCost("MINCOST");
+        Double expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_Min] Actual classification cost for naive min-cost classification");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataCost_Eval_MV_Soft() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-
-        double avgClassificationCost = evaluateMissclassificationCost("SOFT");
-
-        String expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_Soft] Actual classification cost for naive soft-label classification");
-        String actualClassificationCost = testHelper.format(avgClassificationCost);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+        Double actualClassificationCost = evaluateMissclassificationCost("SOFT");
+        Double expectedClassificationCost = dataQuality.get("[DataCost_Eval_MV_Soft] Actual classification cost for naive soft-label classification");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataQuality_Estm_MV_ML() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MAXLIKELIHOOD");
-
-        double avgQuality = estimateCostToQuality(labelProbabilityDistributionCostCalculator, null);
-
-        String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_ML] Estimated data quality, naive majority label");
-        String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        Double actualClassificationCost = estimateCostToQuality(labelProbabilityDistributionCostCalculator, null);
+        Double expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_ML] Estimated data quality, naive majority label");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataQuality_Estm_MV_Exp() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("EXPECTEDCOST");
-
-        double avgQuality = estimateCostToQuality(labelProbabilityDistributionCostCalculator, null);
-
-        String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_Exp] Estimated data quality, naive soft label");
-        String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        Double actualClassificationCost = estimateCostToQuality(labelProbabilityDistributionCostCalculator, null);
+        Double expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_Exp] Estimated data quality, naive soft label");
+        testCondition(expectedClassificationCost, actualClassificationCost);
     }
 
     @Test
     public void test_DataQuality_Estm_MV_Min() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MINCOST");
-
-        double avgQuality = estimateCostToQuality(labelProbabilityDistributionCostCalculator, null);
-
-        String expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_Min] Estimated data quality, naive mincost label");
-        String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        Double avgQuality = estimateCostToQuality(labelProbabilityDistributionCostCalculator, null);
+        Double expectedClassificationCost = dataQuality.get("[DataQuality_Estm_MV_Min] Estimated data quality, naive mincost label");
+        testCondition(expectedClassificationCost, avgQuality);
     }
 
     @Test
     public void test_DataQuality_Eval_MV_ML() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-
-        double avgQuality = evaluateCostToQuality("MAXLIKELIHOOD");
-
-        String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_MV_ML] Actual data quality, naive majority label");
-        String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+        Double actualQuality = evaluateCostToQuality("MAXLIKELIHOOD");
+        Double expectedDataQuality = dataQuality.get("[DataQuality_Eval_MV_ML] Actual data quality, naive majority label");
+        testCondition(expectedDataQuality, actualQuality);
     }
 
     @Test
     public void test_DataQuality_Eval_MV_Min() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-
-        double avgQuality = evaluateCostToQuality("MINCOST");
-
-        String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_MV_Min] Actual data quality, naive mincost label");
-        String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+        Double avgQuality = evaluateCostToQuality("MINCOST");
+        Double actualQuality = dataQuality.get("[DataQuality_Eval_MV_Min] Actual data quality, naive mincost label");
+        Double expectedQuality = testHelper.formatPercent(avgQuality);
+        testCondition(expectedQuality, actualQuality);
     }
 
     @Test
     public void test_DataQuality_Eval_MV_Soft() {
-        HashMap<String, String> dataQuality = summaryResultsParser.getDataQuality();
-        double avgQuality = evaluateCostToQuality("SOFT");
-
-        String expectedClassificationCost = dataQuality.get("[DataQuality_Eval_MV_Soft] Actual data quality, naive soft label");
-        String actualClassificationCost = testHelper.formatPercent(avgQuality);
-        assertEquals(expectedClassificationCost, actualClassificationCost);
+        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+        Double actualQuality = evaluateCostToQuality("SOFT");
+        Double expectedQuality = dataQuality.get("[DataQuality_Eval_MV_Soft] Actual data quality, naive soft label");
+        testCondition(expectedQuality, actualQuality);
     }
 }
