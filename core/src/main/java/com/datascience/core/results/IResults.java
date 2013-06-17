@@ -18,11 +18,13 @@ public interface IResults<T, U, V> {
 	Map<LObject<T>, U> getDatumResults(Collection<LObject<T>> objects);
 
 	U getOrCreateDatumResult(LObject<T> obj);
+	U uncheckedGetDatumResults(LObject<T> obj);
 	U getDatumResult(LObject<T> obj);
 	boolean hasDatumResult(LObject<T> obj);
 	void addDatumResult(LObject<T> obj, U result);
 
 	V getOrCreateWorkerResult(Worker wor);
+	V uncheckedGetWorkerResult(Worker worker);
 	V createEmptyWorkerResult(Worker wor);
 	V getWorkerResult(Worker worker);
 	boolean hasWorkerResult(Worker worker);

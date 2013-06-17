@@ -36,8 +36,11 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 	}
 
 	public double getErrorRateForWorker(Worker worker, String from, String to){
-		WorkerResult wr = results.getOrCreateWorkerResult(worker);
-		results.addWorkerResult(worker, wr);
+		WorkerResult wr = results.uncheckedGetWorkerResult(worker);
+		if (wr == null){
+			wr = results.createEmptyWorkerResult(worker);
+			results.addWorkerResult(worker, wr);
+		}
 		return wr.getErrorRate(errorRateCalculator, from, to);
 	}
 

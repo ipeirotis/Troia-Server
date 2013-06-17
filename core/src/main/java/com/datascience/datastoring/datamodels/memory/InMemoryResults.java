@@ -31,12 +31,12 @@ public class InMemoryResults<T, U, V> extends AbstractResults<T, U, V> {
 	}
 
 	@Override
-	protected U uncheckedGetDatumResults(LObject<T> obj){
+	public U uncheckedGetDatumResults(LObject<T> obj){
 		return datumResults.get(obj);
 	}
 
 	@Override
-	protected V uncheckedGetWorkerResult(Worker worker){
+	public V uncheckedGetWorkerResult(Worker worker){
 		return workerResults.get(worker);
 	}
 

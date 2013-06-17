@@ -32,9 +32,6 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 		this.workerCreator = workerCreator;
 	}
 
-	abstract protected U uncheckedGetDatumResults(LObject<T> obj);
-	abstract protected V uncheckedGetWorkerResult(Worker worker);
-
 	public ResultsFactory.WorkerResultCreator<V> getWorkerResultsCreator(){
 		return workerCreator;
 	}

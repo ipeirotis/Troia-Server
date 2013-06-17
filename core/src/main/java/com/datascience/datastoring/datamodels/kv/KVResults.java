@@ -23,12 +23,12 @@ public class KVResults<T, U, V> extends AbstractResults<T, U, V> {
 	}
 
 	@Override
-	protected U uncheckedGetDatumResults(LObject<T> obj) {
+	public U uncheckedGetDatumResults(LObject<T> obj) {
 		return datumKV.get(obj.getName());
 	}
 
 	@Override
-	protected V uncheckedGetWorkerResult(Worker worker) {
+	public V uncheckedGetWorkerResult(Worker worker) {
 		return workersKV.get(worker.getName());
 	}
 
