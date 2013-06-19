@@ -35,6 +35,7 @@ public abstract class BaseJobStorage implements IJobStorage {
 	@Override
 	public void test() throws Exception{
 		backendAdapter.getBackend().test();
+		backendAdapter.test();
 	}
 
 	@Override

@@ -7,8 +7,9 @@ public interface IBackendAdapter {
 
 	IBackend getBackend();
 
-	public void clear() throws Exception;
-	public void rebuild() throws Exception;
+	void clear() throws Exception;
+	void rebuild() throws Exception;
+	void test() throws Exception;
 
-	public String getID();
+	String getID();
 }

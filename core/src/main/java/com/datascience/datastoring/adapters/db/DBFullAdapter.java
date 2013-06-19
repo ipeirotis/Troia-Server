@@ -60,6 +60,7 @@ public class DBFullAdapter implements IBackendAdapter {
 		return null;  //To change body of implemented methods use File | Settings | File Templates.
 	}
 
+	@Override
 	public void test() throws Exception {
 		backend.test();
 		backend.checkTables(tables.keySet());

@@ -155,9 +155,15 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	@Override
 	public void rebuild() throws Exception {
+		kvFactory.rebuild();
 		for (String kv: KVs){
 			kvFactory.getKV(kv);
 		}
+	}
+
+	@Override
+	public void test() throws Exception {
+		kvFactory.test(KVs);
 	}
 
 	@Override

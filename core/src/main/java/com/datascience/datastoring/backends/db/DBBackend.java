@@ -58,6 +58,9 @@ public class DBBackend implements IBackend {
 
 	public void rebuild(Map<String, String> tables) throws SQLException {
 		connectDatabase();
+		try{
+			createDatabase();
+		} catch (SQLException ex){}
 		for (Map.Entry<String, String> e : tables.entrySet()){
 			createTable(e.getKey(), e.getValue());
 			createIndex(e.getKey());
@@ -110,6 +113,16 @@ public class DBBackend implements IBackend {
 //			throw new Exception("Invalid tables size");
 		cleanupStatement(stmt, null);
 	}
+
+	public void createDatabase() throws SQLException{
+		logger.info("Creating database");
+		String createDatabase = "CREATE DATABASE " + dbName;
+		createDatabase += utf8 ? " CHARACTER SET utf8 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT COLLATE utf8_general_ci;" : " ;";
+		executeSQL(createDatabase);
+		useDatabase();
+		logger.info("Database created successfully");
+	}
+
 
 	public void createTable(String tableName, String tableColumns) throws SQLException {
 		String createTable = "CREATE TABLE " + tableName + " (" + tableColumns + ") ";

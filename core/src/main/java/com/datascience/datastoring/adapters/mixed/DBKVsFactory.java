@@ -33,6 +33,18 @@ public class DBKVsFactory<T> implements IBackendKVFactory<T> {
 	}
 
 	@Override
+	public void rebuild() throws Exception {
+		try{
+			dbBackend.createDatabase();
+		} catch (SQLException ex){}
+	}
+
+	@Override
+	public void test(List<String> kvs) throws Exception {
+		dbBackend.checkTables(kvs);
+	}
+
+	@Override
 	public IBackend getBackend() {
 		return dbBackend;
 	}

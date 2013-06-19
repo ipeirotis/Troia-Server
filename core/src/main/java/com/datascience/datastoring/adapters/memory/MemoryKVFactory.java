@@ -6,6 +6,7 @@ import com.datascience.datastoring.adapters.kv.MemoryKVStorage;
 import com.datascience.datastoring.datamodels.kv.IBackendKVFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,6 +28,14 @@ public class MemoryKVFactory<V> implements IBackendKVFactory<V>, IBackend{
 	public void remove(String kvId) {
 		kvs.remove(kvId);
 	}
+
+	@Override
+	public void rebuild() throws Exception {
+		kvs = new HashMap<String, IKVStorage<V>>();
+	}
+
+	@Override
+	public void test(List<String> kvs) throws Exception {}
 
 	@Override
 	public IBackend getBackend() {
