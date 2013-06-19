@@ -20,6 +20,7 @@ import com.datascience.mv.IncrementalMV;
 import com.datascience.scheduler.SchedulerFactory;
 import com.datascience.serialization.ISerializer;
 import com.datascience.serialization.json.JSONUtils;
+import com.datascience.utils.ClosestString;
 import com.datascience.utils.CostMatrix;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -40,6 +41,7 @@ public class JobFactory {
 
 	protected ISerializer serializer;
 	protected IJobStorage jobStorage;
+	protected ClosestString algNameMatcher;
 
 	public JobFactory(ISerializer serializer, IJobStorage jobStorage){
 		this.serializer = serializer;
@@ -119,6 +121,8 @@ public class JobFactory {
 		JOB_FACTORY.put(Constants.GALC, continuous);
 		for (String s : ALG_FACTORY.keySet())
 			JOB_FACTORY.put(s, nominal);
+		algNameMatcher = new ClosestString(JOB_FACTORY.keySet());
+
 	}
 
 	protected <T> void handleSchedulerLoading(JsonObject settings, Project project){
@@ -198,7 +202,7 @@ public class JobFactory {
 	}
 
 	public <T extends Project> Job<T> create(String type, JsonObject initializationData, String id){
-		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown algorithm type: ", type);
+		checkArgument(JOB_FACTORY.containsKey(t(type)), "Unknown algorithm type: [" + type + "]. Did you mean: [" + algNameMatcher.closest(t(type)) + "]");
 		return JOB_FACTORY.get(t(type)).create(initializationData, id);
 	}
 }
