@@ -59,13 +59,12 @@ public class QualitySensitivePaymentsTest {
 
 		project.setData(data);
 		project.getAlgorithm().compute();
-		Double wage;
 		QualitySensitivePaymentsCalculator wspq;
 		for (Worker w : project.getData().getWorkers()){
 			wspq = new QSPCalculators.Linear(project, w);
-			wage = wspq.getWorkerWage(1.0, 0.01);
+			wspq.getWorkerWage(1.0, 0.01);
 			wspq = new QSPCalculators.RegressionBased(project, w);
-			wage = wspq.getWorkerWage(1.0, 0.01);
+			wspq.getWorkerWage(1.0, 0.01);
 		}
 	}
 }
