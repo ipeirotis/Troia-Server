@@ -113,8 +113,8 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumClassification> dc = new ArrayList<DatumClassification>();
-			for (Entry<String, String> e : decisionEngine.predictLabels(project).entrySet()){
-				dc.add(new DatumClassification(e.getKey(), e.getValue()));
+			for (Entry<LObject<String>, String> e : decisionEngine.predictLabels(project).entrySet()){
+				dc.add(new DatumClassification(e.getKey().getName(), e.getValue()));
 			}
 			setResult(dc);
 		}
@@ -132,8 +132,8 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
-			for (Entry<String, Double> e : decisionEngine.estimateMissclassificationCosts(project).entrySet()){
-				cp.add(new DatumValue(e.getKey(), e.getValue()));
+			for (Entry<LObject<String>, Double> e : decisionEngine.estimateMissclassificationCosts(project).entrySet()){
+				cp.add(new DatumValue(e.getKey().getName(), e.getValue()));
 			}
 			setResult(cp);
 		}
@@ -151,8 +151,8 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
-			for (Entry<String, Double> e : Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project)).entrySet()){
-				cp.add(new DatumValue(e.getKey(), e.getValue()));
+			for (Entry<LObject<String>, Double> e : Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project)).entrySet()){
+				cp.add(new DatumValue(e.getKey().getName(), e.getValue()));
 			}
 			setResult(cp);
 		}

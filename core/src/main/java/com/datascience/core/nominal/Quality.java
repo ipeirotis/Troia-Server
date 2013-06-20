@@ -1,5 +1,6 @@
 package com.datascience.core.nominal;
 
+import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.decision.DecisionEngine;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.core.nominal.decision.ObjectLabelDecisionAlgorithms;
@@ -33,15 +34,15 @@ public class Quality {
 		return 1. - cost / getMinSpammerCost(project);
 	}
 	
-	static public Map<String, Double> fromCosts(NominalProject project, Map<String, Double> costs){
-		Map<String, Double> quality = new HashMap<String, Double>();
-		for (Map.Entry<String, Double> e: costs.entrySet()) {
+	static public <T> Map<T, Double> fromCosts(NominalProject project, Map<T, Double> costs){
+		Map<T, Double> quality = new HashMap<T, Double>();
+		for (Map.Entry<T, Double> e: costs.entrySet()) {
 			quality.put(e.getKey(), fromCost(project, e.getValue()));
 		}
 		return quality;
 	}
 
-	static public double getAverage(NominalProject project, Map<String, Double> costs){
+	static public double getAverage(NominalProject project, Map<?, Double> costs){
 		//sum of object qualities is: n - sum_of_costs/s, where s in minSpammerCost
 		int cnt = costs.size();
 		double costSum = 0.;
