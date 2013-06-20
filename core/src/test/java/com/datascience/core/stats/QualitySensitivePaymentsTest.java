@@ -12,6 +12,7 @@ import com.datascience.utils.CostMatrix;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -57,7 +58,6 @@ public class QualitySensitivePaymentsTest {
         data.addAssign(assign(3, object1, "cat1"));
         data.addAssign(assign(3, object2, "cat2"));
 
-
         project.setData(data);
         project.getAlgorithm().compute();
         QualitySensitivePaymentsCalculator wspq;
@@ -76,8 +76,8 @@ public class QualitySensitivePaymentsTest {
         CostMatrix<String> costMatrix = new CostMatrix<String>();
         costMatrix.add("A", "A", 0.0);
         costMatrix.add("A", "B", 1.0);
-        costMatrix.add("B", "A", 0.0);
-        costMatrix.add("B", "B", 1.0);
+        costMatrix.add("B", "A", 1.0);
+        costMatrix.add("B", "B", 0.0);
         NominalProject project = setUpNominalProject(categories, categoryPriors, costMatrix);
         INominalData data = project.getData();
         LObject<String> object1 = data.getOrCreateObject("object1");
@@ -109,10 +109,10 @@ public class QualitySensitivePaymentsTest {
                 System.out.println();
             }
             wspq = new QSPCalculators.Linear(project, w);
-            System.out.println(wspq.getWorkerWage(1.0, 0.01));
+            assertNotEquals(Double.NaN, wspq.getWorkerWage(1.0, 0.01));
 
             wspq = new QSPCalculators.RegressionBased(project, w);
-            System.out.println(wspq.getWorkerWage(1.0, 0.01));
+            assertNotEquals(Double.NaN, wspq.getWorkerWage(1.0, 0.01));
         }
     }
 }
