@@ -6,9 +6,10 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.Quality;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
+import com.datascience.core.stats.QSPCalculators;
+import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.stats.MatrixValue;
-import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
 
@@ -56,7 +57,7 @@ public class PredictionCommands {
 		protected void realExecute() {
 			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
 			for (Worker w : project.getData().getWorkers()){
-				QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
+				QualitySensitivePaymentsCalculator wspq = new QSPCalculators.RegressionBased(project, w);
 				wq.add(new WorkerValue<Double>(w.getName(), wspq.getWorkerWage(qualifiedWage, costThreshold)));
 			}
 			setResult(wq);

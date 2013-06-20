@@ -15,7 +15,7 @@ import java.util.Map;
  * User: artur
  * Date: 5/23/13
  */
-public class QualitySensitivePaymentsCalculator {
+public abstract class QualitySensitivePaymentsCalculator {
 
 	Collection<String> categories;
 	NominalProject project;
@@ -41,20 +41,14 @@ public class QualitySensitivePaymentsCalculator {
 
 		Double sum = 0.0;
 		for (String from : this.categories) {
-			double pi_c = priors.get(from);
-			double evidence = pi_c;
+			double evidence_from = priors.get(from);
 			for (String to : this.categories) {
 				Integer n  = draw.get(to);
 				double p = getErrorRate(from, to);
-				if (n!=0 && p!=0) {
-					evidence *= Math.pow(p, n);
-				}
-				if (p==0) {
-					evidence = 0;
-				}
+				evidence_from *= Math.pow(p, n);
 			}
-			posterior.put(from, evidence);
-			sum += evidence;
+			posterior.put(from, evidence_from);
+			sum += evidence_from;
 		}
 		for (Map.Entry<String, Double> c: posterior.entrySet()) {
 			c.setValue(c.getValue() / sum);
@@ -101,7 +95,7 @@ public class QualitySensitivePaymentsCalculator {
 			return getRandomLabelAssignment(m, objectCategory);
 	}
 
-	private Double getWorkerCost(int m, Map<String, Double> priors, int sample) {
+	protected Double getWorkerCost(int m, Map<String, Double> priors, int sample) {
 
 		Double cost = 0.0;
 
@@ -127,18 +121,11 @@ public class QualitySensitivePaymentsCalculator {
 		return de.estimateMissclassificationCost(project, distribution);
 	}
 
-	public Double getWorkerWage(double qualifiedWage, double costThreshold, Map<String, Double> priors) {
-		int m = 0;
-		double cost;
-		do {
-			m++;
-			cost = getWorkerCost(m, priors, 100*m);
-		} while (cost > costThreshold);
-
-		return qualifiedWage / m;
-	}
 
 	public Double getWorkerWage(double qualifiedWage, double costThreshold){
 		return getWorkerWage(qualifiedWage, costThreshold, project.getAlgorithm().getCategoryPriors());
 	}
+
+	abstract protected Double getWorkerWage(double qualifiedWage, double costThreshold, Map<String, Double> priors);
+
 }
