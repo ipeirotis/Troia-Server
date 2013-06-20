@@ -9,6 +9,8 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.utils.CostMatrix;
 
 /**
+ * Object of this class combines way of calculating labels probability distribution and choosing decision based
+ * on this info. It also estimates cost that is related to this decision.
  *
  * @author konrad
  */
