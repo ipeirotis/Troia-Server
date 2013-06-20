@@ -91,7 +91,7 @@ public class BaseTestScenario {
         }
     }
 
-    public double estimateMissclassificationCost(
+    public static double estimateMissclassificationCost(
             ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
             IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm) {
         DecisionEngine decisionEngine = new DecisionEngine(labelProbabilityDistributionCostCalculator,
@@ -109,7 +109,7 @@ public class BaseTestScenario {
         return avgClassificationCost;
     }
 
-    public double evaluateMissclassificationCost(String labelChoosingMethod) {
+    public static double evaluateMissclassificationCost(String labelChoosingMethod) {
         DataEvaluator dataEvaluator = new DataEvaluator(labelChoosingMethod);
 
         //compute the evaluated misclassification cost
@@ -126,7 +126,7 @@ public class BaseTestScenario {
         return avgCost;
     }
 
-    public double estimateCostToQuality(ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
+    public static double estimateCostToQuality(ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
             IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm) {
         DecisionEngine decisionEngine = new DecisionEngine(labelProbabilityDistributionCostCalculator, objectLabelDecisionAlgorithm);
         Map<LObject<String>, Double> costQuality = Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project));
@@ -143,7 +143,7 @@ public class BaseTestScenario {
         return avgQuality;
     }
 
-    public double evaluateCostToQuality(String labelChoosingMethod) {
+    public static double evaluateCostToQuality(String labelChoosingMethod) {
         DataEvaluator dataEvaluator = new DataEvaluator(labelChoosingMethod);
 
         Map<LObject<String>, Double> costQuality = Quality.fromCosts(project, dataEvaluator.evaluate(project));
@@ -159,7 +159,7 @@ public class BaseTestScenario {
         return avgQuality;
     }
 
-    public double estimateWorkerQuality(String method, String estimationType) {
+    public static double estimateWorkerQuality(String method, String estimationType) {
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator =
                 LabelProbabilityDistributionCostCalculators.get(method);
         WorkerEstimator workerEstimator = new WorkerEstimator(labelProbabilityDistributionCostCalculator);
@@ -174,7 +174,7 @@ public class BaseTestScenario {
         return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
-    public double evaluateWorkerQuality(String method, String estimationType) {
+    public static double evaluateWorkerQuality(String method, String estimationType) {
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator =
                 LabelProbabilityDistributionCostCalculators.get(method);
         WorkerEvaluator workerEvaluator = new WorkerEvaluator(labelProbabilityDistributionCostCalculator);
@@ -190,7 +190,7 @@ public class BaseTestScenario {
         return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
-    private <T> double getAverageValue(Map<T, Double> values, Map<T, Integer> weight) {
+    private static <T> double getAverageValue(Map<T, Double> values, Map<T, Integer> weight) {
         double quality = 0.;
         int cnt = 0;
         for (Map.Entry<T, Double> e : values.entrySet()) {
