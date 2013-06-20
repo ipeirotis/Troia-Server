@@ -12,6 +12,7 @@ import com.datascience.core.nominal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.utils.CostMatrix;
+import org.junit.Test;
 import test.java.integration.helpers.SummaryResultsParser;
 import test.java.integration.helpers.TestHelpers;
 import test.java.integration.helpers.TestSettings;
@@ -216,4 +217,36 @@ public class BaseTestScenario {
             assertTrue(Math.abs(expectedValue - actualValue) / 100 < TOLERANCE);
         }
     }
+
+	@Test
+	public void test_ProbabilityDistributions() {
+		HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+		Collection<LObject<String>> objects = data.getObjects();
+
+		//init the categoryProbabilities hashmap
+		HashMap<String, Double> categoryProbabilities = new HashMap<String, Double>();
+		for (String categoryName : data.getCategories()) {
+			categoryProbabilities.put(categoryName, 0.0);
+		}
+
+		//iterate through the datum objects and calculate the sum of the probabilities associated  to each category
+		int noObjects = objects.size();
+		for (LObject<String> object : objects) {
+			Map<String, Double> objectProbabilities = project.getObjectResults(object).getCategoryProbabilites();
+			for (Map.Entry<String, Double> e : objectProbabilities.entrySet()) {
+				categoryProbabilities.put(e.getKey(), categoryProbabilities.get(e.getKey()) + e.getValue());
+			}
+		}
+
+		//calculate the average probability value for each category
+		for (String categoryName : data.getCategories()) {
+			categoryProbabilities.put(categoryName, categoryProbabilities.get(categoryName) / noObjects);
+		}
+		for (String categoryName : data.getCategories()) {
+			String metricName = "[DS_Pr[" + categoryName + "]] DS estimate for prior probability of category " + categoryName;
+			Double expectedCategoryProbability = dataQuality.get(metricName);
+			Double actualCategoryProbability = categoryProbabilities.get(categoryName);
+			testCondition(expectedCategoryProbability, actualCategoryProbability);
+		}
+	}
 }
