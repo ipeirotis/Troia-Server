@@ -4,7 +4,7 @@ package com.datascience.gal.dataGenerator;
 import com.datascience.core.base.Worker;
 import com.google.common.base.Objects;
 
-public class ArtificialWorker extends Worker<String> {
+public class ArtificialWorker extends Worker {
 
 	/**
 	 * @return the confusionMatrix

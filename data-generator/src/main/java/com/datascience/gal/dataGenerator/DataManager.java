@@ -259,7 +259,7 @@ public class DataManager {
 									line.lastIndexOf('\t'));
 		objectCategory = line.substring(line.lastIndexOf('\t') + 1,
 										line.length());
-		return new AssignedLabel<String>(new Worker<String>(workerName), new LObject(objectName), objectCategory);
+		return new AssignedLabel<String>(new Worker(workerName), new LObject(objectName), objectCategory);
 	}
 
 	/**

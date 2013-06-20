@@ -21,20 +21,25 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	protected ResultsFactory.DatumResultCreator<U> datumCreator;
 	protected ResultsFactory.WorkerResultCreator<V> workerCreator;
 
-	public AbstractResults(ResultsFactory.DatumResultCreator<U> datumCreator, ResultsFactory.WorkerResultCreator<V> workerCreator){
-		this.datumCreator = datumCreator;
-		this.workerCreator = workerCreator;
+	public AbstractResults(){
 		newResultsListeners = new LinkedList<INewResultsListener<T, U, V>>();
 		notifyEnabled = false;
 	}
 
-	abstract protected U uncheckedGetDatumResults(LObject<T> obj);
-	abstract protected V uncheckedGetWorkerResult(Worker<T> worker);
+	public AbstractResults(ResultsFactory.DatumResultCreator<U> datumCreator, ResultsFactory.WorkerResultCreator<V> workerCreator){
+		this();
+		this.datumCreator = datumCreator;
+		this.workerCreator = workerCreator;
+	}
+
+	public ResultsFactory.WorkerResultCreator<V> getWorkerResultsCreator(){
+		return workerCreator;
+	}
 
 	@Override
-	public Map<Worker<T>, V> getWorkerResults(Collection<Worker<T>> workers){
-		Map<Worker<T>, V> results = new HashMap<Worker<T>, V>(workers.size());
-		for (Worker<T> worker: workers) {
+	public Map<Worker, V> getWorkerResults(Collection<Worker> workers){
+		Map<Worker, V> results = new HashMap<Worker, V>(workers.size());
+		for (Worker worker: workers) {
 			results.put(worker, uncheckedGetWorkerResult(worker));
 		}
 		return results;
@@ -67,7 +72,7 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	}
 
 	@Override
-	public V getOrCreateWorkerResult(Worker<T> wor){
+	public V getOrCreateWorkerResult(Worker wor){
 		V ret = uncheckedGetWorkerResult(wor);
 		if (ret == null){
 			ret = workerCreator.create();
@@ -76,12 +81,12 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 	}
 
 	@Override
-	public V createEmptyWorkerResult(Worker<T> wor){
+	public V createEmptyWorkerResult(Worker wor){
 		return workerCreator.create();
 	}
 
 	@Override
-	public V getWorkerResult(Worker<T> worker){
+	public V getWorkerResult(Worker worker){
 		V ret = uncheckedGetWorkerResult(worker);
 		checkArgument(ret != null,
 				"You have not run compute or there is no worker named " + worker.getName());
@@ -104,7 +109,7 @@ public abstract class AbstractResults<T, U, V> implements IResults<T, U, V>{
 		return notifyEnabled;
 	}
 
-	protected void notifyNewWorkerResults(Worker<T> worker, V result){
+	protected void notifyNewWorkerResults(Worker worker, V result){
 		if (!notifyEnabled) return;
 		for (INewResultsListener<T, U, V> newResultsListener: newResultsListeners){
 			newResultsListener.newResultsForWorker(worker, result);

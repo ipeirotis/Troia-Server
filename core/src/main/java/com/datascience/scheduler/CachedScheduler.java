@@ -52,11 +52,13 @@ public class CachedScheduler<T> extends Scheduler<T> {
 	}
 
 	@Override
-	public LObject<T> nextObject(Worker<T> worker) {
+	public LObject<T> nextObject(Worker worker) {
 		polled.cleanUp();
 		LObject<T> object = super.nextObject(worker);
-		polled.put(object.getName(), object);
-		queue.remove(object);
+		if (object != null) {
+			polled.put(object.getName(), object);
+			queue.remove(object);
+		}
 		return object;
 	}
 

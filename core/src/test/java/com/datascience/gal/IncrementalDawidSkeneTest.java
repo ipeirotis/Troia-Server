@@ -10,22 +10,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import com.datascience.core.algorithms.INewDataObserver;
-import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.decision.DecisionEngine;
-import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
-import com.datascience.core.nominal.decision.IObjectLabelDecisionAlgorithm;
-import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
-import com.datascience.core.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datascience.utils.auxl.TestDataManager;
@@ -61,7 +52,7 @@ public class IncrementalDawidSkeneTest {
 
 	@Test
 	public final void testGetErrorRateForWorker() {
-		Worker<String> w = new Worker<String>("worker1");
+		Worker w = new Worker("worker1");
 		project.getData().addWorker(w);
 		double errorRate = ((AbstractDawidSkene)project.getAlgorithm()).getErrorRateForWorker(
 				w,
@@ -75,7 +66,7 @@ public class IncrementalDawidSkeneTest {
 		LObject<String> obj = new LObject<String>("object");
 		project.getData().addObject(obj);
 		for (Double val : ((AbstractDawidSkene)project.getAlgorithm()).getObjectClassProbabilities(obj).values()){
-			assertEquals(0.0, val, TestDataManager.DELTA_DOUBLE);
+			assertEquals(0.5, val, TestDataManager.DELTA_DOUBLE);
 		}
 
 		LObject<String> gold = new LObject<String>("gold_object");

@@ -6,8 +6,9 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.Quality;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.stats.MatrixValue;
+import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
 
@@ -29,7 +30,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<Collection<MatrixValue<String>>>> wq = new ArrayList<WorkerValue<Collection<MatrixValue<String>>>>();
-			for (Entry<Worker<String>, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
+			for (Entry<Worker, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
 				Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
 				ConfusionMatrix confusionMatrix = e.getValue().getConfusionMatrix();
 				for (String c1 : confusionMatrix.getCategories())
@@ -40,6 +41,28 @@ public class PredictionCommands {
 			setResult(wq);
 		}
 	}
+
+	static public class GetWorkersPayments extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
+
+		double qualifiedWage;
+		double costThreshold;
+		public GetWorkersPayments(double qualifiedWage, double costThreshold){
+			super(false);
+			this.qualifiedWage = qualifiedWage;
+			this.costThreshold = costThreshold;
+		}
+
+		@Override
+		protected void realExecute() {
+			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
+			for (Worker w : project.getData().getWorkers()){
+				QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
+				wq.add(new WorkerValue<Double>(w.getName(), wspq.getWorkerWage(qualifiedWage, costThreshold)));
+			}
+			setResult(wq);
+		}
+	}
+
 
 	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
 		private WorkerQualityCalculator wqc;
@@ -52,7 +75,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
-			for (Worker<String> w : project.getData().getWorkers()){
+			for (Worker w : project.getData().getWorkers()){
 				wq.add(new WorkerValue<Double>(w.getName(), wqc.getQuality(project, w)));
 			}
 			setResult(wq);
@@ -166,7 +189,7 @@ public class PredictionCommands {
 
 			@Override
 			public List<List<Object>> call(){
-				String[] lda = new String[]{"MaxLikelihood", "MinCost"};
+				String[] lda = new String[]{"MinCost"}; // TROIA-393 {"MaxLikelihood", "MinCost"}
 				List<List<Object>> ret = new ArrayList<List<Object>>();
 
 				List<Object> header = new ArrayList<Object>();
@@ -194,7 +217,7 @@ public class PredictionCommands {
 		class GetWorkersQuality extends GetStatistics {
 
 			public List<List<Object>> call(){
-				String[] lca = new String[]{"MaxLikelihood", "MinCost", "ExpectedCost"};
+				String[] lca = new String[]{"MinCost", "ExpectedCost"}; // TROIA-393 {"MaxLikelihood", "MinCost", "ExpectedCost"}
 				List<List<Object>> ret = new ArrayList<List<Object>>();
 				List<Object> header = new ArrayList<Object>();
 
@@ -203,7 +226,7 @@ public class PredictionCommands {
 					header.add(lc);
 				ret.add(header);
 
-				for (Worker<String> w : project.getData().getWorkers()){
+				for (Worker w : project.getData().getWorkers()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(w.getName());
 					for (String lc : lca){

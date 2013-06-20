@@ -35,6 +35,7 @@ public abstract class ProjectCommand<T> {
 		try {
 			prepareExecution();
 			realExecute();
+			afterExecution();
 		} catch (Exception e) {
 			exception = e;
 		}
@@ -43,6 +44,8 @@ public abstract class ProjectCommand<T> {
 	protected abstract void prepareExecution() throws Exception;
 	
 	protected abstract void realExecute() throws Exception;
+
+	protected abstract void afterExecution() throws Exception;
 	
 	public boolean wasOk(){
 		return exception == null;

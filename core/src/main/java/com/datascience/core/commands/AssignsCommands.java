@@ -1,7 +1,7 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.*;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.commands.Utils.ShallowAssign;
 
 import java.util.Collection;
@@ -29,8 +29,8 @@ public class AssignsCommands {
 				Worker worker = data.getOrCreateWorker(al.worker);
 				LObject object = data.getOrCreateObject(al.object);
 				data.addAssign(new AssignedLabel(worker, object, al.label));
-				setResult("Assigns added");
 			}
+			setResult("Assigns added");
 		}
 	}
 	

@@ -11,7 +11,7 @@ public class WorkerEstimator extends WorkerQualityCalculator{
 	}
 
 	@Override
-	public double getError(NominalProject project, Worker<String> w, String from, String to) {
+	public double getError(NominalProject project, Worker w, String from, String to) {
 		NominalAlgorithm algorithm = (NominalAlgorithm) project.getAlgorithm();
 
 		return project.getResults().getWorkerResult(w).getErrorRate(

@@ -13,16 +13,16 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import com.datascience.core.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.commands.*;
 import com.datascience.core.commands.Utils.ShallowAssign;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.datascience.scheduler.SchedulerCommands;
-import com.datascience.core.jobs.IJobStorage;
 import com.datascience.serialization.ISerializer;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.executor.ProjectCommandExecutor;
 
 /**
@@ -40,8 +40,8 @@ public abstract class JobEntryBase<T extends Project> {
 	ProjectCommandExecutor executor;
 	ISerializer serializer;
 	ICommandStatusesContainer statusesContainer;
-	IJobStorage jobStorage;
 	JobsManager jobsManager;
+	JobsLocksManager jobsLocksManager;
 
 	Type objectsType;
 	Type assignsType;
@@ -57,21 +57,21 @@ public abstract class JobEntryBase<T extends Project> {
 	protected abstract JobCommand getPredictionZipCommand(String path);
 
 	public void postConstruct() throws Exception{
-		jobStorage = (IJobStorage) context.getAttribute(Constants.JOBS_STORAGE);
+		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 		responser = (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 		executor = (ProjectCommandExecutor) context.getAttribute(Constants.COMMAND_EXECUTOR);
 		statusesContainer = (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 		serializer = responser.getSerializer();
-		jobsManager = (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
+		jobsLocksManager = (JobsLocksManager) context.getAttribute(Constants.JOBS_LOCKS_MANAGER);
 
 		Logger.getAnonymousLogger().info(uriInfo.getPath());
 	}
 
 	protected Response buildResponseOnCommand(JobCommand command){
 		command.setJobId(jid);
-		command.setJobStorage(jobStorage);
+		command.setJobsManager(jobsManager);
 		RequestExecutorCommand rec = new RequestExecutorCommand(
-				statusesContainer.initNewStatus(), command, jobsManager.getLock(jid), statusesContainer);
+				statusesContainer.initNewStatus(), command, jobsLocksManager.getLock(jid), statusesContainer);
 		executor.add(rec);
 		return responser.makeRedirectResponse(String.format("responses/%s/%s/%s", rec.commandId, request.getMethod(), uriInfo.getPath()));
 	}
@@ -202,6 +202,6 @@ public abstract class JobEntryBase<T extends Project> {
 	@Path("nextObject/{wid:[a-zA-Z_0-9/:.-]+}")
 	@GET
 	public Response schedulerNextObject(@PathParam("wid") String worker){
-		return buildResponseOnCommand(new SchedulerCommands.GetNextObjectForWorker<T>(worker));
+		return buildResponseOnCommand(new SchedulerCommands.GetNextObjectForWorker(worker));
 	}
 }

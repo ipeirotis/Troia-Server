@@ -30,7 +30,7 @@ public class SchedulersForWorker {
 		protected CostBasedPriorityCalculator costCalculator;
 
 		@Override
-		public LObject<String> nextObjectForWorker(Iterator<LObject<String>> objects, Worker<String> worker) {
+		public LObject<String> nextObjectForWorker(Iterator<LObject<String>> objects, Worker worker) {
 			if (!results.hasWorkerResult(worker)){
 				return (objects.hasNext()) ? objects.next() : null;
 			}
@@ -106,7 +106,7 @@ public class SchedulersForWorker {
 		protected Project<T, ?, ?, ?> project;
 
 		@Override
-		public LObject<T> nextObjectForWorker(Iterator<LObject<T>> objects_it, Worker<T> worker) {
+		public LObject<T> nextObjectForWorker(Iterator<LObject<T>> objects_it, Worker worker) {
 			IData<T> data = project.getData();
 			while (objects_it.hasNext()) {
 				LObject<T> object = objects_it.next();

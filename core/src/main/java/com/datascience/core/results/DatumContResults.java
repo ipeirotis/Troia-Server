@@ -1,5 +1,7 @@
 package com.datascience.core.results;
 
+import com.google.common.base.Objects;
+
 public class DatumContResults {
 	
 	private Double							est_value;
@@ -45,5 +47,17 @@ public class DatumContResults {
 
 	public void setDistributionSigma(Double distributionSigma) {
 		this.distributionSigma = distributionSigma;
-	}	
+	}
+
+	@Override
+	public boolean equals(Object other){
+		if (other instanceof DatumContResults) {
+			DatumContResults obj = (DatumContResults) other;
+			return Objects.equal(est_value, obj.est_value) &&
+					Objects.equal(est_zeta, obj.est_zeta) &&
+					Objects.equal(distributionMu, obj.distributionMu) &&
+					Objects.equal(distributionSigma, obj.distributionSigma);
+		}
+		return false;
+	}
 }

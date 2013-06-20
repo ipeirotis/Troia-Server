@@ -3,8 +3,8 @@ package test.java.integration.tests.galc;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.datastoring.memory.InMemoryData;
-import com.datascience.core.datastoring.memory.InMemoryResults;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryResults;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.ResultsFactory;
 import com.datascience.core.results.WorkerContResults;
@@ -12,7 +12,6 @@ import com.datascience.galc.ContinuousIpeirotis;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.EmpiricalData;
 import org.junit.Test;
-import test.java.integration.helpers.FileWriters;
 import test.java.integration.helpers.ObjectsResultsParser;
 import test.java.integration.helpers.TestSettings;
 import test.java.integration.helpers.WorkersResultsParser;
@@ -35,7 +34,6 @@ public class ContinuousBaseTestScenario {
     public static final double TOLERANCE = 0.0000000001;
     protected static ContinuousIpeirotis algorithm;
     protected static ContinuousProject project;
-    protected static FileWriters fileWriter;
     protected static ObjectsResultsParser objectsResultsParser;
     protected static WorkersResultsParser workersResultsParser;
 
@@ -65,15 +63,11 @@ public class ContinuousBaseTestScenario {
         empData.loadGoldLabelsFile(inputDir + "goldObjects.txt");
         empData.loadTrueObjectData(inputDir + "evaluationObjects.txt");
 
-		project.setData(empData);
-		algorithm.setData(empData);
-		algorithm.setEpsilon(EPSILON);
-		algorithm.setIterations(MAX_ITERATIONS);
+	project.setData(empData);
+	algorithm.setData(empData);
+	algorithm.setEpsilon(EPSILON);
+	algorithm.setIterations(MAX_ITERATIONS);
         algorithm.compute();
-
-        //prepare the test results file
-        fileWriter = new FileWriters(RESULTS_BASE_DIR + "Results_" + testSetup.testName + ".csv");
-        fileWriter.write("Metric,Original GALC value,Troia value");
 
         objectsResultsParser = new ObjectsResultsParser();
         objectsResultsParser.ParseResultsObjectsFile(outputDir + "results-objects.txt");
@@ -85,7 +79,7 @@ public class ContinuousBaseTestScenario {
     @Test
     public void test_Objects_AverageLabel() {
         Map<String, Map<String, Double>> expEstObjects = objectsResultsParser.getEstimatedObjectValues();
-        Map<LObject<ContValue>, DatumContResults> objectsResult = algorithm.getObjectsResults();
+        Map<LObject<ContValue>, DatumContResults> objectsResult = project.getResults().getDatumResults(project.getData().getObjects());
         assertEquals(expEstObjects.size(), objectsResult.size());
         Iterator<Entry<LObject<ContValue>, DatumContResults>> entries = objectsResult.entrySet().iterator();
         while (entries.hasNext()) {
@@ -95,7 +89,6 @@ public class ContinuousBaseTestScenario {
             Double actualAvgLabel = algorithm.getAverageLabel(object);
             Double expectedAvgLabel = expEstObjects.get(objectName).get("avgLabel");
 
-            fileWriter.write("AvgLabel-" + objectName + "," + expectedAvgLabel + "," + actualAvgLabel);
             assertTrue(Math.abs(expectedAvgLabel - actualAvgLabel) < TOLERANCE);
         }
     }
@@ -103,7 +96,7 @@ public class ContinuousBaseTestScenario {
     @Test
     public void test_Objects_EstimatedValues() {
         Map<String, Map<String, Double>> expEstObjects = objectsResultsParser.getEstimatedObjectValues();
-        Map<LObject<ContValue>, DatumContResults> objectsResult = algorithm.getObjectsResults();
+        Map<LObject<ContValue>, DatumContResults> objectsResult = project.getResults().getDatumResults(project.getData().getObjects());
         assertEquals(expEstObjects.size(), objectsResult.size());
         Iterator<Entry<LObject<ContValue>, DatumContResults>> entries = objectsResult.entrySet().iterator();
         while (entries.hasNext()) {
@@ -117,9 +110,6 @@ public class ContinuousBaseTestScenario {
             Double expectedEstimatedValue = expEstObjects.get(objectName).get("estValue");
             Double expectedEstimatedZeta = expEstObjects.get(objectName).get("estZeta");
 
-            fileWriter.write("EstValue-" + objectName + "," + expectedEstimatedValue + "," + actualEstimatedValue);
-            fileWriter.write("EstValue-" + objectName + "," + expectedEstimatedZeta + "," + actualEstimatedZeta);
-
             assertTrue(Math.abs(expectedEstimatedValue - actualEstimatedValue) < TOLERANCE);
             assertTrue(Math.abs(expectedEstimatedZeta - actualEstimatedZeta) < TOLERANCE);
         }
@@ -128,16 +118,15 @@ public class ContinuousBaseTestScenario {
     @Test
     public void test_Workers_Labels() {
         Map<String, HashMap<String, Object>> expWorkersResults = workersResultsParser.getWorkersResults();
-        Map<Worker<ContValue>, WorkerContResults> workersResults = algorithm.getWorkersResults();
+        Map<Worker, WorkerContResults> workersResults = project.getResults().getWorkerResults(project.getData().getWorkers());
         assertEquals(expWorkersResults.size(), workersResults.size());
-        Iterator<Entry<Worker<ContValue>, WorkerContResults>> entries = workersResults.entrySet().iterator();
+        Iterator<Entry<Worker, WorkerContResults>> entries = workersResults.entrySet().iterator();
         while (entries.hasNext()) {
-            Entry<Worker<ContValue>, WorkerContResults> entry = entries.next();
-            Worker<ContValue> worker = entry.getKey();
+            Entry<Worker, WorkerContResults> entry = entries.next();
+            Worker worker = entry.getKey();
             String workerName = worker.getName();
             int expectedNoAssigns = Integer.parseInt(expWorkersResults.get(workerName).get("labels").toString());
             int actualNoAssigns = project.getData().getWorkerAssigns(worker).size();
-            fileWriter.write("NoAssigns-" + workerName + "," + expectedNoAssigns + "," + actualNoAssigns);
             assertEquals(expectedNoAssigns, actualNoAssigns);
         }
     }
@@ -145,12 +134,12 @@ public class ContinuousBaseTestScenario {
     @Test
     public void test_Workers_EstimatedValues() {
         Map<String, HashMap<String, Object>> expWorkersResults = workersResultsParser.getWorkersResults();
-        Map<Worker<ContValue>, WorkerContResults> workersResults = algorithm.getWorkersResults();
+        Map<Worker, WorkerContResults> workersResults = project.getResults().getWorkerResults(project.getData().getWorkers());
         assertEquals(expWorkersResults.size(), workersResults.size());
-        Iterator<Entry<Worker<ContValue>, WorkerContResults>> entries = workersResults.entrySet().iterator();
+        Iterator<Entry<Worker, WorkerContResults>> entries = workersResults.entrySet().iterator();
         while (entries.hasNext()) {
-            Entry<Worker<ContValue>, WorkerContResults> entry = entries.next();
-            Worker<ContValue> worker = entry.getKey();
+            Entry<Worker, WorkerContResults> entry = entries.next();
+            Worker worker = entry.getKey();
             String workerName = worker.getName();
             WorkerContResults workerContResults = entry.getValue();
             Double expectedEstMu = (Double) expWorkersResults.get(workerName).get("est_mu");
@@ -160,10 +149,6 @@ public class ContinuousBaseTestScenario {
             Double actualEstMu = workerContResults.getEst_mu();
             Double actualEstSigma = workerContResults.getEst_sigma();
             Double actualEstRho = workerContResults.getEst_rho();
-
-            fileWriter.write("Est_Mu_" + workerName + "," + expectedEstMu + "," + actualEstMu);
-            fileWriter.write("Est_Sigma_" + workerName + "," + expectedEstSigma + "," + actualEstSigma);
-            fileWriter.write("Est_Rho_" + workerName + "," + expectedEstRho + "," + actualEstRho);
 
             assertTrue(Math.abs(expectedEstMu - actualEstMu) < TOLERANCE);
             assertTrue(Math.abs(expectedEstSigma - actualEstSigma) < TOLERANCE);

@@ -1,10 +1,6 @@
 package com.datascience.service;
 
-import com.datascience.core.jobs.JobsManager;
-import com.datascience.core.jobs.IJobStorage;
-import com.datascience.executor.ICommandStatusesContainer;
-import com.datascience.executor.ProjectCommandExecutor;
-import com.datascience.serialization.ISerializer;
+import com.datascience.datastoring.jobs.JobsManager;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.spi.resource.Singleton;
 import org.apache.log4j.Logger;
@@ -52,6 +48,8 @@ public class ConfigEntry {
 		Boolean freezed = (Boolean) scontext.getAttribute(Constants.IS_FREEZED);
 		List<NameValue> items = new ArrayList<NameValue>();
 		for (String s : new ArrayList<String>(new TreeSet<String>(properties.stringPropertyNames()))){
+			if (s.equals(Constants.JOBS_STORAGE))
+				continue;
 			if (freezed && (s.startsWith("DB") || s.endsWith("PATH")))
 				continue;
 			items.add(new NameValue(s, properties.get(s)));
@@ -59,6 +57,8 @@ public class ConfigEntry {
 		model.put(Constants.IS_FREEZED, freezed);
 		model.put("items", items);
 		model.put(Constants.IS_INITIALIZED, scontext.getAttribute(Constants.IS_INITIALIZED));
+		model.put("storages", new String[] {"MEMORY_FULL", "MEMORY_KV", "MEMORY_KV_JSON", "MEMORY_KV_SIMPLE", "DB_FULL", "DB_KV_JSON", "DB_KV_SIMPLE"});
+		model.put(Constants.JOBS_STORAGE, ((Properties) scontext.getAttribute(Constants.PROPERTIES)).getProperty(Constants.JOBS_STORAGE));
 		return Response.ok(new Viewable("/config", model)).build();
 	}
 
@@ -68,10 +68,11 @@ public class ConfigEntry {
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
 			Map<String, String> simpleForm = new HashMap<String, String>();
 			for (String s : form.keySet()){
-				if (s.equals(Constants.IS_FREEZED))
+				String ts = Constants.t(s);
+				if (ts.equals(Constants.IS_FREEZED))
 					scontext.setAttribute(Constants.IS_FREEZED, true);
 				else
-					simpleForm.put(s, form.getFirst(s));
+					simpleForm.put(ts, form.getFirst(s));
 			}
 			InitializationSupport.destroyContext(scontext);
 			try{
@@ -80,7 +81,6 @@ public class ConfigEntry {
 				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
-			scontext.setAttribute(Constants.IS_INITIALIZED, true);
 		}
 		return Response.ok().build();
 	}
@@ -89,8 +89,9 @@ public class ConfigEntry {
 	@Path("resetDB")
 	public Response resetDB(){
 		if (!(Boolean)scontext.getAttribute(Constants.IS_FREEZED)){
+			JobsManager jm = (JobsManager) scontext.getAttribute(Constants.JOBS_MANAGER);
 			try {
-				((IJobStorage)scontext.getAttribute(Constants.JOBS_STORAGE)).clearAndInitialize();
+				jm.rebuild();
 			} catch (Exception e){
 				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -100,25 +101,10 @@ public class ConfigEntry {
 	}
 
 	private void initializeContext(Map<String, String> properties) throws SQLException, IOException, ClassNotFoundException {
+		//update properties
 		Properties props = (Properties) scontext.getAttribute(Constants.PROPERTIES);
 		props.putAll(properties);
-
-		ServiceComponentsFactory factory = new ServiceComponentsFactory(props);
-
-		ProjectCommandExecutor executor = factory.loadProjectCommandExecutor();
-		scontext.setAttribute(Constants.COMMAND_EXECUTOR, executor);
-
-		JobsManager jobsManager = factory.loadJobsManager();
-		scontext.setAttribute(Constants.JOBS_MANAGER, jobsManager);
-
-		ISerializer serializer = (ISerializer) scontext.getAttribute(Constants.SERIALIZER);
-
-		IJobStorage jobStorage = factory.loadJobStorage(props.getProperty(Constants.JOBS_STORAGE), serializer, executor, jobsManager);
-		scontext.setAttribute(Constants.JOBS_STORAGE, jobStorage);
-
-		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
-		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
-
-		scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
+		//and initialize context
+		InitializationSupport.initializeContext(scontext);
 	}
 }

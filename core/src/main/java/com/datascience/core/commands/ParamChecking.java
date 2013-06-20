@@ -19,8 +19,8 @@ public class ParamChecking {
 		return d;
 	}
 
-	public static <T> Worker<T> worker(IData<T> data, String workerId){
-		Worker<T> w = data.getWorker(workerId);
+	public static <T> Worker worker(IData<T> data, String workerId){
+		Worker w = data.getWorker(workerId);
 		if (w == null) {
 			throw new IllegalArgumentException("No worker with id: " + workerId);
 		}

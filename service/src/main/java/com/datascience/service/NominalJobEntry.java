@@ -2,8 +2,7 @@ package com.datascience.service;
 
 
 import com.datascience.serialization.json.JSONUtils;
-import com.datascience.core.jobs.JobCommand;
-import com.datascience.gal.AbstractDawidSkene;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.gal.commands.*;
 import com.datascience.core.nominal.decision.*;
@@ -106,6 +105,13 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	@GET
 	public Response getWorkersConfusionMatrices(){
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersConfusionMatrix());
+	}
+
+	@Path("workers/quality/payment/")
+	@GET
+	public Response getWorkersPayments(@DefaultValue("1.0") @QueryParam("qualifiedWage") double qualifiedWage,
+									   @DefaultValue("0.01") @QueryParam("costThreshold") double costThreshold){
+		return buildResponseOnCommand(new PredictionCommands.GetWorkersPayments(qualifiedWage, costThreshold));
 	}
 
 	@Override

@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import com.datascience.core.jobs.IJobStorage;
-import com.datascience.core.jobs.JobsManager;
-import com.datascience.core.storages.*;
+import com.datascience.datastoring.jobs.IJobStorage;
+import com.datascience.datastoring.jobs.JobFactory;
+import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.datastoring.jobs.JobsLocksManager;
+import com.datascience.datastoring.storages.*;
 import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.SerializedCachedCommandStatusesContainer;
 import com.datascience.serialization.ISerializer;
@@ -32,7 +34,7 @@ public class ServiceComponentsFactory {
 		this.properties = properties;
 	}
 	
-	public IJobStorage loadJobStorage(String type, ISerializer serializer, ProjectCommandExecutor executor, JobsManager jobsManager)
+	public IJobStorage loadJobStorage(String type, ISerializer serializer, ProjectCommandExecutor executor, JobsLocksManager jobsLocksManager)
 			throws IOException, ClassNotFoundException, SQLException {
 		logger.info("Loading " + type + " job storage");
 		Properties connectionProperties = new Properties();
@@ -41,11 +43,16 @@ public class ServiceComponentsFactory {
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
 
-		IJobStorage internalJobStorage = JobStorageFactory.create(type, connectionProperties, properties, serializer);
-		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsManager);
-		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
-		logger.info("Job Storage loaded");
+		IJobStorage jobStorage = JobStorageFactory.create(type, connectionProperties, properties, serializer);
+//		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsLocksManager);
+//		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
+		logger.info("Job Storage loaded: " + jobStorage.toString());
 		return jobStorage;
+	}
+
+	public JobsManager loadJobManager(IJobStorage jobStorage, ISerializer serializer) {
+		JobFactory jobFactory = new JobFactory(serializer, jobStorage);
+		return new JobsManager(jobStorage, jobFactory);
 	}
 	
 	public IRandomUniqIDGenerator loadIdGenerator(){
@@ -71,7 +78,7 @@ public class ServiceComponentsFactory {
 		return new ResponseBuilder(serializer);
 	}
 	
-	public JobsManager loadJobsManager() {
-		return new JobsManager();
+	public JobsLocksManager loadJobsManager() {
+		return new JobsLocksManager();
 	}
 }

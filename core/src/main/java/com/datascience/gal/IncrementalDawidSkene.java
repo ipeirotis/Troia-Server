@@ -14,14 +14,13 @@ import java.util.*;
 
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.base.*;
-import com.datascience.core.nominal.IncrementalNominalModel;
+import com.datascience.core.nominal.IIncrementalNominalModel;
+import com.datascience.datastoring.datamodels.memory.IncrementalNominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.nominal.CategoryPriorCalculators;
 import com.datascience.core.stats.ErrorRateCalculators;
 import com.google.gson.reflect.TypeToken;
-
-import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 /**
  * fully incremental version of DS- adjustments to the data structures are made
@@ -34,7 +33,7 @@ import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBase
 public class IncrementalDawidSkene extends AbstractDawidSkene
 			implements INewDataObserver<String> {
 
-	private IncrementalNominalModel model;
+	private IIncrementalNominalModel model;
 
 	public IncrementalDawidSkene() {
 		super(
@@ -44,7 +43,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	@Override
-	public IncrementalNominalModel getModel() {
+	public IIncrementalNominalModel getModel() {
 		return model;
 	}
 
@@ -55,7 +54,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	@Override
 	public void setModel(Object o){
-		model = (IncrementalNominalModel) o;
+		model = (IIncrementalNominalModel) o;
 	}
 
 	@Override
@@ -80,7 +79,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		//(https://project-troia.atlassian.net/browse/TROIA-347?focusedCommentId=12704&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12704)
 		Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), assign.getWorker());
 		if (probabilities == null)
-			probabilities = getPriorBasedDistribution(data, this);
+			probabilities = getCategoryPriors();
 		for (AssignedLabel<String> al : data.getAssignsForObject(assign.getLobject())){
 			WorkerResult wr = results.getOrCreateWorkerResult(al.getWorker());
 			for (Map.Entry<String, Double> e : probabilities.entrySet()){
@@ -93,19 +92,23 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 
 	private void undoPriorInfluence(Map<String, Double> probabilites){
 		if (probabilites != null && probabilites.size() > 0){
-			model.priorDenominator--;
-			for (Map.Entry<String, Double> e : model.categoryPriors.entrySet()){
+			model.setPriorDenominator(model.getPriorDenominator()-1);
+			Map<String, Double> priors = model.getCategoryPriors();
+			for (Map.Entry<String, Double> e : priors.entrySet()){
 				e.setValue(e.getValue() - probabilites.get(e.getKey()));
 			}
+			model.setCategoryPriors(priors);
 		}
 	}
 
 	private void makePriorInfluence(Map<String, Double> probabilites){
 		if (probabilites != null){
-			model.priorDenominator++;
-			for (Map.Entry<String, Double> e : model.categoryPriors.entrySet()){
+			model.setPriorDenominator(model.getPriorDenominator()+1);
+			Map<String, Double> priors = model.getCategoryPriors();
+			for (Map.Entry<String, Double> e : priors.entrySet()){
 				e.setValue(e.getValue() + probabilites.get(e.getKey()));
 			}
+			model.setCategoryPriors(priors);
 		}
 	}
 
@@ -118,7 +121,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 	}
 
 	@Override
-	public void newWorker(Worker<String> worker) {
+	public void newWorker(Worker worker) {
 	}
 }
 

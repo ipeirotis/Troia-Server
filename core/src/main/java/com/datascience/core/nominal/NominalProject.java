@@ -14,6 +14,7 @@ import java.util.Collection;
 public class NominalProject extends Project<String, INominalData, DatumResult, WorkerResult> {
 
 	protected NominalAlgorithm nomAlgorithm;
+	public static final String kind = "NOMINAL";
 
 	public NominalProject(Algorithm algorithm1, INominalData data, IResults<String, DatumResult, WorkerResult> results){
 		super(algorithm1, data, results);
@@ -29,7 +30,7 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 
 	@Override
 	public String getKind(){
-		return "NOMINAL";
+		return kind;
 	}
 
 	public void initializeCategories(Collection<String> categories, Collection<CategoryValue> categoryPriors, CostMatrix<String> costMatrix){
