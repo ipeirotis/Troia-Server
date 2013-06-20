@@ -57,7 +57,7 @@ public class PredictionCommands {
 		protected void realExecute() {
 			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
 			for (Worker w : project.getData().getWorkers()){
-				QualitySensitivePaymentsCalculator wspq = new QSPCalculators.RegressionBased(project, w);
+				QualitySensitivePaymentsCalculator wspq = new QSPCalculators.Linear(project, w);
 				wq.add(new WorkerValue<Double>(w.getName(), wspq.getWorkerWage(qualifiedWage, costThreshold)));
 			}
 			setResult(wq);
