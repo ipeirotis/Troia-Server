@@ -56,9 +56,8 @@ public class QualitySensitivePaymentsCalculator {
 			posterior.put(from, evidence);
 			sum += evidence;
 		}
-		for (String c: posterior.keySet()) {
-			double existing = posterior.get(c);
-			posterior.put(c, existing/sum);
+		for (Map.Entry<String, Double> c: posterior.entrySet()) {
+			c.setValue(c.getValue() / sum);
 		}
 		return posterior;
 	}
@@ -93,8 +92,8 @@ public class QualitySensitivePaymentsCalculator {
 
 		// Double check that we assigned exactly m elements in the draw
 		int sum = 0;
-		for (String s : draw.keySet()) {
-			sum += draw.get(s);
+		for (Integer d : draw.values()) {
+			sum += d;
 		}
 		if (sum == m)
 			return draw;
@@ -106,13 +105,13 @@ public class QualitySensitivePaymentsCalculator {
 
 		Double cost = 0.0;
 
-		for (String objectCategory : priors.keySet()) {
+		for (Map.Entry<String, Double> objectCategory: priors.entrySet()) {
 
-			Double pi = priors.get(objectCategory);
+			Double pi = objectCategory.getValue();
 
 			Double c = 0.0;
 			for (int i = 0; i<sample; i++) {
-				Map<String, Integer> draw = getRandomLabelAssignment(m, objectCategory);
+				Map<String, Integer> draw = getRandomLabelAssignment(m, objectCategory.getKey());
 				Map<String, Double> posterior = getPosterior(priors, draw);
 				c += getMinCostLabelCost(project, posterior);
 			}
