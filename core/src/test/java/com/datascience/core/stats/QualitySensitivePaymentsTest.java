@@ -74,6 +74,7 @@ public class QualitySensitivePaymentsTest {
 
     @Test
     public void testSpammerWage() {
+        double tolerance = 0.0;
         Collection<String> categories = Arrays.asList(new String[]{"A", "B"});
         Collection<CategoryValue> categoryPriors = Arrays.asList(new CategoryValue("A", 0.5), new CategoryValue("B", 0.5));
         CostMatrix<String> costMatrix = new CostMatrix<String>();
@@ -83,52 +84,47 @@ public class QualitySensitivePaymentsTest {
         costMatrix.add("B", "B", 0.0);
         NominalProject project = setUpNominalProject(categories, categoryPriors, costMatrix);
 
-		WorkerResult wr;
-		Worker wGood = new Worker("wGood");
-		wr = project.getResults().getOrCreateWorkerResult(wGood);
-		wr.empty();
-		wr.addError("A", "B", 0.);
-		wr.addError("A", "A", 1.);
-		wr.addError("B", "A", 0.);
-		wr.addError("B", "B", 1.);
-		project.getResults().addWorkerResult(wGood, wr);
+        WorkerResult wr;
+        Worker wGood = new Worker("wGood");
+        wr = project.getResults().getOrCreateWorkerResult(wGood);
+        wr.empty();
+        wr.addError("A", "B", 0.);
+        wr.addError("A", "A", 1.);
+        wr.addError("B", "A", 0.);
+        wr.addError("B", "B", 1.);
+        project.getResults().addWorkerResult(wGood, wr);
 
-		Worker wSpamm = new Worker("wSpamm");
-		wr = project.getResults().getOrCreateWorkerResult(wSpamm);
-		wr.empty();
-		wr.addError("A", "B", 1.);
-		wr.addError("A", "A", 0.);
-		wr.addError("B", "A", 0.);
-		wr.addError("B", "B", 1.);
-		project.getResults().addWorkerResult(wSpamm, wr);
+        Worker wSpamm = new Worker("wSpamm");
+        wr = project.getResults().getOrCreateWorkerResult(wSpamm);
+        wr.empty();
+        wr.addError("A", "B", 1.);
+        wr.addError("A", "A", 0.);
+        wr.addError("B", "A", 0.);
+        wr.addError("B", "B", 1.);
+        project.getResults().addWorkerResult(wSpamm, wr);
 
-		Worker wOpos = new Worker("wOpos");
-		wr = project.getResults().getOrCreateWorkerResult(wOpos);
-		wr.empty();
-		wr.addError("A", "B", 1.);
-		wr.addError("A", "A", 0.);
-		wr.addError("B", "A", 1.);
-		wr.addError("B", "B", 0.);
-		project.getResults().addWorkerResult(wOpos, wr);
+        Worker wOpos = new Worker("wOpos");
+        wr = project.getResults().getOrCreateWorkerResult(wOpos);
+        wr.empty();
+        wr.addError("A", "B", 1.);
+        wr.addError("A", "A", 0.);
+        wr.addError("B", "A", 1.);
+        wr.addError("B", "B", 0.);
+        project.getResults().addWorkerResult(wOpos, wr);
 
-
-		QualitySensitivePaymentsCalculator wspq;
-		IErrorRateCalculator errCalc = project.getAlgorithm().getErrorRateCalculator();
+        QualitySensitivePaymentsCalculator wspq;
         for (Worker w : Lists.newArrayList(wGood, wSpamm, wOpos)) {
-            System.out.println(w.getName());
-            for (String line : categories) {
-                for (String col : categories) {
-                    System.out.print(project.getWorkerResults(w).getErrorRate(errCalc, line, col) + " ");
-                }
-                System.out.println();
-            }
             wspq = new QSPCalculators.Linear(project, w);
-            assertNotEquals(Double.NaN, wspq.getWorkerWage(1.0, 0.01));
-			System.out.println(wspq.getWorkerWage(1.0, 0.01));
-
-			// This one doesn't work
+            double workerWage = wspq.getWorkerWage(1.0, 0.01);
+            if (w.getName().equals("wSpamm")) {
+                assertEquals(0.0, workerWage, tolerance);
+            } 
+            else {
+                assertEquals(1.0, workerWage, tolerance);
+            }
+        }
+        // This one doesn't work
 //            wspq = new QSPCalculators.RegressionBased(project, w);
 //            assertNotEquals(Double.NaN, wspq.getWorkerWage(1.0, 0.01));
-        }
     }
 }
