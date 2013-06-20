@@ -3,6 +3,7 @@ package com.datascience.core.results;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.CategoryPair;
 import com.datascience.core.stats.*;
+import com.google.common.base.Objects;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -87,5 +88,13 @@ public class WorkerResult {
 			}
 		}
 		eval_cm.normalize();
+	}
+
+	@Override
+	public boolean equals(Object other){
+		if (other instanceof WorkerResult) {
+			return Objects.equal(cm, ((WorkerResult) other).cm);
+		}
+		return false;
 	}
 }

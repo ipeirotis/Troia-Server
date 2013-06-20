@@ -12,5 +12,5 @@ public interface INewResultsListener<T, U, V> {
 
 	void newResultsForObject(LObject<T> object, U results);
 
-	void newResultsForWorker(Worker<T> worker, V results);
+	void newResultsForWorker(Worker worker, V results);
 }

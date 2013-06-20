@@ -1,9 +1,11 @@
 package com.datascience.core.nominal;
 
+import com.datascience.core.nominal.decision.DecisionEngine;
+import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
+import com.datascience.core.nominal.decision.ObjectLabelDecisionAlgorithms;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 /**
  *
@@ -12,46 +14,23 @@ import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBase
 public class Quality {
 
 	/**
-	 * Gets as input a "soft label" (i.e., a distribution of probabilities over
-	 * classes) and returns the smallest possible cost for this soft label.
-	 *
-	 * @return The expected cost of this soft label
-	 */
-	static private double getMinSoftLabelCost(Map<String, Double> probabilities, INominalData data) {
-
-		double min_cost = Double.MAX_VALUE;
-
-		for (String c1 : probabilities.keySet()) {
-			// So, with probability p1 it belongs to class c1
-			// Double p1 = probabilities.get(c1);
-
-			// What is the cost in this case?
-			double costfor_c2 = 0.0;
-			for (String c2 : probabilities.keySet()) {
-				// With probability p2 it actually belongs to class c2
-				double p2 = probabilities.get(c2);
-				Double cost = data.getCostMatrix().getCost(c1, c2);
-				costfor_c2 += p2 * cost;
-
-			}
-			min_cost = Math.min(min_cost, costfor_c2);
-		}
-
-		return min_cost;
-	}
-
-	/**
 	 * Returns the minimum possible cost of a "spammer" worker, who assigns
 	 * completely random labels.
 	 *
 	 * @return The expected cost of a spammer worker
 	 */
-	static public double getMinSpammerCost(INominalData data, NominalAlgorithm alg) {
-		return getMinSoftLabelCost(getPriorBasedDistribution(data, alg), data);
+	static public double getMinSpammerCost(NominalProject project) {
+		DecisionEngine de = new DecisionEngine(new LabelProbabilityDistributionCostCalculators.SelectedLabelBased(new ObjectLabelDecisionAlgorithms.MinCostDecisionAlgorithm()), null);
+		return de.estimateMissclassificationCost(project, project.getAlgorithm().getCategoryPriors());
+	}
+
+	static public double getExpSpammerCost(NominalProject project){
+		DecisionEngine de = new DecisionEngine(new LabelProbabilityDistributionCostCalculators.ExpectedCostAlgorithm(), null);
+		return de.estimateMissclassificationCost(project, project.getAlgorithm().getCategoryPriors());
 	}
 
 	static public double fromCost(NominalProject project, double cost){
-		return 1. - cost / getMinSpammerCost(project.getData(), project.getAlgorithm());
+		return 1. - cost / getMinSpammerCost(project);
 	}
 	
 	static public Map<String, Double> fromCosts(NominalProject project, Map<String, Double> costs){
@@ -69,7 +48,7 @@ public class Quality {
 		for (Double val : costs.values()){
 			costSum += val;
 		}
-		return (cnt - costSum/getMinSpammerCost(project.getData(), project.getAlgorithm())) / cnt;
+		return (cnt - costSum/getMinSpammerCost(project)) / cnt;
 
 	}
 }

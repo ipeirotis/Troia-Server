@@ -7,7 +7,7 @@ import com.datascience.core.nominal.INominalData;
 import com.datascience.core.nominal.NominalProject;
 import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
-import com.datascience.core.storages.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.mv.IncrementalMV;
 import org.junit.Test;
 
@@ -32,8 +32,8 @@ public class CostBasedPriorityCalculatorTest {
 		return project;
 	}
 
-	protected Worker<String> worker(int i){
-		return new Worker<String>("Worker" + i);
+	protected Worker worker(int i){
+		return new Worker("Worker" + i);
 	}
 
 	protected AssignedLabel<String> assign(int i, LObject<String> obj, String label){
@@ -48,7 +48,7 @@ public class CostBasedPriorityCalculatorTest {
 				LabelProbabilityDistributionCostCalculators.get(costMethod);
 		IPriorityCalculator<String> pc = new CostBasedPriorityCalculator(lpdcc);
 		Scheduler<String> scheduler = new Scheduler<String>(project, pc);
-		Worker<String> worker = new Worker<String>("Worker1");
+		Worker worker = new Worker("Worker1");
 		INominalData data = project.getData();
 		LObject<String> object1 = data.getOrCreateObject("object1");
 		LObject<String> object2 = data.getOrCreateObject("object2");

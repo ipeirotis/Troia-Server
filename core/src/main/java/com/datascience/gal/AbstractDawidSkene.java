@@ -9,21 +9,17 @@
  ******************************************************************************/
 package com.datascience.gal;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.datascience.core.base.*;
 import com.datascience.core.nominal.NominalAlgorithm;
-import com.datascience.core.nominal.NominalModel;
 import com.datascience.core.results.DatumResult;
 import com.datascience.core.nominal.ICategoryPriorCalculator;
+import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.IErrorRateCalculator;
 import com.datascience.utils.ProbabilityDistributions;
-import com.google.gson.reflect.TypeToken;
-
-import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
@@ -39,31 +35,27 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		return errorRateCalculator;
 	}
 
-	@Override
-	public Type getModelType() {
-		return new TypeToken<NominalModel>() {} .getType();
-	}
-
-	@Override
-	public void setModel(Object o){
-		model = (NominalModel) o;
-	}
-
-	public double getErrorRateForWorker(Worker<String> worker, String from, String to){
-		return results.getOrCreateWorkerResult(worker).getErrorRate(errorRateCalculator, from, to);
+	public double getErrorRateForWorker(Worker worker, String from, String to){
+		WorkerResult wr = results.uncheckedGetWorkerResult(worker);
+		if (wr == null){
+			wr = results.createEmptyWorkerResult(worker);
+			results.addWorkerResult(worker, wr);
+		}
+		return wr.getErrorRate(errorRateCalculator, from, to);
 	}
 
 	protected double getLogLikelihood() {
 		double result = 0;
-		for (AssignedLabel<String> al : data.getAssigns()){
-			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(al.getLobject()).getCategoryProbabilites();
-			for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
-				Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
-				if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
-					continue;
-				else
-					result += Math.log(e.getValue()) + Math.log(labelingProbability);
-
+		for (LObject<String> obj : data.getObjects()){
+			Map<String, Double> estimatedCorrectLabel = results.getDatumResult(obj).getCategoryProbabilites();
+			for (AssignedLabel<String> al : data.getAssignsForObject(obj)){
+				for (Map.Entry<String, Double> e: estimatedCorrectLabel.entrySet()){
+					Double labelingProbability = getErrorRateForWorker(al.getWorker(), e.getKey(), al.getLabel());
+					if (e.getValue() == 0. || Double.isNaN(labelingProbability) || labelingProbability == 0.)
+						continue;
+					else
+						result += Math.log(e.getValue()) + Math.log(labelingProbability);
+				}
 			}
 		}
 		return result;
@@ -100,14 +92,14 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 			}
 		}
 
-		model.categoryPriors = priors;
+		model.setCategoryPriors(priors);
 	}
 
 	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object) {
 		return getObjectClassProbabilities(object, null);
 	}
 
-	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker<String> workerToIgnore) {
+	protected Map<String, Double> getObjectClassProbabilities(LObject<String> object, Worker workerToIgnore) {
 		Map<String, Double> result = new HashMap<String, Double>();
 
 		// If this is a gold example, just put the probability estimate to be
@@ -126,7 +118,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 		}
 
 		if (labels.isEmpty()){
-			return getPriorBasedDistribution(getData(), this);
+			return getCategoryPriors();
 		}
 
 		// If it is not gold, then we proceed to estimate the class
@@ -135,7 +127,6 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 		// Estimate denominator for Eq 2.5 of Dawid&Skene, which is the same
 		// across all categories
-		double denominator = 0.0;
 
 		// To compute the denominator, we also compute the nominators across
 		// all categories, so it saves us time to save the nominators as we
@@ -149,7 +140,7 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 
 			// We go through all the labels assigned to the d object
 			for (AssignedLabel<String> al : data.getAssignsForObject(object)) {
-				Worker<String> w = al.getWorker();
+				Worker w = al.getWorker();
 
 				// If we are trying to estimate the category probability
 				// distribution
@@ -164,22 +155,33 @@ public abstract class AbstractDawidSkene extends NominalAlgorithm {
 				double evidence_for_category = getErrorRateForWorker(w, category, assigned_category);
 				if (Double.isNaN(evidence_for_category))
 					continue;
-				categoryNominator *= evidence_for_category;
+
+				if (evidence_for_category == 0.){
+					categoryNominator = Double.NEGATIVE_INFINITY;
+					break;
+				}
+				categoryNominator += Math.log(evidence_for_category);
 			}
 
 			categoryNominators.put(category, categoryNominator);
-			denominator += categoryNominator;
 		}
+		double M = Double.NEGATIVE_INFINITY;
+		for (double log_ci: categoryNominators.values()){
+			M = Math.max(log_ci, M);
+		}
+		if (M == Double.NEGATIVE_INFINITY) {
+			return null; // all returned zero so denominator would be 0
+		}
+		double denominator = 0.;
+		for (double log_ci: categoryNominators.values()){
+			denominator += Math.exp(log_ci - M);
+		}
+		denominator = Math.log(denominator) + M;
 
 		for (String c : data.getCategories()) {
-			double nominator = categoryNominators.get(c);
-			if (denominator == 0.0) {
-				// result.put(category, 0.0);
-				return null;
-			} else {
-				double probability = com.datascience.utils.Utils.round(nominator / denominator, 5);
-				result.put(c, probability);
-			}
+			double log_nominator = categoryNominators.get(c);
+			double probability = Math.exp(log_nominator - denominator);
+			result.put(c, probability);
 		}
 
 		return result;

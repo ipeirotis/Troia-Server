@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html"
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -30,6 +31,16 @@
                     </tr>
                 </c:forEach>
                 <tr>
+                    <td>JOBS_STORAGE</td>
+                    <td>
+                        <select name="JOBS_STORAGE">
+                            <c:forEach var="item" items="${it.storages}">
+                                <option value="${item}" <c:if test="${it.JOBS_STORAGE == item}">selected="selected"</c:if>>${item}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="2"><input type="checkbox" name="IS_FREEZED"
                         <c:if test="${it.IS_FREEZED}">checked disabled</c:if>
                     >settings freezed?</td>
@@ -40,7 +51,7 @@
 		    <input type="submit" value="Submit">
         </c:if>
 	</form>
-	<c:if test="${!it.IS_FREEZED && it.IS_INITIALIZED}">
+	<c:if test="${!it.IS_FREEZED && it.IS_INITIALIZED && fn:startsWith(it.JOBS_STORAGE, 'DB')}">
         <form method="post" action="config/resetDB" id="db_form">
             <input type="submit" value="recreate (drop and create) database"/>
         </form>

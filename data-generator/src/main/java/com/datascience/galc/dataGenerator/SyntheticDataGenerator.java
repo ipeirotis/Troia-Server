@@ -75,7 +75,7 @@ public class SyntheticDataGenerator {
 		}
 		
 		for (int i = 0; i < workersCount; i++) {
-			Worker<ContValue> w = new Worker<ContValue>("Worker" + (i + 1));
+			Worker w = new Worker("Worker" + (i + 1));
 			WorkerContResults wcr = new WorkerContResults();
 			wcr.setTrueMu(muGenerator.nextData());
 			wcr.setTrueSigma(sigmaGenerator.nextData());
@@ -85,10 +85,10 @@ public class SyntheticDataGenerator {
 		
 		// Generate assigned labels (observation values y_ij).
 		for (Map.Entry<LObject<ContValue>, DatumContResults> dr : data.getObjectContResults().entrySet()){
-			for (Map.Entry<Worker<ContValue>, WorkerContResults> wr : data.getWorkerContResults().entrySet()){
+			for (Map.Entry<Worker, WorkerContResults> wr : data.getWorkerContResults().entrySet()){
 				LObject<ContValue> lo = dr.getKey();
 				DatumContResults dcr = dr.getValue();
-				Worker<ContValue> w = wr.getKey();
+				Worker w = wr.getKey();
 				WorkerContResults wcr = wr.getValue();
 				ContValue label = lo.isGold() ? lo.getGoldLabel() : lo.getEvaluationLabel();
 				Double datum_z = (label.getValue() - this.dataMu) / this.dataSigma;

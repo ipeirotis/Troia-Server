@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.base.Objects;
 import org.apache.log4j.Logger;
 
 import com.datascience.core.base.AssignedLabel;
@@ -74,7 +75,7 @@ public class WorkerContResults {
 			double label = al.getLabel().getValue();
 			Double z = (label - getEst_mu()) / getEst_sigma();
 			AssignedLabel zl = new AssignedLabel<ContValue>(al.getWorker(), al.getLobject(), new ContValue(z));
-			getZetaValues().add(zl);
+			zeta.add(zl);
 		}
 	}
 
@@ -152,6 +153,21 @@ public class WorkerContResults {
 	public static Double estimatedAbsZetaError(Double rho) {
 
 		return Math.sqrt(1 - Math.pow(rho,2)) * Math.sqrt(2) / Math.sqrt(Math.PI);
+	}
+
+	@Override
+	public boolean equals(Object other){
+		if (other instanceof WorkerContResults) {
+			WorkerContResults obj = (WorkerContResults) other;
+			return Objects.equal(est_mu, obj.est_mu) &&
+					Objects.equal(est_rho, obj.est_rho) &&
+					Objects.equal(est_sigma, obj.est_sigma) &&
+					Objects.equal(true_mu, obj.true_mu) &&
+					Objects.equal(true_rho, obj.true_rho) &&
+					Objects.equal(true_sigma, obj.true_sigma) &&
+					Objects.equal(zeta, obj.zeta);
+		}
+		return false;
 	}
 
 }

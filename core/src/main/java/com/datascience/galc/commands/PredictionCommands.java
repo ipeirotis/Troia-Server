@@ -5,7 +5,7 @@ import java.util.*;
 import com.datascience.core.base.ContValue;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.WorkerContResults;
@@ -57,7 +57,7 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<WorkerContQuality> result = new LinkedList<WorkerContQuality>();
-			for (Map.Entry<Worker<ContValue>, WorkerContResults> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
+			for (Map.Entry<Worker, WorkerContResults> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
 				result.add(new WorkerContQuality(e.getKey().getName(), e.getValue()));
 			}
 			setResult(result);
@@ -98,7 +98,7 @@ public class PredictionCommands {
 				for (LObject o : project.getData().getObjects()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(o.getName());
-					DatumContResults res = project.getDataPrediction().get(o);
+					DatumContResults res = project.getResults().getDatumResult(o);
 					line.add(res.getEst_value());
 					line.add(res.getEst_zeta());
 					ret.add(line);
@@ -117,7 +117,7 @@ public class PredictionCommands {
 				for (Worker w : project.getData().getWorkers()){
 					List<Object> line = new ArrayList<Object>();
 					line.add(w.getName());
-					WorkerContResults res = project.getWorkerPrediction().get(w);
+					WorkerContResults res = project.getResults().getWorkerResult(w);
 					line.add(res.getEst_mu());
 					line.add(res.getEst_rho());
 					line.add(res.getEst_sigma());

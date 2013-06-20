@@ -2,7 +2,7 @@ package com.datascience.core.commands;
 
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 
 import java.util.Collection;
 

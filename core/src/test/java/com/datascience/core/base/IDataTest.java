@@ -1,10 +1,10 @@
 package com.datascience.core.base;
 
-import com.datascience.core.datastoring.kv.KVData;
-import com.datascience.core.datastoring.memory.InMemoryData;
-import com.datascience.core.datastoring.memory.InMemoryNominalData;
-import com.datascience.utils.storage.DefaultSafeKVStorage;
-import com.datascience.utils.storage.MemoryKVStorage;
+import com.datascience.datastoring.datamodels.kv.KVData;
+import com.datascience.datastoring.datamodels.memory.InMemoryData;
+import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
+import com.datascience.datastoring.adapters.kv.DefaultSafeKVStorage;
+import com.datascience.datastoring.adapters.kv.MemoryKVStorage;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class IDataTest {
 			@Override
 			public IData<String> create(){
 				InMemoryNominalData data = new InMemoryNominalData();
-				data.setCategories(Arrays.asList(new String[]{"cat1", "cat2"}));
+				data.initialize(Arrays.asList(new String[]{"cat1", "cat2"}), null, null);
 				return data;
 			}
 		},
@@ -56,8 +56,8 @@ public class IDataTest {
 								new MemoryKVStorage<Collection<LObject<String>>>("", new LinkedList<LObject<String>>()), logger, ""),
 						new DefaultSafeKVStorage<Collection<LObject<String>>>(
 								new MemoryKVStorage<Collection<LObject<String>>>("", new LinkedList<LObject<String>>()), logger, ""),
-						new DefaultSafeKVStorage<Collection<Worker<String>>>(
-								new MemoryKVStorage<Collection<Worker<String>>>("", new LinkedList<Worker<String>>()), logger, ""));
+						new DefaultSafeKVStorage<Collection<Worker>>(
+								new MemoryKVStorage<Collection<Worker>>("", new LinkedList<Worker>()), logger, ""));
 			}
 		}
 	};
@@ -87,7 +87,7 @@ public class IDataTest {
 	 */
 	@Test
 	public void testAddAssigns(){
-		Worker<String> w1 = data.getOrCreateWorker("Worker1");
+		Worker w1 = data.getOrCreateWorker("Worker1");
 		LObject<String> object = data.getOrCreateObject("Object1");
 		String label1 = "cat1";
 		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object, label1);
@@ -140,7 +140,7 @@ public class IDataTest {
 
 	@Test
 	public void testHasAssigns(){
-		Worker<String> w1 = data.getOrCreateWorker("Worker1");
+		Worker w1 = data.getOrCreateWorker("Worker1");
 		LObject<String> object1 = data.getOrCreateObject("Object1");
 		assertFalse(data.hasAssign(object1, w1));
 		AssignedLabel<String> al1 = new AssignedLabel<String>(w1, object1, "cat1");
@@ -150,11 +150,11 @@ public class IDataTest {
 
 	@Test
 	public void testAddWorker(){
-		Worker<String> w1 = data.getOrCreateWorker("Worker1");
+		Worker w1 = data.getOrCreateWorker("Worker1");
 		data.addWorker(w1);
 		assertNull(data.getWorker("Worker2"));
 		assertNotNull(data.getWorker("Worker1"));
-		Worker<String> w2 = new Worker<String>("Worker2");
+		Worker w2 = new Worker("Worker2");
 		data.addWorker(w2);
 		assertNotNull(data.getWorker("Worker2"));
 	}

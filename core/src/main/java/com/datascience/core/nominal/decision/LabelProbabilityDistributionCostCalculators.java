@@ -12,11 +12,11 @@ import java.util.Set;
  */
 public class LabelProbabilityDistributionCostCalculators {
 
-	protected static class SelectedLabeBased implements ILabelProbabilityDistributionCostCalculator {
+	public static class SelectedLabelBased implements ILabelProbabilityDistributionCostCalculator {
 
 		private IObjectLabelDecisionAlgorithm labelChooser;
 
-		public SelectedLabeBased(IObjectLabelDecisionAlgorithm labelChooser){
+		public SelectedLabelBased(IObjectLabelDecisionAlgorithm labelChooser){
 			this.labelChooser = labelChooser;
 		}
 
@@ -55,7 +55,7 @@ public class LabelProbabilityDistributionCostCalculators {
 		}
 		try {
 			IObjectLabelDecisionAlgorithm olda = ObjectLabelDecisionAlgorithms.get(method);
-			return new SelectedLabeBased(olda);
+			return new SelectedLabelBased(olda);
 		} catch (IllegalArgumentException ex) {
 			throw new IllegalArgumentException(
 				"Unknown cost calculation method: " + method);

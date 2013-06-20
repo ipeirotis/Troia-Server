@@ -34,7 +34,7 @@ public class SchedulerNewResultsNotificator<T, U, V> implements ISchedulerNotifi
 	}
 
 	@Override
-	public void newResultsForWorker(Worker<T> worker, V results) {
+	public void newResultsForWorker(Worker worker, V results) {
 		// We don't care
 	}
 

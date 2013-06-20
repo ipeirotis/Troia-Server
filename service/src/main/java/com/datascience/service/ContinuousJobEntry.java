@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import com.datascience.serialization.json.JSONUtils;
-import com.datascience.core.jobs.JobCommand;
+import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.galc.ContinuousProject;
 import com.datascience.galc.commands.PredictionCommands;
 

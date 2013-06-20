@@ -11,6 +11,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public abstract class AbstractData<T> implements IData<T> {
 
+	static protected final int WORKER_NAME_LIMIT = 100;
+	static protected final int OBJECT_NAME_LIMIT = 100;
+
 	protected transient List<INewDataObserver<T>> newDataObservers;
 
 	public AbstractData(){
@@ -18,10 +21,10 @@ public abstract class AbstractData<T> implements IData<T> {
 	}
 
 	@Override
-	public Worker<T> getOrCreateWorker(String workerId){
-		Worker<T> worker = getWorker(workerId);
+	public Worker getOrCreateWorker(String workerId){
+		Worker worker = getWorker(workerId);
 		if (worker == null) {
-			worker = new Worker<T>(workerId);
+			worker = new Worker(workerId);
 		}
 		return worker;
 	}
@@ -36,16 +39,18 @@ public abstract class AbstractData<T> implements IData<T> {
 	}
 
 	@Override
-	public void addWorker(Worker<T> worker) {
-		checkArgument(worker.getName().length() < 50, "Worker name should be shorter than 50 chars");
+	public void addWorker(Worker worker) {
+		checkArgument(worker.getName().length() < WORKER_NAME_LIMIT,
+				"Worker name should be shorter than " + WORKER_NAME_LIMIT + " chars");
 		uncheckedAddWorker(worker);
 	}
 
-	abstract protected void uncheckedAddWorker(Worker<T> worker);
+	abstract protected void uncheckedAddWorker(Worker worker);
 
 	@Override
 	public void addObject(LObject<T> object) {
-		checkArgument(object.getName().length() < 50, "Object name should be shorter than 50 chars");
+		checkArgument(object.getName().length() < OBJECT_NAME_LIMIT,
+				"Object name should be shorter than " + OBJECT_NAME_LIMIT + " chars");
 		uncheckedAddObject(object);
 	}
 
@@ -94,21 +99,21 @@ public abstract class AbstractData<T> implements IData<T> {
 		}
 	}
 
-	protected void notifyNewWorker(Worker<T> worker){
+	protected void notifyNewWorker(Worker worker){
 		for (INewDataObserver<T> updatableAlgorithm: newDataObservers) {
 			updatableAlgorithm.newWorker(worker);
 		}
 	}
 
 	@Override
-	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker<T> worker) {
+	public Collection<AssignedLabel<T>> getWorkerAssigns(Worker worker) {
 		Collection<AssignedLabel<T>> ret = uncheckedGetWorkerAssigns(worker);
 		if (ret == null)
 			return new LinkedList<AssignedLabel<T>>();
 		return ret;
 	}
 
-	public abstract Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker<T> worker);
+	public abstract Collection<AssignedLabel<T>> uncheckedGetWorkerAssigns(Worker worker);
 
 	@Override
 	public Collection<AssignedLabel<T>> getAssignsForObject(LObject<T> lObject) {

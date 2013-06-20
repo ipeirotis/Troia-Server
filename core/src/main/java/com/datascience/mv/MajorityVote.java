@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.datascience.core.nominal.ProbabilityDistributions.generateMV_PD;
-import static com.datascience.core.nominal.ProbabilityDistributions.getPriorBasedDistribution;
 
 /**
  * @Author: konrad
@@ -43,7 +42,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	}
 
 	public Map<String, Double> generateLabelForNonAssignedObject(){
-		return getPriorBasedDistribution(data, this);
+		return getCategoryPriors();
 	}
 
 	public Map<String, Double> generateLabelDistribution(Collection<String> categories,
@@ -55,7 +54,7 @@ public abstract class MajorityVote extends NominalAlgorithm {
 	 * from old batch DS code
 	 * @param worker
 	 */
-	public void computeWorkersConfusionMatrix(Worker<String> worker){
+	public void computeWorkersConfusionMatrix(Worker worker){
 		WorkerResult wr = results.getOrCreateWorkerResult(worker);
 		wr.empty();
 
