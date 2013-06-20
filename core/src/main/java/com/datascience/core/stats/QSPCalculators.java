@@ -25,7 +25,7 @@ public class QSPCalculators {
 				m++;
 				cost = getWorkerCost(m, priors, 1000);
 				// If the worker is worth less than 1/100 of a qualified worker, we return a 0 payment.
-				if (m > 40) return 0.0;
+				if (m > 20) return 0.0;
 			} while (cost > costThreshold);
 
 			return qualifiedWage / m;
