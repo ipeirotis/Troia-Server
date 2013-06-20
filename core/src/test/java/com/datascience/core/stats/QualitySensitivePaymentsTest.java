@@ -102,7 +102,7 @@ public class QualitySensitivePaymentsTest {
 		wr.addError("B", "B", 1.);
 		project.getResults().addWorkerResult(wSpamm, wr);
 
-		Worker wOpos = new Worker("w1");
+		Worker wOpos = new Worker("wOpos");
 		wr = project.getResults().getOrCreateWorkerResult(wOpos);
 		wr.empty();
 		wr.addError("A", "B", 1.);
