@@ -22,6 +22,14 @@ import java.util.Map.Entry;
  */
 public class PredictionCommands {
 
+	static public Collection<MatrixValue<String>> getWorkerConfusionMatrix(ConfusionMatrix confusionMatrix){
+		Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
+		for (String c1 : confusionMatrix.getCategories())
+			for (String c2 : confusionMatrix.getCategories())
+				matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
+		return matrix;
+	}
+
 	static public class GetWorkersConfusionMatrix extends JobCommand<Collection<WorkerValue<Collection<MatrixValue<String>>>>, NominalProject> {
 
 		public GetWorkersConfusionMatrix(){
@@ -32,12 +40,7 @@ public class PredictionCommands {
 		protected void realExecute() {
 			Collection<WorkerValue<Collection<MatrixValue<String>>>> wq = new ArrayList<WorkerValue<Collection<MatrixValue<String>>>>();
 			for (Entry<Worker, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
-				Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
-				ConfusionMatrix confusionMatrix = e.getValue().getConfusionMatrix();
-				for (String c1 : confusionMatrix.getCategories())
-					for (String c2 : confusionMatrix.getCategories())
-						matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
-				wq.add(new WorkerValue<Collection<MatrixValue<String>>>(e.getKey().getName(), matrix));
+				wq.add(new WorkerValue<Collection<MatrixValue<String>>>(e.getKey().getName(), getWorkerConfusionMatrix(e.getValue().getConfusionMatrix())));
 			}
 			setResult(wq);
 		}
@@ -53,12 +56,8 @@ public class PredictionCommands {
 
 		@Override
 		protected void realExecute() {
-			Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
-			ConfusionMatrix confusionMatrix = project.getResults().getWorkerResult(project.getData().getWorker(wid)).getConfusionMatrix();
-			for (String c1 : confusionMatrix.getCategories())
-				for (String c2 : confusionMatrix.getCategories())
-					matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
-			setResult(new WorkerValue<Collection<MatrixValue<String>>>(wid, matrix));
+			setResult(new WorkerValue<Collection<MatrixValue<String>>>(wid,
+					getWorkerConfusionMatrix(project.getResults().getWorkerResult(project.getData().getWorker(wid)).getConfusionMatrix())));
 		}
 	}
 
