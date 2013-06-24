@@ -43,6 +43,25 @@ public class PredictionCommands {
 		}
 	}
 
+	static public class GetWorkerConfusionMatrix extends JobCommand<WorkerValue<Collection<MatrixValue<String>>>, NominalProject> {
+
+		String wid;
+		public GetWorkerConfusionMatrix(String wid){
+			super(false);
+			this.wid = wid;
+		}
+
+		@Override
+		protected void realExecute() {
+			Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
+			ConfusionMatrix confusionMatrix = project.getResults().getWorkerResult(project.getData().getWorker(wid)).getConfusionMatrix();
+			for (String c1 : confusionMatrix.getCategories())
+				for (String c2 : confusionMatrix.getCategories())
+					matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
+			setResult(new WorkerValue<Collection<MatrixValue<String>>>(wid, matrix));
+		}
+	}
+
 	static public class GetWorkersPayments extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
 
 		double qualifiedWage;
@@ -64,6 +83,25 @@ public class PredictionCommands {
 		}
 	}
 
+	static public class GetWorkerPayment extends JobCommand<WorkerValue<Double>, NominalProject> {
+
+		double qualifiedWage;
+		double costThreshold;
+		String wid;
+
+		public GetWorkerPayment(String wid, double qualifiedWage, double costThreshold){
+			super(false);
+			this.wid = wid;
+			this.qualifiedWage = qualifiedWage;
+			this.costThreshold = costThreshold;
+		}
+
+		@Override
+		protected void realExecute() {
+			QualitySensitivePaymentsCalculator wspq = new QSPCalculators.Linear(project, project.getData().getWorker(wid));
+			setResult(new WorkerValue<Double>(wid, wspq.getWorkerWage(qualifiedWage, costThreshold)));
+		}
+	}
 
 	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
 		private WorkerQualityCalculator wqc;
