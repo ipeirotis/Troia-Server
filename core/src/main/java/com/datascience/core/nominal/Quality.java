@@ -1,6 +1,5 @@
 package com.datascience.core.nominal;
 
-import com.datascience.core.base.LObject;
 import com.datascience.core.nominal.decision.DecisionEngine;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.core.nominal.decision.ObjectLabelDecisionAlgorithms;
@@ -44,7 +43,7 @@ public class Quality {
 
 	static public double getAverage(NominalProject project, Map<?, Double> costs){
 		//sum of object qualities is: n - sum_of_costs/s, where s in minSpammerCost
-		int cnt = costs.size();
+		double cnt = costs.size();
 		double costSum = 0.;
 		for (Double val : costs.values()){
 			costSum += val;
