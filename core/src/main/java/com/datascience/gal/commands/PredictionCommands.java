@@ -16,6 +16,8 @@ import com.datascience.core.nominal.decision.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static com.datascience.core.nominal.Quality.getMinSpammerCost;
+
 /**
  *
  * @author artur
@@ -149,7 +151,7 @@ public class PredictionCommands {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				WorkerQualityCalculator wqc = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get(s));
-				ret.put(s, Quality.getAverage(project, wqc.getCosts(project)) );
+				ret.put(s, Quality.fromCost(project, Quality.getAverage(project, wqc.getCosts(project))));
 			}
 			setResult(ret);
 		}
@@ -213,6 +215,24 @@ public class PredictionCommands {
 		}
 	}
 
+	static public class GetDataCostSummary extends JobCommand<Map<String, Object>, NominalProject> {
+		public GetDataCostSummary(){
+			super(false);
+		}
+
+		@Override
+		protected void realExecute() throws Exception {
+			HashMap<String, Object> ret = new HashMap<String, Object>();
+			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
+				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
+				DecisionEngine de = new DecisionEngine(lpdcc, null);
+				ret.put(s, Quality.getAverage(project, de.estimateMissclassificationCosts(project)));
+			}
+			ret.put("Spammer", getMinSpammerCost(project));
+			setResult(ret);
+		}
+	}
+
 	static public class GetDataQualitySummary extends JobCommand<Map<String, Object>, NominalProject> {
 
 		public GetDataQualitySummary(){
@@ -225,7 +245,7 @@ public class PredictionCommands {
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
 				DecisionEngine de = new DecisionEngine(lpdcc, null);
-				ret.put(s, Quality.getAverage(project, de.estimateMissclassificationCosts(project)));
+				ret.put(s, Quality.fromCost(project, Quality.getAverage(project, de.estimateMissclassificationCosts(project))));
 			}
 			setResult(ret);
 		}

@@ -56,6 +56,12 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	public Response getEstimatedDataCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		return buildResponseOnCommand(new PredictionCommands.GetDataCost(LabelProbabilityDistributionCostCalculators.get(lca)));
 	}
+
+	@Path("objects/cost/summary")
+	@GET
+	public Response getSummaryDataCost(){
+		return buildResponseOnCommand(new PredictionCommands.GetDataCostSummary());
+	}
 	
 	@Path("objects/quality/estimated/")
 	@GET

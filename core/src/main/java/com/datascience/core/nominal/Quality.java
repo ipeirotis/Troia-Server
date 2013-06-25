@@ -48,7 +48,6 @@ public class Quality {
 		for (Double val : costs.values()){
 			costSum += val;
 		}
-		return (cnt - costSum/getMinSpammerCost(project)) / cnt;
-
+		return costSum/cnt;
 	}
 }
