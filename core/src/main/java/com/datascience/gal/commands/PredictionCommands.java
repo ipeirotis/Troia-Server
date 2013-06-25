@@ -120,6 +120,24 @@ public class PredictionCommands {
 		}
 	}
 
+	static public class GetWorkersCost extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
+		private WorkerQualityCalculator wqc;
+
+		public GetWorkersCost(WorkerQualityCalculator wqc){
+			super(false);
+			this.wqc = wqc;
+		}
+
+		@Override
+		protected void realExecute() {
+			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
+			for (Worker w : project.getData().getWorkers()){
+				wq.add(new WorkerValue<Double>(w.getName(), wqc.getCost(project, w)));
+			}
+			setResult(wq);
+		}
+	}
+
 	static public class GetWorkersQualitySummary extends JobCommand<Map<String, Object>, NominalProject> {
 
 		public GetWorkersQualitySummary(){

@@ -95,6 +95,13 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
 	}
 
+	@Path("workers/cost/estimated/")
+	@GET
+	public Response getWorkersCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		return buildResponseOnCommand(new PredictionCommands.GetWorkersCost( new WorkerEstimator(lpdcc)));
+	}
+
 	@Path("workers/quality/summary/")
 	@GET
 	public Response getSummaryWorkersQuality(){

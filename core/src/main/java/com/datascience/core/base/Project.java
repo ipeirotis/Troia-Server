@@ -90,6 +90,9 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 		ret.put("Number of gold objects", data.getGoldObjects().size());
 		ret.put("Number of workers", data.getWorkers().size());
 		ret.put("Initialization data", getInitializationData());
+		ret.putAll(getAdditionalInfo());
 		return ret;
 	}
+
+	protected abstract Map<String, Object> getAdditionalInfo();
 }
