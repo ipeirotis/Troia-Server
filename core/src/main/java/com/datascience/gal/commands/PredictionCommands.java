@@ -6,20 +6,32 @@ import com.datascience.core.base.Worker;
 import com.datascience.core.nominal.Quality;
 import com.datascience.core.results.WorkerResult;
 import com.datascience.core.stats.ConfusionMatrix;
+import com.datascience.core.stats.QSPCalculators;
+import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.datastoring.jobs.JobCommand;
 import com.datascience.core.stats.MatrixValue;
-import com.datascience.core.stats.QualitySensitivePaymentsCalculator;
 import com.datascience.gal.*;
 import com.datascience.core.nominal.decision.*;
+import com.datascience.utils.MathHelpers;
 
 import java.util.*;
 import java.util.Map.Entry;
 
+import static com.datascience.core.nominal.Quality.getMinSpammerCost;
+
 /**
- *
+ * NOTE: avg Qualit = Qualit (avg Cost)
  * @author artur
  */
 public class PredictionCommands {
+
+	static public Collection<MatrixValue<String>> getWorkerConfusionMatrix(ConfusionMatrix confusionMatrix){
+		Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
+		for (String c1 : confusionMatrix.getCategories())
+			for (String c2 : confusionMatrix.getCategories())
+				matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
+		return matrix;
+	}
 
 	static public class GetWorkersConfusionMatrix extends JobCommand<Collection<WorkerValue<Collection<MatrixValue<String>>>>, NominalProject> {
 
@@ -31,14 +43,24 @@ public class PredictionCommands {
 		protected void realExecute() {
 			Collection<WorkerValue<Collection<MatrixValue<String>>>> wq = new ArrayList<WorkerValue<Collection<MatrixValue<String>>>>();
 			for (Entry<Worker, WorkerResult> e : project.getResults().getWorkerResults(project.getData().getWorkers()).entrySet()){
-				Collection<MatrixValue<String>> matrix = new ArrayList<MatrixValue<String>>();
-				ConfusionMatrix confusionMatrix = e.getValue().getConfusionMatrix();
-				for (String c1 : confusionMatrix.getCategories())
-					for (String c2 : confusionMatrix.getCategories())
-						matrix.add(new MatrixValue<String>(c1, c2, confusionMatrix.getNormalizedErrorRate(c1, c2)));
-				wq.add(new WorkerValue<Collection<MatrixValue<String>>>(e.getKey().getName(), matrix));
+				wq.add(new WorkerValue<Collection<MatrixValue<String>>>(e.getKey().getName(), getWorkerConfusionMatrix(e.getValue().getConfusionMatrix())));
 			}
 			setResult(wq);
+		}
+	}
+
+	static public class GetWorkerConfusionMatrix extends JobCommand<WorkerValue<Collection<MatrixValue<String>>>, NominalProject> {
+
+		String wid;
+		public GetWorkerConfusionMatrix(String wid){
+			super(false);
+			this.wid = wid;
+		}
+
+		@Override
+		protected void realExecute() {
+			setResult(new WorkerValue<Collection<MatrixValue<String>>>(wid,
+					getWorkerConfusionMatrix(project.getResults().getWorkerResult(project.getData().getWorker(wid)).getConfusionMatrix())));
 		}
 	}
 
@@ -56,13 +78,32 @@ public class PredictionCommands {
 		protected void realExecute() {
 			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
 			for (Worker w : project.getData().getWorkers()){
-				QualitySensitivePaymentsCalculator wspq = new QualitySensitivePaymentsCalculator(project, w);
+				QualitySensitivePaymentsCalculator wspq = new QSPCalculators.Linear(project, w);
 				wq.add(new WorkerValue<Double>(w.getName(), wspq.getWorkerWage(qualifiedWage, costThreshold)));
 			}
 			setResult(wq);
 		}
 	}
 
+	static public class GetWorkerPayment extends JobCommand<WorkerValue<Double>, NominalProject> {
+
+		double qualifiedWage;
+		double costThreshold;
+		String wid;
+
+		public GetWorkerPayment(String wid, double qualifiedWage, double costThreshold){
+			super(false);
+			this.wid = wid;
+			this.qualifiedWage = qualifiedWage;
+			this.costThreshold = costThreshold;
+		}
+
+		@Override
+		protected void realExecute() {
+			QualitySensitivePaymentsCalculator wspq = new QSPCalculators.Linear(project, project.getData().getWorker(wid));
+			setResult(new WorkerValue<Double>(wid, wspq.getWorkerWage(qualifiedWage, costThreshold)));
+		}
+	}
 
 	static public class GetWorkersQuality extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
 		private WorkerQualityCalculator wqc;
@@ -82,6 +123,24 @@ public class PredictionCommands {
 		}
 	}
 
+	static public class GetWorkersCost extends JobCommand<Collection<WorkerValue<Double>>, NominalProject> {
+		private WorkerQualityCalculator wqc;
+
+		public GetWorkersCost(WorkerQualityCalculator wqc){
+			super(false);
+			this.wqc = wqc;
+		}
+
+		@Override
+		protected void realExecute() {
+			Collection<WorkerValue<Double>> wq = new LinkedList<WorkerValue<Double>>();
+			for (Worker w : project.getData().getWorkers()){
+				wq.add(new WorkerValue<Double>(w.getName(), wqc.getCost(project, w)));
+			}
+			setResult(wq);
+		}
+	}
+
 	static public class GetWorkersQualitySummary extends JobCommand<Map<String, Object>, NominalProject> {
 
 		public GetWorkersQualitySummary(){
@@ -93,7 +152,7 @@ public class PredictionCommands {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				WorkerQualityCalculator wqc = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get(s));
-				ret.put(s, Quality.getAverage(project, wqc.getCosts(project)) );
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(project, wqc.getCosts(project))));
 			}
 			setResult(ret);
 		}
@@ -112,8 +171,8 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumClassification> dc = new ArrayList<DatumClassification>();
-			for (Entry<String, String> e : decisionEngine.predictLabels(project).entrySet()){
-				dc.add(new DatumClassification(e.getKey(), e.getValue()));
+			for (Entry<LObject<String>, String> e : decisionEngine.predictLabels(project).entrySet()){
+				dc.add(new DatumClassification(e.getKey().getName(), e.getValue()));
 			}
 			setResult(dc);
 		}
@@ -131,8 +190,8 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
-			for (Entry<String, Double> e : decisionEngine.estimateMissclassificationCosts(project).entrySet()){
-				cp.add(new DatumValue(e.getKey(), e.getValue()));
+			for (Entry<LObject<String>, Double> e : decisionEngine.estimateMissclassificationCosts(project).entrySet()){
+				cp.add(new DatumValue(e.getKey().getName(), e.getValue()));
 			}
 			setResult(cp);
 		}
@@ -150,10 +209,28 @@ public class PredictionCommands {
 		@Override
 		protected void realExecute() {
 			Collection<DatumValue> cp = new ArrayList<DatumValue>();
-			for (Entry<String, Double> e : Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project)).entrySet()){
-				cp.add(new DatumValue(e.getKey(), e.getValue()));
+			for (Entry<LObject<String>, Double> e : Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project)).entrySet()){
+				cp.add(new DatumValue(e.getKey().getName(), e.getValue()));
 			}
 			setResult(cp);
+		}
+	}
+
+	static public class GetDataCostSummary extends JobCommand<Map<String, Object>, NominalProject> {
+		public GetDataCostSummary(){
+			super(false);
+		}
+
+		@Override
+		protected void realExecute() throws Exception {
+			HashMap<String, Object> ret = new HashMap<String, Object>();
+			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
+				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
+				DecisionEngine de = new DecisionEngine(lpdcc, null);
+				ret.put(s, MathHelpers.getAverage(project, de.estimateMissclassificationCosts(project)));
+			}
+			ret.put("Spammer", getMinSpammerCost(project));
+			setResult(ret);
 		}
 	}
 
@@ -169,7 +246,7 @@ public class PredictionCommands {
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
 				DecisionEngine de = new DecisionEngine(lpdcc, null);
-				ret.put(s, Quality.getAverage(project, de.estimateMissclassificationCosts(project)));
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(project, de.estimateMissclassificationCosts(project))));
 			}
 			setResult(ret);
 		}

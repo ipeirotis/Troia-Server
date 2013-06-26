@@ -3,12 +3,14 @@ package test.java.integration.tests.gal;
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
-import com.datascience.core.nominal.decision.ILabelProbabilityDistributionCostCalculator;
 import com.datascience.core.nominal.decision.LabelProbabilityDistributionCostCalculators;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.AbstractDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,13 +18,15 @@ import java.util.Map;
 
 import static com.datascience.core.nominal.Quality.getExpSpammerCost;
 import static com.datascience.core.nominal.Quality.getMinSpammerCost;
-import static test.java.integration.tests.gal.BaseTestScenario.testHelper;
+import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 
+@RunWith(JUnitParamsRunner.class)
 public class DSBaseTestScenario extends BaseTestScenario {
 
     public final static int NO_ITERATIONS = 10;
     public final static double EPSILON = 1e-6;
+	public static Map<String, Double> params;
 
     public static class Setup {
 
@@ -49,7 +53,34 @@ public class DSBaseTestScenario extends BaseTestScenario {
         algorithm.setEpsilon(EPSILON);
         algorithm.setIterations(NO_ITERATIONS);
         setUp(algorithm, testSetup.testName, testSetup.loadEvaluationLabels);
-    }
+		params = new HashMap<String, Double>();
+		params.put("Estm_NoVote_Exp", getExpSpammerCost(project));
+		params.put("Estm_NoVote_Min", getMinSpammerCost(project));
+		params.put("Estm_DS_Exp", estimateMissclassificationCost(LabelProbabilityDistributionCostCalculators.get("EXPECTEDCOST"), null));
+		params.put("Estm_DS_ML", estimateMissclassificationCost(LabelProbabilityDistributionCostCalculators.get("MAXLIKELIHOOD"), null));
+		params.put("Estm_DS_Min", estimateMissclassificationCost(LabelProbabilityDistributionCostCalculators.get("MINCOST"), null));
+		params.put("Eval_DS_ML", evaluateMissclassificationCost("MAXLIKELIHOOD"));
+		params.put("Eval_DS_Min", evaluateMissclassificationCost("MINCOST"));
+		params.put("Eval_DS_Soft", evaluateMissclassificationCost("SOFT"));
+		params.put("Estm_DS_ML_q", estimateCostToQuality(LabelProbabilityDistributionCostCalculators.get("MAXLIKELIHOOD"), null));
+		params.put("Estm_DS_Exp_q", estimateCostToQuality(LabelProbabilityDistributionCostCalculators.get("EXPECTEDCOST"), null));
+		params.put("Estm_DS_Min_q", estimateCostToQuality(LabelProbabilityDistributionCostCalculators.get("MINCOST"), null));
+		params.put("Eval_DS_ML_q", evaluateCostToQuality("MAXLIKELIHOOD"));
+		params.put("Eval_DS_Soft_q", evaluateCostToQuality("SOFT"));
+		params.put("Eval_DS_Min_q", evaluateCostToQuality("MINCOST"));
+		params.put("Estm_DS_Exp_n", estimateWorkerQuality("EXPECTEDCOST", "n"));
+		params.put("Estm_DS_Exp_w", estimateWorkerQuality("EXPECTEDCOST", "w"));
+		params.put("Estm_DS_ML_n", estimateWorkerQuality("MAXLIKELIHOOD", "n"));
+		params.put("Estm_DS_ML_w", estimateWorkerQuality("MAXLIKELIHOOD", "w"));
+		params.put("Estm_DS_Min_n", estimateWorkerQuality("MINCOST", "n"));
+		params.put("Estm_DS_Min_w", estimateWorkerQuality("MINCOST", "w"));
+		params.put("Eval_DS_Exp_n", evaluateWorkerQuality("EXPECTEDCOST", "n"));
+		params.put("Eval_DS_Exp_w", evaluateWorkerQuality("EXPECTEDCOST", "w"));
+		params.put("Eval_DS_ML_n", evaluateWorkerQuality("MAXLIKELIHOOD", "n"));
+		params.put("Eval_DS_ML_w", evaluateWorkerQuality("MAXLIKELIHOOD", "w"));
+		params.put("Eval_DS_Min_n", evaluateWorkerQuality("MINCOST", "n"));
+		params.put("Eval_DS_Min_w", evaluateWorkerQuality("MINCOST", "w"));
+	}
 
     @Test
     public void test_Data() {
@@ -78,251 +109,67 @@ public class DSBaseTestScenario extends BaseTestScenario {
         assertEquals(expectedLabelsNo, noAssignedLabels);
     }
 
-    @Test
-    public void test_ProbabilityDistributions_DS() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-		Collection<LObject<String>> objects = data.getObjects();
+	@Test
+	@Parameters
+	public void testDataCost(String p1, String p2){
+		HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+		assertEquals(testHelper.format(dataQuality.get(p2)), testHelper.format(params.get(p1)), 0.05);
+	}
 
-        //init the categoryProbabilities hashmap
-        HashMap<String, Double> categoryProbabilities = new HashMap<String, Double>();
-        for (String categoryName : data.getCategories()) {
-            categoryProbabilities.put(categoryName, 0.0);
-        }
+	private Object[] parametersForTestDataCost(){
+		return $(
+				$("Estm_NoVote_Exp", "[DataCost_Estm_NoVote_Exp] Baseline classification cost (random spammer)"),
+				$("Estm_NoVote_Min", "[DataCost_Estm_NoVote_Min] Baseline classification cost (strategic spammer)"),
+				$("Estm_DS_Exp", "[DataCost_Estm_DS_Exp] Estimated classification cost (DS_Exp metric)"),
+				$("Estm_DS_ML", "[DataCost_Estm_DS_ML] Estimated classification cost (DS_ML metric)"),
+				$("Estm_DS_Min", "[DataCost_Estm_DS_Min] Estimated classification cost (DS_Min metric)"),
+				$("Eval_DS_ML", "[DataCost_Eval_DS_ML] Actual classification cost for EM, maximum likelihood classification"),
+				$("Eval_DS_Min", "[DataCost_Eval_DS_Min] Actual classification cost for EM, min-cost classification"),
+				$("Eval_DS_Soft", "[DataCost_Eval_DS_Soft] Actual classification cost for EM, soft-label classification")
+		);
+	}
 
-        //iterate through the datum objects and calculate the sum of the probabilities associated  to each category
-        int noObjects = objects.size();
-        for (LObject<String> object : objects) {
-            Map<String, Double> objectProbabilities = project.getObjectResults(object).getCategoryProbabilites();
-            for (Map.Entry<String, Double> e : objectProbabilities.entrySet()) {
-                categoryProbabilities.put(e.getKey(), categoryProbabilities.get(e.getKey()) + e.getValue());
-            }
-        }
+	@Test
+	@Parameters
+	public void testDataQuality(String p1, String p2){
+		HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+		assertEquals(testHelper.formatPercent(dataQuality.get(p2)), testHelper.formatPercent(params.get(p1)), 0.05);
+	}
 
-        //calculate the average probability value for each category
-        for (String categoryName : data.getCategories()) {
-            categoryProbabilities.put(categoryName, categoryProbabilities.get(categoryName) / noObjects);
-        }
-        for (String categoryName : data.getCategories()) {
-            String metricName = "[DS_Pr[" + categoryName + "]] DS estimate for prior probability of category " + categoryName;
-            Double expectedCategoryProbability = dataQuality.get(metricName);
-            Double actualCategoryProbability = categoryProbabilities.get(categoryName);
-            testCondition(expectedCategoryProbability, actualCategoryProbability);
-        }
-    }
+	private Object[] parametersForTestDataQuality(){
+		return $(
+				$("Estm_DS_ML_q", "[DataQuality_Estm_DS_ML] Estimated data quality, EM algorithm, maximum likelihood"),
+				$("Estm_DS_Exp_q", "[DataQuality_Estm_DS_Exp] Estimated data quality, EM algorithm, soft label"),
+				$("Estm_DS_Min_q", "[DataQuality_Estm_DS_Min] Estimated data quality, EM algorithm, mincost"),
+				$("Eval_DS_ML_q", "[DataQuality_Eval_DS_ML] Actual data quality, EM algorithm, maximum likelihood"),
+				$("Eval_DS_Min_q", "[DataQuality_Eval_DS_Min] Actual data quality, EM algorithm, mincost"),
+				$("Eval_DS_Soft_q", "[DataQuality_Eval_DS_Soft] Actual data quality, EM algorithm, soft label")
+		);
+	}
 
-    @Test
-    public void test_DataCost_Estm_NoVote_Exp() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualClassificationCost = testHelper.format(getExpSpammerCost(project));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Estm_NoVote_Exp] Baseline classification cost (random spammer)"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
+	@Test
+	@Parameters
+	public void testWorkerQuality(String p1, String p2){
+		HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
+		assertEquals(testHelper.formatPercent(workerQuality.get(p2)), testHelper.formatPercent(params.get(p1)), 0.05);
+	}
 
-    @Test
-    public void test_DataCost_Estm_NoVote_Min() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualClassificationCost = testHelper.format(getMinSpammerCost(project));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Estm_NoVote_Min] Baseline classification cost (strategic spammer)"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataCost_Estm_DS_Exp() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("EXPECTEDCOST");
-        Double actualClassificationCost = testHelper.format(estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Estm_DS_Exp] Estimated classification cost (DS_Exp metric)"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataCost_Estm_DS_ML() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MAXLIKELIHOOD");
-        Double actualClassificationCost = testHelper.format( estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Estm_DS_ML] Estimated classification cost (DS_ML metric)"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataCost_Estm_DS_Min() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MINCOST");
-        Double actualClassificationCost = testHelper.format(estimateMissclassificationCost(labelProbabilityDistributionCostCalculator, null));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Estm_DS_Min] Estimated classification cost (DS_Min metric)"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataCost_Eval_DS_ML() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualClassificationCost = testHelper.format(evaluateMissclassificationCost("MAXLIKELIHOOD"));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Eval_DS_ML] Actual classification cost for EM, maximum likelihood classification"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataCost_Eval_DS_Min() {
-        HashMap<String, Double> data = summaryResultsParser.getDataQuality();
-        Double actualClassificationCost = testHelper.format(evaluateMissclassificationCost("MINCOST"));
-        Double expectedClassificationCost = testHelper.format(data.get("[DataCost_Eval_DS_Min] Actual classification cost for EM, min-cost classification"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataCost_Eval_DS_Soft() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualClassificationCost = testHelper.format(evaluateMissclassificationCost("SOFT"));
-        Double expectedClassificationCost = testHelper.format(dataQuality.get("[DataCost_Eval_DS_Soft] Actual classification cost for EM, soft-label classification"));
-        testCondition(expectedClassificationCost, actualClassificationCost);
-    }
-
-    @Test
-    public void test_DataQuality_Estm_DS_ML() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MAXLIKELIHOOD");
-        Double actualQuality = testHelper.formatPercent(estimateCostToQuality(labelProbabilityDistributionCostCalculator, null));
-        Double expectedQuality = testHelper.formatPercent(dataQuality.get("[DataQuality_Estm_DS_ML] Estimated data quality, EM algorithm, maximum likelihood"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_DataQuality_Estm_DS_Exp() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("EXPECTEDCOST");
-        Double actualQuality = testHelper.formatPercent(estimateCostToQuality(labelProbabilityDistributionCostCalculator, null));
-        Double expectedQuality = testHelper.formatPercent(dataQuality.get("[DataQuality_Estm_DS_Exp] Estimated data quality, EM algorithm, soft label"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_DataQuality_Estm_DS_Min() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator = LabelProbabilityDistributionCostCalculators.get("MINCOST");
-        Double actualQuality = testHelper.formatPercent(estimateCostToQuality(labelProbabilityDistributionCostCalculator, null));
-        Double expectedQuality = testHelper.formatPercent(dataQuality.get("[DataQuality_Estm_DS_Min] Estimated data quality, EM algorithm, mincost"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_DataQuality_Eval_DS_ML() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateCostToQuality("MAXLIKELIHOOD"));
-        Double expectedQuality = testHelper.formatPercent(dataQuality.get("[DataQuality_Eval_DS_ML] Actual data quality, EM algorithm, maximum likelihood"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_DataQuality_Eval_DS_Min() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateCostToQuality("MINCOST"));
-        Double expectedQuality = testHelper.formatPercent(dataQuality.get("[DataQuality_Eval_DS_Min] Actual data quality, EM algorithm, mincost"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_DataQuality_Eval_DS_Soft() {
-        HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateCostToQuality("SOFT"));
-        Double expectedQuality = testHelper.formatPercent(dataQuality.get("[DataQuality_Eval_DS_Soft] Actual data quality, EM algorithm, soft label"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Estm_DS_Exp_n() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(estimateWorkerQuality("EXPECTEDCOST", "n"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Estm_DS_Exp_n] Estimated worker quality (non-weighted, DS_Exp metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Estm_DS_Exp_w() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(estimateWorkerQuality("EXPECTEDCOST", "w"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Estm_DS_Exp_w] Estimated worker quality (weighted, DS_Exp metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Estm_DS_ML_n() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(estimateWorkerQuality("MAXLIKELIHOOD", "n"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Estm_DS_ML_n] Estimated worker quality (non-weighted, DS_ML metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Estm_DS_ML_w() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(estimateWorkerQuality("MAXLIKELIHOOD", "w"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Estm_DS_ML_w] Estimated worker quality (weighted, DS_ML metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Estm_DS_Min_n() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(estimateWorkerQuality("MINCOST", "n"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Estm_DS_Min_n] Estimated worker quality (non-weighted, DS_Min metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Estm_DS_Min_w() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(estimateWorkerQuality("MINCOST", "w"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Estm_DS_Min_w] Estimated worker quality (weighted, DS_Min metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Eval_DS_Exp_n() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateWorkerQuality("EXPECTEDCOST", "n"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Eval_DS_Exp_n] Actual worker quality (non-weighted, DS_Exp metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Eval_DS_Exp_w() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateWorkerQuality("EXPECTEDCOST", "w"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Eval_DS_Exp_w] Actual worker quality (weighted, DS_Exp metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Eval_DS_ML_n() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateWorkerQuality("MAXLIKELIHOOD", "n"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Eval_DS_ML_n] Actual worker quality (non-weighted, DS_ML metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Eval_DS_ML_w() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateWorkerQuality("MAXLIKELIHOOD", "w"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Eval_DS_ML_w] Actual worker quality (weighted, DS_ML metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Eval_DS_Min_n() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateWorkerQuality("MINCOST", "n"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Eval_DS_Min_n] Actual worker quality (non-weighted, DS_Min metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
-
-    @Test
-    public void test_WorkerQuality_Eval_DS_Min_w() {
-        HashMap<String, Double> workerQuality = summaryResultsParser.getWorkerQuality();
-        Double actualQuality = testHelper.formatPercent(evaluateWorkerQuality("MINCOST", "w"));
-        Double expectedQuality = testHelper.formatPercent(workerQuality.get("[WorkerQuality_Eval_DS_Min_w] Actual worker quality (weighted, DS_Min metric)"));
-        testCondition(expectedQuality, actualQuality);
-    }
+	private Object[] parametersForTestWorkerQuality(){
+		return $(
+				$("Estm_DS_Exp_n", "[WorkerQuality_Estm_DS_Exp_n] Estimated worker quality (non-weighted, DS_Exp metric)"),
+				$("Estm_DS_Exp_w", "[WorkerQuality_Estm_DS_Exp_w] Estimated worker quality (weighted, DS_Exp metric)"),
+				$("Estm_DS_ML_n", "[WorkerQuality_Estm_DS_ML_n] Estimated worker quality (non-weighted, DS_ML metric)"),
+				$("Estm_DS_ML_w", "[WorkerQuality_Estm_DS_ML_w] Estimated worker quality (weighted, DS_ML metric)"),
+				$("Estm_DS_Min_n", "[WorkerQuality_Estm_DS_Min_n] Estimated worker quality (non-weighted, DS_Min metric)"),
+				$("Estm_DS_Min_w", "[WorkerQuality_Estm_DS_Min_w] Estimated worker quality (weighted, DS_Min metric)"),
+				$("Eval_DS_Exp_n", "[WorkerQuality_Eval_DS_Exp_n] Actual worker quality (non-weighted, DS_Exp metric)"),
+				$("Eval_DS_Exp_w", "[WorkerQuality_Eval_DS_Exp_w] Actual worker quality (weighted, DS_Exp metric)"),
+				$("Eval_DS_ML_n", "[WorkerQuality_Eval_DS_ML_n] Actual worker quality (non-weighted, DS_ML metric)"),
+				$("Eval_DS_ML_w", "[WorkerQuality_Eval_DS_ML_w] Actual worker quality (weighted, DS_ML metric)"),
+				$("Eval_DS_Min_n", "[WorkerQuality_Eval_DS_Min_n] Actual worker quality (non-weighted, DS_Min metric)"),
+				$("Eval_DS_Min_w", "[WorkerQuality_Eval_DS_Min_w] Actual worker quality (weighted, DS_Min metric)")
+		);
+	}
 
     @Test
     public void test_LabelsPerWorker() {

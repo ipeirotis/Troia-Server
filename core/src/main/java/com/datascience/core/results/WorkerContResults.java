@@ -170,4 +170,9 @@ public class WorkerContResults {
 		return false;
 	}
 
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(est_mu, est_rho, est_sigma, true_mu, true_rho, true_sigma, zeta);
+	}
+
 }

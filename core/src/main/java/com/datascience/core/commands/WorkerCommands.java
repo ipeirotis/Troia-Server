@@ -1,8 +1,10 @@
 package com.datascience.core.commands;
 
+import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.datastoring.jobs.JobCommand;
+import com.datascience.gal.WorkerValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,14 +17,25 @@ import java.util.Map;
  */
 public class WorkerCommands {
 
-	protected static Map<String, Object> getWorkerStats(Project project, Worker worker){
-		Map<String, Object> ret = new HashMap<String, Object>();
-		ret.put("name", worker.getName());
-		ret.put("assigns", project.getData().getWorkerAssigns(worker));
+	protected static WorkerValue<Map<String, Object>> getWorkerStats(Project project, Worker worker){
+		Map<String, Object> map = new HashMap<String, Object>();
+		WorkerValue<Map<String, Object>> ret = new WorkerValue<Map<String, Object>>(worker.getName(), map);
+		map.put("assigns", project.getData().getWorkerAssigns(worker).size());
+		int goldTests = 0;
+		int correctGoldTests = 0;
+		for (AssignedLabel al : (Collection<AssignedLabel>) project.getData().getWorkerAssigns(worker)){
+			if (al.getLobject().isGold()){
+				goldTests++;
+				if (al.getLabel().equals(al.getLobject().getGoldLabel()))
+					correctGoldTests++;
+			}
+		}
+		map.put("goldTests", goldTests);
+		map.put("correctGoldTests", correctGoldTests);
 		return ret;
 	}
 
-	static public class GetWorkers extends JobCommand<Collection<Map<String, Object>>, Project<?, ?, ?, ?>> {
+	static public class GetWorkers extends JobCommand<Collection<WorkerValue<Map<String, Object>>>, Project<?, ?, ?, ?>> {
 		
 		public GetWorkers(){
 			super(false);
@@ -30,7 +43,7 @@ public class WorkerCommands {
 		
 		@Override
 		protected void realExecute() {
-			Collection<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+			Collection<WorkerValue<Map<String, Object>>> ret = new ArrayList<WorkerValue<Map<String, Object>>>();
 			for (Worker w : project.getData().getWorkers()){
 				ret.add(getWorkerStats(project, w));
 			}
@@ -38,7 +51,7 @@ public class WorkerCommands {
 		}
 	}
 	
-	static public class GetWorker extends JobCommand<Map<String, Object>, Project> {
+	static public class GetWorker extends JobCommand<WorkerValue<Map<String, Object>>, Project> {
 				
 		String workerId;
 		public GetWorker(String workerId){

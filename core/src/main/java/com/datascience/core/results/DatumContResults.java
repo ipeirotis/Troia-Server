@@ -60,4 +60,9 @@ public class DatumContResults {
 		}
 		return false;
 	}
+
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(est_value, est_zeta, distributionMu, distributionSigma);
+	}
 }

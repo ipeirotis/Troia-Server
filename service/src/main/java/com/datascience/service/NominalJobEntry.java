@@ -56,6 +56,12 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 	public Response getEstimatedDataCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
 		return buildResponseOnCommand(new PredictionCommands.GetDataCost(LabelProbabilityDistributionCostCalculators.get(lca)));
 	}
+
+	@Path("objects/cost/summary")
+	@GET
+	public Response getSummaryDataCost(){
+		return buildResponseOnCommand(new PredictionCommands.GetDataCostSummary());
+	}
 	
 	@Path("objects/quality/estimated/")
 	@GET
@@ -95,6 +101,13 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersQuality( new WorkerEstimator(lpdcc)));
 	}
 
+	@Path("workers/cost/estimated/")
+	@GET
+	public Response getWorkersCost(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
+		ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(lca);
+		return buildResponseOnCommand(new PredictionCommands.GetWorkersCost( new WorkerEstimator(lpdcc)));
+	}
+
 	@Path("workers/quality/summary/")
 	@GET
 	public Response getSummaryWorkersQuality(){
@@ -107,11 +120,25 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersConfusionMatrix());
 	}
 
+	@Path("workers/{wid:[a-zA-Z_0-9/:.-]+}/quality/matrix/")
+	@GET
+	public Response getWorkerPayments(@PathParam("wid") String wid){
+		return buildResponseOnCommand(new PredictionCommands.GetWorkerConfusionMatrix(wid));
+	}
+
 	@Path("workers/quality/payment/")
 	@GET
 	public Response getWorkersPayments(@DefaultValue("1.0") @QueryParam("qualifiedWage") double qualifiedWage,
 									   @DefaultValue("0.01") @QueryParam("costThreshold") double costThreshold){
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersPayments(qualifiedWage, costThreshold));
+	}
+
+	@Path("workers/{wid:[a-zA-Z_0-9/:.-]+}/quality/payment/")
+	@GET
+	public Response getWorkerPayments(@PathParam("wid") String wid,
+									  @DefaultValue("1.0") @QueryParam("qualifiedWage") double qualifiedWage,
+									  @DefaultValue("0.01") @QueryParam("costThreshold") double costThreshold){
+		return buildResponseOnCommand(new PredictionCommands.GetWorkerPayment(wid, qualifiedWage, costThreshold));
 	}
 
 	@Override
