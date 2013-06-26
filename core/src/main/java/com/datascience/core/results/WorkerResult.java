@@ -97,4 +97,9 @@ public class WorkerResult {
 		}
 		return false;
 	}
+
+	@Override
+	public int hashCode(){
+		return Objects.hashCode(cm);
+	}
 }

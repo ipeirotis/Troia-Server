@@ -9,6 +9,8 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.utils.CostMatrix;
 
 /**
+ * Object of this class combines way of calculating labels probability distribution and choosing decision based
+ * on this info. It also estimates cost that is related to this decision.
  *
  * @author konrad
  */
@@ -50,22 +52,22 @@ public class DecisionEngine {
 		return estimateMissclassificationCost(project, datum, project.getData().getCostMatrix());
 	}
 
-	public Map<String, String> predictLabels(NominalProject project){
+	public Map<LObject<String>, String> predictLabels(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
 		CostMatrix<String> cm = project.getData().getCostMatrix();
-		Map<String, String> ret = new HashMap<String, String>();
+		Map<LObject<String>, String> ret = new HashMap<LObject<String>, String>();
 		for (LObject<String> e: datums) {
-			ret.put(e.getName(), predictLabel(project, e, cm));
+			ret.put(e, predictLabel(project, e, cm));
 		}
 		return ret;
 	}
 
-	public Map<String, Double> estimateMissclassificationCosts(NominalProject project){
+	public Map<LObject<String>, Double> estimateMissclassificationCosts(NominalProject project){
 		Collection<LObject<String>> datums = project.getData().getObjects();
 		CostMatrix<String> cm = project.getData().getCostMatrix();
-		Map<String, Double> ret = new HashMap<String, Double>();
+		Map<LObject<String>, Double> ret = new HashMap<LObject<String>, Double>();
 		for (LObject<String> e: datums) {
-			ret.put(e.getName(), estimateMissclassificationCost(project, e, cm));
+			ret.put(e, estimateMissclassificationCost(project, e, cm));
 		}
 		return ret;
 	}

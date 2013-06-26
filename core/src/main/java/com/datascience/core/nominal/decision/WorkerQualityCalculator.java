@@ -33,10 +33,10 @@ public abstract class WorkerQualityCalculator {
 		return cost;
 	}
 
-	public Map<String, Double> getCosts(NominalProject project){
-		Map<String, Double> ret = new HashMap<String, Double>();
+	public Map<Worker, Double> getCosts(NominalProject project){
+		Map<Worker, Double> ret = new HashMap<Worker, Double>();
 		for (Worker w : project.getData().getWorkers()){
-			ret.put(w.getName(), getCost(project, w));
+			ret.put(w, getCost(project, w));
 		}
 		return ret;
 	}

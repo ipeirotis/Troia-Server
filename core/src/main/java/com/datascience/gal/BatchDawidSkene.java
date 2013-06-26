@@ -99,7 +99,7 @@ public class BatchDawidSkene extends AbstractDawidSkene {
 		}
 		double diffLogLikelihood = Math.abs(currLogLikelihood - prevLogLikelihood);
 		logger.info("Estimated: performed " + iteration + " / " +
-				maxIterations + " with log-likelihood difference " +
+				maxIterations + " loglikelihood: " + currLogLikelihood + " , diff " +
 				diffLogLikelihood);
 	}
 

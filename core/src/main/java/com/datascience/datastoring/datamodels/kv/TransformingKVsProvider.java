@@ -19,7 +19,7 @@ import java.util.List;
 
 public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
-	static protected List<String> KVs = Lists.newArrayList(
+	static final protected List<String> KVs = Lists.newArrayList(
 			"JobSettings", "JobTypes", "WorkerAssigns", "ObjectAssigns",
 			"Objects", "GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "Model"
 			);

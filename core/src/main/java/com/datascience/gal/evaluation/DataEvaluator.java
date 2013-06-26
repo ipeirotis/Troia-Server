@@ -47,11 +47,11 @@ public class DataEvaluator {
 		return cost;
 	}
 	
-	public Map<String, Double> evaluate(NominalProject project){
+	public Map<LObject<String>, Double> evaluate(NominalProject project){
 		Collection<LObject<String>> evalData = project.getData().getEvaluationObjects();
-		Map<String, Double> ret = new HashMap<String, Double>();
+		Map<LObject<String>, Double> ret = new HashMap<LObject<String>, Double>();
 		for (LObject<String> cl: evalData) {
-			ret.put(cl.getName(), evaluate(project, cl));
+			ret.put(cl, evaluate(project, cl));
 		}
 		return ret;
 	}

@@ -85,11 +85,14 @@ public abstract class Project<T, U extends IData<T>, V, W> {
 
 	public Map<String, Object> getInfo() {
 		Map<String, Object> ret = new HashMap<String, Object>();
-		ret.put("Number of assigns", data.getAssigns().size());
-		ret.put("Number of objects", data.getObjects().size());
-		ret.put("Number of gold objects", data.getGoldObjects().size());
-		ret.put("Number of workers", data.getWorkers().size());
-		ret.put("Initialization data", getInitializationData());
+		ret.put("assigns", data.getAssigns().size());
+		ret.put("objects", data.getObjects().size());
+		ret.put("goldObjects", data.getGoldObjects().size());
+		ret.put("workers", data.getWorkers().size());
+		ret.put("initializationData", getInitializationData());
+		ret.putAll(getAdditionalInfo());
 		return ret;
 	}
+
+	protected abstract Map<String, Object> getAdditionalInfo();
 }

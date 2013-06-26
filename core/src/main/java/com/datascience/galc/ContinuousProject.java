@@ -7,6 +7,9 @@ import com.datascience.core.results.DatumContResults;
 import com.datascience.core.results.IResults;
 import com.datascience.core.results.WorkerContResults;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @Author: konrad
  */
@@ -25,5 +28,10 @@ public class ContinuousProject extends Project<ContValue, IData<ContValue>, Datu
 	@Override
 	public String getKind(){
 		return kind;
+	}
+
+	@Override
+	protected Map<String, Object> getAdditionalInfo() {
+		return new HashMap<String, Object>();
 	}
 }

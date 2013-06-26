@@ -7,6 +7,10 @@ import com.datascience.core.results.DatumResult;
 import com.datascience.utils.CostMatrix;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.datascience.core.nominal.Quality.getMinSpammerCost;
 
 /**
  * User: artur
@@ -31,6 +35,13 @@ public class NominalProject extends Project<String, INominalData, DatumResult, W
 	@Override
 	public String getKind(){
 		return kind;
+	}
+
+	@Override
+	protected Map<String, Object> getAdditionalInfo() {
+		Map<String, Object> ret = new HashMap<String, Object>();
+		ret.put("strategicSpammerCost", getMinSpammerCost(this));
+		return ret;
 	}
 
 	public void initializeCategories(Collection<String> categories, Collection<CategoryValue> categoryPriors, CostMatrix<String> costMatrix){

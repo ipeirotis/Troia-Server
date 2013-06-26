@@ -12,6 +12,7 @@ import com.datascience.core.nominal.Quality;
 import com.datascience.gal.evaluation.DataEvaluator;
 import com.datascience.gal.evaluation.WorkerEvaluator;
 import com.datascience.utils.CostMatrix;
+import org.junit.Test;
 import test.java.integration.helpers.SummaryResultsParser;
 import test.java.integration.helpers.TestHelpers;
 import test.java.integration.helpers.TestSettings;
@@ -91,7 +92,7 @@ public class BaseTestScenario {
         }
     }
 
-    public double estimateMissclassificationCost(
+    public static double estimateMissclassificationCost(
             ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
             IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm) {
         DecisionEngine decisionEngine = new DecisionEngine(labelProbabilityDistributionCostCalculator,
@@ -109,16 +110,16 @@ public class BaseTestScenario {
         return avgClassificationCost;
     }
 
-    public double evaluateMissclassificationCost(String labelChoosingMethod) {
+    public static double evaluateMissclassificationCost(String labelChoosingMethod) {
         DataEvaluator dataEvaluator = new DataEvaluator(labelChoosingMethod);
 
         //compute the evaluated misclassification cost
-        Map<String, Double> evaluated = dataEvaluator.evaluate(project);
+        Map<LObject<String>, Double> evaluated = dataEvaluator.evaluate(project);
 
         double avgCost = 0.0;
 
-        for (Map.Entry<String, Double> entry : evaluated.entrySet()) {
-            avgCost += entry.getValue();
+        for (Double entryValue : evaluated.values()) {
+            avgCost += entryValue;
         }
 
         //calculate the average cost
@@ -126,16 +127,16 @@ public class BaseTestScenario {
         return avgCost;
     }
 
-    public double estimateCostToQuality(ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
+    public static double estimateCostToQuality(ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator,
             IObjectLabelDecisionAlgorithm objectLabelDecisionAlgorithm) {
         DecisionEngine decisionEngine = new DecisionEngine(labelProbabilityDistributionCostCalculator, objectLabelDecisionAlgorithm);
-        Map<String, Double> costQuality = Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project));
+        Map<LObject<String>, Double> costQuality = Quality.fromCosts(project, decisionEngine.estimateMissclassificationCosts(project));
 
         double avgQuality = 0.0;
 
         //compute the estimated quality cost for each object, using MV
-        for (Map.Entry<String, Double> cQuality : costQuality.entrySet()) {
-            avgQuality += cQuality.getValue();
+        for (Double cQuality : costQuality.values()) {
+            avgQuality += cQuality;
         }
 
         //calculate the average
@@ -143,15 +144,15 @@ public class BaseTestScenario {
         return avgQuality;
     }
 
-    public double evaluateCostToQuality(String labelChoosingMethod) {
+    public static double evaluateCostToQuality(String labelChoosingMethod) {
         DataEvaluator dataEvaluator = new DataEvaluator(labelChoosingMethod);
 
-        Map<String, Double> costQuality = Quality.fromCosts(project, dataEvaluator.evaluate(project));
+        Map<LObject<String>, Double> costQuality = Quality.fromCosts(project, dataEvaluator.evaluate(project));
         double avgQuality = 0.0;
 
         //compute the estimated quality cost for each object, using MV
-        for (Map.Entry<String, Double> cQuality : costQuality.entrySet()) {
-            avgQuality += cQuality.getValue();
+        for (Double cQuality : costQuality.values()) {
+            avgQuality += cQuality;
         }
 
         //calculate the average
@@ -159,41 +160,41 @@ public class BaseTestScenario {
         return avgQuality;
     }
 
-    public double estimateWorkerQuality(String method, String estimationType) {
+    public static double estimateWorkerQuality(String method, String estimationType) {
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator =
                 LabelProbabilityDistributionCostCalculators.get(method);
         WorkerEstimator workerEstimator = new WorkerEstimator(labelProbabilityDistributionCostCalculator);
-        Map<String, Double> result = new HashMap<String, Double>();
-        Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
+        Map<Worker, Double> result = new HashMap<Worker, Double>();
+        Map<Worker, Integer> workerAssignedLabels = new HashMap<Worker, Integer>();
 
         for (Worker worker : project.getData().getWorkers()) {
-            result.put(worker.getName(), workerEstimator.getCost(project, worker));
-            workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
+            result.put(worker, workerEstimator.getCost(project, worker));
+            workerAssignedLabels.put(worker, project.getData().getWorkerAssigns(worker).size());
         }
-        Map<String, Double> workersQuality = Quality.fromCosts(project, result);
+        Map<Worker, Double> workersQuality = Quality.fromCosts(project, result);
         return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
-    public double evaluateWorkerQuality(String method, String estimationType) {
+    public static double evaluateWorkerQuality(String method, String estimationType) {
         ILabelProbabilityDistributionCostCalculator labelProbabilityDistributionCostCalculator =
                 LabelProbabilityDistributionCostCalculators.get(method);
         WorkerEvaluator workerEvaluator = new WorkerEvaluator(labelProbabilityDistributionCostCalculator);
-        Map<String, Double> result = new HashMap<String, Double>();
-        Map<String, Integer> workerAssignedLabels = new HashMap<String, Integer>();
+        Map<Worker, Double> result = new HashMap<Worker, Double>();
+        Map<Worker, Integer> workerAssignedLabels = new HashMap<Worker, Integer>();
 
         for (Worker worker : project.getData().getWorkers()) {
-            result.put(worker.getName(), workerEvaluator.getCost(project, worker));
-            workerAssignedLabels.put(worker.getName(), project.getData().getWorkerAssigns(worker).size());
+            result.put(worker, workerEvaluator.getCost(project, worker));
+            workerAssignedLabels.put(worker, project.getData().getWorkerAssigns(worker).size());
         }
 
-        Map<String, Double> workersQuality = Quality.fromCosts(project, result);
+        Map<Worker, Double> workersQuality = Quality.fromCosts(project, result);
         return getAverageValue(workersQuality, estimationType.equals("n") ? null : workerAssignedLabels);
     }
 
-    private double getAverageValue(Map<String, Double> values, Map<String, Integer> weight) {
+    private static <T> double getAverageValue(Map<T, Double> values, Map<T, Integer> weight) {
         double quality = 0.;
         int cnt = 0;
-        for (Map.Entry<String, Double> e : values.entrySet()) {
+        for (Map.Entry<T, Double> e : values.entrySet()) {
             Double val = e.getValue();
             if (val == null || val.isNaN()) {
                 continue;
@@ -216,4 +217,36 @@ public class BaseTestScenario {
             assertTrue(Math.abs(expectedValue - actualValue) / 100 < TOLERANCE);
         }
     }
+
+	@Test
+	public void test_ProbabilityDistributions() {
+		HashMap<String, Double> dataQuality = summaryResultsParser.getDataQuality();
+		Collection<LObject<String>> objects = data.getObjects();
+
+		//init the categoryProbabilities hashmap
+		HashMap<String, Double> categoryProbabilities = new HashMap<String, Double>();
+		for (String categoryName : data.getCategories()) {
+			categoryProbabilities.put(categoryName, 0.0);
+		}
+
+		//iterate through the datum objects and calculate the sum of the probabilities associated  to each category
+		int noObjects = objects.size();
+		for (LObject<String> object : objects) {
+			Map<String, Double> objectProbabilities = project.getObjectResults(object).getCategoryProbabilites();
+			for (Map.Entry<String, Double> e : objectProbabilities.entrySet()) {
+				categoryProbabilities.put(e.getKey(), categoryProbabilities.get(e.getKey()) + e.getValue());
+			}
+		}
+
+		//calculate the average probability value for each category
+		for (String categoryName : data.getCategories()) {
+			categoryProbabilities.put(categoryName, categoryProbabilities.get(categoryName) / noObjects);
+		}
+		for (String categoryName : data.getCategories()) {
+			String metricName = "[DS_Pr[" + categoryName + "]] DS estimate for prior probability of category " + categoryName;
+			Double expectedCategoryProbability = dataQuality.get(metricName);
+			Double actualCategoryProbability = categoryProbabilities.get(categoryName);
+			testCondition(expectedCategoryProbability, actualCategoryProbability);
+		}
+	}
 }

@@ -8,8 +8,8 @@ import com.google.common.reflect.TypeToken;
  */
 public class Labels {
 
-	static public TypeToken<ContValue> contValue = new TypeToken<ContValue>() {};
-	static public TypeToken<String> nominalValue = new TypeToken<String>() {};
+	static final public TypeToken<ContValue> contValue = new TypeToken<ContValue>() {};
+	static final public TypeToken<String> nominalValue = new TypeToken<String>() {};
 
 	static public <T, P> P returnForKind(TypeToken<T> labelType, P whenNominal, P whenCont) {
 		if (contValue == labelType) {
