@@ -55,12 +55,19 @@ public class ServiceComponentsFactory {
 		return new RandomUniqIDGenerators.PrefixAdderDecorator("RANDOM__", new RandomUniqIDGenerators.NumberAndDate());
 	}
 
-	public ICommandStatusesContainer loadCommandStatusesContainer(ISerializer serializer) throws SQLException, ClassNotFoundException {
-		DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(new DBBackend(getConnectionProperties(), properties, true));
-		return new KeyValueCommandStatusesContainer(
-				new RandomUniqIDGenerators.NumberAndDate(),
-				new DefaultSafeKVStorage(kvFactory.getKV("Statuses"), "StatusesStorage"),
-				serializer);
+	public ICommandStatusesContainer loadCommandStatusesContainer(String jobStorageType, ISerializer serializer) throws SQLException, ClassNotFoundException {
+		if (jobStorageType.startsWith("DB")){
+			DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(new DBBackend(getConnectionProperties(), properties, true));
+			return new KeyValueCommandStatusesContainer(
+					new RandomUniqIDGenerators.NumberAndDate(),
+					new DefaultSafeKVStorage(kvFactory.getKV("Statuses"), "StatusesStorage"),
+					serializer);
+		}
+		else {
+			return new SerializedCachedCommandStatusesContainer(new RandomUniqIDGenerators.Numbers(), serializer,
+					Integer.valueOf(properties.getProperty(Constants.RESPONSES_CACHE_SIZE)),
+					Integer.valueOf(properties.getProperty(Constants.RESPONSES_DUMP_TIME)));
+		}
 	}
 
 	public ProjectCommandExecutor loadProjectCommandExecutor(){

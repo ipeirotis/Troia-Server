@@ -10,6 +10,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import com.datascience.datastoring.jobs.JobsManager;
+import com.datascience.executor.ICommandStatusesContainer;
 import org.joda.time.DateTime;
 
 import com.sun.jersey.spi.resource.Singleton;
@@ -33,6 +34,10 @@ public class StatusEntry {
 		return (JobsManager) context.getAttribute(Constants.JOBS_MANAGER);
 	}
 
+	private ICommandStatusesContainer getCommandStatusesContainer(){
+		return (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
+	}
+
 	@GET
 	public Response status(){
 		if (!InitializationSupport.checkIsInitialized(context))
@@ -42,6 +47,7 @@ public class StatusEntry {
 		content.put("deploy_time", getInitializationTimestamp().toString());
 		content.put("job_storage", getJobsManager().toString());
 		content.put("job_storage_status", getJobStorageStatus());
+		content.put("statuses_container", getCommandStatusesContainer());
 		content.put("memory", getMemoryStats());
 		return getResponseBuilder().makeOKResponse(content);
 	}
