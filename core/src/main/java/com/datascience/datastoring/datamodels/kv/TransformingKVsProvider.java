@@ -21,7 +21,7 @@ public class TransformingKVsProvider<T> extends BaseKVsProvider {
 
 	static final protected List<String> KVs = Lists.newArrayList(
 			"JobSettings", "JobTypes", "WorkerAssigns", "ObjectAssigns",
-			"Objects", "GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "Model"
+			"Objects", "GoldObjects","EvaluationObjects", "ObjectResults", "WorkerResults", "Model", "Statuses"
 			);
 
 	protected IBackendKVFactory<T> kvFactory;
