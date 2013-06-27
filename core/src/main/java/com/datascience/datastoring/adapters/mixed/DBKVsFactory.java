@@ -15,7 +15,7 @@ public class DBKVsFactory<T> implements IBackendKVFactory<T> {
 
 	protected DBBackend dbBackend;
 
-	public DBKVsFactory(DBBackend dbBackend) throws SQLException, ClassNotFoundException {
+	public DBKVsFactory(DBBackend dbBackend) {
 		this.dbBackend = dbBackend;
 	}
 
