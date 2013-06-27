@@ -252,7 +252,7 @@ public class BaseTestScenario {
     }
 
     @Test
-    public void testWorkerQualities() {
+    public void test_WorkerQualityIsNotNan() {
         WorkerEstimator we = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get("ExpectedCost"));
         for (Double d : we.getCosts(project).values()) {
             assertFalse(Double.isNaN(d));
