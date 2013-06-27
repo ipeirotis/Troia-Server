@@ -89,5 +89,11 @@ public class MVBaseTestScenario extends BaseTestScenario {
                 $("Eval_MV_Soft_q", "[DataQuality_Eval_MV_Soft] Actual data quality, naive soft label"));
     }
 
-    
+	@Test
+	public void test_WorkerQualityIsNotNan() {
+		WorkerEstimator we = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get("ExpectedCost"));
+		for (Double d : we.getCosts(project).values()) {
+			assertFalse(Double.isNaN(d));
+		}
+	}
 }
