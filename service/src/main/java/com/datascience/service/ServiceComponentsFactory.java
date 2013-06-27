@@ -56,7 +56,7 @@ public class ServiceComponentsFactory {
 	}
 
 	public ICommandStatusesContainer loadCommandStatusesContainer(String jobStorageType, ISerializer serializer) throws SQLException, ClassNotFoundException {
-		if (jobStorageType.startsWith("DB")){
+		if (jobStorageType.toUpperCase().startsWith("DB")){
 			DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(new DBBackend(getConnectionProperties(), properties, true));
 			return new KeyValueCommandStatusesContainer(
 					new RandomUniqIDGenerators.NumberAndDate(),

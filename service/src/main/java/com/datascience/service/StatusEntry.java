@@ -47,7 +47,7 @@ public class StatusEntry {
 		content.put("deploy_time", getInitializationTimestamp().toString());
 		content.put("job_storage", getJobsManager().toString());
 		content.put("job_storage_status", getJobStorageStatus());
-		content.put("statuses_container", getCommandStatusesContainer());
+		content.put("statuses_container", getCommandStatusesContainer().toString());
 		content.put("memory", getMemoryStats());
 		return getResponseBuilder().makeOKResponse(content);
 	}
