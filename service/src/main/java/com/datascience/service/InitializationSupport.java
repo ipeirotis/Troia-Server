@@ -82,7 +82,7 @@ public class InitializationSupport implements ServletContextListener {
 		scontext.setAttribute(Constants.JOBS_MANAGER,
 				factory.loadJobManager(jobStorage, serializer));
 
-		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(serializer);
+		ICommandStatusesContainer statusesContainer = factory.loadCommandStatusesContainer(props.getProperty(Constants.JOBS_STORAGE), serializer);
 		scontext.setAttribute(Constants.COMMAND_STATUSES_CONTAINER, statusesContainer);
 
 		scontext.setAttribute(Constants.ID_GENERATOR, factory.loadIdGenerator());
