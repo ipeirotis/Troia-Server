@@ -152,7 +152,7 @@ public class PredictionCommands {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				WorkerQualityCalculator wqc = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get(s));
-				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(project, wqc.getCosts(project))));
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(wqc.getCosts(project))));
 			}
 			setResult(ret);
 		}
@@ -227,7 +227,7 @@ public class PredictionCommands {
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
 				DecisionEngine de = new DecisionEngine(lpdcc, null);
-				ret.put(s, MathHelpers.getAverage(project, de.estimateMissclassificationCosts(project)));
+				ret.put(s, MathHelpers.getAverage(de.estimateMissclassificationCosts(project)));
 			}
 			ret.put("Spammer", getMinSpammerCost(project));
 			setResult(ret);
@@ -246,7 +246,7 @@ public class PredictionCommands {
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				ILabelProbabilityDistributionCostCalculator lpdcc = LabelProbabilityDistributionCostCalculators.get(s);
 				DecisionEngine de = new DecisionEngine(lpdcc, null);
-				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(project, de.estimateMissclassificationCosts(project))));
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(de.estimateMissclassificationCosts(project))));
 			}
 			setResult(ret);
 		}
