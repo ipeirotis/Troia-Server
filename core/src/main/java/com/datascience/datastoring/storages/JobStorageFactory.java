@@ -61,7 +61,7 @@ public class JobStorageFactory {
 		if (type.equals("DB_KV")){
 			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
 			return new KVJobStorage(new TransformingKVsProvider<String>(
-					new DBKVsFactory<String>(connectionProperties, properties, true), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
+					new DBKVsFactory<String>(new DBBackend(connectionProperties, properties, true)), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
 			));
 		}
 		throw new IllegalArgumentException("Unknown storage model: " + fullType);

@@ -132,7 +132,7 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 				// category. In this case, we switch to Laplacean smoothing for
 				// computing the matrix
 				if (from_marginal == 0.0) {
-					 error_rate = Double.NaN;
+					error_rate = Double.NaN;
 					// System.out.println(from_marginal);
 //					error_rate = (error + 1)
 //								 / (from_marginal + this.categories.size());
@@ -172,9 +172,9 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 	 */
 	@Override
 	public void addError(String from, String to, Double error) {
+		incrementRowDenominator(from, error);
 		CategoryPair cp = new CategoryPair(from, to);
 		double currentError = matrix.containsKey(cp) ? matrix.get(cp) : 0;
-		incrementRowDenominator(from, error);
 		this.matrix.put(cp, currentError + error);
 
 	}
@@ -187,9 +187,9 @@ public class MultinomialConfusionMatrix implements ConfusionMatrix {
 	 */
 	@Override
 	public void removeError(String from, String to, Double error) {
+		decrementRowDenominator(from, error);
 		CategoryPair cp = new CategoryPair(from, to);
 		double currentError = matrix.containsKey(cp) ? matrix.get(cp) : 0;
-		decrementRowDenominator(from, error);
 		this.matrix.put(cp, Math.max(0, currentError - error));
 
 	}

@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
+import com.datascience.executor.ICommandStatusesContainer;
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/responses/")
@@ -23,8 +24,8 @@ public class ResponsesEntry {
 		return (ResponseBuilder) context.getAttribute(Constants.RESPONSER);
 	}
 
-	private CachedCommandStatusesContainer getCommandStatusContainer(){
-		return (CachedCommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
+	private ICommandStatusesContainer getCommandStatusContainer(){
+		return (ICommandStatusesContainer) context.getAttribute(Constants.COMMAND_STATUSES_CONTAINER);
 	}
 
 	@GET
