@@ -140,7 +140,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
 	@Path("workers/{wid:[a-zA-Z_0-9/:.-]+}/quality/matrix/")
 	@GET
-	public Response getWorkerPayments(@PathParam("wid") String wid){
+	public Response getWorkerConfusionMatrix(@PathParam("wid") String wid){
 		return buildResponseOnCommand(new PredictionCommands.GetWorkerConfusionMatrix(wid));
 	}
 

@@ -11,13 +11,13 @@ public class CommandStatus<T> {
 	}
 	private CommandStatusType status;
 	private T data;
-	private Exception exception;
+	private String exception;
 	private Double executionTimeInSeconds;
 	
 	protected CommandStatus(CommandStatusType status, T data, Exception exception, Double executionTimeInSeconds){
 		this.status = status;
 		this.data = data;
-		this.exception = exception;
+		this.exception = exception != null ? exception.getLocalizedMessage() : "";
 		this.executionTimeInSeconds = executionTimeInSeconds;
 	}
 	
@@ -30,7 +30,7 @@ public class CommandStatus<T> {
 	}
 	
 	public Exception getError(){
-		return exception;
+		return new Exception(exception);
 	}
 
 	public Double getExecutionTime(){
