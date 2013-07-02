@@ -7,6 +7,7 @@ import com.datascience.core.nominal.NominalProject;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.gal.BatchDawidSkene;
 import com.datascience.gal.IncrementalDawidSkene;
+import com.datascience.mv.BatchMV;
 import org.junit.Test;
 
 import java.util.List;
@@ -16,41 +17,50 @@ import java.util.List;
  */
 public abstract class AbstractBase {
 
-	public NominalProject getProject(Algorithm algorithm, List<String> categories){
-		MemoryJobStorage js = new MemoryJobStorage();
-		return new NominalProject(algorithm, js.getNominalData("testid"), js.getNominalResults("testid", categories));
-	}
+    public NominalProject getProject(Algorithm algorithm, List<String> categories) {
+        MemoryJobStorage js = new MemoryJobStorage();
+        return new NominalProject(algorithm, js.getNominalData("testid"), js.getNominalResults("testid", categories));
+    }
 
-	public NominalProject getBDSProject(List<String> categories){
-		return getProject(new BatchDawidSkene(), categories);
-	}
+    public NominalProject getBDSProject(List<String> categories) {
+        return getProject(new BatchDawidSkene(), categories);
+    }
 
-	public NominalProject getIDSProject(List<String> categories){
-		IncrementalDawidSkene algorithm = new IncrementalDawidSkene();
-		algorithm.setEpsilon(0.0001);
-		algorithm.setIterations(10);
-		NominalProject project = getProject(algorithm, categories);
-		project.getData().addNewUpdatableAlgorithm(algorithm);
-		return project;
-	}
+    public NominalProject getBMVProject(List<String> categories) {
+        return getProject(new BatchMV(), categories);
+    }
 
-	static public void ensureComputed(Project project){
-		if (!(project.getAlgorithm() instanceof INewDataObserver)){
-			project.getAlgorithm().compute();
-		}
-	}
+    public NominalProject getIDSProject(List<String> categories) {
+        IncrementalDawidSkene algorithm = new IncrementalDawidSkene();
+        algorithm.setEpsilon(0.0001);
+        algorithm.setIterations(10);
+        NominalProject project = getProject(algorithm, categories);
+        project.getData().addNewUpdatableAlgorithm(algorithm);
+        return project;
+    }
 
-	@Test
-	public void testBDS(){
-		runTestScenario(getBDSProject(getCategories()));
-	}
+    static public void ensureComputed(Project project) {
+        if (!(project.getAlgorithm() instanceof INewDataObserver)) {
+            project.getAlgorithm().compute();
+        }
+    }
 
-	@Test
-	public void testIDS(){
-		runTestScenario(getIDSProject(getCategories()));
-	}
+    @Test
+    public void testBDS() {
+        runTestScenario(getBDSProject(getCategories()));
+    }
 
-	abstract protected List<String> getCategories();
+    @Test
+    public void testIDS() {
+        runTestScenario(getIDSProject(getCategories()));
+    }
 
-	abstract protected void runTestScenario(NominalProject project);
+    @Test
+    public void testBMV() {
+        runTestScenario(getBMVProject(getCategories()));
+    }
+
+    abstract protected List<String> getCategories();
+
+    abstract protected void runTestScenario(NominalProject project);
 }

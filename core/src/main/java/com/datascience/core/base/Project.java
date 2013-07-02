@@ -1,6 +1,5 @@
 package com.datascience.core.base;
 
-
 import com.datascience.core.algorithms.INewDataObserver;
 import com.datascience.core.results.IResults;
 import com.datascience.scheduler.IScheduler;

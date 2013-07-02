@@ -57,10 +57,16 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new PredictionCommands.GetDataCost(LabelProbabilityDistributionCostCalculators.get(lca)));
 	}
 
-	@Path("objects/cost/summary")
+	@Path("objects/cost/estimated/summary")
 	@GET
-	public Response getSummaryDataCost(){
+	public Response getSummaryEstimatedDataCost(){
 		return buildResponseOnCommand(new PredictionCommands.GetDataCostSummary());
+	}
+
+	@Path("objects/cost/evaluated/summary")
+	@GET
+	public Response getSummaryEvaluatedDataCost(){
+		return buildResponseOnCommand(new EvaluationCommands.GetDataCostSummary());
 	}
 	
 	@Path("objects/quality/estimated/")
@@ -81,12 +87,18 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new EvaluationCommands.GetDataQuality(new DataEvaluator(lda)));
 	}
 
-	@Path("objects/quality/summary/")
+	@Path("objects/quality/estimated/summary/")
 	@GET
-	public Response getSummaryDataQuality(){
+	public Response getSummaryEstimatedDataQuality(){
 		return buildResponseOnCommand(new PredictionCommands.GetDataQualitySummary());
 	}
-	
+
+	@Path("objects/quality/evaluated/summary/")
+	@GET
+	public Response getSummaryEvaluatedDataQuality(){
+		return buildResponseOnCommand(new EvaluationCommands.GetDataQualitySummary());
+	}
+
 	@Path("workers/quality/evaluated/")
 	@GET
 	public Response getEvaluatedWorkersQuality(@DefaultValue("ExpectedCost") @QueryParam("costAlgorithm") String lca){
@@ -108,10 +120,16 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersCost( new WorkerEstimator(lpdcc)));
 	}
 
-	@Path("workers/quality/summary/")
+	@Path("workers/quality/estimated/summary/")
 	@GET
-	public Response getSummaryWorkersQuality(){
+	public Response getEstimatedSummaryWorkersQuality(){
 		return buildResponseOnCommand(new PredictionCommands.GetWorkersQualitySummary());
+	}
+
+	@Path("workers/quality/evaluated/summary/")
+	@GET
+	public Response getEvaluatedSummaryWorkersQuality(){
+		return buildResponseOnCommand(new EvaluationCommands.GetWorkersQualitySummary());
 	}
 
 	@Path("workers/quality/matrix/")
@@ -122,7 +140,7 @@ public class NominalJobEntry extends JobEntryBase<NominalProject> {
 
 	@Path("workers/{wid:[a-zA-Z_0-9/:.-]+}/quality/matrix/")
 	@GET
-	public Response getWorkerPayments(@PathParam("wid") String wid){
+	public Response getWorkerConfusionMatrix(@PathParam("wid") String wid){
 		return buildResponseOnCommand(new PredictionCommands.GetWorkerConfusionMatrix(wid));
 	}
 
