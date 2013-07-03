@@ -1,6 +1,7 @@
 package com.datascience.core.commands;
 
 import com.datascience.core.base.AssignedLabel;
+import com.datascience.core.base.LObject;
 import com.datascience.core.base.Project;
 import com.datascience.core.base.Worker;
 import com.datascience.datastoring.jobs.JobCommand;
@@ -24,9 +25,10 @@ public class WorkerCommands {
 		int goldTests = 0;
 		int correctGoldTests = 0;
 		for (AssignedLabel al : (Collection<AssignedLabel>) project.getData().getWorkerAssigns(worker)){
-			if (al.getLobject().isGold()){
+			LObject<String> obj = project.getData().getObject(al.getLobject().getName());
+			if (obj.isGold()){
 				goldTests++;
-				if (al.getLabel().equals(al.getLobject().getGoldLabel()))
+				if (al.getLabel().equals(obj.getGoldLabel()))
 					correctGoldTests++;
 			}
 		}
