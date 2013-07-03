@@ -2,6 +2,7 @@ package com.datascience.core.results;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.CategoryPair;
+import com.datascience.core.base.LObject;
 import com.datascience.core.stats.*;
 import com.google.common.base.Objects;
 
@@ -78,13 +79,17 @@ public class WorkerResult {
 	}
 
 	public void computeEvalConfusionMatrix(Collection<String> categories,
-										   Collection<AssignedLabel<String>> workerAssigns) {
+										   Collection<AssignedLabel<String>> workerAssigns,
+										   Collection<LObject<String>> evaluationObjects) {
 		eval_cm = new MultinomialConfusionMatrix(categories, new HashMap<CategoryPair, Double>());
 		for (AssignedLabel<String> l : workerAssigns) {
-			if (l.getLobject().getEvaluationLabel() != null){
-				String assignedCategory = l.getLabel();
-				String correctCategory = l.getLobject().getEvaluationLabel();
-				eval_cm.addError(correctCategory, assignedCategory, 1.0);
+			for (LObject<String> eo : evaluationObjects){
+				if (eo.equals(l.getLobject())){
+					String assignedCategory = l.getLabel();
+					String correctCategory = eo.getEvaluationLabel();
+					eval_cm.addError(correctCategory, assignedCategory, 1.0);
+					break;
+				}
 			}
 		}
 		eval_cm.normalize();
