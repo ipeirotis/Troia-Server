@@ -124,3 +124,28 @@ As a result *target* directory will appear in service directory.
 It should contain file **service.war**.
 
 
+Known issues
+------------
+
+*   **Q:** While loading assigned labels I get 500 error: Internal error: Packet for query is too large.
+
+  ```json
+  {
+  "timestamp": "2013-06-25T21:33:01.779-04:00",
+  "result": "Internal error: Packet for query is too large (1237720 > 1048576). You can change this value on the server by setting the max_allowed_packet' variable.",
+  "executionTime": 0.138,
+  "status": "ERROR"
+  }
+  ```
+  
+  **A:** As exception message says: you need to change proper parameter in your MySQL server settings. It is described here: http://dev.mysql.com/doc/refman/5.5/en/packet-too-large.html . We would recommend to set it to 128MB. If you would like to handle much bigger jobs than probably you should use even higher value.
+
+*   **Q:** Workers quality are negative. What's wrong?
+
+  **A:** It works that way: quality is computed as 1 - (worker_cost / spammer_cost). Workers cost is expected costs that he will generate making an assign. Our baseline is spammer_cost which is using priors and costs to select label which minimizes cost. So in this case spammer is generating lower costs than workers...
+  
+  *Hint:* More accurate priors should result in better worker quality estimation. Also for small jobs use BDS algorithm as IDS works well only with high volume of assigns.
+
+*   **Q:** Workers quality are NaN. What's wrong?
+  
+  **A:** ?
