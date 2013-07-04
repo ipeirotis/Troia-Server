@@ -90,7 +90,7 @@ public class EvaluationCommands {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"MinCost", "MaxLikelihood"}){
 				DataEvaluator de = new DataEvaluator(s);
-				ret.put(s, MathHelpers.getAverage(Quality.fromCosts(project, de.evaluate(project))));
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(de.evaluate(project))));
 			}
 			setResult(ret);
 		}
