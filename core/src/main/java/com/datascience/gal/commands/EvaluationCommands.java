@@ -107,7 +107,7 @@ public class EvaluationCommands {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"MinCost", "MaxLikelihood"}){
 				WorkerQualityCalculator wqc = new WorkerEvaluator(LabelProbabilityDistributionCostCalculators.get(s));
-				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(wqc.getCosts(project))));
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverageNotNaN(wqc.getCosts(project))));
 			}
 			setResult(ret);
 		}

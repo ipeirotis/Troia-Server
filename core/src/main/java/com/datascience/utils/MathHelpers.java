@@ -16,4 +16,16 @@ public class MathHelpers {
 		}
 		return costSum/cnt;
 	}
+
+	static public double getAverageNotNaN(Map<?, Double> costs){
+		int cnt = 0;
+		double costSum = 0.;
+		for (Double val : costs.values()){
+			if (!val.isNaN()){
+				costSum += val;
+				cnt += 1;
+			}
+		}
+		return costSum/cnt;
+	}
 }
