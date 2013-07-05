@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -19,8 +21,12 @@ import java.util.Map;
 public class DBFullAdapter implements IBackendAdapter {
 
 	static Logger logger = Logger.getLogger(DBFullAdapter.class);
+	static Collection<String> tableNames;
 	static Map<String, String> tables;
 	static {
+		tableNames = new LinkedList<String>();
+		tableNames.add("Projects");
+		tableNames.add("Statuses");
 		tables = new HashMap<String, String>();
 		tables.put("Projects", "id VARCHAR(100) NOT NULL PRIMARY KEY, " +
 				"kind VARCHAR(25) NOT NULL, " +
@@ -47,7 +53,7 @@ public class DBFullAdapter implements IBackendAdapter {
 
 	@Override
 	public void clear() throws SQLException {
-		backend.clear(tables.keySet());
+		backend.clear(tableNames);
 	}
 
 	@Override

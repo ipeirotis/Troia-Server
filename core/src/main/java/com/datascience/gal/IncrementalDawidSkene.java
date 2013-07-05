@@ -66,7 +66,7 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		DatumResult dr = results.getOrCreateDatumResult(assign.getLobject());
 		Map<String, Double> oldProbabilites = dr.getCategoryProbabilites();
 		//update object class probabilites
-		Map<String, Double> probabilitiesWithWorkerInfluence = getObjectClassProbabilities(assign.getLobject(), null);
+		Map<String, Double> probabilitiesWithWorkerInfluence = getObjectClassProbabilities(assign.getLobject());
 		dr.setCategoryProbabilites(probabilitiesWithWorkerInfluence);
 		results.addDatumResult(assign.getLobject(), dr);
 		//update priors
@@ -77,10 +77,10 @@ public class IncrementalDawidSkene extends AbstractDawidSkene
 		//rebuild worker confusion matrices for all workers who assigned this object
 		//probabilities would be null only if we've got an object with just one assign. is such a situation we return prior distribution
 		//(https://project-troia.atlassian.net/browse/TROIA-347?focusedCommentId=12704&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12704)
-		Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), assign.getWorker());
-		if (probabilities == null)
-			probabilities = getCategoryPriors();
 		for (AssignedLabel<String> al : data.getAssignsForObject(assign.getLobject())){
+			Map<String, Double> probabilities = getObjectClassProbabilities(assign.getLobject(), al.getWorker());
+			if (probabilities == null)
+				probabilities = getCategoryPriors();
 			WorkerResult wr = results.getOrCreateWorkerResult(al.getWorker());
 			for (Map.Entry<String, Double> e : probabilities.entrySet()){
 				wr.addError(e.getKey(), al.getLabel(), e.getValue());

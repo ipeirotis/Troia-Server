@@ -92,6 +92,7 @@ public class ConfigEntry {
 			JobsManager jm = (JobsManager) scontext.getAttribute(Constants.JOBS_MANAGER);
 			try {
 				jm.rebuild();
+				InitializationSupport.initializeContext(scontext);
 			} catch (Exception e){
 				logger.error(e.getMessage(), e);
 				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
