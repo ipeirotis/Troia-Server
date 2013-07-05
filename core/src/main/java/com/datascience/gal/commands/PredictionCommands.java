@@ -152,7 +152,7 @@ public class PredictionCommands {
 			HashMap<String, Object> ret = new HashMap<String, Object>();
 			for (String s : new String[] {"ExpectedCost", "MinCost", "MaxLikelihood"}){
 				WorkerQualityCalculator wqc = new WorkerEstimator(LabelProbabilityDistributionCostCalculators.get(s));
-				ret.put(s, Quality.fromCost(project, MathHelpers.getAverage(wqc.getCosts(project))));
+				ret.put(s, Quality.fromCost(project, MathHelpers.getAverageNotNaN(wqc.getCosts(project))));
 			}
 			setResult(ret);
 		}
