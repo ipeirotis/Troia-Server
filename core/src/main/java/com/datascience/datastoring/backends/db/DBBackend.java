@@ -9,6 +9,8 @@ import java.sql.*;
 import java.util.*;
 
 /**
+ * NOTE: we have to be case insensitive in database/table/fields names!
+ *
  * User: artur
  * Date: 6/4/13
  */
@@ -96,16 +98,18 @@ public class DBBackend implements IBackend {
 		return connection;
 	}
 
-	public void checkTables(Collection
-									<String> tables) throws  Exception{
+	/**
+	 * NOTE: case-insensitive in table names
+	 */
+	public void checkTables(Collection<String> tables) throws Exception{
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
 		Set<String> tableNamesSet = new HashSet<String>();
 		while(rs.next()){
-			tableNamesSet.add(rs.getString("TABLE_NAME"));
+			tableNamesSet.add(rs.getString("TABLE_NAME").toLowerCase());
 		}
 		for (String tableName : tables){
-			if (!tableNamesSet.contains(tableName)){
+			if (!tableNamesSet.contains(tableName.toLowerCase())){
 				throw new Exception("There is no table named: " + tableName);
 			}
 		}
