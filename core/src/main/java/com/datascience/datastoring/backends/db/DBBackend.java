@@ -60,7 +60,9 @@ public class DBBackend implements IBackend {
 		connectDatabase();
 		try{
 			createDatabase();
-		} catch (SQLException ex){}
+		} catch (SQLException ex){
+			logger.warn("Error when creating db during rebuild", ex);
+		}
 		for (Map.Entry<String, String> e : tables.entrySet()){
 			createTable(e.getKey(), e.getValue());
 			createIndex(e.getKey());
@@ -99,18 +101,14 @@ public class DBBackend implements IBackend {
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
 		Set<String> tableNamesSet = new HashSet<String>();
-		int i=0;
 		while(rs.next()){
 			tableNamesSet.add(rs.getString("TABLE_NAME"));
-			i++;
 		}
 		for (String tableName : tables){
 			if (!tableNamesSet.contains(tableName)){
 				throw new Exception("There is no table named: " + tableName);
 			}
 		}
-//		if (tables.size() != i)
-//			throw new Exception("Invalid tables size");
 		cleanupStatement(stmt, null);
 	}
 
@@ -150,7 +148,7 @@ public class DBBackend implements IBackend {
 			useDatabase();
 		}
 		catch (SQLException ex){
-			logger.warn("Can't use database: " + dbName);
+			logger.warn("Can't use database: " + dbName, ex);
 		}
 	}
 
