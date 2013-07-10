@@ -47,7 +47,6 @@ public class DBBackend implements IBackend {
 
 	@Override
 	public void test() throws Exception {
-		connectDatabase();
 		ensureConnection();
 		if (!connection.isValid(VALIDATION_TIMEOUT))
 			throw new Exception("DBBackend: connection not valid");
@@ -59,7 +58,7 @@ public class DBBackend implements IBackend {
 	}
 
 	public void rebuild(Map<String, String> tables) throws SQLException {
-		connectDatabase();
+		ensureConnection();
 		try{
 			createDatabase();
 		} catch (SQLException ex){
@@ -73,7 +72,7 @@ public class DBBackend implements IBackend {
 	}
 
 	public void clear(Collection<String> tables) throws SQLException {
-		connectDatabase();
+		ensureConnection();
 		for (String t : tables){
 			dropTable(t);
 		}
