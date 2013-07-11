@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import com.datascience.datastoring.jobs.JobsManager;
 import com.datascience.executor.ICommandStatusesContainer;
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import com.sun.jersey.spi.resource.Singleton;
@@ -57,6 +58,7 @@ public class StatusEntry {
 			getJobsManager().test();
 			return "OK";
 		} catch (Exception e) {
+			Logger.getLogger(this.getClass()).error("JOB STORAGE STATUS FAILED", e);
 			return "FAIL: " + e.getMessage();
 		}
 	}
