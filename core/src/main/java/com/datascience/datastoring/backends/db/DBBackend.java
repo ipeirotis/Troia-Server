@@ -9,6 +9,8 @@ import java.sql.*;
 import java.util.*;
 
 /**
+ * NOTE: we have to be case insensitive in database/table/fields names!
+ *
  * User: artur
  * Date: 6/4/13
  */
@@ -60,7 +62,9 @@ public class DBBackend implements IBackend {
 		connectDatabase();
 		try{
 			createDatabase();
-		} catch (SQLException ex){}
+		} catch (SQLException ex){
+			logger.warn("Error when creating db during rebuild", ex);
+		}
 		for (Map.Entry<String, String> e : tables.entrySet()){
 			createTable(e.getKey(), e.getValue());
 			createIndex(e.getKey());
@@ -94,23 +98,21 @@ public class DBBackend implements IBackend {
 		return connection;
 	}
 
-	public void checkTables(Collection
-									<String> tables) throws  Exception{
+	/**
+	 * NOTE: case-insensitive in table names
+	 */
+	public void checkTables(Collection<String> tables) throws Exception{
 		Statement stmt = connection.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '"+ dbName+"';");
 		Set<String> tableNamesSet = new HashSet<String>();
-		int i=0;
 		while(rs.next()){
-			tableNamesSet.add(rs.getString("TABLE_NAME"));
-			i++;
+			tableNamesSet.add(rs.getString("TABLE_NAME").toLowerCase());
 		}
 		for (String tableName : tables){
-			if (!tableNamesSet.contains(tableName)){
+			if (!tableNamesSet.contains(tableName.toLowerCase())){
 				throw new Exception("There is no table named: " + tableName);
 			}
 		}
-//		if (tables.size() != i)
-//			throw new Exception("Invalid tables size");
 		cleanupStatement(stmt, null);
 	}
 
@@ -150,7 +152,7 @@ public class DBBackend implements IBackend {
 			useDatabase();
 		}
 		catch (SQLException ex){
-			logger.warn("Can't use database: " + dbName);
+			logger.warn("Can't use database: " + dbName, ex);
 		}
 	}
 

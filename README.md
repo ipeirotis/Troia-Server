@@ -148,4 +148,4 @@ Known issues
 
 *   **Q:** Workers quality are NaN. What's wrong?
   
-  **A:** ?
+  **A:** In most cases it means that algorithm doesn't have enough data to estimate worker quality. It might be the case when worker provided labels **only** for objects which weren't labeled by anyone else. In such situation we can't tell whether he is good or bad.
