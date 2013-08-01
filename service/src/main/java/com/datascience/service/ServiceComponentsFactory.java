@@ -3,7 +3,6 @@ package com.datascience.service;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import com.datascience.datastoring.adapters.kv.DefaultSafeKVStorage;
 import com.datascience.datastoring.adapters.mixed.DBKVsFactory;
