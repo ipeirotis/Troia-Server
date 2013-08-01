@@ -4,6 +4,8 @@ import com.datascience.datastoring.Constants;
 import com.datascience.datastoring.IBackend;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 import java.sql.*;
 import java.util.*;
@@ -188,5 +190,35 @@ public class DBBackend implements IBackend {
 		int paramsNumber = params.split(",").length;
 		return String.format("%s %s %s VALUES (%s);", getInsertPrefix(), table, params,
 				"?" + Strings.repeat(",?", paramsNumber - 1));
+	}
+
+	public static DataSource createConnectionPool(Properties connectionProperties, Properties properties, boolean utf8){
+		PoolProperties p = new PoolProperties();
+		String dbUlr = properties.getProperty(Constants.DB_URL) + (utf8 ? "?useUnicode=true&characterEncoding=utf-8" : "");
+		logger.info("Trying to connect with: " + dbPath);
+		connection = DriverManager.getConnection(dbPath, connectionProperties);
+		logger.info("Connected to " + dbPath);
+		try{
+			useDatabase();
+		}
+		catch (SQLException ex){
+			logger.warn("Can't use database: " + dbName, ex);
+		}
+		p.
+		p.setDriverClassName(properties.getProperty(Constants.DB_DRIVER_CLASS));
+		p.setUrl(properties.getProperty(Constants.DB_URL));
+		p.setUsername();
+		p.setPassword();
+		p.setInitialSize(10);
+		p.setMaxActive(20);
+
+		return new DataSource(p);
+
+				properties.getProperty(Constants.DB_URL),
+				properties.getProperty(Constants.DB_DRIVER_CLASS),
+				connectionProperties,
+				properties.getProperty(Constants.DB_NAME),
+				utf8 ? "?useUnicode=true&characterEncoding=utf-8" : "",
+				utf8);
 	}
 }

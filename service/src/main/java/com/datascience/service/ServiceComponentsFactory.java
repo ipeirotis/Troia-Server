@@ -18,6 +18,8 @@ import com.datascience.serialization.json.GSONSerializer;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 /**
  *
@@ -38,11 +40,17 @@ public class ServiceComponentsFactory {
 		logger.info("Loading " + type + " job storage");
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
+
 		IJobStorage jobStorage = JobStorageFactory.create(type, getConnectionProperties(), properties, serializer);
 //		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsLocksManager);
 //		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
 		logger.info("Job Storage loaded: " + jobStorage.toString());
 		return jobStorage;
+	}
+
+	public DataSource getConnectionPool() {
+		PoolProperties poolProperties = new PoolProperties();
+		poolProperties.setUrl(properties.getProperty(Constants.DB_URL));
 	}
 
 	public JobsManager loadJobManager(IJobStorage jobStorage, ISerializer serializer) {
