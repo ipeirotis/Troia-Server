@@ -6,6 +6,7 @@ import com.datascience.datastoring.adapters.mixed.DBKVsFactory;
 import com.datascience.datastoring.backends.db.DBBackend;
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
+import com.datascience.datastoring.datamodels.kv.BaseKVsProvider;
 import com.datascience.datastoring.datamodels.kv.KVJobStorage;
 import com.datascience.datastoring.datamodels.kv.TransformingKVsProvider;
 import com.datascience.datastoring.jobs.IJobStorage;
@@ -46,23 +47,28 @@ public class JobStorageFactory {
 			return new MemoryJobStorage();
 		}
 		if (type.equals("MEMORY_KV")){
-			if (fullType.equals(type))
-				return new KVJobStorage(new TransformingKVsProvider<Object>(
+			BaseKVsProvider baseKVsProvider;
+			if (fullType.equals(type)) {
+				baseKVsProvider = new TransformingKVsProvider<Object>(
 						new MemoryKVFactory<Object>(), TransformationFactory.createObjectTransformationFactory()
-				));
-			else
-				return new KVJobStorage(new TransformingKVsProvider<String>(
+				);
+			} else {
+				baseKVsProvider = new TransformingKVsProvider<String>(
 						new MemoryKVFactory<String>(), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
+				);
+			}
+			return new KVJobStorage(baseKVsProvider);
+		}
+		if (type.startsWith("DB_")) {
+			DBBackend dbBackend = DBBackend.createInstance(connectionProperties, properties, true);
+			if (type.equals("DB_FULL")){
+				return new DBJobStorage(new DBFullAdapter(dbBackend), serializer);
+			} else if (type.equals("DB_KV")){
+				checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
+				return new KVJobStorage(new TransformingKVsProvider<String>(
+						new DBKVsFactory<String>(dbBackend), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
 				));
-		}
-		if (type.equals("DB_FULL")){
-			return new DBJobStorage(new DBFullAdapter(new DBBackend(connectionProperties, properties, true)), serializer);
-		}
-		if (type.equals("DB_KV")){
-			checkArgument(storageParams.length >= 3, "Unknown storage model: " + fullType);
-			return new KVJobStorage(new TransformingKVsProvider<String>(
-					new DBKVsFactory<String>(new DBBackend(connectionProperties, properties, true)), TransformationFactory.createStringTransformationFactory(storageParams[2], serializer)
-			));
+			}
 		}
 		throw new IllegalArgumentException("Unknown storage model: " + fullType);
 	}

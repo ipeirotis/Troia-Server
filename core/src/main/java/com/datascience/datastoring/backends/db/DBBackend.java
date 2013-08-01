@@ -25,7 +25,11 @@ public class DBBackend implements IBackend {
 	protected Properties connectionProperties;
 	protected String extraOptions;
 
-	public DBBackend(Properties connectionProperties, Properties properties, boolean utf8) throws ClassNotFoundException, SQLException {
+	static public DBBackend createInstance(Properties connectionProperties, Properties properties, boolean utf8) throws ClassNotFoundException, SQLException {
+		return new DBBackend(connectionProperties, properties, utf8);
+	}
+
+	protected DBBackend(Properties connectionProperties, Properties properties, boolean utf8) throws ClassNotFoundException, SQLException {
 		this(
 				properties.getProperty(Constants.DB_URL),
 				properties.getProperty(Constants.DB_DRIVER_CLASS),
@@ -35,7 +39,7 @@ public class DBBackend implements IBackend {
 				utf8);
 	}
 
-	public DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions, boolean utf8) throws ClassNotFoundException, SQLException {
+	protected DBBackend(String dbUrl, String driverClass, Properties connectionProperties, String dbName, String extraOptions, boolean utf8) throws ClassNotFoundException, SQLException {
 		this.dbUrl = dbUrl;
 		this.dbName = dbName;
 		this.connectionProperties = connectionProperties;
