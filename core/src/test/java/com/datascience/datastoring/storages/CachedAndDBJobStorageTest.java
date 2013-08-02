@@ -1,14 +1,10 @@
-/*
-* To change this template, choose Tools | Templates
-* and open the template in the editor.
-*/
 package com.datascience.datastoring.storages;
 
 import com.datascience.core.base.AssignedLabel;
 import com.datascience.core.base.LObject;
 import com.datascience.core.base.Worker;
 import com.datascience.datastoring.adapters.db.DBFullAdapter;
-import com.datascience.datastoring.backends.db.DBInMemoryBackend;
+import com.datascience.datastoring.backends.db.DBBackendFactory;
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
 import com.datascience.datastoring.datamodels.memory.InMemoryData;
 import com.datascience.datastoring.datamodels.memory.InMemoryNominalData;
@@ -112,7 +108,7 @@ public class CachedAndDBJobStorageTest {
 
 	@Test
 	public void testMixedStorages() throws Exception {
-		IJobStorage dbJobStorage = new DBJobStorage(new DBFullAdapter(new DBInMemoryBackend()), new GSONSerializer());
+		IJobStorage dbJobStorage = new DBJobStorage(new DBFullAdapter(new DBBackendFactory().getInMemoryBackend()), new GSONSerializer());
 //		dbJobStorage.clear();
 		dbJobStorage.initialize();
 

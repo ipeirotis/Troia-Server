@@ -2,6 +2,7 @@ package com.datascience.datastoring.adapters.mixed;
 
 import com.datascience.datastoring.adapters.kv.IKVStorage;
 import com.datascience.datastoring.backends.db.DBBackend;
+import com.datascience.datastoring.backends.db.SQLCommandOperator;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -26,12 +27,8 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		this.backend = backend;
 	}
 
-	protected String prepareString(String sql){
+	protected String prepare(String sql){
 		return String.format(sql, table);
-	}
-
-	protected PreparedStatement prepareStatement(String sql) throws SQLException {
-		return backend.initStatement(prepareString(sql));
 	}
 
 	protected String startLog(String method, String key){
@@ -49,8 +46,9 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 	public void put(String key, T value) throws SQLException{
 		String logmsg = startLog("put", key);
 		PreparedStatement sql = null;
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = backend.initStatement(backend.insertReplacingSQL(table, INSERT_PARAMS));
+			sql = sqlCO.getPreparedInsertReplacing(table, INSERT_PARAMS);
 			sql.setString(1, key);
 			sql.setString(2, (String) value); //TODO: casting
 			sql.executeUpdate();
@@ -58,7 +56,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		} catch (SQLException ex) {
 			handleError(logmsg, ex);
 		} finally {
-			backend.cleanupStatement(sql, null);
+			sqlCO.cleanup(sql, null);
 		}
 	}
 
@@ -68,8 +66,9 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		PreparedStatement sql = null;
 		ResultSet result = null;
 		String value = null;
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = prepareStatement(GET);
+			sql = sqlCO.initStatement(prepare(GET));
 			sql.setString(1, key);
 			result = sql.executeQuery();
 			if (!result.next()) {
@@ -81,7 +80,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		} catch (SQLException ex) {
 			handleError(logmsg, ex);
 		} finally {
-			backend.cleanupStatement(sql, result);
+			sqlCO.cleanup(sql, result);
 		}
 		return (T) value;
 	}
@@ -90,15 +89,16 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 	public void remove(String key) throws SQLException{
 		String logmsg = startLog("remove ", key);
 		PreparedStatement sql = null;
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = prepareStatement(DELETE);
+			sql = sqlCO.initStatement(prepare(DELETE));
 			sql.setString(1, key);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
 		} catch (SQLException ex) {
 			handleError(logmsg, ex);
 		} finally {
-			backend.cleanupStatement(sql, null);
+			sqlCO.cleanup(sql, null);
 		}
 	}
 
@@ -108,8 +108,9 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		PreparedStatement sql = null;
 		ResultSet result = null;
 		long value = 0;
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = prepareStatement(EXISTS);
+			sql = sqlCO.initStatement(prepare(EXISTS));
 			sql.setString(1, key);
 			result = sql.executeQuery();
 			result.next();
@@ -118,7 +119,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		} catch (SQLException ex) {
 			handleError(logmsg, ex);
 		} finally {
-			backend.cleanupStatement(sql, result);
+			sqlCO.cleanup(sql, result);
 		}
 		return value == 1;
 	}
