@@ -12,11 +12,8 @@ public class DBBackendFactory {
 
 	protected PoolProperties getBasicPoolProperties() {
 		PoolProperties p = new PoolProperties();
-		p.setUrl("" + "?useUnicode=true&characterEncoding=utf-8");
-//		properties.getProperty(Constants.DB_URL),
-//				properties.getProperty(Constants.DB_DRIVER_CLASS),
-//				connectionProperties,
-//				properties.getProperty(Constants.DB_NAME),
+		p.setInitialSize(10);
+		p.setMaxActive(30);
 		return p;
 	}
 
@@ -24,17 +21,15 @@ public class DBBackendFactory {
 		PoolProperties p = getBasicPoolProperties();
 		p.setDriverClassName("org.h2.Driver");
 		p.setUrl("jdbc:h2:mem:" + "test" + ";DB_CLOSE_DELAY=-1");
-//		p.setUsername();
-//		p.setPassword();
-		p.setInitialSize(10);
-		p.setMaxActive(20);
-
 		return p;
 	}
 
-	public PoolProperties getPoolProperties() {
+	public PoolProperties getPoolProperties(Properties connectionProperties, Properties properties) {
 		PoolProperties p = getBasicPoolProperties();
-
+		p.setDriverClassName(properties.getProperty(Constants.DB_DRIVER_CLASS));
+		p.setUsername(connectionProperties.getProperty("user"));
+		p.setPassword(connectionProperties.getProperty("password"));
+		p.setUrl(properties.getProperty(Constants.DB_URL) + "?useUnicode=true&characterEncoding=utf-8");
 		return p;
 	}
 
@@ -43,7 +38,8 @@ public class DBBackendFactory {
 	}
 
 	public DBBackend getDBBackendOnProperties(Properties connectionProperties, Properties properties) {
-		return new DBBackend(properties.getProperty(Constants.DB_NAME), getPoolProperties(), new SQLCommandOperatorFactory("REPLACE INTO", true));
-		// TODO XXX add dbName
+		return new DBBackend(properties.getProperty(Constants.DB_NAME),
+				getPoolProperties(connectionProperties, properties),
+				new SQLCommandOperatorFactory("REPLACE INTO", true));
 	}
 }
