@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import com.datascience.datastoring.adapters.kv.DefaultSafeKVStorage;
 import com.datascience.datastoring.adapters.mixed.DBKVsFactory;
-import com.datascience.datastoring.backends.db.DBBackend;
+import com.datascience.datastoring.backends.db.DBBackendFactory;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.datastoring.jobs.JobsManager;
@@ -18,8 +18,6 @@ import com.datascience.serialization.json.GSONSerializer;
 import com.datascience.utils.IRandomUniqIDGenerator;
 import com.datascience.utils.RandomUniqIDGenerators;
 import org.apache.log4j.Logger;
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 /**
  *
@@ -30,6 +28,7 @@ public class ServiceComponentsFactory {
 	private static Logger logger = Logger.getLogger(ServiceComponentsFactory.class);
 	
 	protected Properties properties;
+	protected DBBackendFactory dbBackendFactory = new DBBackendFactory();
 	
 	public ServiceComponentsFactory(Properties properties){
 		this.properties = properties;
@@ -48,11 +47,6 @@ public class ServiceComponentsFactory {
 		return jobStorage;
 	}
 
-	public DataSource getConnectionPool() {
-		PoolProperties poolProperties = new PoolProperties();
-		poolProperties.setUrl(properties.getProperty(Constants.DB_URL));
-	}
-
 	public JobsManager loadJobManager(IJobStorage jobStorage, ISerializer serializer) {
 		JobFactory jobFactory = new JobFactory(serializer, jobStorage);
 		return new JobsManager(jobStorage, jobFactory);
@@ -64,7 +58,7 @@ public class ServiceComponentsFactory {
 
 	public ICommandStatusesContainer loadCommandStatusesContainer(String jobStorageType, ISerializer serializer) throws SQLException, ClassNotFoundException {
 		if (jobStorageType.toUpperCase().startsWith("DB")){
-			DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(DBBackend.createInstance(getConnectionProperties(), properties, true));
+			DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(dbBackendFactory.getDBBackendOnProperties(getConnectionProperties(), properties));
 			return new KeyValueCommandStatusesContainer(
 					new RandomUniqIDGenerators.NumberAndDate(),
 					new DefaultSafeKVStorage(kvFactory.getKV("Statuses"), "StatusesStorage"),

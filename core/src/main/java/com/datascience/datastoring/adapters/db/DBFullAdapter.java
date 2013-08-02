@@ -3,7 +3,7 @@ package com.datascience.datastoring.adapters.db;
 import com.datascience.datastoring.IBackend;
 import com.datascience.datastoring.IBackendAdapter;
 import com.datascience.datastoring.backends.db.DBBackend;
-import com.google.common.collect.Lists;
+import com.datascience.datastoring.backends.db.SQLCommandOperator;
 import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
@@ -63,7 +63,7 @@ public class DBFullAdapter implements IBackendAdapter {
 
 	@Override
 	public String getID() {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return "DB_FULL";
 	}
 
 	@Override
@@ -75,10 +75,10 @@ public class DBFullAdapter implements IBackendAdapter {
 	public String[] get(String id) throws SQLException {
 		logger.debug("Getting job from DB: " + id);
 		ResultSet dsResults = null;
-		backend.ensureConnection();
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = backend.getConnection().prepareStatement(GET_DS);
+			dsStatement = sqlCO.initStatement(GET_DS);
 			dsStatement.setString(1, id);
 			dsResults = dsStatement.executeQuery();
 			if (!dsResults.next()) {
@@ -93,16 +93,16 @@ public class DBFullAdapter implements IBackendAdapter {
 			logger.debug("Getting job from DB: " + id + " DONE");
 			return new String[]{kind, initializationData, data, results, model};
 		} finally {
-			backend.cleanupStatement(dsStatement, dsResults);
+			sqlCO.cleanup(dsStatement, dsResults);
 		}
 	}
 
 	public void add(String[] data) throws SQLException{
 		logger.debug("Adding job to DB: " + data[0]);
-		backend.ensureConnection();
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = backend.getConnection().prepareStatement(backend.insertReplacingSQL("Projects", INSERT_DS_PARAMS));
+			dsStatement = sqlCO.getPreparedInsertReplacing("Projects", INSERT_DS_PARAMS);
 			int i = 1;
 			for (String s : data){
 				dsStatement.setString(i++, s);
@@ -110,22 +110,22 @@ public class DBFullAdapter implements IBackendAdapter {
 			dsStatement.executeUpdate();
 			logger.debug("Adding job to DB: " + data[0] + " DONE");
 		} finally {
-			backend.cleanupStatement(dsStatement, null);
+			sqlCO.cleanup(dsStatement, null);
 		}
 	}
 
 	public void remove(String id) throws Exception {
 		logger.debug("Removing job from DB: " + id);
-		backend.ensureConnection();
+		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		PreparedStatement dsStatement = null;
 		try {
-			dsStatement = backend.getConnection().prepareStatement(DELETE_DS);
+			dsStatement = sqlCO.initStatement(DELETE_DS);
 			dsStatement.setString(1, id);
 			dsStatement.executeUpdate();
 			dsStatement.close();
 			logger.debug("Removing job from DB: " + id + " DONE");
 		} finally {
-			backend.cleanupStatement(dsStatement, null);
+			sqlCO.cleanup(dsStatement, null);
 		}
 	}
 }
