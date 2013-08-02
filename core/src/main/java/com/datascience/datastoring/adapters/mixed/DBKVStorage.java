@@ -27,7 +27,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		this.backend = backend;
 	}
 
-	protected String prepareString(String sql){
+	protected String prepare(String sql){
 		return String.format(sql, table);
 	}
 
@@ -68,7 +68,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		String value = null;
 		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = sqlCO.initStatement(GET);
+			sql = sqlCO.initStatement(prepare(GET));
 			sql.setString(1, key);
 			result = sql.executeQuery();
 			if (!result.next()) {
@@ -91,7 +91,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		PreparedStatement sql = null;
 		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = sqlCO.initStatement(DELETE);
+			sql = sqlCO.initStatement(prepare(DELETE));
 			sql.setString(1, key);
 			sql.executeUpdate();
 			logger.debug(logmsg + " DONE");
@@ -110,7 +110,7 @@ public class DBKVStorage<T> implements IKVStorage<T> {
 		long value = 0;
 		SQLCommandOperator sqlCO = backend.getSQLCmdOperator();
 		try {
-			sql = sqlCO.initStatement(EXISTS);
+			sql = sqlCO.initStatement(prepare(EXISTS));
 			sql.setString(1, key);
 			result = sql.executeQuery();
 			result.next();
