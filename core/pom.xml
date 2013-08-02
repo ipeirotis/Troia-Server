@@ -57,6 +57,11 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jdbc</artifactId>
+            <version>7.0.35</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>

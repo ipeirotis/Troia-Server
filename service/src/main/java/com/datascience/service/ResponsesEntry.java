@@ -9,7 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import com.datascience.executor.CachedCommandStatusesContainer;
 import com.datascience.executor.CommandStatus;
 import com.datascience.executor.ICommandStatusesContainer;
 import com.sun.jersey.spi.resource.Singleton;
