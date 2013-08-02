@@ -3,11 +3,10 @@ package com.datascience.service;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import com.datascience.datastoring.adapters.kv.DefaultSafeKVStorage;
 import com.datascience.datastoring.adapters.mixed.DBKVsFactory;
-import com.datascience.datastoring.backends.db.DBBackend;
+import com.datascience.datastoring.backends.db.DBBackendFactory;
 import com.datascience.datastoring.jobs.IJobStorage;
 import com.datascience.datastoring.jobs.JobFactory;
 import com.datascience.datastoring.jobs.JobsManager;
@@ -29,6 +28,7 @@ public class ServiceComponentsFactory {
 	private static Logger logger = Logger.getLogger(ServiceComponentsFactory.class);
 	
 	protected Properties properties;
+	protected DBBackendFactory dbBackendFactory = new DBBackendFactory();
 	
 	public ServiceComponentsFactory(Properties properties){
 		this.properties = properties;
@@ -39,6 +39,7 @@ public class ServiceComponentsFactory {
 		logger.info("Loading " + type + " job storage");
 		int cacheSize = Integer.parseInt(properties.getProperty(Constants.CACHE_SIZE));
 		int cacheDumpTime = Integer.parseInt(properties.getProperty(Constants.CACHE_DUMP_TIME));
+
 		IJobStorage jobStorage = JobStorageFactory.create(type, getConnectionProperties(), properties, serializer);
 //		IJobStorage jobStorage = new JobStorageUsingExecutor(internalJobStorage, executor, jobsLocksManager);
 //		jobStorage = new CachedWithRegularDumpJobStorage(jobStorage, cacheSize, cacheDumpTime, TimeUnit.SECONDS);
@@ -57,7 +58,7 @@ public class ServiceComponentsFactory {
 
 	public ICommandStatusesContainer loadCommandStatusesContainer(String jobStorageType, ISerializer serializer) throws SQLException, ClassNotFoundException {
 		if (jobStorageType.toUpperCase().startsWith("DB")){
-			DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(new DBBackend(getConnectionProperties(), properties, true));
+			DBKVsFactory<String> kvFactory = new DBKVsFactory<String>(dbBackendFactory.getDBBackendOnProperties(getConnectionProperties(), properties));
 			return new KeyValueCommandStatusesContainer(
 					new RandomUniqIDGenerators.NumberAndDate(),
 					new DefaultSafeKVStorage(kvFactory.getKV("Statuses"), "StatusesStorage"),
