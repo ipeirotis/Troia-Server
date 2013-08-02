@@ -87,7 +87,6 @@ public class DBBackend implements IBackend {
 			logger.info("Tables successfully dropped");
 		} finally {
 			sqlCO.close();
-//			close();  I'm not sure about this here ...
 		}
 	}
 
@@ -105,7 +104,6 @@ public class DBBackend implements IBackend {
 			}
 		} finally {
 			sqlCO.close();
-//			close(); I'm not sure about this
 		}
 	}
 	public void createDatabase() throws SQLException {
