@@ -4,6 +4,7 @@ import com.datascience.datastoring.adapters.db.DBFullAdapter;
 import com.datascience.datastoring.adapters.memory.MemoryKVFactory;
 import com.datascience.datastoring.adapters.mixed.DBKVsFactory;
 import com.datascience.datastoring.backends.db.DBBackend;
+import com.datascience.datastoring.backends.db.DBBackendFactory;
 import com.datascience.datastoring.datamodels.full.DBJobStorage;
 import com.datascience.datastoring.datamodels.full.MemoryJobStorage;
 import com.datascience.datastoring.datamodels.kv.BaseKVsProvider;
@@ -23,6 +24,8 @@ import static com.google.common.base.Preconditions.checkArgument;
  * Date: 4/16/13
  */
 public class JobStorageFactory {
+
+	protected static DBBackendFactory dbBackendFactory = new DBBackendFactory();
 
 	public static class TransformationFactory {
 		public static ICoreTransformsFactory<String> createStringTransformationFactory(String type, ISerializer serializer){
@@ -60,7 +63,7 @@ public class JobStorageFactory {
 			return new KVJobStorage(baseKVsProvider);
 		}
 		if (type.startsWith("DB_")) {
-			DBBackend dbBackend = DBBackend.createInstance(connectionProperties, properties, true);
+			DBBackend dbBackend = dbBackendFactory.getDBBackendOnProperties(connectionProperties, properties);
 			if (type.equals("DB_FULL")){
 				return new DBJobStorage(new DBFullAdapter(dbBackend), serializer);
 			} else if (type.equals("DB_KV")){
