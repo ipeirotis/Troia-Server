@@ -14,6 +14,8 @@ public class DBBackendFactory {
 		PoolProperties p = new PoolProperties();
 		p.setInitialSize(10);
 		p.setMaxActive(30);
+		p.setTestOnBorrow(true);
+		p.setValidationQuery("SELECT 1");
 		return p;
 	}
 
